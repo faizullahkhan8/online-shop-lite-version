@@ -43,12 +43,12 @@ export const registerUser = asyncHandler(async (req, res, next) => {
     const refreshToken = generateToken(
         user,
         "7d",
-        process.env.JWT_REFRESH_SECRET
+        process.env.JWT_REFRESH_SECRET,
     );
     const accessToken = generateToken(
         user,
         "1d",
-        process.env.JWT_ACCESS_SECRET
+        process.env.JWT_ACCESS_SECRET,
     );
 
     setCookie(res, refreshToken, 1000 * 60 * 60 * 24 * 7, "refreshToken");
@@ -89,12 +89,12 @@ export const loginUser = asyncHandler(async (req, res, next) => {
     const refreshToken = generateToken(
         user,
         "7d",
-        process.env.JWT_REFRESH_SECRET
+        process.env.JWT_REFRESH_SECRET,
     );
     const accessToken = generateToken(
         user,
         "1d",
-        process.env.JWT_ACCESS_SECRET
+        process.env.JWT_ACCESS_SECRET,
     );
 
     setCookie(res, refreshToken, 1000 * 60 * 60 * 24 * 7, "refreshToken");
@@ -207,7 +207,7 @@ export const getAccessToken = asyncHandler(async (req, res, next) => {
     const accessToken = generateToken(
         user,
         "1d",
-        process.env.JWT_ACCESS_SECRET
+        process.env.JWT_ACCESS_SECRET,
     );
 
     if (!accessToken) {
@@ -280,7 +280,7 @@ export const addToWishlist = asyncHandler(async (req, res, next) => {
         }
     } else {
         const exists = wishlistDoc.items.find(
-            (i) => i.product.toString() === productId.toString()
+            (i) => i.product.toString() === productId.toString(),
         );
         if (!exists) {
             wishlistDoc.items.push({ product: productId });
@@ -317,7 +317,7 @@ export const removeFromWishlist = asyncHandler(async (req, res, next) => {
         });
 
     wishlistDoc.items = wishlistDoc.items.filter(
-        (i) => i.product.toString() !== productId.toString()
+        (i) => i.product.toString() !== productId.toString(),
     );
     await wishlistDoc.save({ validateModifiedOnly: true });
 

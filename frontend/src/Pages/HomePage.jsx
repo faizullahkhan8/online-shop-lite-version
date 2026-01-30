@@ -42,30 +42,30 @@ const HomePage = () => {
             <HeroSection />
 
             {/* Deals and Offers Section */}
-            <section className="py-8 md:py-12 bg-white">
+            <section className="py-8 md:py-12">
                 <div className="container mx-auto px-4">
-                    <DealsAndOffers items={products?.slice(0, 7)} />
+                    <DealsAndOffers items={products} />
                 </div>
             </section>
 
             {/* Home & Outdoor Grid */}
-            <section className="py-8 md:py-12 bg-gray-50">
+            <section className="py-8 md:py-12">
                 <div className="container mx-auto px-4">
                     <Grid
                         title="Home and outdoor"
                         bannerImg="https://picsum.photos/id/111/300/600"
-                        items={products?.slice(7, 15)}
+                        items={products}
                     />
                 </div>
             </section>
 
             {/* Consumer Electronics Grid */}
-            <section className="py-8 md:py-12 bg-white">
+            <section className="py-8 md:py-12">
                 <div className="container mx-auto px-4">
                     <Grid
                         title="Consumer electronics and gadgets"
                         bannerImg="https://picsum.photos/id/112/300/600"
-                        items={products?.slice(15, 23)}
+                        items={products}
                     />
                 </div>
             </section>
@@ -76,9 +76,9 @@ const HomePage = () => {
             </section>
 
             {/* Recommended Items Section */}
-            <section className="py-8 md:py-12 bg-white">
+            <section className="py-8 md:py-12">
                 <div className="container mx-auto px-4">
-                    <RecommendedItems items={products?.slice(23, 28)} />
+                    <RecommendedItems items={products} />
                 </div>
             </section>
 
@@ -90,7 +90,7 @@ const HomePage = () => {
             </section>
 
             {/* Suppliers by Region */}
-            <section className="py-8 md:py-12 bg-white">
+            <section className="py-8 md:py-12">
                 <div className="container mx-auto px-4">
                     <SuppliersByRegion />
                 </div>

@@ -4,7 +4,11 @@ import Input from "../../UI/Input.jsx";
 import Button from "../../UI/Button.jsx";
 import Select from "../../UI/Select.jsx";
 import { Loader, Info, ArrowLeft } from "lucide-react";
-import { useCreateCategory, useUpdateCategory, useGetAllCategories } from "../../api/hooks/category.api.js";
+import {
+    useCreateCategory,
+    useUpdateCategory,
+    useGetAllCategories,
+} from "../../api/hooks/category.api.js";
 import { useMemo } from "react";
 
 const INITIAL_STATE = {
@@ -17,7 +21,7 @@ const AddCategory = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
-    const isEditing = searchParams.get('isEditing') === 'true';
+    const isEditing = searchParams.get("isEditing") === "true";
 
     // Safety check for parsing JSON from URL
     const getInitialData = () => {
@@ -57,12 +61,14 @@ const AddCategory = () => {
     // 3. Prevent Circular References
     // We use useMemo so this list only recalculates when categories change
     const categoryOptions = useMemo(() => {
-        return categories
-            ?.filter(cat => cat._id !== categoryData._id) // Remove current category from parent list
-            .map(cat => ({
-                label: cat.name,
-                value: cat._id
-            })) || [];
+        return (
+            categories
+                ?.filter((cat) => cat._id !== categoryData._id) // Remove current category from parent list
+                .map((cat) => ({
+                    label: cat.name,
+                    value: cat._id,
+                })) || []
+        );
     }, [categories, categoryData._id]);
 
     const handleSubmit = async (e) => {
@@ -71,7 +77,10 @@ const AddCategory = () => {
 
         let response;
         if (isEditing) {
-            response = await updateCategory({ id: categoryData._id, categoryData });
+            response = await updateCategory({
+                id: categoryData._id,
+                categoryData,
+            });
         } else {
             response = await createCategory(categoryData);
         }
@@ -110,7 +119,12 @@ const AddCategory = () => {
                         type="text"
                         placeholder="e.g. Electronics"
                         value={categoryData.name}
-                        onChange={(e) => setCategoryData({ ...categoryData, name: e.target.value })}
+                        onChange={(e) =>
+                            setCategoryData({
+                                ...categoryData,
+                                name: e.target.value,
+                            })
+                        }
                         required
                         className="w-full"
                     />
@@ -122,10 +136,19 @@ const AddCategory = () => {
                         Parent Category (Optional)
                     </label>
                     <Select
-                        placeholder={fetchingCats ? "Loading categories..." : "Select Parent Category"}
+                        placeholder={
+                            fetchingCats
+                                ? "Loading categories..."
+                                : "Select Parent Category"
+                        }
                         options={categoryOptions}
                         value={categoryData.parentCategory}
-                        onChange={(val) => setCategoryData({ ...categoryData, parentCategory: val })}
+                        onChange={(val) =>
+                            setCategoryData({
+                                ...categoryData,
+                                parentCategory: val,
+                            })
+                        }
                         className="w-full"
                     />
                 </div>
@@ -133,18 +156,30 @@ const AddCategory = () => {
                 {/* Active Toggle */}
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
                     <div>
-                        <span className="block text-sm font-semibold text-gray-700">Active Status</span>
-
+                        <span className="block text-sm font-semibold text-gray-700">
+                            Active Status
+                        </span>
                     </div>
                     <button
                         type="button"
-                        onClick={() => setCategoryData({ ...categoryData, isActive: !categoryData.isActive })}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${categoryData.isActive ? "bg-blue-600" : "bg-gray-300"
-                            }`}
+                        onClick={() =>
+                            setCategoryData({
+                                ...categoryData,
+                                isActive: !categoryData.isActive,
+                            })
+                        }
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                            categoryData.isActive
+                                ? "bg-blue-600"
+                                : "bg-gray-300"
+                        }`}
                     >
                         <span
-                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${categoryData.isActive ? "translate-x-6" : "translate-x-1"
-                                }`}
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                                categoryData.isActive
+                                    ? "translate-x-6"
+                                    : "translate-x-1"
+                            }`}
                         />
                     </button>
                 </div>
@@ -154,13 +189,25 @@ const AddCategory = () => {
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => navigate("/admin-dashboard?tab=categories-list")}
+                            onClick={() =>
+                                navigate("/admin-dashboard?tab=categories-list")
+                            }
                         >
                             Cancel
                         </Button>
                     )}
-                    <Button type="submit" disabled={creating || updating} className="px-10">
-                        {creating || updating ? <Loader className="animate-spin" size={18} /> : (isEditing ? "Update Category" : "Create Category")}
+                    <Button
+                        type="submit"
+                        disabled={creating || updating}
+                        className="px-10"
+                    >
+                        {creating || updating ? (
+                            <Loader className="animate-spin" size={18} />
+                        ) : isEditing ? (
+                            "Update Category"
+                        ) : (
+                            "Create Category"
+                        )}
                     </Button>
                 </div>
             </form>

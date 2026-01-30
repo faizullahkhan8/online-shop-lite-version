@@ -4,10 +4,13 @@ import {
     Check,
     Package,
     ShoppingCart,
-    Loader,
+    Loader2,
     X,
-    FileStack,
     Boxes,
+    ShieldCheck,
+    Truck,
+    Minus,
+    Plus,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import Breadcrumb from "../Components/Breadcrumb";
@@ -20,26 +23,22 @@ import { useAddToWishlist, useRemoveFromWishlist } from "../api/hooks/user.api";
 const ProductDetailPage = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
+    const [quantity, setQuantity] = useState(1);
 
     const { getProductById, loading: productLoading } = useGetProductById();
-
-    const breadcrumbItems = [
-        { label: "Home", path: "/" },
-        { label: "Clothings", path: "/products?category=clothing" },
-        { label: "Men's wear", path: "/products?category=mens" },
-        { label: product?.name || "Product" },
-    ];
 
     const dispatch = useDispatch();
     const { addToWishlist } = useAddToWishlist();
     const { removeFromWishlist } = useRemoveFromWishlist();
     const wishlistItems = useSelector((state) => state.wishlist.items || []);
+
     const matchId = (item, product) => {
         if (!item || !product) return false;
         const aval = item._id || item.id || item;
         const bval = product._id || product.id || product;
         return aval.toString() === bval.toString();
     };
+
     const isInWishlist = !!wishlistItems.find((item) => matchId(item, product));
 
     useEffect(() => {
@@ -49,19 +48,22 @@ const ProductDetailPage = () => {
                 setProduct(response.product);
             }
         })();
-    }, []);
+    }, [id]);
 
     if (productLoading) {
         return (
-            <div className="w-full h-screen flex items-center justify-center">
-                <Loader size={28} />
+            <div className="w-full h-screen flex flex-col items-center justify-center bg-slate-50/50">
+                <Loader2 className="animate-spin text-primary mb-4" size={40} />
+                <p className="text-[11px] font-black uppercase tracking-widest text-slate-400">
+                    Loading details...
+                </p>
             </div>
         );
     }
 
     const handleAddToCart = () => {
         if (!product) return;
-        dispatch(addToCart(product));
+        dispatch(addToCart({ ...product, quantity }));
     };
 
     const handleWishlist = async () => {
@@ -78,94 +80,162 @@ const ProductDetailPage = () => {
         }
     };
 
-    return (
-        <div className="container mx-auto px-4 py-8 md:py-12">
-            {/* Breadcrumbs */}
-            <Breadcrumb items={breadcrumbItems} />
+    const breadcrumbItems = [
+        { label: "Home", path: "/" },
+        { label: "Catalog", path: "/products" },
+        {
+            label: product?.category?.name || "Category",
+            path: `/products?category=${product?.category?.name}`,
+        },
+        { label: product?.name || "Product" },
+    ];
 
-            <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-                <div className="flex flex-col gap-4">
-                    <div className="flex gap-4">
-                        {/* Images */}
-                        <div className="lg:col-span-1">
-                            <div className="border border-gray-200 rounded flex items-center justify-center p-4 mb-4 h-80">
+    return (
+        <div className="bg-slate-50/50 min-h-screen">
+            <div className="container mx-auto px-4 lg:px-8 py-8 lg:py-12">
+                <Breadcrumb items={breadcrumbItems} />
+
+                <div className="mt-8 bg-white border border-slate-100 rounded-[3rem] shadow-xl shadow-slate-200/50 overflow-hidden">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 p-8 lg:p-16">
+                        <div className="space-y-6">
+                            <div className="aspect-square bg-slate-50 rounded-[2.5rem] border border-slate-100 flex items-center justify-center p-12 group">
                                 <img
-                                    src={`${import.meta.env.VITE_BACKEND_URL}/${
-                                        product?.image
-                                    }`}
+                                    src={`${import.meta.env.VITE_BACKEND_URL}/${product?.image}`}
                                     alt={product?.name}
-                                    className="max-h-full object-contain"
+                                    className="max-h-full w-full object-contain transition-transform duration-500 group-hover:scale-110"
                                 />
                             </div>
                         </div>
 
-                        {/* Product Info */}
-                        <div className="lg:col-span-1">
-                            {product?.stock > 0 ? (
-                                <span className="text-green-600 flex items-center gap-1 text-sm font-medium mb-2">
-                                    <Check size={16} /> In stock
-                                </span>
-                            ) : (
-                                <span className="text-red-600 flex items-center gap-1 text-sm font-medium mb-2">
-                                    <X size={16} /> out of stock
-                                </span>
-                            )}
-                            <h1 className="text-xl font-bold text-gray-900 mb-3">
+                        <div className="flex flex-col">
+                            <div className="mb-6">
+                                {product?.stock > 0 ? (
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-100">
+                                        <Check size={12} strokeWidth={3} /> In
+                                        Stock
+                                    </span>
+                                ) : (
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-rose-100">
+                                        <X size={12} strokeWidth={3} /> Out of
+                                        Stock
+                                    </span>
+                                )}
+                            </div>
+
+                            <h1 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight mb-4 uppercase">
                                 {product?.name}
                             </h1>
-                            <h1 className="text-md text-gray-900 mb-3">
-                                {product?.description}
-                            </h1>
 
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-1 text-gray-500 text-sm">
-                                    <Package size={16} />
-                                    <span>
-                                        {product?.soldCount
-                                            ? product.soldCount
-                                            : 0}{" "}
-                                        sold
+                            <p className="text-slate-500 leading-relaxed mb-8 font-medium">
+                                {product?.description ||
+                                    "Experience the perfect blend of performance and design with our latest addition to the collection."}
+                            </p>
+
+                            <div className="flex items-center gap-8 mb-8 pb-8 border-b border-slate-100">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">
+                                        Total Sales
+                                    </span>
+                                    <div className="flex items-center gap-2 text-slate-900 font-bold">
+                                        <Package
+                                            size={16}
+                                            className="text-primary"
+                                        />
+                                        <span>
+                                            {product?.soldCount || 0}+ Sold
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">
+                                        Catalog Unit
+                                    </span>
+                                    <div className="flex items-center gap-2 text-slate-900 font-bold">
+                                        <Boxes
+                                            size={16}
+                                            className="text-primary"
+                                        />
+                                        <span>
+                                            {product?.category?.name || "Tech"}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-6">
+                                <div className="flex items-center gap-6">
+                                    <div className="flex items-center bg-slate-50 rounded-2xl p-1 border border-slate-100">
+                                        <button
+                                            onClick={() =>
+                                                setQuantity(
+                                                    Math.max(1, quantity - 1),
+                                                )
+                                            }
+                                            className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors"
+                                        >
+                                            <Minus size={16} />
+                                        </button>
+                                        <span className="w-12 text-center font-black text-slate-900">
+                                            {quantity}
+                                        </span>
+                                        <button
+                                            onClick={() =>
+                                                setQuantity(quantity + 1)
+                                            }
+                                            className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors"
+                                        >
+                                            <Plus size={16} />
+                                        </button>
+                                    </div>
+                                    <button
+                                        onClick={handleAddToCart}
+                                        disabled={product?.stock <= 0}
+                                        className="flex-1 bg-slate-900 text-white h-12 lg:h-14 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] flex items-center justify-center gap-3 hover:bg-primary transition-all active:scale-95 shadow-xl shadow-slate-900/10 disabled:opacity-50 disabled:hover:bg-slate-900"
+                                    >
+                                        <ShoppingCart size={18} /> Add to Cart
+                                    </button>
+                                </div>
+
+                                <button
+                                    onClick={handleWishlist}
+                                    className={`w-full h-12 lg:h-14 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] flex items-center justify-center gap-3 border-2 transition-all ${
+                                        isInWishlist
+                                            ? "bg-rose-50 border-rose-100 text-rose-500"
+                                            : "bg-white border-slate-100 text-slate-400 hover:text-rose-500 hover:border-rose-100"
+                                    }`}
+                                >
+                                    <Heart
+                                        size={18}
+                                        fill={
+                                            isInWishlist
+                                                ? "currentColor"
+                                                : "none"
+                                        }
+                                    />
+                                    {isInWishlist
+                                        ? "Saved in Wishlist"
+                                        : "Add to Wishlist"}
+                                </button>
+                            </div>
+
+                            <div className="mt-12 grid grid-cols-2 gap-4">
+                                <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl">
+                                    <Truck className="text-primary" size={20} />
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">
+                                        Fast Delivery
                                     </span>
                                 </div>
-                                <div className="flex items-center gap-1 text-gray-500 text-sm">
-                                    <Boxes size={16} />
-                                    <span>
-                                        {product?.category?.name
-                                            ? product?.category?.name
-                                            : "temp category"}
+                                <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl">
+                                    <ShieldCheck
+                                        className="text-primary"
+                                        size={20}
+                                    />
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">
+                                        Secure Warranty
                                     </span>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div>
-                        <button
-                            onClick={handleAddToCart}
-                            className="w-full bg-primary text-white py-2.5 rounded font-medium mb-2 
-                                     hover:bg-primary-dark transition-colors disabled:opacity-50 
-                                     flex items-center justify-center gap-2"
-                        >
-                            <ShoppingCart size={18} />
-                            <span>Add to Cart</span>
-                        </button>
-
-                        {/* Save for Later (Add to Wishlist) */}
-                        <button
-                            onClick={handleWishlist}
-                            className={`w-full border border-gray-200 py-2.5 rounded font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors ${
-                                isInWishlist
-                                    ? "text-red-500 border-red-200"
-                                    : "text-gray-700 hover:text-red-500"
-                            }`}
-                        >
-                            <Heart size={18} />
-                            <span>
-                                {isInWishlist
-                                    ? "Remove from Wishlist"
-                                    : "Add to Wishlist"}
-                            </span>
-                        </button>
                     </div>
                 </div>
             </div>

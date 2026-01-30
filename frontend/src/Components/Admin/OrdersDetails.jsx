@@ -5,7 +5,18 @@ import {
     useUpdateOrderStatus,
     useDeleteOrder,
 } from "../../api/hooks/orders.api.js";
-import { ArrowLeft, Package, User, MapPin } from "lucide-react";
+import {
+    ArrowLeft,
+    Package,
+    User,
+    MapPin,
+    Calendar,
+    Trash2,
+    ShieldCheck,
+    Truck,
+    Clock,
+    CheckCircle2,
+} from "lucide-react";
 
 const OrderDetails = () => {
     const [searchParams] = useSearchParams();
@@ -16,8 +27,6 @@ const OrderDetails = () => {
     const { getOrderById, loading } = useGetOrderById();
     const { updateOrderStatus } = useUpdateOrderStatus();
     const { deleteOrder } = useDeleteOrder();
-
-    console.log(order);
 
     useEffect(() => {
         if (orderId) {
@@ -34,164 +43,246 @@ const OrderDetails = () => {
     };
 
     const handleDelete = async () => {
-        if (!orderId) return;
+        if (!window.confirm("Permanent deletion cannot be undone. Proceed?"))
+            return;
         const res = await deleteOrder(orderId);
         if (res?.success) navigate(-1);
     };
 
-    if (!order || loading)
-        return <div className="p-10 text-center">Loading order details...</div>;
+    if (!order || loading) {
+        return (
+            <div className="h-[60vh] flex flex-col items-center justify-center text-slate-400">
+                <Clock className="animate-spin mb-4" size={32} />
+                <p className="text-[10px] font-black uppercase tracking-[0.2em]">
+                    Retrieving Manifest...
+                </p>
+            </div>
+        );
+    }
 
     return (
-        <div className="m-6 max-w-4xl mx-auto space-y-6">
-            {/* Header */}
-            <div className="flex items-center gap-4">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="p-2 hover:bg-gray-100 rounded-full"
-                >
-                    <ArrowLeft size={20} />
-                </button>
-                <div>
-                    <h2 className="text-xl font-bold text-gray-800">
-                        Order #{order._id.slice(-8).toUpperCase()}
-                    </h2>
-                    <p className="text-sm text-gray-500">
-                        Placed on{" "}
-                        {new Date(order.createdAt).toLocaleDateString()}
-                    </p>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* 1. Order Items Table */}
-                <div className="md:col-span-2 bg-white border border-gray-200 rounded-sm shadow-sm overflow-hidden">
-                    <div className="p-4 border-b border-gray-100 bg-gray-50">
-                        <h3 className="text-sm font-bold flex items-center gap-2">
-                            <Package size={16} /> Order Items
-                        </h3>
-                    </div>
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-white">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-[10px] font-bold text-gray-400 uppercase">
-                                    Product
-                                </th>
-                                <th className="px-6 py-3 text-center text-[10px] font-bold text-gray-400 uppercase">
-                                    Qty
-                                </th>
-                                <th className="px-6 py-3 text-right text-[10px] font-bold text-gray-400 uppercase">
-                                    Price
-                                </th>
-                                <th className="px-6 py-3 text-right text-[10px] font-bold text-gray-400 uppercase">
-                                    Total
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {order.items.map((item, index) => (
-                                <tr key={index} className="text-sm">
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-3">
-                                            <img
-                                                src={`${
-                                                    import.meta.env
-                                                        .VITE_BACKEND_URL
-                                                }/${item.product.image}`}
-                                                className="w-10 h-10 object-cover rounded border"
-                                                alt={item.product.name}
-                                            />
-                                            <span className="font-medium text-gray-800">
-                                                {item.product.name}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-center text-gray-600">
-                                        x{item.quantity}
-                                    </td>
-                                    <td className="px-6 py-4 text-right text-gray-600">
-                                        Rs: {item.price.toFixed(2)}
-                                    </td>
-                                    <td className="px-6 py-4 text-right font-bold text-gray-800">
-                                        Rs:{" "}
-                                        {(item.quantity * item.price).toFixed(
-                                            2
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-
-                    {/* Summary Row */}
-                    <div className="p-6 bg-gray-50 border-t border-gray-200 flex flex-col items-end gap-2">
-                        <div className="flex justify-between w-48 text-sm">
-                            <span className="text-gray-500">Subtotal:</span>
-                            <span className="font-medium">
-                                Rs {order.grandTotal?.toFixed(2)}
+        <div className="max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-500">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex items-center gap-6">
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="p-4 bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-primary hover:shadow-lg transition-all"
+                    >
+                        <ArrowLeft size={20} />
+                    </button>
+                    <div>
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+                                Order{" "}
+                                <span className="text-primary">
+                                    #{order._id.slice(-8).toUpperCase()}
+                                </span>
+                            </h2>
+                            <span className="px-3 py-1 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-lg">
+                                {order.status}
                             </span>
                         </div>
-                        <div className="flex justify-between w-48 text-sm">
-                            <span className="text-gray-500">Shipping:</span>
-                            <span className="font-medium">Rs: 0.00</span>
-                        </div>
-                        <div className="flex justify-between w-48 text-lg font-bold border-t pt-2 mt-2">
-                            <span>Total:</span>
-                            <span className="text-blue-600">
-                                Rs: {order.grandTotal?.toFixed(2)}
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 flex items-center gap-2">
+                            <Calendar size={12} /> Transaction Log:{" "}
+                            {new Date(order.createdAt).toLocaleString()}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={handleDelete}
+                        className="flex items-center gap-2 px-6 py-3 bg-rose-50 text-rose-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all group"
+                    >
+                        <Trash2
+                            size={14}
+                            className="group-hover:scale-110 transition-transform"
+                        />
+                        Purge Record
+                    </button>
+                </div>
+            </header>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 space-y-8">
+                    <section className="bg-white border border-slate-100 rounded-[2.5rem] shadow-xl shadow-slate-200/40 overflow-hidden">
+                        <div className="p-8 border-b border-slate-50 flex items-center justify-between">
+                            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                                <Package size={16} className="text-primary" />{" "}
+                                Shipment Manifest
+                            </h3>
+                            <span className="text-[10px] font-black text-slate-900">
+                                {order.items.length} Unique Items
                             </span>
                         </div>
-                        <div className="mt-4 flex items-center gap-2">
-                            <label className="text-sm text-gray-600">
-                                Status:
-                            </label>
-                            <select
-                                value={order.status}
-                                onChange={(e) =>
-                                    handleStatusUpdate(e.target.value)
-                                }
-                                className="border rounded px-2 py-1 text-sm"
-                            >
-                                <option value="pending">Pending</option>
-                                <option value="shipped">Shipped</option>
-                                <option value="delivered">Delivered</option>
-                                <option value="cancelled">Cancelled</option>
-                            </select>
-                            <button
-                                onClick={handleDelete}
-                                className="ml-4 text-sm text-red-600"
-                            >
-                                Delete Order
-                            </button>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead className="bg-slate-50/50">
+                                    <tr>
+                                        <th className="px-8 py-4 text-[9px] font-black uppercase tracking-widest text-slate-400">
+                                            Line Item
+                                        </th>
+                                        <th className="px-8 py-4 text-center text-[9px] font-black uppercase tracking-widest text-slate-400">
+                                            Qty
+                                        </th>
+                                        <th className="px-8 py-4 text-right text-[9px] font-black uppercase tracking-widest text-slate-400">
+                                            Unit
+                                        </th>
+                                        <th className="px-8 py-4 text-right text-[9px] font-black uppercase tracking-widest text-slate-400">
+                                            Amount
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-50">
+                                    {order.items.map((item, index) => (
+                                        <tr key={index} className="group">
+                                            <td className="px-8 py-6">
+                                                <div className="flex items-center gap-4">
+                                                    <img
+                                                        src={`${import.meta.env.VITE_BACKEND_URL}/${item.product.image}`}
+                                                        className="w-14 h-14 object-cover rounded-2xl border border-slate-100 group-hover:scale-105 transition-transform"
+                                                        alt={item.product.name}
+                                                    />
+                                                    <div>
+                                                        <p className="text-xs font-black text-slate-900 uppercase tracking-tight">
+                                                            {item.product.name}
+                                                        </p>
+                                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                                                            SKU: PROD-
+                                                            {item.product._id.slice(
+                                                                -4,
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6 text-center">
+                                                <span className="text-xs font-black text-slate-900">
+                                                    ×{item.quantity}
+                                                </span>
+                                            </td>
+                                            <td className="px-8 py-6 text-right text-xs font-bold text-slate-500">
+                                                Rs {item.price.toLocaleString()}
+                                            </td>
+                                            <td className="px-8 py-6 text-right">
+                                                <span className="text-sm font-black text-slate-900">
+                                                    Rs{" "}
+                                                    {(
+                                                        item.quantity *
+                                                        item.price
+                                                    ).toLocaleString()}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
+
+                        <div className="p-10 bg-slate-900 text-white flex flex-col md:flex-row justify-between items-center gap-8 mt-auto">
+                            <div className="flex flex-col gap-4 w-full md:w-auto">
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                                    Update Logistics State
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                    {[
+                                        "pending",
+                                        "shipped",
+                                        "delivered",
+                                        "cancelled",
+                                    ].map((status) => (
+                                        <button
+                                            key={status}
+                                            onClick={() =>
+                                                handleStatusUpdate(status)
+                                            }
+                                            className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
+                                                order.status === status
+                                                    ? "bg-primary text-white shadow-lg shadow-primary/30"
+                                                    : "bg-white/5 text-slate-400 hover:bg-white/10"
+                                            }`}
+                                        >
+                                            {status}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="space-y-2 text-right w-full md:w-64 border-l border-white/10 pl-8">
+                                <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                    <span>Subtotal</span>
+                                    <span>
+                                        Rs {order.grandTotal?.toLocaleString()}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                    <span>Shipping</span>
+                                    <span className="text-emerald-400">
+                                        FREE
+                                    </span>
+                                </div>
+                                <div className="flex justify-between pt-4 border-t border-white/10 items-end">
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                                        Grand Total
+                                    </span>
+                                    <span className="text-2xl font-black text-primary tracking-tighter">
+                                        Rs {order.grandTotal?.toLocaleString()}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
 
-                {/* 2. Customer Info Sidebar */}
-                <div className="space-y-6">
-                    <div className="bg-white border border-gray-200 rounded-sm p-5 shadow-sm">
-                        <h3 className="text-sm font-bold mb-4 flex items-center gap-2">
-                            <User size={16} /> Customer
+                <aside className="space-y-8">
+                    <section className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/40">
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6 flex items-center gap-2">
+                            <User size={16} className="text-primary" /> Profile
                         </h3>
-                        <p className="text-sm font-medium text-gray-900">
-                            Name: {order.recipient?.name || "Guest"}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                            Phone: {order.recipient?.phone}
-                        </p>
-                    </div>
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 font-black">
+                                {order.recipient?.name?.[0] || "G"}
+                            </div>
+                            <div>
+                                <p className="text-sm font-black text-slate-900 uppercase tracking-tight">
+                                    {order.recipient?.name || "Guest Checkout"}
+                                </p>
+                                <p className="text-[10px] font-bold text-slate-400">
+                                    {order.recipient?.phone}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                <ShieldCheck size={12} /> Security Status
+                            </p>
+                            <p className="text-xs font-bold text-emerald-600 uppercase tracking-tight">
+                                Verified Transaction
+                            </p>
+                        </div>
+                    </section>
 
-                    <div className="bg-white border border-gray-200 rounded-sm p-5 shadow-sm">
-                        <h3 className="text-sm font-bold mb-4 flex items-center gap-2">
-                            <MapPin size={16} /> Shipping Address
+                    <section className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/40">
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6 flex items-center gap-2">
+                            <Truck size={16} className="text-primary" />{" "}
+                            Logistics
                         </h3>
-                        <p className="text-xs text-gray-600 leading-relaxed italic">
-                            {order.recipient.street +
-                                " " +
-                                order.recipient.city || "No address provided"}
-                        </p>
-                    </div>
-                </div>
+                        <div className="flex gap-4">
+                            <div className="mt-1">
+                                <MapPin size={16} className="text-slate-300" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-900 mb-2">
+                                    Destination
+                                </p>
+                                <p className="text-xs font-bold text-slate-500 leading-relaxed uppercase tracking-tight italic">
+                                    {order.recipient.street}
+                                    <br />
+                                    {order.recipient.city}
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                </aside>
             </div>
         </div>
     );

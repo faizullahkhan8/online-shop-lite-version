@@ -3,7 +3,14 @@ import {
     useGetAllProducts,
 } from "../../api/hooks/product.api.js";
 import { useState, useEffect } from "react";
-import { Edit, MoreVertical, PackageOpen, Trash } from "lucide-react"; // Optional: for better icons
+import {
+    Edit,
+    MoreVertical,
+    PackageOpen,
+    Trash,
+    ExternalLink,
+    RefreshCw,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import DeleteDialog from "../../UI/DialogBox.jsx";
 
@@ -20,13 +27,15 @@ const ProductList = () => {
         data: null,
     });
 
+    const fetchProducts = async () => {
+        const response = await getAllProducts();
+        if (response?.success) {
+            setProducts(response.products);
+        }
+    };
+
     useEffect(() => {
-        (async () => {
-            const response = await getAllProducts();
-            if (response?.success) {
-                setProducts(response.products);
-            }
-        })();
+        fetchProducts();
     }, []);
 
     const handleDelete = async () => {
@@ -34,176 +43,223 @@ const ProductList = () => {
         if (response?.success) {
             setProducts(
                 products.filter(
-                    (product) => product._id !== productState.data._id
-                )
+                    (product) => product._id !== productState.data._id,
+                ),
             );
             setProductState({ type: "", data: null });
         }
     };
 
     return (
-        <div className="bg-white rounded-sm shadow-sm border border-gray-200 mx-auto max-w-3xl flex flex-col overflow-hidden">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <DeleteDialog
                 isOpen={Boolean(productState.type === "delete")}
                 onClose={() => setProductState({ type: "", data: null })}
                 onConfirm={handleDelete}
-                title="Delete Product"
-                message="Are you sure you want to delete this product? This action cannot be undone."
+                title="Decommission Entity"
+                message="Are you certain you wish to purge this product from the master registry? This operation is irreversible."
                 loading={deleteProductLoading}
             />
 
-            <div className="p-6 border-b border-gray-100">
-                <h2 className="text-xl font-bold text-gray-800">
-                    Product List
-                </h2>
-                <p className="text-sm text-gray-500">
-                    Manage your store inventory and stock levels.
-                </p>
-            </div>
+            <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
+                <div>
+                    <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">
+                        Inventory <span className="text-primary">Manifest</span>
+                    </h2>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">
+                        Active Database Nodes: {products.length}
+                    </p>
+                </div>
+                <button
+                    onClick={fetchProducts}
+                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors"
+                >
+                    <RefreshCw
+                        size={12}
+                        className={getAllProductsLoading ? "animate-spin" : ""}
+                    />
+                    Sync Data
+                </button>
+            </header>
 
-            <div className="overflow-x-auto overflow-y-auto h-[calc(100vh-200px)] max-h-[calc(100vh-200px)]">
-                <table className="min-w-full divide-y divide-gray-200 border-separate border-spacing-0">
-                    <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
-                        <tr>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b">
-                                Image
-                            </th>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b">
-                                ID
-                            </th>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b">
-                                Name
-                            </th>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b">
-                                Price
-                            </th>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b">
-                                Stock
-                            </th>
-                            <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider border-b">
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {getAllProductsLoading ? (
-                            <tr className="text-center text-gray-300 font-semibold">
-                                <td className="p-4" colSpan={6}>
-                                    No product added yet!
-                                </td>
+            <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                <div className="overflow-x-auto custom-scrollbar">
+                    <table className="w-full border-collapse">
+                        <thead>
+                            <tr className="bg-slate-50/50">
+                                <th className="px-8 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                    Asset
+                                </th>
+                                <th className="px-6 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                    Registry ID
+                                </th>
+                                <th className="px-6 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                    Valuation
+                                </th>
+                                <th className="px-6 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                    Status
+                                </th>
+                                <th className="px-8 py-6 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                    Ops
+                                </th>
                             </tr>
-                        ) : products.length > 0 ? (
-                            products.map((product) => (
-                                <tr
-                                    className="hover:bg-blue-50/30 transition-colors group"
-                                    key={product._id}
-                                >
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <img
-                                            src={`${
-                                                import.meta.env.VITE_BACKEND_URL
-                                            }/${product.image}`}
-                                            className="w-16 h-16 object-cover rounded-lg border border-gray-100 shadow-sm"
-                                            alt={product.name}
-                                        />
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-gray-400">
-                                        #{product._id.slice(-6).toUpperCase()}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-800">
-                                        {product.name}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-medium">
-                                        Rs: {Number(product.price).toFixed(2)}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                                product.stock > 10
-                                                    ? "bg-green-100 text-green-700"
-                                                    : "bg-red-100 text-red-700"
-                                            }`}
-                                        >
-                                            {product.stock} in stock
-                                        </span>
-                                    </td>
-                                    <td className="relative px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <MoreVertical
-                                            onClick={() =>
-                                                setActiveMenuId(product._id)
-                                            }
-                                            size={24}
-                                            className="text-primary hover:text-primary/80"
-                                        />
-
-                                        {activeMenuId === product._id && (
-                                            <>
-                                                <div
-                                                    className="fixed inset-0 z-10"
-                                                    onClick={() =>
-                                                        setActiveMenuId(null)
-                                                    }
-                                                ></div>
-
-                                                <div className="absolute right-10 top-12 w-32 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-9999 overflow-hidden">
-                                                    <Link
-                                                        to={`/admin-dashboard?tab=products-add&isEditing=true&product=${encodeURIComponent(
-                                                            JSON.stringify(
-                                                                product
-                                                            )
-                                                        )}`}
-                                                        onClick={() =>
-                                                            setActiveMenuId(
-                                                                null
-                                                            )
-                                                        }
-                                                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                                                    >
-                                                        <Edit size={14} /> Edit
-                                                    </Link>
-
-                                                    <button
-                                                        onClick={() => {
-                                                            setProductState({
-                                                                type: "delete",
-                                                                data: product,
-                                                            });
-                                                            setActiveMenuId(
-                                                                null
-                                                            );
-                                                        }}
-                                                        className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                                                    >
-                                                        <Trash size={14} />{" "}
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </>
-                                        )}
+                        </thead>
+                        <tbody className="divide-y divide-slate-50">
+                            {getAllProductsLoading && products.length === 0 ? (
+                                <tr>
+                                    <td
+                                        colSpan={5}
+                                        className="py-20 text-center"
+                                    >
+                                        <div className="flex flex-col items-center gap-3">
+                                            <div className="w-12 h-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin" />
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                                Accessing Registry...
+                                            </p>
+                                        </div>
                                     </td>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td
-                                    colSpan="6"
-                                    className="px-6 py-12 text-center text-gray-500"
-                                >
-                                    <div className="flex flex-col items-center gap-2">
-                                        <PackageOpen
-                                            size={48}
-                                            className="text-gray-300"
-                                        />
-                                        <p>
-                                            No products found. Add your first
-                                            product to get started!
-                                        </p>
-                                    </div>
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+                            ) : products.length > 0 ? (
+                                products.map((product) => (
+                                    <tr
+                                        key={product._id}
+                                        className="group hover:bg-slate-50/50 transition-colors"
+                                    >
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center gap-4">
+                                                <div className="relative w-14 h-14 rounded-2xl overflow-hidden bg-slate-100 border border-slate-100 shadow-sm group-hover:scale-105 transition-transform">
+                                                    <img
+                                                        src={`${import.meta.env.VITE_BACKEND_URL}/${product.image}`}
+                                                        className="w-full h-full object-cover"
+                                                        alt={product.name}
+                                                    />
+                                                </div>
+                                                <span className="text-sm font-black text-slate-800 uppercase tracking-tight leading-tight max-w-[180px]">
+                                                    {product.name}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-5">
+                                            <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-md uppercase">
+                                                {product._id.slice(-8)}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-5">
+                                            <span className="text-sm font-black text-slate-700">
+                                                $
+                                                {Number(
+                                                    product.price,
+                                                ).toLocaleString()}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-5">
+                                            <div className="flex flex-col gap-1">
+                                                <div
+                                                    className={`h-1.5 w-12 rounded-full ${product.stock > 10 ? "bg-emerald-400" : "bg-rose-400"}`}
+                                                />
+                                                <span
+                                                    className={`text-[10px] font-black uppercase tracking-tighter ${product.stock > 10 ? "text-emerald-600" : "text-rose-600"}`}
+                                                >
+                                                    {product.stock} Units
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-5 text-right">
+                                            <div className="relative inline-block">
+                                                <button
+                                                    onClick={() =>
+                                                        setActiveMenuId(
+                                                            activeMenuId ===
+                                                                product._id
+                                                                ? null
+                                                                : product._id,
+                                                        )
+                                                    }
+                                                    className={`p-2 rounded-xl transition-all ${activeMenuId === product._id ? "bg-slate-900 text-white shadow-lg shadow-slate-900/20" : "text-slate-400 hover:bg-slate-100"}`}
+                                                >
+                                                    <MoreVertical size={18} />
+                                                </button>
+
+                                                {activeMenuId ===
+                                                    product._id && (
+                                                    <>
+                                                        <div
+                                                            className="fixed inset-0 z-10"
+                                                            onClick={() =>
+                                                                setActiveMenuId(
+                                                                    null,
+                                                                )
+                                                            }
+                                                        />
+                                                        <div className="absolute right-0 mt-3 w-48 bg-slate-900 rounded-2xl shadow-2xl border border-slate-800 py-3 z-20 animate-in fade-in zoom-in-95 duration-200">
+                                                            <div className="px-4 py-2 mb-2 border-b border-slate-800">
+                                                                <p className="text-[8px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                                                                    Command Menu
+                                                                </p>
+                                                            </div>
+                                                            <Link
+                                                                to={`/admin-dashboard?tab=products-add&isEditing=true&product=${encodeURIComponent(JSON.stringify(product))}`}
+                                                                className="flex items-center gap-3 px-4 py-2 text-[10px] font-black text-slate-300 hover:text-white uppercase tracking-widest transition-colors"
+                                                            >
+                                                                <Edit
+                                                                    size={14}
+                                                                    className="text-primary"
+                                                                />{" "}
+                                                                Edit Node
+                                                            </Link>
+                                                            <button
+                                                                onClick={() => {
+                                                                    setProductState(
+                                                                        {
+                                                                            type: "delete",
+                                                                            data: product,
+                                                                        },
+                                                                    );
+                                                                    setActiveMenuId(
+                                                                        null,
+                                                                    );
+                                                                }}
+                                                                className="flex items-center gap-3 w-full px-4 py-2 text-[10px] font-black text-rose-400 hover:text-rose-300 uppercase tracking-widest transition-colors"
+                                                            >
+                                                                <Trash
+                                                                    size={14}
+                                                                />{" "}
+                                                                Purge Entity
+                                                            </button>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td
+                                        colSpan={5}
+                                        className="py-32 text-center"
+                                    >
+                                        <div className="flex flex-col items-center gap-4 grayscale opacity-40">
+                                            <PackageOpen
+                                                size={64}
+                                                strokeWidth={1}
+                                            />
+                                            <div className="space-y-1">
+                                                <p className="text-sm font-black uppercase tracking-widest text-slate-900">
+                                                    Registry Empty
+                                                </p>
+                                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">
+                                                    No assets detected in
+                                                    current sector.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

@@ -2,7 +2,18 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { usePlaceOrder } from "../api/hooks/orders.api";
-import { clearCart } from "../store/slices/cartSlice"; // Recommended to clear cart after order
+import { clearCart } from "../store/slices/cartSlice";
+import {
+    Truck,
+    CreditCard,
+    Wallet,
+    ShieldCheck,
+    ArrowLeft,
+    Loader2,
+    User,
+    Phone,
+    MapPin,
+} from "lucide-react";
 
 const CheckoutPage = () => {
     const { items, totalAmount } = useSelector((state) => state.cart);
@@ -14,10 +25,10 @@ const CheckoutPage = () => {
 
     const [formData, setFormData] = useState({
         recipient: {
-            name: "",
+            name: user?.name || "",
             street: "",
             city: "",
-            phone: "",
+            phone: user?.phone || "",
         },
         payment: {
             method: "COD",
@@ -47,26 +58,24 @@ const CheckoutPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Map items to match orderSchema: { product, quantity, price, totalAmount }
         const formattedItems = items.map((item) => ({
-            product: item._id, // References 'Product' model ID
+            product: item._id,
             quantity: item.quantity,
             price: item.price,
-            totalAmount: item.totalPrice, // Individual item total
+            totalAmount: item.totalPrice,
         }));
 
         const orderData = {
-            userId: user?._id, // Matches model userId
+            userId: user?._id,
             recipient: formData.recipient,
             items: formattedItems,
-            grandTotal: totalAmount, // Matches model grandTotal
+            grandTotal: totalAmount,
             payment: formData.payment,
-            status: "pending", // Defaulted in model, but good to be explicit
+            status: "pending",
         };
 
         try {
             const response = await placeOrder(orderData);
-            console.log(response);
             if (response?.success && response?.order?._id) {
                 dispatch(clearCart());
                 navigate("/orders/success", {
@@ -80,162 +89,249 @@ const CheckoutPage = () => {
 
     if (items.length === 0) {
         return (
-            <div className="container py-20 text-center">
-                <h2 className="text-xl font-bold mb-4">Your cart is empty</h2>
-                <Link to="/products" className="text-primary hover:underline">
-                    Go shopping
+            <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50/50">
+                <div className="w-20 h-20 bg-slate-100 rounded-[2rem] flex items-center justify-center mb-6">
+                    <Wallet className="text-slate-300" size={32} />
+                </div>
+                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight mb-2">
+                    Cart is empty
+                </h2>
+                <p className="text-slate-400 font-medium mb-8">
+                    Add some premium tech to your collection first.
+                </p>
+                <Link
+                    to="/products"
+                    className="bg-slate-900 text-white px-8 py-3 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-primary transition-all"
+                >
+                    Browse Catalog
                 </Link>
             </div>
         );
     }
 
     return (
-        <div className="container mx-auto px-4 py-8 md:py-12">
-            <h2 className="text-2xl font-bold mb-6">Checkout</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Shipping & Payment Form */}
-                <div className="lg:col-span-2">
-                    <form
-                        id="checkout-form"
-                        onSubmit={handleSubmit}
-                        className="space-y-6"
-                    >
-                        {/* Recipient Section */}
-                        <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
-                            <h3 className="font-semibold text-lg border-b pb-2">
-                                Shipping Details
-                            </h3>
-                            <div>
-                                <label className="block text-sm text-gray-600 mb-1">
-                                    Full Name
-                                </label>
-                                <input
-                                    required
-                                    name="recipient.name"
-                                    value={formData.recipient.name}
-                                    onChange={handleChange}
-                                    type="text"
-                                    className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-green-500"
-                                    placeholder="John Doe"
-                                />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm text-gray-600 mb-1">
-                                        Phone Number
-                                    </label>
-                                    <input
-                                        required
+        <div className="bg-slate-50/50 min-h-screen py-12">
+            <div className="container mx-auto px-4 max-w-6xl">
+                <Link
+                    to="/cart"
+                    className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 font-black uppercase text-[10px] tracking-widest mb-8 transition-colors"
+                >
+                    <ArrowLeft size={14} /> Back to Cart
+                </Link>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <div className="lg:col-span-2 space-y-8">
+                        <form
+                            id="checkout-form"
+                            onSubmit={handleSubmit}
+                            className="space-y-8"
+                        >
+                            <section className="bg-white border border-slate-100 rounded-[2.5rem] p-8 lg:p-10 shadow-xl shadow-slate-200/40">
+                                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8 flex items-center gap-2">
+                                    <Truck size={16} className="text-primary" />{" "}
+                                    01. Shipping Information
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <CheckoutInput
+                                        label="Full Name"
+                                        name="recipient.name"
+                                        icon={<User size={16} />}
+                                        value={formData.recipient.name}
+                                        onChange={handleChange}
+                                        placeholder="John Doe"
+                                    />
+                                    <CheckoutInput
+                                        label="Phone Number"
                                         name="recipient.phone"
+                                        icon={<Phone size={16} />}
                                         value={formData.recipient.phone}
                                         onChange={handleChange}
-                                        type="text"
-                                        className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-green-500"
+                                        placeholder="+1 234..."
                                     />
-                                </div>
-                                <div>
-                                    <label className="block text-sm text-gray-600 mb-1">
-                                        City
-                                    </label>
-                                    <input
-                                        required
+                                    <CheckoutInput
+                                        label="City"
                                         name="recipient.city"
+                                        icon={<MapPin size={16} />}
                                         value={formData.recipient.city}
                                         onChange={handleChange}
-                                        type="text"
-                                        className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-green-500"
+                                        placeholder="New York"
+                                    />
+                                    <CheckoutInput
+                                        label="Street Address"
+                                        name="recipient.street"
+                                        icon={<MapPin size={16} />}
+                                        value={formData.recipient.street}
+                                        onChange={handleChange}
+                                        placeholder="123 Luxury Ave"
                                     />
                                 </div>
-                            </div>
-                            <div>
-                                <label className="block text-sm text-gray-600 mb-1">
-                                    Street Address
-                                </label>
-                                <input
-                                    required
-                                    name="recipient.street"
-                                    value={formData.recipient.street}
-                                    onChange={handleChange}
-                                    type="text"
-                                    className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-green-500"
-                                    placeholder="123 Street Name, Area"
-                                />
-                            </div>
-                        </div>
+                            </section>
 
-                        {/* Payment Section */}
-                        <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
-                            <h3 className="font-semibold text-lg border-b pb-2">
-                                Payment Method
-                            </h3>
-                            <div className="flex gap-4">
-                                <label className="flex items-center gap-2 cursor-pointer">
-                                    <input
-                                        type="radio"
-                                        name="payment.method"
-                                        value="COD"
-                                        checked={
+                            <section className="bg-white border border-slate-100 rounded-[2.5rem] p-8 lg:p-10 shadow-xl shadow-slate-200/40">
+                                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8 flex items-center gap-2">
+                                    <CreditCard
+                                        size={16}
+                                        className="text-primary"
+                                    />{" "}
+                                    02. Payment Method
+                                </h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <PaymentCard
+                                        active={
                                             formData.payment.method === "COD"
                                         }
-                                        onChange={handleChange}
+                                        onClick={() =>
+                                            setFormData((p) => ({
+                                                ...p,
+                                                payment: {
+                                                    ...p.payment,
+                                                    method: "COD",
+                                                },
+                                            }))
+                                        }
+                                        title="Cash on Delivery"
+                                        description="Pay when you receive"
+                                        icon={<Wallet size={20} />}
                                     />
-                                    <span>Cash on Delivery</span>
-                                </label>
-                                <label className="flex items-center gap-2 cursor-pointer">
-                                    <input
-                                        type="radio"
-                                        name="payment.method"
-                                        value="online"
-                                        checked={
+                                    <PaymentCard
+                                        active={
                                             formData.payment.method === "online"
                                         }
-                                        onChange={handleChange}
+                                        onClick={() =>
+                                            setFormData((p) => ({
+                                                ...p,
+                                                payment: {
+                                                    ...p.payment,
+                                                    method: "online",
+                                                },
+                                            }))
+                                        }
+                                        title="Online Payment"
+                                        description="Secure Stripe/Card"
+                                        icon={<CreditCard size={20} />}
                                     />
-                                    <span>Online Payment</span>
-                                </label>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                                </div>
+                            </section>
+                        </form>
+                    </div>
 
-                {/* Summary Sidebar */}
-                <div className="lg:col-span-1">
-                    <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-4 shadow-sm">
-                        <h3 className="font-bold text-gray-900 mb-4">
-                            Order Summary
-                        </h3>
-                        <div className="space-y-3 text-sm text-gray-600 border-b border-gray-200 pb-4 mb-4">
-                            {items.map((item) => (
-                                <div
-                                    key={item._id}
-                                    className="flex justify-between"
-                                >
-                                    <span className="line-clamp-1 w-2/3">
-                                        {item.name} (x{item.quantity})
-                                    </span>
-                                    <span className="font-medium text-gray-800">
-                                        Rs: {item.totalPrice.toFixed(2)}
+                    <div className="lg:col-span-1">
+                        <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white sticky top-8 shadow-2xl shadow-slate-900/20">
+                            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8">
+                                Order Summary
+                            </h3>
+                            <div className="space-y-6 mb-8 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                                {items.map((item) => (
+                                    <div
+                                        key={item._id}
+                                        className="flex justify-between items-start group"
+                                    >
+                                        <div className="space-y-1">
+                                            <p className="text-sm font-bold text-white leading-tight">
+                                                {item.name}
+                                            </p>
+                                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                                QTY: {item.quantity}
+                                            </p>
+                                        </div>
+                                        <span className="text-sm font-black text-primary">
+                                            Rs {item.totalPrice.toFixed(0)}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="space-y-4 pt-8 border-t border-white/10 mb-8">
+                                <div className="flex justify-between text-slate-400 text-[10px] font-black uppercase tracking-widest">
+                                    <span>Shipping</span>
+                                    <span className="text-emerald-400">
+                                        Free
                                     </span>
                                 </div>
-                            ))}
+                                <div className="flex justify-between items-center pt-2">
+                                    <span className="text-sm font-black uppercase tracking-widest">
+                                        Grand Total
+                                    </span>
+                                    <span className="text-2xl font-black text-white">
+                                        Rs {totalAmount?.toFixed(0)}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                form="checkout-form"
+                                disabled={isLoading}
+                                className="w-full bg-primary text-white h-14 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] flex items-center justify-center gap-3 hover:bg-white hover:text-slate-900 transition-all active:scale-95 disabled:opacity-50"
+                            >
+                                {isLoading ? (
+                                    <Loader2
+                                        className="animate-spin"
+                                        size={18}
+                                    />
+                                ) : (
+                                    "Complete Purchase"
+                                )}
+                            </button>
+
+                            <div className="mt-6 flex items-center justify-center gap-2 text-slate-500">
+                                <ShieldCheck size={14} />
+                                <span className="text-[9px] font-black uppercase tracking-widest">
+                                    Secure Encrypted Checkout
+                                </span>
+                            </div>
                         </div>
-                        <div className="flex justify-between font-bold text-lg text-gray-900 mb-6">
-                            <span>Total</span>
-                            <span>Rs: {totalAmount?.toFixed(2)}</span>
-                        </div>
-                        <button
-                            type="submit"
-                            form="checkout-form"
-                            disabled={isLoading}
-                            className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition-colors disabled:bg-gray-400"
-                        >
-                            {isLoading ? "Processing..." : "Place Order"}
-                        </button>
                     </div>
                 </div>
             </div>
         </div>
     );
 };
+
+const CheckoutInput = ({ label, name, value, onChange, placeholder, icon }) => (
+    <div className="space-y-2">
+        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
+            {label}
+        </label>
+        <div className="relative">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                {icon}
+            </div>
+            <input
+                required
+                name={name}
+                value={value}
+                onChange={onChange}
+                placeholder={placeholder}
+                className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-4 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-300"
+            />
+        </div>
+    </div>
+);
+
+const PaymentCard = ({ active, onClick, title, description, icon }) => (
+    <div
+        onClick={onClick}
+        className={`p-6 rounded-[2rem] border-2 cursor-pointer transition-all ${
+            active
+                ? "border-primary bg-slate-50"
+                : "border-slate-50 bg-white hover:border-slate-200"
+        }`}
+    >
+        <div
+            className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${active ? "bg-primary text-white" : "bg-slate-100 text-slate-400"}`}
+        >
+            {icon}
+        </div>
+        <p
+            className={`font-black uppercase tracking-tight text-sm ${active ? "text-slate-900" : "text-slate-400"}`}
+        >
+            {title}
+        </p>
+        <p className="text-[10px] font-medium text-slate-400 mt-1">
+            {description}
+        </p>
+    </div>
+);
 
 export default CheckoutPage;

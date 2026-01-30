@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, Menu } from "lucide-react";
+import { ChevronDown, Menu, Zap, Gift, Briefcase, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useGetAllCategories } from "../../api/hooks/category.api";
 
@@ -11,12 +11,10 @@ const NavigationBar = () => {
 
     useEffect(() => {
         getAllCategories().then((res) => {
-            console.log(res);
             setCategories(res.categories);
         });
     }, []);
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
@@ -33,102 +31,106 @@ const NavigationBar = () => {
     }, []);
 
     return (
-        <div className="border-t border-gray-200 hidden md:block bg-gradient-to-r from-gray-50 to-white relative">
-            <div className="container py-3 flex items-center justify-between">
-                {/* Left Navigation */}
-                <div className="flex items-center gap-6 text-sm font-medium text-gray-700">
-                    {/* All Categories Dropdown Container */}
+        <div className="border-t border-slate-100 hidden md:block bg-white relative">
+            <div className="container mx-auto px-8 py-2 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
                     <div className="relative" ref={dropdownRef}>
-                        <div
+                        <button
                             onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                            className={`flex items-center gap-2 px-3 py-1.5 cursor-pointer rounded-md transition-all group ${
+                            className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 ${
                                 isCategoryOpen
-                                    ? "text-primary bg-primary/5"
-                                    : "hover:text-primary hover:bg-primary/5"
+                                    ? "bg-slate-900 text-white shadow-lg shadow-slate-200"
+                                    : "hover:bg-slate-50 text-slate-700"
                             }`}
                         >
                             <Menu
                                 size={18}
                                 className={`${
-                                    isCategoryOpen
-                                        ? "scale-110"
-                                        : "group-hover:scale-110"
-                                } transition-transform`}
+                                    isCategoryOpen ? "rotate-90" : ""
+                                } transition-transform duration-300`}
                             />
-                            <span>All category</span>
+                            <span className="uppercase tracking-wider text-[11px]">
+                                All Categories
+                            </span>
                             <ChevronDown
-                                size={16}
-                                className={`text-gray-400 transition-transform duration-200 ${
-                                    isCategoryOpen
-                                        ? "rotate-180 text-primary"
-                                        : "group-hover:text-primary"
+                                size={14}
+                                className={`transition-transform duration-300 ${
+                                    isCategoryOpen ? "rotate-180" : "opacity-40"
                                 }`}
                             />
-                        </div>
+                        </button>
 
-                        {/* Actual Dropdown Menu */}
                         {isCategoryOpen && (
-                            <div className="absolute top-full left-0 mt-2 w-56 bg-white border border-gray-100 rounded-lg shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200 overflow-y-scroll max-h-50">
-                                {categories.map((cat, index) => (
-                                    <Link
-                                        key={index}
-                                        to={`/products?category=${cat.name
-                                            .toLowerCase()
-                                            .replace(" ", "-")}`}
-                                        className="block px-4 py-2 text-gray-600 hover:bg-primary/5 hover:text-primary transition-colors"
-                                        onClick={() => setIsCategoryOpen(false)}
-                                    >
-                                        {cat.name}
-                                    </Link>
-                                ))}
+                            <div className="absolute top-[120%] left-0 w-64 bg-white border border-slate-100 rounded-2xl shadow-2xl shadow-slate-200/50 py-3 z-[60] animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+                                <div className="max-h-[350px] overflow-y-auto custom-scrollbar">
+                                    {categories.map((cat, index) => (
+                                        <Link
+                                            key={index}
+                                            to={`/products?category=${cat.name
+                                                .toLowerCase()
+                                                .replace(" ", "-")}`}
+                                            className="flex items-center justify-between px-5 py-3 text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors group"
+                                            onClick={() =>
+                                                setIsCategoryOpen(false)
+                                            }
+                                        >
+                                            <span className="text-sm font-semibold">
+                                                {cat.name}
+                                            </span>
+                                            <ChevronDown
+                                                size={14}
+                                                className="-rotate-90 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0"
+                                            />
+                                        </Link>
+                                    ))}
+                                </div>
                             </div>
                         )}
                     </div>
 
-                    {/* Navigation Links */}
-                    <Link
-                        to="/products"
-                        className="px-3 py-1.5 hover:text-primary hover:bg-primary/5 rounded-md transition-all relative group"
-                    >
-                        Hot offers
-                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                            HOT
-                        </span>
-                    </Link>
+                    <div className="h-6 w-[1px] bg-slate-100 mx-2"></div>
 
-                    <Link
-                        to="/products"
-                        className="px-3 py-1.5 hover:text-primary hover:bg-primary/5 rounded-md transition-all"
-                    >
-                        Gift boxes
-                    </Link>
-
-                    <Link
-                        to="/products"
-                        className="px-3 py-1.5 hover:text-primary hover:bg-primary/5 rounded-md transition-all"
-                    >
-                        Projects
-                    </Link>
+                    <nav className="flex items-center gap-1">
+                        <Link
+                            to="/products"
+                            className="flex items-center gap-2 px-4 py-2.5 hover:text-primary rounded-xl hover:bg-primary/5 transition-all group relative"
+                        >
+                            <Zap
+                                size={16}
+                                className="text-amber-500 group-hover:animate-pulse"
+                            />
+                            <span className="uppercase tracking-wider text-[11px]">
+                                Hot Offers
+                            </span>
+                        </Link>
+                    </nav>
                 </div>
 
-                {/* Right Settings */}
-                <div className="flex items-center gap-4 text-sm font-medium text-gray-600">
-                    <div className="flex items-center gap-2 px-3 py-1.5 cursor-pointer hover:text-primary hover:bg-primary/5 rounded-md transition-all group">
-                        <span>English, PKR</span>
+                <div className="flex items-center gap-2">
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-transparent hover:border-slate-100 hover:bg-slate-50 transition-all group">
+                        <span className="text-[11px] font-bold text-slate-500 group-hover:text-slate-900 uppercase tracking-widest">
+                            EN | PKR
+                        </span>
                         <ChevronDown
-                            size={16}
-                            className="text-gray-400 group-hover:text-primary transition-colors"
+                            size={12}
+                            className="text-slate-300 group-hover:text-slate-900"
                         />
-                    </div>
+                    </button>
 
-                    <div className="flex items-center gap-2 px-3 py-1.5 cursor-pointer hover:text-primary hover:bg-primary/5 rounded-md transition-all group">
-                        <span>Ship to</span>
-                        <span className="text-lg">🇩🇪</span>
+                    <button className="flex items-center gap-3 px-4 py-2 rounded-xl border border-transparent hover:border-slate-100 hover:bg-slate-50 transition-all group">
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-sm opacity-80 group-hover:opacity-100 transition-opacity">
+                                🇩🇪
+                            </span>
+                            <span className="text-[11px] font-bold text-slate-500 group-hover:text-slate-900 uppercase tracking-widest">
+                                Ship to
+                            </span>
+                        </div>
                         <ChevronDown
-                            size={16}
-                            className="text-gray-400 group-hover:text-primary transition-colors"
+                            size={12}
+                            className="text-slate-300 group-hover:text-slate-900"
                         />
-                    </div>
+                    </button>
                 </div>
             </div>
         </div>

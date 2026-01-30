@@ -1,10 +1,14 @@
 import React from "react";
 import { Search, Package, Send, ShieldCheck } from "lucide-react";
 import ServiceCard from "../ServiceCard";
-import macbook from "../../assets/images/macbook.png";
-import paint from "../../assets/images/paint.png";
-import phone from "../../assets/images/phone.png";
-import camera from "../../assets/images/camera.png";
+const macbook =
+    "https://unsplash.com/photos/JVSgcV8_vb4/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8M3x8bGFwdG9wfGVufDB8fHx8MTY4ODg3NDY5Nnw&force=true&w=1920";
+const paint =
+    "https://unsplash.com/photos/JVSgcV8_vb4/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8M3x8bGFwdG9wfGVufDB8fHx8MTY4ODg3NDY5Nnw&force=true&w=1920";
+const phone =
+    "https://unsplash.com/photos/JVSgcV8_vb4/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8M3x8bGFwdG9wfGVufDB8fHx8MTY4ODg3NDY5Nnw&force=true&w=1920";
+const camera =
+    "https://unsplash.com/photos/JVSgcV8_vb4/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8M3x8bGFwdG9wfGVufDB8fHx8MTY4ODg3NDY5Nnw&force=true&w=1920";
 
 const ExtraServices = () => {
     const services = [

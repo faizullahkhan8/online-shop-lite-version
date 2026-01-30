@@ -20,11 +20,8 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
         return next(new Error("All fields are required"));
     }
 
-    console.log(items);
-
     items.forEach(async (prod) => {
         let tempProd = await ProductModel.findById(prod.product);
-        console.log(tempProd);
         tempProd.stock -= prod.quantity;
         tempProd.save({ validateModifiedOnly: true });
     });
@@ -129,7 +126,7 @@ export const deleteOrder = expressAsyncHandler(async (req, res, next) => {
     // only admin can delete orders
     if (req.user.role !== "admin") {
         return next(
-            new ErrorResponse("Not authorized to delete this order", 403)
+            new ErrorResponse("Not authorized to delete this order", 403),
         );
     }
 
@@ -152,8 +149,6 @@ export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
     const orders = await OrderModel.find({});
     const totalSales = orders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
     const totalOrders = orders.length;
-
-    console.log(totalOrders, orders);
 
     const totalProducts = await ProductModel.countDocuments();
     const totalUsers = await UserModel.countDocuments();

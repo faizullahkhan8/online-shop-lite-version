@@ -11,7 +11,7 @@ export const createProduct = expressAsyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("Product model not found", 500));
 
     const { name, price, description, category, stock } = JSON.parse(
-        req.body.data
+        req.body.data,
     );
     if (!name || !price || !description || !category || !stock)
         return next(new ErrorResponse("All fields are required", 400));
@@ -41,12 +41,48 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
     if (!ProductModel)
         return next(new ErrorResponse("Product model not found", 500));
 
-    const products = await ProductModel.find();
+    const {
+        category,
+        minPrice,
+        maxPrice,
+        search,
+        page = 1,
+        limit = 9,
+    } = req.query;
+
+    let query = {};
+
+    if (category) {
+        query.category = category;
+    }
+
+    if (search) {
+        query.name = { $regex: search, $options: "i" };
+    }
+
+    if (minPrice || maxPrice) {
+        query.price = {};
+        if (minPrice) query.price.$gte = Number(minPrice);
+        if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const products = await ProductModel.find(query)
+        .populate("category", "name")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(Number(limit));
+
+    const totalProducts = await ProductModel.countDocuments(query);
 
     return res.status(200).json({
         success: true,
         message: "Products fetched successfully",
         products,
+        totalPages: Math.ceil(totalProducts / Number(limit)),
+        currentPage: Number(page),
+        totalProducts,
     });
 });
 
@@ -101,7 +137,7 @@ export const updateProduct = expressAsyncHandler(async (req, res, next) => {
                 // We log this but perhaps don't stop the update if the file just isn't there
                 console.error(
                     "Old image not found or couldn't be deleted:",
-                    err.message
+                    err.message,
                 );
             }
         }
@@ -114,7 +150,7 @@ export const updateProduct = expressAsyncHandler(async (req, res, next) => {
     const updatedProduct = await ProductModel.findByIdAndUpdate(
         id,
         { $set: updateData },
-        { new: true, runValidators: true }
+        { new: true, runValidators: true },
     );
 
     return res.status(200).json({

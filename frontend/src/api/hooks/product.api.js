@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import apiClient from "../apiClient";
 import { PRODUCT_ROUTES } from "../routes";
 import { toast } from "react-toastify";
@@ -16,7 +16,7 @@ export const useCreateProuduct = () => {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
-                }
+                },
             );
 
             if (response.data) {
@@ -42,18 +42,20 @@ export const useCreateProuduct = () => {
 export const useGetAllProducts = () => {
     const [loading, setLoading] = useState(false);
 
-    const getAllProducts = async () => {
+    const getAllProducts = useCallback(async (params = {}) => {
         setLoading(true);
         try {
-            const response = await apiClient.get(PRODUCT_ROUTES.GET_ALL);
+            const response = await apiClient.get(PRODUCT_ROUTES.GET_ALL, {
+                params,
+            });
+
             if (response.data) {
-                // normalize products: add `id` alias for `_id`
                 if (
                     response.data.products &&
                     Array.isArray(response.data.products)
                 ) {
                     response.data.products = response.data.products.map(
-                        (p) => ({ ...p, id: p._id })
+                        (p) => ({ ...p, id: p._id }),
                     );
                 }
                 return response.data;
@@ -63,11 +65,12 @@ export const useGetAllProducts = () => {
                 error.response?.data?.message || "Something went wrong";
             toast.error(ErrorMessage);
             console.log("Error in Get All Products", error);
-            return;
+            return { success: false };
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
     return {
         getAllProducts,
         loading,
@@ -88,7 +91,7 @@ export const useUpdateProduct = () => {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
-                }
+                },
             );
 
             if (response.data) {
@@ -118,7 +121,7 @@ export const useDeleteProduct = () => {
         setLoading(true);
         try {
             const response = await apiClient.delete(
-                PRODUCT_ROUTES.DELETE_PRODUCT + "/" + id
+                PRODUCT_ROUTES.DELETE_PRODUCT + "/" + id,
             );
             if (response.data) {
                 toast.success("Product deleted successfully");
@@ -147,7 +150,7 @@ export const useGetProductById = () => {
         setLoading(true);
         try {
             const response = await apiClient.get(
-                PRODUCT_ROUTES.GET_BY_ID + "/" + id
+                PRODUCT_ROUTES.GET_BY_ID + "/" + id,
             );
             if (response.data && response.data.product) {
                 response.data.product = {

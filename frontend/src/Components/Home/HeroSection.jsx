@@ -1,196 +1,143 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { User, ArrowRight } from "lucide-react";
-
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { useGetAllCategories } from "../../api/hooks/category.api";
 
-// Import images
-import BannerImage from "../../assets/images/phone.png";
-import tshirt from "../../assets/images/t-shirt.png";
-import sofas from "../../assets/images/sofas.png";
+const BannerImage =
+    "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&q=80&w=1200";
+const tshirt =
+    "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=1200";
+const sofas =
+    "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1200";
 
 const HeroSection = () => {
     const [categories, setCategories] = useState([]);
-    const { getAllCategories, loading: categoiresLoading } =
-        useGetAllCategories();
-
-    useEffect(() => {
-        (async () => {
-            const response = await getAllCategories();
-            if (response.success) {
-                setCategories(response.categories.slice(0, 9));
-            }
-        })();
-    }, []);
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const { getAllCategories } = useGetAllCategories();
 
     const slides = [
         {
             title: "Latest Trending",
             headline: "Electronic Items",
             subtitle: "Learn more",
-            bg: "bg-[#e3f0ff]", // Light blue
+            bg: "bg-[#e3f0ff]",
             img: BannerImage,
-            darkText: true,
+            accent: "text-blue-600",
         },
         {
             title: "Summer Collection",
             headline: "Fashion Trends",
             subtitle: "Shop now",
-            bg: "bg-[#fff1e6]", // Light orange
+            bg: "bg-[#fff1e6]",
             img: tshirt,
-            darkText: true,
+            accent: "text-orange-600",
         },
         {
             title: "Modern Living",
             headline: "Home Interiors",
             subtitle: "Discover comfort",
-            bg: "bg-[#e8f5e9]", // Light green
+            bg: "bg-[#e8f5e9]",
             img: sofas,
-            darkText: true,
+            accent: "text-emerald-600",
         },
     ];
 
-    const [currentSlide, setCurrentSlide] = useState(0);
+    useEffect(() => {
+        (async () => {
+            const response = await getAllCategories();
+            if (response?.success) {
+                setCategories(response.categories.slice(0, 9));
+            }
+        })();
+    }, []);
 
-    // Auto-slide effect
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
         }, 5000);
         return () => clearInterval(timer);
-    }, []);
+    }, [slides.length]);
 
     return (
-        <div className="container mx-auto px-4 py-6">
-            <div className="bg-white border border-gray-200 rounded-lg p-4 grid grid-cols-1 lg:grid-cols-10 gap-6">
-                {/* 1. Sidebar Navigation (2 cols) */}
-                <aside className="hidden lg:block lg:col-span-2">
-                    <ul className="space-y-1">
+        <div className="container mx-auto px-4 py-8">
+            <div className="bg-white border border-slate-100 rounded-[2.5rem] p-5 grid grid-cols-1 lg:grid-cols-4 gap-6 shadow-sm">
+                <aside className="hidden lg:block lg:col-span-1 py-2">
+                    <div className="flex flex-col gap-1">
                         {categories.map((cat, index) => (
-                            <li key={index}>
-                                <Link
-                                    to={`/products?category=${cat.name.toLowerCase()}`}
-                                    className="block px-3 py-2 text-gray-600 hover:bg-blue-50 hover:text-primary rounded-md transition-colors text-sm font-medium"
-                                >
+                            <Link
+                                key={index}
+                                to={`/products?category=${cat._id}`}
+                                className="flex items-center justify-between px-4 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-primary rounded-xl transition-all group"
+                            >
+                                <span className="text-sm font-bold tracking-tight">
                                     {cat.name}
-                                </Link>
-                            </li>
+                                </span>
+                                <ChevronRight
+                                    size={14}
+                                    className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-slate-300"
+                                />
+                            </Link>
                         ))}
-                    </ul>
+                    </div>
                 </aside>
 
-                {/* 2. Main Banner Slider (6 cols) */}
-                <div className="lg:col-span-6">
+                <div className="lg:col-span-3">
                     <div
-                        className={`relative w-full h-[360px] rounded-md overflow-hidden transition-colors duration-500 ${slides[currentSlide].bg}`}
+                        className={`relative w-full h-[400px] rounded-[2rem] overflow-hidden transition-all duration-700 ${slides[currentSlide].bg}`}
                     >
-                        {/* Banner Content */}
-                        <div className="absolute inset-0 flex items-center px-12 z-10">
+                        <div className="absolute inset-0 flex items-center px-10 md:px-16 z-20">
                             <div className="max-w-md">
-                                <h3 className="text-xl md:text-2xl font-light text-gray-700 mb-2">
+                                <p
+                                    className={`font-black uppercase tracking-[0.2em] text-[10px] mb-3 opacity-80 ${slides[currentSlide].accent}`}
+                                >
                                     {slides[currentSlide].title}
-                                </h3>
-                                <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                                </p>
+                                <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-8 leading-tight">
                                     {slides[currentSlide].headline}
                                 </h2>
                                 <Link
                                     to="/products"
-                                    className="inline-block bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-primary-dark transition-colors shadow-md"
+                                    className="inline-flex items-center gap-2 bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-primary transition-all shadow-lg shadow-slate-900/10 active:scale-95"
                                 >
                                     {slides[currentSlide].subtitle}
+                                    <ArrowRight size={18} />
                                 </Link>
                             </div>
                         </div>
 
-                        {/* Banner Image */}
                         <img
                             src={slides[currentSlide].img}
-                            alt="Banner"
-                            className="absolute right-8 bottom-0 h-4/5 object-contain opacity-90 transition-opacity duration-500"
+                            alt="Hero"
+                            className="absolute right-0 bottom-0 h-[85%] w-1/2 object-contain object-right-bottom drop-shadow-2xl mix-blend-multiply opacity-90 transition-all duration-1000 p-8"
                         />
 
-                        {/* Slide Indicators */}
-                        <div className="absolute bottom-4 left-12 flex gap-2">
+                        <div className="absolute bottom-6 left-10 md:left-16 flex gap-2 z-30">
                             {slides.map((_, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => setCurrentSlide(idx)}
-                                    className={`w-2.5 h-2.5 rounded-full transition-all ${
+                                    className={`h-1.5 rounded-full transition-all duration-500 ${
                                         currentSlide === idx
-                                            ? "bg-primary w-6"
-                                            : "bg-gray-400 hover:bg-gray-600"
+                                            ? "w-8 bg-slate-900"
+                                            : "w-2 bg-slate-400/40"
                                     }`}
                                 />
                             ))}
                         </div>
                     </div>
                 </div>
-
-                {/* 3. Right User Widget (2 cols) */}
-                <div className="hidden lg:flex lg:col-span-2 flex-col gap-4">
-                    {/* User Welcome Card */}
-                    <div className="bg-[#e3f0ff] p-4 rounded-md h-[150px] flex flex-col justify-between">
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className="bg-[#c7e1ff] p-2 rounded-full text-white">
-                                <User className="text-gray-700" size={24} />
-                            </div>
-                            <div>
-                                <p className="text-sm">Hi, user</p>
-                                <p className="text-sm">let's get started</p>
-                            </div>
-                        </div>
-                        <div className="space-y-2">
-                            <Link
-                                to="/register"
-                                className="block w-full bg-primary text-white text-center text-sm py-1.5 rounded hover:bg-primary-dark transition-colors"
-                            >
-                                Join now
-                            </Link>
-                            <Link
-                                to="/login"
-                                className="block w-full bg-white text-primary text-center text-sm py-1.5 rounded border border-gray-200 hover:bg-gray-50 transition-colors"
-                            >
-                                Log in
-                            </Link>
-                        </div>
-                    </div>
-
-                    {/* Promo Box 1 - Orange */}
-                    <div className="bg-[#F38332] p-4 rounded-md text-white flex-1 flex flex-col justify-center">
-                        <p className="text-sm opacity-90 mb-1">
-                            Get Rs:1000 off
-                        </p>
-                        <p className="font-medium text-lg leading-tight mb-2">
-                            with a new supplier
-                        </p>
-                    </div>
-
-                    {/* Promo Box 2 - Teal */}
-                    <div className="bg-[#55BDC3] p-4 rounded-md text-white flex-1 flex flex-col justify-center">
-                        <p className="text-sm opacity-90 mb-1">
-                            Send quotes with
-                        </p>
-                        <p className="font-medium text-lg leading-tight mb-2">
-                            supplier preferences
-                        </p>
-                    </div>
-                </div>
             </div>
 
-            {/* Mobile View - Simplified */}
-            <div className="lg:hidden mt-4">
-                <div className="grid grid-cols-2 gap-2">
-                    {/* Mobile Categories - simplified list */}
-                    {categories.slice(0, 4).map((cat, idx) => (
-                        <Link
-                            key={idx}
-                            to={`/products`}
-                            className="bg-gray-100 p-3 rounded text-sm text-center font-medium"
-                        >
-                            {cat.label}
-                        </Link>
-                    ))}
-                </div>
+            <div className="lg:hidden mt-6 grid grid-cols-2 gap-3">
+                {categories.slice(0, 4).map((cat, idx) => (
+                    <Link
+                        key={idx}
+                        to={`/products?category=${cat._id}`}
+                        className="bg-white border border-slate-100 py-4 px-2 rounded-2xl text-[10px] text-center font-black uppercase tracking-[0.15em] text-slate-600 shadow-sm active:bg-slate-50"
+                    >
+                        {cat.name}
+                    </Link>
+                ))}
             </div>
         </div>
     );

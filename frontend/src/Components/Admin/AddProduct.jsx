@@ -2,7 +2,17 @@ import { useState, useEffect } from "react";
 import Input from "../../UI/Input.jsx";
 import Button from "../../UI/Button.jsx";
 import Select from "../../UI/Select.jsx";
-import { ImageIcon, Loader } from "lucide-react";
+import {
+    ImageIcon,
+    Loader,
+    Plus,
+    Save,
+    X,
+    Hash,
+    Layers,
+    DollarSign,
+    Box,
+} from "lucide-react";
 import {
     useCreateProuduct,
     useUpdateProduct,
@@ -10,6 +20,7 @@ import {
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useGetAllCategories } from "../../api/hooks/category.api.js";
+
 const INITAIL_STATE = {
     _id: "",
     name: "",
@@ -17,7 +28,7 @@ const INITAIL_STATE = {
     description: "",
     category: "",
     stock: "",
-    image: null, // Stores the File object
+    image: null,
 };
 
 const AddProduct = () => {
@@ -35,9 +46,7 @@ const AddProduct = () => {
     const { createProduct, loading: createProductLoading } =
         useCreateProuduct();
     const { updateProduct, loading: updateProductLoading } = useUpdateProduct();
-    const { getAllCategories, loading } = useGetAllCategories();
-
-    // ---------------- created by my best friend AI ----------------
+    const { getAllCategories } = useGetAllCategories();
 
     useEffect(() => {
         if (isEditing) {
@@ -76,12 +85,10 @@ const AddProduct = () => {
 
         if (typeof productData.image === "string") {
             setPreviewUrl(
-                `${import.meta.env.VITE_BACKEND_URL}/${productData.image}`
+                `${import.meta.env.VITE_BACKEND_URL}/${productData.image}`,
             );
         }
     }, [productData.image]);
-
-    // ---------------- created by my best friend AI ----------------
 
     const handleChange = (e) => {
         const { id, value, files, type } = e.target;
@@ -125,156 +132,203 @@ const AddProduct = () => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 max-w-2xl mx-auto max-md:my-6">
-            <header className="mb-6">
-                <h2 className="text-xl font-bold text-gray-800">
-                    {isEditing ? "Edit Product" : "Add New Product"}
-                </h2>
+        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <header className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+                        {isEditing ? "Modify Entity" : "Initialize Product"}
+                    </h2>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">
+                        {isEditing
+                            ? `Entry ID: ${productData._id}`
+                            : "Inventory Management System"}
+                    </p>
+                </div>
+                <button
+                    onClick={() => navigate(-1)}
+                    className="p-3 text-slate-400 hover:text-slate-900 transition-colors"
+                >
+                    <X size={24} />
+                </button>
             </header>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Product Name
-                    </label>
-                    <Input
-                        type="text"
-                        id="name"
-                        value={productData?.name}
-                        placeholder="e.g. Wireless Headphones"
-                        className="w-full"
-                        onChange={handleChange}
-                    />
-                </div>
+            <form
+                onSubmit={handleSubmit}
+                className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-20"
+            >
+                <div className="lg:col-span-7 space-y-6">
+                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 space-y-6">
+                        <div>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
+                                <Hash size={12} className="text-primary" />{" "}
+                                Product Designation
+                            </label>
+                            <Input
+                                type="text"
+                                id="name"
+                                value={productData?.name}
+                                placeholder="e.g. CORE-SERIES MK I"
+                                className="w-full bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-primary/20"
+                                onChange={handleChange}
+                            />
+                        </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Price ($)
-                        </label>
-                        <Input
-                            type="number"
-                            id="price"
-                            value={productData?.price}
-                            className={"w-full"}
-                            placeholder="0.00"
-                            step="0.01"
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Stock Quantity
-                        </label>
-                        <Input
-                            type="number"
-                            id="stock"
-                            value={productData?.stock}
-                            className={"w-full"}
-                            placeholder="e.g. 50"
-                            onChange={handleChange}
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Category
-                    </label>
-                    <Select
-                        placeholder="Select category"
-                        id="category"
-                        value={productData?.category}
-                        onChange={(value) =>
-                            handleChange({ target: { id: "category", value } })
-                        }
-                        options={categories.map((cat) => ({
-                            label: cat.name,
-                            value: cat._id,
-                        }))}
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Description
-                    </label>
-                    <Input
-                        type="textarea"
-                        id="description"
-                        value={productData?.description}
-                        className={"w-full"}
-                        placeholder="Provide a detailed description of the product..."
-                        rows={4}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div>
-                    <p className="block text-sm font-medium text-gray-700 mb-1">
-                        Product Image
-                    </p>
-                    <label
-                        htmlFor="image"
-                        className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-blue-400 transition-all cursor-pointer overflow-hidden min-h-[200px] items-center"
-                    >
-                        {previewUrl ? (
-                            <div className="text-center">
-                                <img
-                                    src={previewUrl}
-                                    alt="Preview"
-                                    className="max-h-48 rounded-md mb-2 object-contain"
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
+                                    <DollarSign
+                                        size={12}
+                                        className="text-primary"
+                                    />{" "}
+                                    Valuation
+                                </label>
+                                <Input
+                                    type="number"
+                                    id="price"
+                                    value={productData?.price}
+                                    placeholder="0.00"
+                                    step="0.01"
+                                    className="w-full bg-slate-50 border-none rounded-2xl"
+                                    onChange={handleChange}
                                 />
-                                <p className="text-xs text-blue-600 font-medium">
-                                    Click to change image
-                                </p>
                             </div>
-                        ) : (
-                            <div className="space-y-1 flex items-center justify-center flex-col">
-                                <ImageIcon
-                                    size={32}
-                                    className="text-gray-400"
+                            <div>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
+                                    <Box size={12} className="text-primary" />{" "}
+                                    Stock Units
+                                </label>
+                                <Input
+                                    type="number"
+                                    id="stock"
+                                    value={productData?.stock}
+                                    placeholder="0"
+                                    className="w-full bg-slate-50 border-none rounded-2xl"
+                                    onChange={handleChange}
                                 />
-                                <p className="text-sm text-gray-600 font-medium text-blue-600">
-                                    Upload a file
-                                </p>
-                                <p className="text-xs text-gray-400">
-                                    PNG, JPG up to 10MB
-                                </p>
                             </div>
-                        )}
-                        <input
-                            type="file"
-                            id="image"
-                            hidden
-                            accept="image/*"
-                            onChange={handleChange}
-                        />
-                    </label>
+                        </div>
+
+                        <div>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
+                                <Layers size={12} className="text-primary" />{" "}
+                                Classification
+                            </label>
+                            <Select
+                                placeholder="Select Node"
+                                id="category"
+                                value={productData?.category}
+                                onChange={(value) =>
+                                    handleChange({
+                                        target: { id: "category", value },
+                                    })
+                                }
+                                options={categories.map((cat) => ({
+                                    label: cat.name.toUpperCase(),
+                                    value: cat._id,
+                                }))}
+                                className="bg-slate-50 border-none rounded-2xl"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
+                                Specification Details
+                            </label>
+                            <Input
+                                type="textarea"
+                                id="description"
+                                value={productData?.description}
+                                placeholder="Enter detailed technical specifications..."
+                                rows={6}
+                                className="w-full bg-slate-50 border-none rounded-2xl resize-none"
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
                 </div>
 
-                <div className="pt-4 flex items-center justify-end space-x-3 border-t">
-                    <Button
-                        type="button"
-                        onClick={() => navigate(-1)}
-                        variant="outline"
-                        className="text-gray-600"
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        type="submit"
-                        disabled={createProductLoading || updateProductLoading}
-                        className="px-8"
-                    >
-                        {createProductLoading || updateProductLoading ? (
-                            <Loader className="animate-spin" />
-                        ) : isEditing ? (
-                            "Update Product"
-                        ) : (
-                            "Add Product"
-                        )}
-                    </Button>
+                <div className="lg:col-span-5 space-y-6">
+                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 block">
+                            Visual Identity
+                        </label>
+                        <label
+                            htmlFor="image"
+                            className="group relative flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-slate-200 rounded-[2rem] hover:border-primary/50 hover:bg-slate-50 transition-all cursor-pointer overflow-hidden"
+                        >
+                            {previewUrl ? (
+                                <div className="absolute inset-0">
+                                    <img
+                                        src={previewUrl}
+                                        alt="Preview"
+                                        className="w-full h-full object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <p className="text-[10px] font-black text-white uppercase tracking-widest">
+                                            Replace Texture
+                                        </p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-center p-6">
+                                    <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                                        <ImageIcon
+                                            size={28}
+                                            className="text-slate-300 group-hover:text-primary transition-colors"
+                                        />
+                                    </div>
+                                    <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest">
+                                        Upload Asset
+                                    </p>
+                                    <p className="text-[9px] font-bold text-slate-400 mt-2">
+                                        RAW, PNG, JPG (MAX 10MB)
+                                    </p>
+                                </div>
+                            )}
+                            <input
+                                type="file"
+                                id="image"
+                                hidden
+                                accept="image/*"
+                                onChange={handleChange}
+                            />
+                        </label>
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                        <Button
+                            type="submit"
+                            disabled={
+                                createProductLoading || updateProductLoading
+                            }
+                            className="w-full py-6 rounded-2xl bg-slate-900 text-white hover:bg-primary transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-900/20"
+                        >
+                            {createProductLoading || updateProductLoading ? (
+                                <Loader className="animate-spin" size={20} />
+                            ) : isEditing ? (
+                                <>
+                                    <Save size={18} />
+                                    <span className="text-xs font-black uppercase tracking-widest">
+                                        Commit Changes
+                                    </span>
+                                </>
+                            ) : (
+                                <>
+                                    <Plus size={18} />
+                                    <span className="text-xs font-black uppercase tracking-widest">
+                                        Deploy Product
+                                    </span>
+                                </>
+                            )}
+                        </Button>
+                        <button
+                            type="button"
+                            onClick={() => navigate(-1)}
+                            className="w-full py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-rose-500 transition-colors"
+                        >
+                            Abort Operation
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

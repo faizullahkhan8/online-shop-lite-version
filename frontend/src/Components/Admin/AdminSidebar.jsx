@@ -7,188 +7,205 @@ import {
     Users,
     ShoppingCart,
     Layers,
-    SidebarIcon,
+    ChevronLeft,
+    ChevronRight,
+    Terminal,
 } from "lucide-react";
 import { useState } from "react";
 
 const AdminSidebar = ({ searchParams, setSearchParams }) => {
-    const [open, setIsOpen] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
     const activeTab = searchParams.get("tab");
 
-    // Consistent styling variables to match ProductList
     const colors = {
-        primary: "#3b82f6", // blue-500
-        activeBg: "#eff6ff", // blue-50
-        textMain: "#374151", // gray-700
-        textMuted: "#6b7280", // gray-500
-        border: "#e5e7eb", // gray-200
+        primary: "#3b82f6",
+        activeBg: "#eff6ff",
+        textMain: "#1e293b", // slate-800 for better contrast
+        textMuted: "#94a3b8", // slate-400
+        border: "#f1f5f9", // slate-100
     };
 
     return (
         <Sidebar
             backgroundColor="white"
-            collapsed={open}
+            collapsed={collapsed}
             rootStyles={{
                 borderColor: colors.border,
-                zIndex: "9",
+                borderRightWidth: "1px",
+                zIndex: "99",
                 height: "100vh",
                 position: "sticky",
                 top: 0,
+                boxShadow: "10px 0 30px -15px rgba(0,0,0,0.05)",
             }}
         >
-            {/* Header - Matched height and padding to ProductList header */}
-            <div className="relative flex items-center px-6 border-b border-gray-100 h-[73px]">
-                {!open && (
-                    <span className="font-bold text-xl tracking-tight text-gray-800">
-                        Admin<span className="text-blue-600">Panel</span>
-                    </span>
+            <div className="relative flex items-center px-6 border-b border-slate-50 h-[80px]">
+                {!collapsed ? (
+                    <div className="flex items-center gap-2 animate-in fade-in duration-500">
+                        <div className="p-2 bg-slate-900 rounded-xl text-white">
+                            <Terminal size={18} />
+                        </div>
+                        <span className="font-black text-lg uppercase tracking-tighter text-slate-900">
+                            Core<span className="text-primary">OS</span>
+                        </span>
+                    </div>
+                ) : (
+                    <div className="mx-auto p-2 bg-slate-900 rounded-xl text-white">
+                        <Terminal size={18} />
+                    </div>
                 )}
-                <div
-                    className="absolute top-6 right-6 cursor-w-resize"
-                    onClick={() => setIsOpen((pre) => !pre)}
+
+                <button
+                    className="absolute -right-3 top-9 bg-white border border-slate-200 rounded-full p-1 text-slate-400 hover:text-primary hover:border-primary transition-all shadow-sm z-50"
+                    onClick={() => setCollapsed(!collapsed)}
                 >
-                    <SidebarIcon />
-                </div>
+                    {collapsed ? (
+                        <ChevronRight size={14} />
+                    ) : (
+                        <ChevronLeft size={14} />
+                    )}
+                </button>
             </div>
 
-            <div className="py-4">
+            <div className="py-6 px-2">
                 <Menu
                     menuItemStyles={{
                         button: ({ active }) => ({
-                            fontSize: "14px",
-                            fontWeight: active ? "600" : "400",
+                            fontSize: "12px",
+                            fontWeight: active ? "800" : "500",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.05em",
                             color: active ? colors.primary : colors.textMain,
                             backgroundColor: active
                                 ? colors.activeBg
                                 : "transparent",
-                            paddingLeft: "24px",
+                            borderRadius: "16px",
+                            margin: "2px 8px",
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                             "&:hover": {
                                 backgroundColor: colors.activeBg,
                                 color: colors.primary,
-                                transition: "all 0.2s ease",
+                                transform: "translateX(4px)",
                             },
                         }),
                         icon: ({ active }) => ({
                             color: active ? colors.primary : colors.textMuted,
+                            marginRight: "4px",
                         }),
-                        label: {
-                            lineHeight: "2",
-                        },
                         subMenuContent: {
-                            backgroundColor: "white",
+                            backgroundColor: "transparent",
                         },
                     }}
                 >
-                    {/* Dashboard Section */}
                     <MenuItem
-                        icon={<LayoutDashboard size={20} />}
+                        icon={<LayoutDashboard size={18} />}
                         onClick={() => setSearchParams({ tab: "dashboard" })}
                         active={activeTab === "dashboard"}
                     >
-                        Dashboard
+                        Intelligence
                     </MenuItem>
 
-                    <div className="px-6 py-2 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                    <div
+                        className={`px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] transition-opacity ${collapsed ? "opacity-0" : "opacity-100"}`}
+                    >
                         Inventory
                     </div>
 
-                    {/* Products Section */}
                     <SubMenu
                         label="Products"
-                        icon={<Package size={20} />}
+                        icon={<Package size={18} />}
                         defaultOpen={activeTab?.includes("products")}
                     >
                         <MenuItem
-                            icon={<ListIcon size={18} />}
+                            icon={<ListIcon size={16} />}
                             onClick={() =>
                                 setSearchParams({ tab: "products-list" })
                             }
                             active={activeTab === "products-list"}
                         >
-                            List Products
+                            Overview
                         </MenuItem>
                         <MenuItem
-                            icon={<Plus size={18} />}
+                            icon={<Plus size={16} />}
                             onClick={() =>
                                 setSearchParams({ tab: "products-add" })
                             }
                             active={activeTab === "products-add"}
                         >
-                            Add Product
+                            Provision
                         </MenuItem>
                     </SubMenu>
 
-                    {/* Categories Section */}
                     <SubMenu
-                        label="Categories"
-                        icon={<Layers size={20} />}
+                        label="Taxonomy"
+                        icon={<Layers size={18} />}
                         defaultOpen={activeTab?.includes("categories")}
                     >
                         <MenuItem
-                            icon={<ListIcon size={18} />}
+                            icon={<ListIcon size={16} />}
                             onClick={() =>
                                 setSearchParams({ tab: "categories-list" })
                             }
                             active={activeTab === "categories-list"}
                         >
-                            List Categories
+                            Nodes
                         </MenuItem>
                         <MenuItem
-                            icon={<Plus size={18} />}
+                            icon={<Plus size={16} />}
                             onClick={() =>
                                 setSearchParams({ tab: "categories-add" })
                             }
                             active={activeTab === "categories-add"}
                         >
-                            Add Category
+                            Define
                         </MenuItem>
                     </SubMenu>
 
-                    <div className="px-6 py-2 text-[11px] font-bold text-gray-400 uppercase tracking-wider mt-2">
-                        Management
+                    <div
+                        className={`px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mt-4 transition-opacity ${collapsed ? "opacity-0" : "opacity-100"}`}
+                    >
+                        Logistics
                     </div>
 
-                    {/* Orders Section */}
-                    <SubMenu label="Orders" icon={<ShoppingCart size={20} />}>
+                    <SubMenu label="Orders" icon={<ShoppingCart size={18} />}>
                         <MenuItem
-                            icon={<ListIcon size={18} />}
+                            icon={<ListIcon size={16} />}
                             onClick={() =>
                                 setSearchParams({ tab: "orders-list" })
                             }
                             active={activeTab === "orders-list"}
                         >
-                            List Orders
+                            Manifests
                         </MenuItem>
                         <MenuItem
-                            icon={<Plus size={18} />}
+                            icon={<Plus size={16} />}
                             onClick={() =>
                                 setSearchParams({ tab: "orders-add" })
                             }
                             active={activeTab === "orders-add"}
                         >
-                            Add Order
+                            Manual
                         </MenuItem>
                     </SubMenu>
 
-                    {/* Users Section */}
-                    <SubMenu label="Users" icon={<Users size={20} />}>
+                    <SubMenu label="Users" icon={<Users size={18} />}>
                         <MenuItem
-                            icon={<ListIcon size={18} />}
+                            icon={<ListIcon size={16} />}
                             onClick={() =>
                                 setSearchParams({ tab: "users-list" })
                             }
                             active={activeTab === "users-list"}
                         >
-                            List Users
+                            Directory
                         </MenuItem>
                         <MenuItem
-                            icon={<Plus size={18} />}
+                            icon={<Plus size={16} />}
                             onClick={() =>
                                 setSearchParams({ tab: "users-add" })
                             }
                             active={activeTab === "users-add"}
                         >
-                            Add User
+                            Access
                         </MenuItem>
                     </SubMenu>
                 </Menu>
