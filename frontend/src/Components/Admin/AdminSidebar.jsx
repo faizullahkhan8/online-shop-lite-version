@@ -9,7 +9,7 @@ import {
     Layers,
     ChevronLeft,
     ChevronRight,
-    Terminal,
+    LayoutDashboardIcon,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -43,20 +43,21 @@ const AdminSidebar = ({ searchParams, setSearchParams }) => {
                 {!collapsed ? (
                     <div className="flex items-center gap-2 animate-in fade-in duration-500">
                         <div className="p-2 bg-slate-900 rounded-xl text-white">
-                            <Terminal size={18} />
+                            <LayoutDashboardIcon size={18} />
                         </div>
-                        <span className="font-black text-lg uppercase tracking-tighter text-slate-900">
-                            Core<span className="text-primary">OS</span>
-                        </span>
+                        <div>
+                            <p className="font-black text-lg uppercase tracking-tighter text-slate-900">
+                                E-Shop
+                            </p>
+                            <p className="text-xs">By Faiz Ullah Khan</p>
+                        </div>
                     </div>
                 ) : (
-                    <div className="mx-auto p-2 bg-slate-900 rounded-xl text-white">
-                        <Terminal size={18} />
-                    </div>
+                    ""
                 )}
 
                 <button
-                    className="absolute -right-3 top-9 bg-white border border-slate-200 rounded-full p-1 text-slate-400 hover:text-primary hover:border-primary transition-all shadow-sm z-50"
+                    className="absolute right-6 top-7 bg-white border border-slate-200 rounded-full p-1 text-slate-400 hover:text-primary hover:border-primary transition-all shadow-sm z-50"
                     onClick={() => setCollapsed(!collapsed)}
                 >
                     {collapsed ? (
@@ -102,7 +103,7 @@ const AdminSidebar = ({ searchParams, setSearchParams }) => {
                         onClick={() => setSearchParams({ tab: "dashboard" })}
                         active={activeTab === "dashboard"}
                     >
-                        Intelligence
+                        Dashboard
                     </MenuItem>
 
                     <div
@@ -123,7 +124,7 @@ const AdminSidebar = ({ searchParams, setSearchParams }) => {
                             }
                             active={activeTab === "products-list"}
                         >
-                            Overview
+                            All Products
                         </MenuItem>
                         <MenuItem
                             icon={<Plus size={16} />}
@@ -132,12 +133,12 @@ const AdminSidebar = ({ searchParams, setSearchParams }) => {
                             }
                             active={activeTab === "products-add"}
                         >
-                            Provision
+                            Add Product
                         </MenuItem>
                     </SubMenu>
 
                     <SubMenu
-                        label="Taxonomy"
+                        label="Categories"
                         icon={<Layers size={18} />}
                         defaultOpen={activeTab?.includes("categories")}
                     >
@@ -148,7 +149,7 @@ const AdminSidebar = ({ searchParams, setSearchParams }) => {
                             }
                             active={activeTab === "categories-list"}
                         >
-                            Nodes
+                            All Categories
                         </MenuItem>
                         <MenuItem
                             icon={<Plus size={16} />}
@@ -157,7 +158,7 @@ const AdminSidebar = ({ searchParams, setSearchParams }) => {
                             }
                             active={activeTab === "categories-add"}
                         >
-                            Define
+                            Add Category
                         </MenuItem>
                     </SubMenu>
 
@@ -175,7 +176,7 @@ const AdminSidebar = ({ searchParams, setSearchParams }) => {
                             }
                             active={activeTab === "orders-list"}
                         >
-                            Manifests
+                            All Orders
                         </MenuItem>
                         <MenuItem
                             icon={<Plus size={16} />}
@@ -184,7 +185,7 @@ const AdminSidebar = ({ searchParams, setSearchParams }) => {
                             }
                             active={activeTab === "orders-add"}
                         >
-                            Manual
+                            Add Manual Order
                         </MenuItem>
                     </SubMenu>
 
@@ -196,7 +197,7 @@ const AdminSidebar = ({ searchParams, setSearchParams }) => {
                             }
                             active={activeTab === "users-list"}
                         >
-                            Directory
+                            All Users
                         </MenuItem>
                         <MenuItem
                             icon={<Plus size={16} />}
@@ -205,7 +206,7 @@ const AdminSidebar = ({ searchParams, setSearchParams }) => {
                             }
                             active={activeTab === "users-add"}
                         >
-                            Access
+                            Add User
                         </MenuItem>
                     </SubMenu>
                 </Menu>

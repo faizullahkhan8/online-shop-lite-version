@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import FashionImage from "../../assets/images/man-white.jpg";
+import HomeInterior from "../../assets//images/Home Interior.png";
 
-const BannerImage =
-    "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&q=80&w=1200";
-const tshirt =
-    "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=1200";
-const sofas =
-    "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1200";
+const BannerImage = "https://pngimg.com/uploads/macbook/macbook_PNG65.png";
 
 const HeroSection = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -26,7 +23,7 @@ const HeroSection = () => {
             headline: "Fashion Trends",
             subtitle: "Shop now",
             bg: "bg-[#fff1e6]",
-            img: tshirt,
+            img: FashionImage,
             accent: "text-orange-600",
         },
         {
@@ -34,7 +31,7 @@ const HeroSection = () => {
             headline: "Home Interiors",
             subtitle: "Discover comfort",
             bg: "bg-[#e8f5e9]",
-            img: sofas,
+            img: HomeInterior,
             accent: "text-emerald-600",
         },
     ];
@@ -75,7 +72,7 @@ const HeroSection = () => {
                     <img
                         src={slides[currentSlide].img}
                         alt="Hero"
-                        className="absolute right-0 bottom-0 h-[75%] md:h-[90%] w-full md:w-1/2 object-contain object-right-bottom drop-shadow-2xl mix-blend-multiply opacity-90 transition-all duration-1000 p-4 md:p-12"
+                        className="absolute right-0 bottom-0 h-full w-full md:w-1/2 object-contain object-right-bottom mix-blend-multiply opacity-90 transition-all duration-1000 p-4 md:p-12"
                     />
 
                     <div className="absolute bottom-8 left-8 md:left-16 flex gap-3 z-30">

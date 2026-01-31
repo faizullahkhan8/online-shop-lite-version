@@ -41,42 +41,42 @@ const OrdersList = () => {
     };
 
     return (
-        <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden flex flex-col h-[calc(100vh-180px)]">
-            <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-white sticky top-0 z-20">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
                 <div>
-                    <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900">
-                        Transaction Ledger
+                    <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">
+                        Orders Ledger
                     </h2>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                        Direct management of customer fulfillments
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">
+                        total orders {orders.length}
                     </p>
                 </div>
-                <div className="flex gap-2">
-                    <div className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                            Total: {orders.length}
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div className="flex-1 overflow-auto custom-scrollbar">
+            </header>
+            <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-x-auto">
                 <table className="w-full text-left border-collapse">
-                    <thead className="sticky top-0 bg-slate-50/80 backdrop-blur-md z-10">
-                        <tr>
-                            <TableTh
-                                label="Reference"
-                                icon={<Receipt size={12} />}
-                            />
-                            <TableTh label="Customer" />
-                            <TableTh label="Amount" />
-                            <TableTh
-                                label="Logistics"
-                                icon={<MapPin size={12} />}
-                            />
-                            <TableTh label="Payment" />
-                            <TableTh label="Status" />
-                            <th className="px-8 py-4"></th>
+                    <thead className="sticky top-0 bg-slate-50/80 backdrop-blur-md z-10 w">
+                        <tr className="bg-slate-50/50">
+                            <th className="px-2 py-6 text-left text-[10px] w-34 min-w-34 font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                Order ID
+                            </th>
+                            <th className="px-2 py-4 text-left text-[10px] w-52 min-w-52 font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                Customer
+                            </th>
+                            <th className="px-2 py-4 text-left text-[10px] w-34 min-w-34 font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                Total Amount
+                            </th>
+                            <th className="px-2 py-4 text-left text-[10px] w-52 min-w-52 font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                Shipping Address
+                            </th>
+                            <th className="px-2 py-4 text-right text-[10px] w-34 min-w-34 font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                Payment Status
+                            </th>
+                            <th className="px-2 py-4 text-right text-[10px] w-34 min-w-34 font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                Shipping Status
+                            </th>
+                            <th className="px-2 py-4 text-right text-[10px] w-52 min-w-32 font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                Actions
+                            </th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50">
@@ -88,12 +88,12 @@ const OrdersList = () => {
                                     key={order._id}
                                     className="hover:bg-slate-50/50 transition-colors group"
                                 >
-                                    <td className="px-8 py-6">
+                                    <td className="px-2 py-4">
                                         <span className="text-[10px] font-black font-mono text-slate-400 group-hover:text-primary transition-colors uppercase tracking-widest">
                                             #{order._id.slice(-8)}
                                         </span>
                                     </td>
-                                    <td className="px-8 py-6">
+                                    <td className="px-2 py-4">
                                         <p className="text-xs font-black text-slate-900 uppercase tracking-tight">
                                             {order.recipient?.name ||
                                                 "Anonymous"}
@@ -102,19 +102,19 @@ const OrdersList = () => {
                                             {order.recipient?.phone}
                                         </p>
                                     </td>
-                                    <td className="px-8 py-6">
+                                    <td className="px-2 py-4">
                                         <span className="text-xs font-black text-slate-900">
                                             Rs{" "}
                                             {order.grandTotal?.toLocaleString()}
                                         </span>
                                     </td>
-                                    <td className="px-8 py-6">
+                                    <td className="px-2 py-4">
                                         <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide truncate max-w-[150px]">
                                             {order.recipient?.city},{" "}
                                             {order.recipient?.street}
                                         </p>
                                     </td>
-                                    <td className="px-8 py-6">
+                                    <td className="px-2 py-4">
                                         <div
                                             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-[9px] font-black uppercase tracking-widest ${
                                                 order.payment?.ispaid
@@ -130,14 +130,14 @@ const OrdersList = () => {
                                                 : "Unpaid"}
                                         </div>
                                     </td>
-                                    <td className="px-8 py-6">
+                                    <td className="px-2 py-4">
                                         <span
                                             className={`px-3 py-1 text-[9px] font-black uppercase tracking-[0.15em] rounded-lg border ${getStatusStyles(order.status)}`}
                                         >
                                             {order.status}
                                         </span>
                                     </td>
-                                    <td className="px-8 py-6 text-right relative">
+                                    <td className="px-2 py-4 text-right relative">
                                         <button
                                             onClick={() =>
                                                 setActiveMenuId(

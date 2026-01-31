@@ -136,13 +136,8 @@ const AddProduct = () => {
             <header className="flex items-center justify-between">
                 <div>
                     <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
-                        {isEditing ? "Modify Entity" : "Initialize Product"}
+                        {isEditing ? "Modify Product" : "Initialize Product"}
                     </h2>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">
-                        {isEditing
-                            ? `Entry ID: ${productData._id}`
-                            : "Inventory Management System"}
-                    </p>
                 </div>
                 <button
                     onClick={() => navigate(-1)}
@@ -161,7 +156,7 @@ const AddProduct = () => {
                         <div>
                             <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
                                 <Hash size={12} className="text-primary" />{" "}
-                                Product Designation
+                                Product Name
                             </label>
                             <Input
                                 type="text"
@@ -180,7 +175,7 @@ const AddProduct = () => {
                                         size={12}
                                         className="text-primary"
                                     />{" "}
-                                    Valuation
+                                    Price
                                 </label>
                                 <Input
                                     type="number"
@@ -195,7 +190,7 @@ const AddProduct = () => {
                             <div>
                                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
                                     <Box size={12} className="text-primary" />{" "}
-                                    Stock Units
+                                    Stock
                                 </label>
                                 <Input
                                     type="number"
@@ -211,10 +206,10 @@ const AddProduct = () => {
                         <div>
                             <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
                                 <Layers size={12} className="text-primary" />{" "}
-                                Classification
+                                Category
                             </label>
                             <Select
-                                placeholder="Select Node"
+                                placeholder="Select Category..."
                                 id="category"
                                 value={productData?.category}
                                 onChange={(value) =>
@@ -232,13 +227,14 @@ const AddProduct = () => {
 
                         <div>
                             <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
-                                Specification Details
+                                <Layers size={12} className="text-primary" />{" "}
+                                Description
                             </label>
                             <Input
                                 type="textarea"
                                 id="description"
                                 value={productData?.description}
-                                placeholder="Enter detailed technical specifications..."
+                                placeholder="Enter detailed specifications..."
                                 rows={6}
                                 className="w-full bg-slate-50 border-none rounded-2xl resize-none"
                                 onChange={handleChange}
@@ -250,7 +246,7 @@ const AddProduct = () => {
                 <div className="lg:col-span-5 space-y-6">
                     <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40">
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 block">
-                            Visual Identity
+                            Product Image
                         </label>
                         <label
                             htmlFor="image"
@@ -265,7 +261,7 @@ const AddProduct = () => {
                                     />
                                     <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                         <p className="text-[10px] font-black text-white uppercase tracking-widest">
-                                            Replace Texture
+                                            Replace Image
                                         </p>
                                     </div>
                                 </div>
@@ -278,7 +274,7 @@ const AddProduct = () => {
                                         />
                                     </div>
                                     <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest">
-                                        Upload Asset
+                                        Upload Product Image
                                     </p>
                                     <p className="text-[9px] font-bold text-slate-400 mt-2">
                                         RAW, PNG, JPG (MAX 10MB)
@@ -309,14 +305,14 @@ const AddProduct = () => {
                                 <>
                                     <Save size={18} />
                                     <span className="text-xs font-black uppercase tracking-widest">
-                                        Commit Changes
+                                        Update Product
                                     </span>
                                 </>
                             ) : (
                                 <>
                                     <Plus size={18} />
                                     <span className="text-xs font-black uppercase tracking-widest">
-                                        Deploy Product
+                                        Create Product
                                     </span>
                                 </>
                             )}
@@ -326,7 +322,7 @@ const AddProduct = () => {
                             onClick={() => navigate(-1)}
                             className="w-full py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-rose-500 transition-colors"
                         >
-                            Abort Operation
+                            Cancel & Go Back
                         </button>
                     </div>
                 </div>

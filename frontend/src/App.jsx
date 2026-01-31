@@ -79,14 +79,7 @@ const App = () => {
                                 </ProtectedRoute>
                             }
                         />
-                        <Route
-                            path="admin-dashboard"
-                            element={
-                                <ProtectedRoute roles={["admin"]}>
-                                    <AdminPage />
-                                </ProtectedRoute>
-                            }
-                        />
+
                         <Route
                             path="messages"
                             element={
@@ -99,6 +92,14 @@ const App = () => {
                         />
                     </Route>
                     <Route path="/login" element={<LoginPage />} />
+                    <Route
+                        path="admin-dashboard"
+                        element={
+                            <ProtectedRoute roles={["admin"]}>
+                                <AdminPage />
+                            </ProtectedRoute>
+                        }
+                    />
                     <Route path="/register" element={<RegisterPage />} />
                 </Routes>
             </Suspense>

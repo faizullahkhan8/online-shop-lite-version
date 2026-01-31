@@ -62,33 +62,33 @@ const ProductList = () => {
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
                 <div>
                     <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">
-                        Inventory <span className="text-primary">Manifest</span>
+                        Products
                     </h2>
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">
-                        Active Database Nodes: {products.length}
+                        All Products in the inventory {products.length}
                     </p>
                 </div>
             </header>
 
-            <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-                <div className="overflow-x-auto custom-scrollbar">
+            <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100">
+                <div className="custom-scrollbar">
                     <table className="w-full border-collapse">
                         <thead>
                             <tr className="bg-slate-50/50">
                                 <th className="px-8 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                    Asset
+                                    Image + Name
                                 </th>
                                 <th className="px-6 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                    Registry ID
+                                    Category
                                 </th>
                                 <th className="px-6 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                    Valuation
+                                    Price
                                 </th>
                                 <th className="px-6 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                    Status
+                                    Stock
                                 </th>
                                 <th className="px-8 py-6 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                    Ops
+                                    Actions
                                 </th>
                             </tr>
                         </thead>
@@ -102,7 +102,7 @@ const ProductList = () => {
                                         <div className="flex flex-col items-center gap-3">
                                             <div className="w-12 h-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin" />
                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                                Accessing Registry...
+                                                Fetching products...
                                             </p>
                                         </div>
                                     </td>
@@ -123,18 +123,21 @@ const ProductList = () => {
                                                     />
                                                 </div>
                                                 <span className="text-sm font-black text-slate-800 uppercase tracking-tight leading-tight max-w-[180px]">
+                                                    {" "}
                                                     {product.name}
                                                 </span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-5">
                                             <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-md uppercase">
-                                                {product._id.slice(-8)}
+                                                {product.category
+                                                    ? product.category.name
+                                                    : "Uncategorized"}
                                             </span>
                                         </td>
                                         <td className="px-6 py-5">
                                             <span className="text-sm font-black text-slate-700">
-                                                $
+                                                Rs:{" "}
                                                 {Number(
                                                     product.price,
                                                 ).toLocaleString()}
@@ -180,11 +183,6 @@ const ProductList = () => {
                                                             }
                                                         />
                                                         <div className="absolute right-0 mt-3 w-48 bg-slate-900 rounded-2xl shadow-2xl border border-slate-800 py-3 z-20 animate-in fade-in zoom-in-95 duration-200">
-                                                            <div className="px-4 py-2 mb-2 border-b border-slate-800">
-                                                                <p className="text-[8px] font-black text-slate-500 uppercase tracking-[0.2em]">
-                                                                    Command Menu
-                                                                </p>
-                                                            </div>
                                                             <Link
                                                                 to={`/admin-dashboard?tab=products-add&isEditing=true&product=${encodeURIComponent(JSON.stringify(product))}`}
                                                                 className="flex items-center gap-3 px-4 py-2 text-[10px] font-black text-slate-300 hover:text-white uppercase tracking-widest transition-colors"
@@ -193,7 +191,7 @@ const ProductList = () => {
                                                                     size={14}
                                                                     className="text-primary"
                                                                 />{" "}
-                                                                Edit Node
+                                                                Edit Product
                                                             </Link>
                                                             <button
                                                                 onClick={() => {
@@ -212,7 +210,7 @@ const ProductList = () => {
                                                                 <Trash
                                                                     size={14}
                                                                 />{" "}
-                                                                Purge Entity
+                                                                Delete Product
                                                             </button>
                                                         </div>
                                                     </>

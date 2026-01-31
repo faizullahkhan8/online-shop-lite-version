@@ -29,13 +29,11 @@ const CategoryList = () => {
     const { deleteCategory, loading: deleteCategoryLoading } =
         useDeleteCategory();
 
-    const fetchCategories = async () => {
-        const response = await getAllCategories();
-        if (response?.success) setCategories(response.categories);
-    };
-
     useEffect(() => {
-        fetchCategories();
+        (async () => {
+            const response = await getAllCategories();
+            if (response?.success) setCategories(response.categories);
+        })();
     }, []);
 
     const handleDelete = async () => {
@@ -47,48 +45,34 @@ const CategoryList = () => {
         }
     };
 
+    console.log(categories);
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
                 <div>
                     <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">
-                        Category{" "}
-                        <span className="text-primary">Architecture</span>
+                        Categories
                     </h2>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">
-                        Active Taxonomic Nodes: {categories.length}
-                    </p>
                 </div>
-                <button
-                    onClick={fetchCategories}
-                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors"
-                >
-                    <RefreshCw
-                        size={12}
-                        className={
-                            getAllCategoriesLoading ? "animate-spin" : ""
-                        }
-                    />
-                    Rebuild Tree
-                </button>
             </header>
 
-            <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-                <div className="overflow-x-auto custom-scrollbar">
+            <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100">
+                <div className="custom-scrollbar">
                     <table className="w-full border-collapse">
                         <thead>
                             <tr className="bg-slate-50/50">
                                 <th className="px-8 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                    Structural Label
+                                    Name
                                 </th>
                                 <th className="px-6 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                    Hierarchy Depth
+                                    Parent Node
                                 </th>
                                 <th className="px-6 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                    Operational Status
+                                    Status
                                 </th>
                                 <th className="px-8 py-6 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                    Ops
+                                    Actions
                                 </th>
                             </tr>
                         </thead>
@@ -103,7 +87,7 @@ const CategoryList = () => {
                                         <div className="flex flex-col items-center gap-3">
                                             <div className="w-12 h-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin" />
                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                                Querying Structure...
+                                                Loading Categories...
                                             </p>
                                         </div>
                                     </td>
@@ -188,12 +172,6 @@ const CategoryList = () => {
                                                             }
                                                         />
                                                         <div className="absolute right-0 mt-3 w-48 bg-slate-900 rounded-2xl shadow-2xl border border-slate-800 py-3 z-30 animate-in fade-in zoom-in-95 duration-200 text-left">
-                                                            <div className="px-4 py-2 mb-2 border-b border-slate-800">
-                                                                <p className="text-[8px] font-black text-slate-500 uppercase tracking-[0.2em]">
-                                                                    Node
-                                                                    Commands
-                                                                </p>
-                                                            </div>
                                                             <Link
                                                                 to={`/admin-dashboard?tab=categories-add&isEditing=true&category=${JSON.stringify(cat)}`}
                                                                 onClick={() =>
@@ -207,7 +185,7 @@ const CategoryList = () => {
                                                                     size={14}
                                                                     className="text-primary"
                                                                 />{" "}
-                                                                Modify Node
+                                                                Edit Category
                                                             </Link>
                                                             <button
                                                                 onClick={() => {
@@ -227,7 +205,7 @@ const CategoryList = () => {
                                                                 <Trash2
                                                                     size={14}
                                                                 />{" "}
-                                                                Sever Link
+                                                                Delete Category
                                                             </button>
                                                         </div>
                                                     </>
