@@ -27,15 +27,13 @@ const ProductList = () => {
         data: null,
     });
 
-    const fetchProducts = async () => {
-        const response = await getAllProducts();
-        if (response?.success) {
-            setProducts(response.products);
-        }
-    };
-
     useEffect(() => {
-        fetchProducts();
+        (async () => {
+            const response = await getAllProducts();
+            if (response?.success) {
+                setProducts(response.products);
+            }
+        })();
     }, []);
 
     const handleDelete = async () => {
@@ -70,16 +68,6 @@ const ProductList = () => {
                         Active Database Nodes: {products.length}
                     </p>
                 </div>
-                <button
-                    onClick={fetchProducts}
-                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors"
-                >
-                    <RefreshCw
-                        size={12}
-                        className={getAllProductsLoading ? "animate-spin" : ""}
-                    />
-                    Sync Data
-                </button>
             </header>
 
             <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">

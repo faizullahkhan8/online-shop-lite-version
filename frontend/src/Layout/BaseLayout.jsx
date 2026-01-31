@@ -4,11 +4,13 @@ import Footer from "../Components/Home/Footer";
 
 const BaseLayout = () => {
     return (
-        <div className="min-h-screen flex flex-col font-sans gap-6">
+        <div className="min-h-screen flex flex-col gap-4 font-sans selection:bg-primary/10 selection:text-primary">
             <Header />
-            <main className="flex-1 bg-gray-50 text-gray-900">
+
+            <main className="flex-1 bg-[#fafbfc] text-slate-900">
                 <Outlet />
             </main>
+
             <Footer />
         </div>
     );

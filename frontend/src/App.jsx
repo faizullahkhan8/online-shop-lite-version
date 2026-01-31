@@ -4,7 +4,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import LoadingSpinner from "./Components/LoadingSpinner";
-import { LOADING_MESSAGES } from "./constants";
 
 const BaseLayout = lazy(() => import("./Layout/BaseLayout"));
 const HomePage = lazy(() => import("./Pages/HomePage"));
@@ -18,7 +17,7 @@ const CheckoutPage = lazy(() => import("./Pages/CheckoutPage"));
 const OrdersPage = lazy(() => import("./Pages/OrdersPage"));
 const OrderSuccessPage = lazy(() => import("./Pages/OrderSuccessPage"));
 const ProfilePage = lazy(() => import("./Pages/ProfilePage"));
-const ProtectedRoute = lazy(() => import("./Components/ProtectedRoute"));
+const ProtectedRoute = lazy(() => import("./Components/auth/ProtectedRoute"));
 const AdminPage = lazy(() => import("./Pages/AdminPage"));
 
 const App = () => {
@@ -30,9 +29,7 @@ const App = () => {
                 pauseOnHover={false}
                 closeOnClick={true}
             />
-            <Suspense
-                fallback={<LoadingSpinner message={LOADING_MESSAGES.PAGE} />}
-            >
+            <Suspense fallback={<LoadingSpinner message={"Loading..."} />}>
                 <Routes>
                     <Route path="/" element={<BaseLayout />}>
                         <Route index element={<HomePage />} />

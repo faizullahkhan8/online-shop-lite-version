@@ -116,32 +116,6 @@ const Footer = () => {
                             </div>
                         ))}
                     </div>
-
-                    <div className="flex flex-col gap-4 min-w-[140px]">
-                        <h4 className="text-slate-900 font-black mb-2 text-xs uppercase tracking-[0.2em]">
-                            Get the App
-                        </h4>
-                        <a
-                            href="#"
-                            className="transition-transform hover:scale-105 active:scale-95"
-                        >
-                            <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
-                                alt="App Store"
-                                className="h-10 w-auto"
-                            />
-                        </a>
-                        <a
-                            href="#"
-                            className="transition-transform hover:scale-105 active:scale-95"
-                        >
-                            <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
-                                alt="Google Play"
-                                className="h-10 w-auto"
-                            />
-                        </a>
-                    </div>
                 </div>
             </div>
 

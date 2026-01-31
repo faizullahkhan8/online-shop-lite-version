@@ -6,9 +6,9 @@ import {
     SlidersHorizontal,
     PackageSearch,
     Loader2,
+    Search,
 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
-import SidebarFilter from "../Components/SidebarFilter";
 import ProductCard from "../Components/ProductCard";
 import ProductListItem from "../Components/ProductListItem";
 import Pagination from "../Components/Pagination";
@@ -21,87 +21,7 @@ const ProductListPage = () => {
     const [products, setProducts] = useState([]);
     const { getAllProducts, loading: productLoading } = useGetAllProducts();
 
-    const [filters, setFilters] = useState({
-        category: searchParams.get("category") || "",
-        minPrice: searchParams.get("minPrice") || "",
-        maxPrice: searchParams.get("maxPrice") || "",
-        brands: [],
-        features: [],
-        rating: null,
-        condition: "",
-    });
-
     const page = parseInt(searchParams.get("page") || "1");
-    const [totalPages, setTotalPages] = useState(1);
-
-    useEffect(() => {
-        const fetchFilteredProducts = async () => {
-            const params = {
-                page,
-                limit: 9,
-                category: filters.category,
-                minPrice: filters.minPrice,
-                maxPrice: filters.maxPrice,
-                brands: filters.brands.join(","),
-                rating: filters.rating,
-            };
-
-            const response = await getAllProducts(params);
-            if (response?.success) {
-                setProducts(response.products);
-                setTotalPages(response.totalPages || 1);
-            }
-        };
-
-        fetchFilteredProducts();
-    }, [page, filters]);
-
-    const handleFilterChange = (newFilters) => {
-        setFilters((prev) => {
-            const updated = { ...prev, ...newFilters };
-
-            setSearchParams((prevParams) => {
-                Object.keys(newFilters).forEach((key) => {
-                    const val = newFilters[key];
-
-                    // Handle Arrays (Brands/Features)
-                    if (Array.isArray(val)) {
-                        if (val.length > 0) {
-                            prevParams.set(key, val.join(","));
-                        } else {
-                            prevParams.delete(key);
-                        }
-                    }
-                    // Handle Null/Empty
-                    else if (val === "" || val == null) {
-                        prevParams.delete(key);
-                    }
-                    // Handle Strings/Numbers
-                    else {
-                        prevParams.set(key, val);
-                    }
-                });
-                prevParams.set("page", "1"); // Reset to first page on filter
-                return prevParams;
-            });
-
-            return updated;
-        });
-    };
-
-    const clearAllFilters = () => {
-        const resetFilters = {
-            category: "",
-            minPrice: "",
-            maxPrice: "",
-            brands: [],
-            features: [],
-            rating: null,
-            condition: "",
-        };
-        setFilters(resetFilters);
-        setSearchParams(new URLSearchParams());
-    };
 
     const handlePageChange = (newPage) => {
         setSearchParams((prev) => {
@@ -111,28 +31,19 @@ const ProductListPage = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    const removeFilter = (key, value = null) => {
-        if (Array.isArray(filters[key])) {
-            handleFilterChange({
-                [key]: filters[key].filter((item) => item !== value),
-            });
-        } else {
-            handleFilterChange({ [key]: "" });
-        }
-    };
-
     const breadcrumbItems = [
         { label: "Home", path: "/" },
         { label: "Catalog", path: "/products" },
-        ...(filters.category ? [{ label: filters.category }] : []),
     ];
 
-    const hasActiveFilters =
-        filters.category ||
-        filters.brands.length > 0 ||
-        filters.maxPrice ||
-        filters.rating ||
-        filters.condition;
+    useEffect(() => {
+        (async () => {
+            const response = await getAllProducts();
+            if (response?.success) {
+                setProducts(response.products);
+            }
+        })();
+    }, []);
 
     return (
         <div className="bg-slate-50/50 min-h-screen">
@@ -164,58 +75,16 @@ const ProductListPage = () => {
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-10 items-start">
-                    <aside className="w-full lg:w-72 lg:sticky lg:top-24">
-                        <SidebarFilter
-                            filters={filters}
-                            onFilterChange={handleFilterChange}
-                        />
-                    </aside>
-
                     <main className="flex-1 w-full">
-                        <div className="bg-white border border-slate-100 rounded-[2rem] p-4 mb-8 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-sm">
-                            <div className="flex gap-2 flex-wrap items-center">
-                                {hasActiveFilters ? (
-                                    <>
-                                        {filters.category && (
-                                            <FilterChip
-                                                label={filters.category}
-                                                onRemove={() =>
-                                                    removeFilter("category")
-                                                }
-                                            />
-                                        )}
-                                        {filters.brands.map((brand) => (
-                                            <FilterChip
-                                                key={brand}
-                                                label={brand}
-                                                onRemove={() =>
-                                                    removeFilter(
-                                                        "brands",
-                                                        brand,
-                                                    )
-                                                }
-                                            />
-                                        ))}
-                                        {filters.maxPrice && (
-                                            <FilterChip
-                                                label={`Under Rs ${filters.maxPrice}`}
-                                                onRemove={() =>
-                                                    removeFilter("maxPrice")
-                                                }
-                                            />
-                                        )}
-                                        <button
-                                            onClick={clearAllFilters}
-                                            className="text-[10px] font-black uppercase text-primary hover:text-slate-900 transition-colors px-2"
-                                        >
-                                            Clear All
-                                        </button>
-                                    </>
-                                ) : (
-                                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-2">
-                                        No active filters
-                                    </span>
-                                )}
+                        <div className="bg-white border border-slate-100 rounded-4xl p-4 mb-8 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-sm">
+                            <div className="w-full flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-4xl border border-slate-200">
+                                <input
+                                    type="text"
+                                    placeholder="Search products..."
+                                    className="px-4 py-2 text-md w-48 outline-none bg-transparent"
+                                    value={searchParams.get("search") || ""}
+                                />
+                                <Search />
                             </div>
 
                             <div className="flex items-center bg-slate-50 p-1 rounded-xl border border-slate-100">
@@ -258,12 +127,6 @@ const ProductListPage = () => {
                                     current selection. Try adjusting your
                                     filters.
                                 </p>
-                                <button
-                                    onClick={clearAllFilters}
-                                    className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-primary transition-all shadow-lg"
-                                >
-                                    Reset Filters
-                                </button>
                             </div>
                         ) : (
                             <div
@@ -292,7 +155,6 @@ const ProductListPage = () => {
                         <div className="mt-16">
                             <Pagination
                                 currentPage={page}
-                                totalPages={totalPages}
                                 onPageChange={handlePageChange}
                             />
                         </div>

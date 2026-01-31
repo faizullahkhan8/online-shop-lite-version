@@ -1,106 +1,60 @@
-import HeroSection from "../Components/Home/HeroSection";
-import DealsAndOffers from "../Components/Home/DealsAndOffers";
-import Grid from "../Components/Home/Grid";
-import RequestQuote from "../Components/Home/RequestQuote";
-import RecommendedItems from "../Components/Home/RecommendedItems";
-import ExtraServices from "../Components/Home/ExtraServices";
-import NewsLetter from "../Components/Home/NewsLetter";
-import SuppliersByRegion from "../Components/Home/SuppliersByRegion";
-
+import { useEffect, useState } from "react";
+import HeroSection from "../components/home/HeroSection";
+import DealsAndOffers from "../components/home/DealsAndOffers";
 import { useGetAllProducts } from "../api/hooks/product.api";
-import { useEffect } from "react";
-import { useState } from "react";
-import { Loader } from "lucide-react";
+import { Link } from "react-router-dom";
+import ProductCard from "../Components/ProductCard";
 
 const HomePage = () => {
     const { getAllProducts, loading } = useGetAllProducts();
-
-    const [products, setProducts] = useState();
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
         (async () => {
-            const response = await getAllProducts();
-
-            if (response.success) {
+            const response = await getAllProducts({ limit: 12 });
+            if (response?.success) {
                 setProducts(response.products);
-                console.log(response);
             }
         })();
     }, []);
 
-    if (loading) {
-        return (
-            <div className="w-full h-screen flex items-center justify-center">
-                <Loader size={28} />
-            </div>
-        );
-    }
-
     return (
-        <div className="bg-gray-50">
-            {/* Hero Section - Full width */}
+        <div className="min-h-screen bg-slate-50/30 pb-20 flex flex-col gap-12">
             <HeroSection />
 
-            {/* Deals and Offers Section */}
-            <section className="py-8 md:py-12">
-                <div className="container mx-auto px-4">
-                    <DealsAndOffers items={products} />
-                </div>
-            </section>
+            <div className="mt-4">
+                <DealsAndOffers items={products.slice(0, 6)} />
+            </div>
 
-            {/* Home & Outdoor Grid */}
-            <section className="py-8 md:py-12">
-                <div className="container mx-auto px-4">
-                    <Grid
-                        title="Home and outdoor"
-                        bannerImg="https://picsum.photos/id/111/300/600"
-                        items={products}
-                    />
+            <section className="container mx-auto px-4 mt-12">
+                <div className="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 className="text-2xl font-black text-slate-900">
+                            Recommended for You
+                        </h2>
+                        <p className="text-sm text-slate-400 font-medium">
+                            Based on your recent activity
+                        </p>
+                    </div>
+                    <Link
+                        to="/products"
+                        className="text-xs font-black uppercase tracking-widest text-primary hover:underline"
+                    >
+                        See All Products
+                    </Link>
                 </div>
-            </section>
 
-            {/* Consumer Electronics Grid */}
-            <section className="py-8 md:py-12">
-                <div className="container mx-auto px-4">
-                    <Grid
-                        title="Consumer electronics and gadgets"
-                        bannerImg="https://picsum.photos/id/112/300/600"
-                        items={products}
-                    />
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                    {products.map((prod) => (
+                        <ProductCard key={prod._id} product={prod} />
+                    ))}
                 </div>
-            </section>
 
-            {/* Request Quote Section - Full width background */}
-            <section className="py-12 md:py-16">
-                <RequestQuote />
-            </section>
-
-            {/* Recommended Items Section */}
-            <section className="py-8 md:py-12">
-                <div className="container mx-auto px-4">
-                    <RecommendedItems items={products} />
-                </div>
-            </section>
-
-            {/* Extra Services Section */}
-            <section className="py-8 md:py-12 bg-gray-50">
-                <div className="container mx-auto px-4">
-                    <ExtraServices />
-                </div>
-            </section>
-
-            {/* Suppliers by Region */}
-            <section className="py-8 md:py-12">
-                <div className="container mx-auto px-4">
-                    <SuppliersByRegion />
-                </div>
-            </section>
-
-            {/* Newsletter Section */}
-            <section className="py-12 md:py-16 bg-gray-50">
-                <div className="container mx-auto px-4">
-                    <NewsLetter />
-                </div>
+                {loading && (
+                    <div className="flex justify-center mt-12">
+                        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                )}
             </section>
         </div>
     );
