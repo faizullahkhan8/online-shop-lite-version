@@ -52,7 +52,7 @@ const ProductCard = ({ product }) => {
     return (
         <Link
             to={`/product/${product?._id}`}
-            className="group flex flex-col h-full bg-white rounded-[2rem] border border-slate-100 p-3 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500"
+            className="group flex flex-col h-full bg-white rounded-[2rem] border border-slate-100 p-3 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-300"
         >
             <div className="relative aspect-square w-full bg-slate-50/50 rounded-[1.5rem] overflow-hidden">
                 {product?.discount > 0 && (
@@ -79,7 +79,7 @@ const ProductCard = ({ product }) => {
                     src={`${import.meta.env.VITE_BACKEND_URL}/${product?.image}`}
                     alt={product?.name}
                     loading="lazy"
-                    className="absolute inset-0 w-full h-full object-contain p-6 group-hover:scale-110 transition-transform duration-700 mix-blend-multiply"
+                    className="absolute inset-0 w-full h-full object-contain p-6 group-hover:scale-110 transition-transform duration-500 mix-blend-multiply"
                 />
             </div>
 

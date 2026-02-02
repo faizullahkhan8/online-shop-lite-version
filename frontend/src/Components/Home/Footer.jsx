@@ -6,6 +6,7 @@ import {
     Youtube,
     ChevronUp,
     ShieldCheck,
+    Globe,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -68,12 +69,19 @@ const Footer = () => {
                 <div className="flex flex-col lg:flex-row justify-between gap-12 lg:gap-20">
                     <div className="max-w-xs space-y-6">
                         <Link to="/" className="flex items-center gap-3 group">
-                            <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform">
-                                <ShieldCheck className="text-white" size={28} />
+                            <div className="flex items-center gap-2 animate-in fade-in duration-300">
+                                <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform">
+                                    <Globe className="text-white" size={28} />
+                                </div>
+                                <div>
+                                    <p className="font-black text-lg uppercase tracking-tighter text-slate-900">
+                                        E-Shop
+                                    </p>
+                                    <p className="text-xs">
+                                        By Faiz Ullah Khan
+                                    </p>
+                                </div>
                             </div>
-                            <span className="text-xl font-black text-slate-900 tracking-tighter">
-                                E-Store<span className="text-primary">.</span>
-                            </span>
                         </Link>
 
                         <p className="text-slate-500 text-sm leading-relaxed font-medium">

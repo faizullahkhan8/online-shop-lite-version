@@ -41,7 +41,7 @@ const OrdersList = () => {
     };
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
                 <div>
                     <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">
@@ -159,7 +159,7 @@ const OrdersList = () => {
                                                         setActiveMenuId(null)
                                                     }
                                                 />
-                                                <div className="absolute right-12 top-1/2 -translate-y-1/2 w-48 bg-slate-900 rounded-2xl shadow-2xl py-2 z-30 border border-white/10 animate-in fade-in zoom-in-95 duration-200">
+                                                <div className="absolute right-12 top-1/2 -translate-y-1/2 w-48 bg-slate-900 rounded-2xl shadow-2xl py-2 z-30 border border-white/10 animate-in fade-in zoom-in-95 duration-100">
                                                     <Link
                                                         to={`/admin-dashboard?tab=orders-details&id=${order._id}`}
                                                         className="flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition-colors"

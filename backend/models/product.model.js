@@ -5,6 +5,7 @@ const productSchema = new Schema(
         name: { type: String, required: true },
         price: { type: Number, required: true },
         description: { type: String, required: true },
+        sold: { type: Number, default: 0 },
         category: {
             type: SchemaTypes.ObjectId,
             ref: "Category",
@@ -15,7 +16,7 @@ const productSchema = new Schema(
     },
     {
         timestamps: true,
-    }
+    },
 );
 
 export default productSchema;

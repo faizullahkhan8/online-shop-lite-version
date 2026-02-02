@@ -48,7 +48,7 @@ const CategoryList = () => {
     console.log(categories);
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
                 <div>
                     <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">
@@ -171,7 +171,7 @@ const CategoryList = () => {
                                                                 )
                                                             }
                                                         />
-                                                        <div className="absolute right-0 mt-3 w-48 bg-slate-900 rounded-2xl shadow-2xl border border-slate-800 py-3 z-30 animate-in fade-in zoom-in-95 duration-200 text-left">
+                                                        <div className="absolute right-0 mt-3 w-48 bg-slate-900 rounded-2xl shadow-2xl border border-slate-800 py-3 z-30 animate-in fade-in zoom-in-95 duration-100 text-left">
                                                             <Link
                                                                 to={`/admin-dashboard?tab=categories-add&isEditing=true&category=${JSON.stringify(cat)}`}
                                                                 onClick={() =>

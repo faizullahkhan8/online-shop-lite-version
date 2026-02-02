@@ -83,10 +83,10 @@ const DashboardHome = () => {
 };
 
 const StatCard = ({ label, value, icon, trend, color }) => (
-    <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/40 group hover:border-primary/20 transition-all duration-500">
+    <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/40 group hover:border-primary/20 transition-all duration-300">
         <div className="flex justify-between items-start mb-6">
             <div
-                className={`p-3 rounded-2xl ${color === "primary" ? "bg-primary text-white shadow-lg shadow-primary/20" : "bg-slate-50 text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-colors duration-500"}`}
+                className={`p-3 rounded-2xl ${color === "primary" ? "bg-primary text-white shadow-lg shadow-primary/20" : "bg-slate-50 text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-colors duration-300"}`}
             >
                 {icon}
             </div>

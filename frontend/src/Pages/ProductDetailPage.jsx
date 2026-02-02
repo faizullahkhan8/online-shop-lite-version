@@ -102,7 +102,7 @@ const ProductDetailPage = () => {
                                 <img
                                     src={`${import.meta.env.VITE_BACKEND_URL}/${product?.image}`}
                                     alt={product?.name}
-                                    className="max-h-full w-full object-contain transition-transform duration-500 group-hover:scale-110"
+                                    className="max-h-full w-full object-contain transition-transform duration-300 group-hover:scale-110"
                                 />
                             </div>
                         </div>

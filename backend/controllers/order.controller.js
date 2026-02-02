@@ -23,6 +23,7 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
     items.forEach(async (prod) => {
         let tempProd = await ProductModel.findById(prod.product);
         tempProd.stock -= prod.quantity;
+        tempProd.sold += prod.quantity;
         tempProd.save({ validateModifiedOnly: true });
     });
 

@@ -1,4 +1,4 @@
-import { AlertTriangle, X, Loader2 } from 'lucide-react';
+import { AlertTriangle, X, Loader2 } from "lucide-react";
 
 const DeleteDialog = ({
     isOpen,
@@ -6,7 +6,7 @@ const DeleteDialog = ({
     onConfirm,
     title = "Delete Item",
     message = "Are you sure you want to delete this? This action cannot be undone.",
-    loading = false
+    loading = false,
 }) => {
     if (!isOpen) return null;
 
@@ -19,14 +19,16 @@ const DeleteDialog = ({
             />
 
             {/* Dialog Content */}
-            <div className="relative bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
+            <div className="relative bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all animate-in fade-in zoom-in duration-100">
                 <div className="p-6">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
                             <AlertTriangle className="text-red-600" size={24} />
                         </div>
                         <div className="flex-1">
-                            <h3 className="text-lg font-bold text-gray-900">{title}</h3>
+                            <h3 className="text-lg font-bold text-gray-900">
+                                {title}
+                            </h3>
                             <button
                                 onClick={onClose}
                                 className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
@@ -59,7 +61,11 @@ const DeleteDialog = ({
                         disabled={loading}
                         className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center min-w-[100px] disabled:bg-red-400"
                     >
-                        {loading ? <Loader2 className="animate-spin" size={18} /> : "Delete Item"}
+                        {loading ? (
+                            <Loader2 className="animate-spin" size={18} />
+                        ) : (
+                            "Delete Item"
+                        )}
                     </button>
                 </div>
             </div>

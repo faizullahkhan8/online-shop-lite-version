@@ -47,7 +47,7 @@ const HeroSection = () => {
         <div className="container mx-auto px-4 py-8">
             <div className="bg-white border border-slate-100 rounded-[2.5rem] p-4 lg:p-6 shadow-sm">
                 <div
-                    className={`relative w-full h-[350px] md:h-[500px] rounded-[2rem] overflow-hidden transition-all duration-700 ${slides[currentSlide].bg}`}
+                    className={`relative w-full h-[350px] md:h-[500px] rounded-[2rem] overflow-hidden transition-all duration-500 ${slides[currentSlide].bg}`}
                 >
                     <div className="absolute inset-0 flex items-center px-8 md:px-16 z-20">
                         <div className="max-w-xl">
@@ -72,7 +72,7 @@ const HeroSection = () => {
                     <img
                         src={slides[currentSlide].img}
                         alt="Hero"
-                        className="absolute right-0 bottom-0 h-full w-full md:w-1/2 object-contain object-right-bottom mix-blend-multiply opacity-90 transition-all duration-1000 p-4 md:p-12"
+                        className="absolute right-0 bottom-0 h-full w-full md:w-1/2 object-contain object-bottom-right mix-blend-multiply opacity-90 transition-all duration-1000 p-4 md:p-12"
                     />
 
                     <div className="absolute bottom-8 left-8 md:left-16 flex gap-3 z-30">
@@ -80,7 +80,7 @@ const HeroSection = () => {
                             <button
                                 key={idx}
                                 onClick={() => setCurrentSlide(idx)}
-                                className={`h-2 rounded-full transition-all duration-500 ${
+                                className={`h-2 rounded-full transition-all duration-300 ${
                                     currentSlide === idx
                                         ? "w-10 bg-slate-900"
                                         : "w-2 bg-slate-400/40"

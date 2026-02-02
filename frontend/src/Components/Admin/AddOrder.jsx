@@ -82,7 +82,7 @@ const AddOrder = () => {
     return (
         <form
             onSubmit={handleSubmit}
-            className="max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-700"
+            className="max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-500"
         >
             <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-100 pb-8">
                 <div className="space-y-1">

@@ -56,7 +56,7 @@ const Grid = ({ title, bannerImg, items }) => {
                                     <img
                                         src={`${import.meta.env.VITE_BACKEND_URL}/${item.image}`}
                                         alt={item.name}
-                                        className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-500 mix-blend-multiply"
+                                        className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300 mix-blend-multiply"
                                     />
                                 </div>
                             </Link>

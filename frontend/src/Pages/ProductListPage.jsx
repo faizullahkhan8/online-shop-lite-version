@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
     LayoutGrid,
     List,
@@ -22,6 +22,7 @@ const ProductListPage = () => {
     const { getAllProducts, loading: productLoading } = useGetAllProducts();
 
     const page = parseInt(searchParams.get("page") || "1");
+    const searchQuery = searchParams.get("search");
 
     const handlePageChange = (newPage) => {
         setSearchParams((prev) => {
@@ -44,6 +45,18 @@ const ProductListPage = () => {
             }
         })();
     }, []);
+
+    const filteredProducts = useMemo(() => {
+        // If searchQuery is empty, null, or undefined, return everything
+        if (!searchQuery?.trim()) {
+            return products;
+        }
+
+        // Otherwise, return the filtered subset
+        return products.filter((p) =>
+            p.name.toLowerCase().includes(searchQuery.toLowerCase()),
+        );
+    }, [products, searchQuery]);
 
     return (
         <div className="bg-slate-50/50 min-h-screen">
@@ -81,7 +94,7 @@ const ProductListPage = () => {
                                 <input
                                     type="text"
                                     placeholder="Search products..."
-                                    className="px-4 py-2 text-md w-48 outline-none bg-transparent"
+                                    className="px-4 py-2 text-md w-full outline-none bg-transparent"
                                     value={searchParams.get("search") || ""}
                                 />
                                 <Search />
@@ -136,7 +149,7 @@ const ProductListPage = () => {
                                         : "flex flex-col gap-6"
                                 }
                             >
-                                {products?.map((product) =>
+                                {filteredProducts?.map((product) =>
                                     viewMode === "grid" ? (
                                         <ProductCard
                                             key={product._id}

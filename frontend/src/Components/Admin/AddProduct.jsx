@@ -29,6 +29,7 @@ const INITAIL_STATE = {
     category: "",
     stock: "",
     image: null,
+    isRemoveBg: false,
 };
 
 const AddProduct = () => {
@@ -131,8 +132,10 @@ const AddProduct = () => {
         }
     };
 
+    console.log(productData);
+
     return (
-        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
             <header className="flex items-center justify-between">
                 <div>
                     <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
@@ -245,9 +248,26 @@ const AddProduct = () => {
 
                 <div className="lg:col-span-5 space-y-6">
                     <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 block">
-                            Product Image
-                        </label>
+                        <div className="flex gap-2 justify-between">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
+                                Product Image
+                            </label>
+                            <div className="flex gap-2 items-center">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
+                                    Remove Background
+                                </label>
+                                <input
+                                    type="checkbox"
+                                    value={productData?.isRemoveBg}
+                                    onChange={(e) =>
+                                        setProductData((pre) => ({
+                                            ...pre,
+                                            isRemoveBg: e.target.checked,
+                                        }))
+                                    }
+                                />
+                            </div>
+                        </div>
                         <label
                             htmlFor="image"
                             className="group relative flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-slate-200 rounded-[2rem] hover:border-primary/50 hover:bg-slate-50 transition-all cursor-pointer overflow-hidden"

@@ -24,7 +24,7 @@ export const UserList = () => {
     }, []);
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-700">
+        <div className="space-y-6 animate-in fade-in duration-500">
             <header className="flex items-end justify-between px-2">
                 <div>
                     <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">
@@ -142,7 +142,7 @@ export const AddUser = () => {
     };
 
     return (
-        <div className="max-w-2xl animate-in slide-in-from-right-4 duration-700">
+        <div className="max-w-2xl animate-in slide-in-from-right-4 duration-500">
             <header className="mb-8 px-2">
                 <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter flex items-center gap-3">
                     <UserPlus className="text-primary" size={32} />

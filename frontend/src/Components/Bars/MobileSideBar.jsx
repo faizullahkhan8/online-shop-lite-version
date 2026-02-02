@@ -28,13 +28,13 @@ const MobileSideBar = ({
         <>
             {isMenuOpen && (
                 <div
-                    className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] md:hidden transition-all duration-500 opacity-100"
+                    className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] md:hidden transition-all duration-300 opacity-100"
                     onClick={() => setIsMenuOpen(false)}
                 />
             )}
 
             <div
-                className={`fixed top-0 right-0 h-full w-[85%] max-w-[320px] bg-white z-[70] md:hidden transform transition-all duration-500 ease-out shadow-[-20px_0_50px_rgba(0,0,0,0.1)] flex flex-col ${
+                className={`fixed top-0 right-0 h-full w-[85%] max-w-[320px] bg-white z-[70] md:hidden transform transition-all duration-300 ease-out shadow-[-20px_0_50px_rgba(0,0,0,0.1)] flex flex-col ${
                     isMenuOpen ? "translate-x-0" : "translate-x-full"
                 }`}
             >

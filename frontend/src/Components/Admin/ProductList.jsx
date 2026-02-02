@@ -49,7 +49,7 @@ const ProductList = () => {
     };
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <DeleteDialog
                 isOpen={Boolean(productState.type === "delete")}
                 onClose={() => setProductState({ type: "", data: null })}
@@ -182,7 +182,7 @@ const ProductList = () => {
                                                                 )
                                                             }
                                                         />
-                                                        <div className="absolute right-0 mt-3 w-48 bg-slate-900 rounded-2xl shadow-2xl border border-slate-800 py-3 z-20 animate-in fade-in zoom-in-95 duration-200">
+                                                        <div className="absolute right-0 mt-3 w-48 bg-slate-900 rounded-2xl shadow-2xl border border-slate-800 py-3 z-20 animate-in fade-in zoom-in-95 duration-100">
                                                             <Link
                                                                 to={`/admin-dashboard?tab=products-add&isEditing=true&product=${encodeURIComponent(JSON.stringify(product))}`}
                                                                 className="flex items-center gap-3 px-4 py-2 text-[10px] font-black text-slate-300 hover:text-white uppercase tracking-widest transition-colors"

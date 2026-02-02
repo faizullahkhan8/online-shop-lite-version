@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import Input from "../../UI/Input.jsx";
 import Button from "../../UI/Button.jsx";
 import Select from "../../UI/Select.jsx";
-import { Loader, Info, ArrowLeft } from "lucide-react";
+import { Loader, Info, ArrowLeft, Trash, Trash2 } from "lucide-react";
 import {
     useCreateCategory,
     useUpdateCategory,
@@ -13,7 +13,7 @@ import { useMemo } from "react";
 
 const INITIAL_STATE = {
     name: "",
-    parentCategory: "",
+    parentId: "",
     isActive: true,
 };
 
@@ -26,9 +26,16 @@ const AddCategory = () => {
     // Safety check for parsing JSON from URL
     const getInitialData = () => {
         try {
-            const cat = searchParams.get("category");
-            return cat ? JSON.parse(cat) : INITIAL_STATE;
-        } catch (e) {
+            const cat = JSON.parse(searchParams.get("category"));
+            return cat
+                ? {
+                      name: cat.name,
+                      _id: cat._id,
+                      parentId: cat.parentId._id,
+                      isActive: cat.isActive,
+                  }
+                : INITIAL_STATE;
+        } catch {
             return INITIAL_STATE;
         }
     };
@@ -135,22 +142,36 @@ const AddCategory = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                         Parent Category (Optional)
                     </label>
-                    <Select
-                        placeholder={
-                            fetchingCats
-                                ? "Loading categories..."
-                                : "Select Parent Category"
-                        }
-                        options={categoryOptions}
-                        value={categoryData.parentCategory}
-                        onChange={(val) =>
-                            setCategoryData({
-                                ...categoryData,
-                                parentCategory: val,
-                            })
-                        }
-                        className="w-full"
-                    />
+                    <div className="flex gap-2">
+                        <Select
+                            placeholder={
+                                fetchingCats
+                                    ? "Loading categories..."
+                                    : "Select Parent Category"
+                            }
+                            options={categoryOptions}
+                            value={categoryData.parentId}
+                            onChange={(val) =>
+                                setCategoryData({
+                                    ...categoryData,
+                                    parentId: val,
+                                })
+                            }
+                            className="w-full"
+                        />
+                        <Button
+                            type="button"
+                            onClick={() =>
+                                setCategoryData((pre) => ({
+                                    ...pre,
+                                    parentId: "",
+                                }))
+                            }
+                            variant="danger"
+                        >
+                            <Trash2 size={16} />
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Active Toggle */}

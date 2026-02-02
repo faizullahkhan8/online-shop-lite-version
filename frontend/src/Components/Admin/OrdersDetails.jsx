@@ -61,7 +61,7 @@ const OrderDetails = () => {
     }
 
     return (
-        <div className="max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-500">
+        <div className="max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-300">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center gap-6">
                     <button
@@ -98,7 +98,7 @@ const OrderDetails = () => {
                             size={14}
                             className="group-hover:scale-110 transition-transform"
                         />
-                        Purge Record
+                        Delete Order
                     </button>
                 </div>
             </header>

@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { upload } from "../middlewares/multer.middleware.js";
+import {
+    handleOptionalBackgroundRemoval,
+    upload,
+} from "../middlewares/multer.middleware.js";
 import {
     createProduct,
     updateProduct,
@@ -16,14 +19,16 @@ router.post(
     isAuth,
     authorize(["admin"]),
     upload.single("image"),
-    createProduct
+    handleOptionalBackgroundRemoval,
+    createProduct,
 );
 router.patch(
     "/update/:id",
     isAuth,
     authorize(["admin"]),
     upload.single("image"),
-    updateProduct
+    handleOptionalBackgroundRemoval,
+    updateProduct,
 );
 router.get("/all", getAllProducts);
 router.delete("/delete/:id", isAuth, authorize(["admin"]), deleteProduct);
