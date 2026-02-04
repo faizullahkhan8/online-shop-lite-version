@@ -53,10 +53,7 @@ const DealsAndOffers = ({ items }) => {
 
                 <div className="flex flex-1 overflow-x-auto no-scrollbar py-4 px-2 gap-4">
                     {items?.map((prod) => (
-                        <div
-                            key={prod.id}
-                            className="min-w-[280px] flex-shrink-0"
-                        >
+                        <div key={prod.id} className="min-w-70 shrink-0">
                             <ProductCard product={prod} />
                         </div>
                     ))}

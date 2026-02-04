@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import LoadingSpinner from "./Components/LoadingSpinner";
+import AboutPage from "./Pages/AboutUsPage";
 
 const BaseLayout = lazy(() => import("./Layout/BaseLayout"));
 const HomePage = lazy(() => import("./Pages/HomePage"));
@@ -19,6 +20,7 @@ const OrderSuccessPage = lazy(() => import("./Pages/OrderSuccessPage"));
 const ProfilePage = lazy(() => import("./Pages/ProfilePage"));
 const ProtectedRoute = lazy(() => import("./Components/auth/ProtectedRoute"));
 const AdminPage = lazy(() => import("./Pages/AdminPage"));
+const ContactUsPage = lazy(() => import("./Pages/ContactUsPage"));
 
 const App = () => {
     return (
@@ -34,6 +36,8 @@ const App = () => {
                     <Route path="/" element={<BaseLayout />}>
                         <Route index element={<HomePage />} />
                         <Route path="products" element={<ProductListPage />} />
+                        <Route path="contact-us" element={<ContactUsPage />} />
+                        <Route path="about-us" element={<AboutPage />} />
                         <Route
                             path="product/:id"
                             element={<ProductDetailPage />}

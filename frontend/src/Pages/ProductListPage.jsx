@@ -9,10 +9,9 @@ import {
     Search,
 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
-import ProductCard from "../Components/ProductCard";
+import ProductCard from "../Components/ProductCard.jsx";
 import ProductListItem from "../Components/ProductListItem";
 import Pagination from "../Components/Pagination";
-import Breadcrumb from "../Components/Breadcrumb";
 import { useGetAllProducts } from "../api/hooks/product.api";
 
 const ProductListPage = () => {
@@ -31,11 +30,6 @@ const ProductListPage = () => {
         });
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
-
-    const breadcrumbItems = [
-        { label: "Home", path: "/" },
-        { label: "Catalog", path: "/products" },
-    ];
 
     useEffect(() => {
         (async () => {
@@ -62,7 +56,6 @@ const ProductListPage = () => {
         <div className="bg-slate-50/50 min-h-screen">
             <div className="container mx-auto px-4 lg:px-8 py-8 lg:py-12">
                 <div className="mb-10">
-                    <Breadcrumb items={breadcrumbItems} />
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mt-4">
                         <div>
                             <div className="flex items-center gap-2 mb-2">
@@ -145,7 +138,7 @@ const ProductListPage = () => {
                             <div
                                 className={
                                     viewMode === "grid"
-                                        ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8"
+                                        ? "grid grid-cols-1 sm:grid-cols-4 xl:grid-cols-6 gap-4"
                                         : "flex flex-col gap-6"
                                 }
                             >

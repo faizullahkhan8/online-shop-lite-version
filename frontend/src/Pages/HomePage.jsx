@@ -22,9 +22,9 @@ const HomePage = () => {
         <div className="min-h-screen bg-slate-50/30 pb-20 flex flex-col gap-12">
             <HeroSection />
 
-            <div className="mt-4">
+            {/* <div className="mt-4">
                 <DealsAndOffers items={products.slice(0, 6)} />
-            </div>
+            </div> */}
 
             <section className="container mx-auto px-4 mt-12">
                 <div className="flex items-center justify-between mb-8">
