@@ -11,6 +11,7 @@ import {
     ChevronRight,
     LayoutDashboardIcon,
     Globe,
+    Receipt,
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -139,6 +140,15 @@ const AdminSidebar = ({ searchParams, setSearchParams }) => {
                             active={activeTab === "products-add"}
                         >
                             Add Product
+                        </MenuItem>
+                        <MenuItem
+                            icon={<Receipt size={16} />}
+                            onClick={() =>
+                                setSearchParams({ tab: "products-settings" })
+                            }
+                            active={activeTab === "products-settings"}
+                        >
+                            Tax & Shipping
                         </MenuItem>
                     </SubMenu>
 

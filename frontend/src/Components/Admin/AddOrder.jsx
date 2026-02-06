@@ -8,32 +8,52 @@ import {
     Truck,
     CreditCard,
     Hash,
+    User,
+    Receipt,
 } from "lucide-react";
 import Input from "../../UI/Input.jsx";
-import Button from "../../UI/Button.jsx";
 import Select from "../../UI/Select.jsx";
 import { useGetAllProducts } from "../../api/hooks/product.api.js";
 import { usePlaceOrder } from "../../api/hooks/orders.api.js";
+import { useGetAllUsers } from "../../api/hooks/user.api.js";
 import { useNavigate } from "react-router-dom";
 
 const AddOrder = () => {
     const { getAllProducts, loading: productsLoading } = useGetAllProducts();
     const { placeOrder, loading: orderLoading } = usePlaceOrder();
+    const { getAllUsers, loading: usersLoading } = useGetAllUsers();
     const navigate = useNavigate();
 
     const [products, setProducts] = useState([]);
+    const [users, setUsers] = useState([]);
     const [orderData, setOrderData] = useState({
+        userId: "",
         items: [{ product: "", quantity: 1, price: 0, totalAmount: 0 }],
-        recipient: { name: "", street: "", city: "", phone: "" },
+        recipient: {
+            name: "",
+            street: "",
+            addressLine2: "",
+            city: "",
+            state: "",
+            postalCode: "",
+            country: "",
+            phone: "",
+        },
         payment: { method: "COD", ispaid: false },
+        taxAmount: 0,
+        shippingFee: 0,
+        shippingMethod: "standard",
         grandTotal: 0,
         status: "pending",
     });
 
-    const grandTotal = orderData.items.reduce(
+    const itemsSubtotal = orderData.items.reduce(
         (acc, item) => acc + item.price * item.quantity,
         0,
     );
+    const taxAmount = Number(orderData.taxAmount) || 0;
+    const shippingFee = Number(orderData.shippingFee) || 0;
+    const grandTotal = itemsSubtotal + taxAmount + shippingFee;
 
     const addItem = () => {
         setOrderData({
@@ -56,17 +76,27 @@ const AddOrder = () => {
             const selectedProd = products.find((p) => p._id === value);
             newItems[index].product = value;
             newItems[index].price = selectedProd?.price || 0;
-            newItems[index].totalAmount =
-                newItems[index].price * newItems[index].quantity;
         } else {
             newItems[index][field] = value;
         }
+        newItems[index].totalAmount =
+            (Number(newItems[index].price) || 0) *
+            (Number(newItems[index].quantity) || 0);
         setOrderData({ ...orderData, items: newItems });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const finalData = { ...orderData, grandTotal };
+        const finalItems = orderData.items.map((item) => ({
+            ...item,
+            totalAmount:
+                (Number(item.price) || 0) * (Number(item.quantity) || 0),
+        }));
+        const finalData = {
+            ...orderData,
+            items: finalItems,
+            grandTotal,
+        };
         const response = await placeOrder(finalData);
         if (response.success) {
             navigate("/admin-dashboard?tab=orders-list");
@@ -77,7 +107,39 @@ const AddOrder = () => {
         getAllProducts().then((res) => {
             setProducts(res.products);
         });
+        getAllUsers().then((res) => {
+            setUsers(res.users || []);
+        });
     }, []);
+
+    const handleUserSelect = (value) => {
+        const selectedUser = users.find((u) => u._id === value);
+        setOrderData((prev) => ({
+            ...prev,
+            userId: value,
+            recipient: {
+                ...prev.recipient,
+                name: selectedUser?.name || prev.recipient.name,
+                phone: selectedUser?.phone || prev.recipient.phone,
+                street:
+                    selectedUser?.addresses?.[0]?.street ||
+                    prev.recipient.street,
+                addressLine2:
+                    selectedUser?.addresses?.[0]?.addressLine2 ||
+                    prev.recipient.addressLine2,
+                city:
+                    selectedUser?.addresses?.[0]?.city || prev.recipient.city,
+                state:
+                    selectedUser?.addresses?.[0]?.state || prev.recipient.state,
+                postalCode:
+                    selectedUser?.addresses?.[0]?.postalCode ||
+                    prev.recipient.postalCode,
+                country:
+                    selectedUser?.addresses?.[0]?.country ||
+                    prev.recipient.country,
+            },
+        }));
+    };
 
     return (
         <form
@@ -161,9 +223,10 @@ const AddOrder = () => {
                                                 updateItem(
                                                     index,
                                                     "price",
-                                                    parseInt(e.target.value),
+                                                    Number(e.target.value),
                                                 )
                                             }
+                                            className="w-full"
                                         />
                                     </div>
                                     <div className="col-span-4 lg:col-span-2 space-y-2">
@@ -177,9 +240,10 @@ const AddOrder = () => {
                                                 updateItem(
                                                     index,
                                                     "quantity",
-                                                    parseInt(e.target.value),
+                                                    Number(e.target.value),
                                                 )
                                             }
+                                            className="w-full"
                                         />
                                     </div>
                                     <div className="col-span-3 lg:col-span-2 pb-4">
@@ -223,6 +287,24 @@ const AddOrder = () => {
                     <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100 space-y-8">
                         <section className="space-y-4">
                             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-50 pb-4">
+                                <User size={14} className="text-primary" />{" "}
+                                Customer Assignment
+                            </h3>
+                            <Select
+                                disabled={usersLoading}
+                                options={users?.map((u) => ({
+                                    label: `${u.name} • ${u.email}`,
+                                    value: u._id,
+                                }))}
+                                value={orderData.userId}
+                                placeholder="Select Customer"
+                                onChange={handleUserSelect}
+                                className="w-full max-w-none"
+                            />
+                        </section>
+
+                        <section className="space-y-4">
+                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-50 pb-4">
                                 <Truck size={14} className="text-primary" />{" "}
                                 Delivery Logistics
                             </h3>
@@ -238,6 +320,7 @@ const AddOrder = () => {
                                         },
                                     })
                                 }
+                                className="w-full"
                             />
                             <Input
                                 placeholder="Sector/Street Address"
@@ -251,6 +334,21 @@ const AddOrder = () => {
                                         },
                                     })
                                 }
+                                className="w-full"
+                            />
+                            <Input
+                                placeholder="Apartment / Suite / Landmark"
+                                value={orderData.recipient.addressLine2}
+                                onChange={(e) =>
+                                    setOrderData({
+                                        ...orderData,
+                                        recipient: {
+                                            ...orderData.recipient,
+                                            addressLine2: e.target.value,
+                                        },
+                                    })
+                                }
+                                className="w-full"
                             />
                             <div className="grid grid-cols-2 gap-4">
                                 <Input
@@ -265,6 +363,7 @@ const AddOrder = () => {
                                             },
                                         })
                                     }
+                                    className="w-full"
                                 />
                                 <Input
                                     placeholder="Comms Link"
@@ -278,8 +377,53 @@ const AddOrder = () => {
                                             },
                                         })
                                     }
+                                    className="w-full"
                                 />
                             </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <Input
+                                    placeholder="State / Province"
+                                    value={orderData.recipient.state}
+                                    onChange={(e) =>
+                                        setOrderData({
+                                            ...orderData,
+                                            recipient: {
+                                                ...orderData.recipient,
+                                                state: e.target.value,
+                                            },
+                                        })
+                                    }
+                                    className="w-full"
+                                />
+                                <Input
+                                    placeholder="Postal Code"
+                                    value={orderData.recipient.postalCode}
+                                    onChange={(e) =>
+                                        setOrderData({
+                                            ...orderData,
+                                            recipient: {
+                                                ...orderData.recipient,
+                                                postalCode: e.target.value,
+                                            },
+                                        })
+                                    }
+                                    className="w-full"
+                                />
+                            </div>
+                            <Input
+                                placeholder="Country"
+                                value={orderData.recipient.country}
+                                onChange={(e) =>
+                                    setOrderData({
+                                        ...orderData,
+                                        recipient: {
+                                            ...orderData.recipient,
+                                            country: e.target.value,
+                                        },
+                                    })
+                                }
+                                className="w-full"
+                            />
                         </section>
 
                         <section className="space-y-4">
@@ -297,6 +441,9 @@ const AddOrder = () => {
                                         label: "Online Clearance",
                                         value: "online",
                                     },
+                                    { label: "Card Payment", value: "card" },
+                                    { label: "Bank Transfer", value: "bank" },
+                                    { label: "Wallet", value: "wallet" },
                                 ]}
                                 value={orderData.payment.method}
                                 onChange={(val) =>
@@ -308,8 +455,9 @@ const AddOrder = () => {
                                         },
                                     })
                                 }
+                                className="w-full max-w-none"
                             />
-                            {orderData.payment.method === "online" && (
+                            {orderData.payment.method !== "COD" && (
                                 <label className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl cursor-pointer group">
                                     <input
                                         type="checkbox"
@@ -330,6 +478,103 @@ const AddOrder = () => {
                                     </span>
                                 </label>
                             )}
+                        </section>
+
+                        <section className="space-y-4">
+                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-50 pb-4">
+                                <Receipt size={14} className="text-primary" />{" "}
+                                Charges & Routing
+                            </h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <Input
+                                    type="number"
+                                    placeholder="Tax Amount"
+                                    value={orderData.taxAmount}
+                                    onChange={(e) =>
+                                        setOrderData({
+                                            ...orderData,
+                                            taxAmount: Number(e.target.value),
+                                        })
+                                    }
+                                    className="w-full"
+                                />
+                                <Input
+                                    type="number"
+                                    placeholder="Shipping Fee"
+                                    value={orderData.shippingFee}
+                                    onChange={(e) =>
+                                        setOrderData({
+                                            ...orderData,
+                                            shippingFee: Number(
+                                                e.target.value,
+                                            ),
+                                        })
+                                    }
+                                    className="w-full"
+                                />
+                            </div>
+                            <Select
+                                options={[
+                                    {
+                                        label: "Standard Ground",
+                                        value: "standard",
+                                    },
+                                    { label: "Express Air", value: "express" },
+                                    { label: "In-Store Pickup", value: "pickup" },
+                                ]}
+                                value={orderData.shippingMethod}
+                                onChange={(val) =>
+                                    setOrderData({
+                                        ...orderData,
+                                        shippingMethod: val,
+                                    })
+                                }
+                                className="w-full max-w-none"
+                            />
+                            <div className="bg-slate-50 rounded-2xl p-4">
+                                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                    <span>Items Subtotal</span>
+                                    <span>
+                                        PKR{" "}
+                                        {itemsSubtotal.toLocaleString(
+                                            undefined,
+                                            {
+                                                minimumFractionDigits: 2,
+                                            },
+                                        )}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-400 mt-2">
+                                    <span>Tax</span>
+                                    <span>
+                                        PKR{" "}
+                                        {taxAmount.toLocaleString(undefined, {
+                                            minimumFractionDigits: 2,
+                                        })}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-400 mt-2">
+                                    <span>Shipping</span>
+                                    <span>
+                                        PKR{" "}
+                                        {shippingFee.toLocaleString(
+                                            undefined,
+                                            {
+                                                minimumFractionDigits: 2,
+                                            },
+                                        )}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between text-xs font-black uppercase tracking-widest text-slate-900 mt-4">
+                                    <span>Grand Total</span>
+                                    <span>
+                                        PKR{" "}
+                                        {grandTotal.toLocaleString(undefined, {
+                                            minimumFractionDigits: 2,
+                                        })}
+                                    </span>
+                                </div>
+                            </div>
                         </section>
 
                         <button

@@ -145,7 +145,7 @@ export const updateUser = asyncHandler(async (req, res, next) => {
     }
 
     const userId = req.params.id;
-    const { name, phone, address } = req.body;
+    const { name, phone, address, addresses } = req.body;
 
     const user = await UserModel.findById(userId);
 
@@ -155,7 +155,27 @@ export const updateUser = asyncHandler(async (req, res, next) => {
 
     user.name = name || user.name;
     user.phone = phone || user.phone;
-    address && user.addresses.push({ address });
+    if (address) {
+        user.addresses = [
+            {
+                street: address,
+            },
+        ];
+    }
+
+    if (Array.isArray(addresses) && addresses.length > 0) {
+        const nextAddress = addresses[0] || {};
+        user.addresses = [
+            {
+                street: nextAddress.street || "",
+                addressLine2: nextAddress.addressLine2 || "",
+                city: nextAddress.city || "",
+                state: nextAddress.state || "",
+                postalCode: nextAddress.postalCode || "",
+                country: nextAddress.country || "",
+            },
+        ];
+    }
 
     const updatedUser = await user.save({ validateModifiedOnly: true });
 
@@ -329,5 +349,50 @@ export const removeFromWishlist = asyncHandler(async (req, res, next) => {
         success: true,
         message: "Product removed from wishlist",
         wishlist: products,
+    });
+});
+
+export const addUserFromAdmin = asyncHandler(async (req, res, next) => {
+    const UserModel = getLocalUserModel();
+
+    if (!UserModel) {
+        return next(new ErrorResponse("User model not initiated.", 404));
+    }
+
+    const { name, email, password, role, phone } = req.body;
+
+    if (!name || !email || !password) {
+        return next(
+            new ErrorResponse("Name, email, and password are required", 400),
+        );
+    }
+
+    const isEmailExists = await UserModel.findOne({ email });
+
+    if (isEmailExists) {
+        return next(
+            new ErrorResponse("Email already exists in the system", 400),
+        );
+    }
+
+    const user = await UserModel.create({
+        name,
+        email,
+        password,
+        role: role || "user",
+        phone: phone || "0000000000",
+        isVerified: true,
+    });
+
+    res.status(201).json({
+        success: true,
+        message: "User created successfully by admin",
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            phone: user.phone,
+        },
     });
 });

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useGetAllUsers, useRegisterUser } from "../../api/hooks/user.api";
+import { useAddUserFromAdmin, useGetAllUsers } from "../../api/hooks/user.api";
 import {
     ShieldCheck,
     User,
@@ -8,42 +8,30 @@ import {
     UserPlus,
     RefreshCw,
     Fingerprint,
+    Phone,
 } from "lucide-react";
 
 export const UserList = () => {
     const { getAllUsers, loading } = useGetAllUsers();
     const [users, setUsers] = useState([]);
 
-    const fetchUsers = async () => {
-        const res = await getAllUsers();
-        if (res?.users) setUsers(res.users);
-    };
-
     useEffect(() => {
-        fetchUsers();
+        (async () => {
+            const res = await getAllUsers();
+            if (res?.users) setUsers(res.users);
+        })();
     }, []);
+
+    console.log(users[0]);
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             <header className="flex items-end justify-between px-2">
                 <div>
                     <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">
-                        User <span className="text-primary">Registry</span>
+                        Users
                     </h2>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">
-                        Authorized Personnel: {users.length}
-                    </p>
                 </div>
-                <button
-                    onClick={fetchUsers}
-                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors"
-                >
-                    <RefreshCw
-                        size={12}
-                        className={loading ? "animate-spin" : ""}
-                    />
-                    Refresh Database
-                </button>
             </header>
 
             <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
@@ -52,16 +40,19 @@ export const UserList = () => {
                         <thead>
                             <tr className="bg-slate-50/50">
                                 <th className="px-8 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                    Identity
+                                    Picture + Name
                                 </th>
                                 <th className="px-6 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                    Communication Node
+                                    Email
                                 </th>
                                 <th className="px-6 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                    Clearance
+                                    Phone Number
                                 </th>
-                                <th className="px-8 py-6 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                    Access Key
+                                <th className="px-6 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                    Address
+                                </th>
+                                <th className="px-6 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                    Role
                                 </th>
                             </tr>
                         </thead>
@@ -75,7 +66,7 @@ export const UserList = () => {
                                         <div className="flex flex-col items-center gap-3">
                                             <div className="w-10 h-10 border-4 border-slate-100 border-t-primary rounded-full animate-spin" />
                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                                Scanning Identities...
+                                                Fetching Users...
                                             </p>
                                         </div>
                                     </td>
@@ -91,7 +82,7 @@ export const UserList = () => {
                                                 <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                                                     <User size={18} />
                                                 </div>
-                                                <span className="font-black text-slate-800 uppercase tracking-tight">
+                                                <span className="font-semibold text-slate-800 tracking-tight">
                                                     {u.name}
                                                 </span>
                                             </div>
@@ -99,9 +90,16 @@ export const UserList = () => {
                                         <td className="px-6 py-5 font-medium text-slate-500">
                                             {u.email}
                                         </td>
-                                        <td className="px-6 py-5">
+                                        <td className="px-6 py-5 text-slate-500">
+                                            {u.phone}
+                                        </td>
+
+                                        <td className="px-8 py-5 text-slate-500">
+                                            {u?.address || "temp address"}
+                                        </td>
+                                        <td className="px-8 py-5 text-left text-sm text-slate-500">
                                             <span
-                                                className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${
+                                                className={`text-[10px] font-semibold px-3 py-1 rounded-full uppercase ${
                                                     u.role === "admin"
                                                         ? "bg-primary text-white shadow-lg shadow-primary/20"
                                                         : "bg-slate-100 text-slate-500"
@@ -109,9 +107,6 @@ export const UserList = () => {
                                             >
                                                 {u.role}
                                             </span>
-                                        </td>
-                                        <td className="px-8 py-5 text-right font-mono text-[10px] text-slate-300">
-                                            {u._id.slice(-12).toUpperCase()}
                                         </td>
                                     </tr>
                                 ))
@@ -125,17 +120,18 @@ export const UserList = () => {
 };
 
 export const AddUser = () => {
-    const { registerUser, loading } = useRegisterUser();
+    const { addUserFromAdmin, loading } = useAddUserFromAdmin();
     const [form, setForm] = useState({
         name: "",
         email: "",
         password: "",
         role: "user",
+        phone: "",
     });
 
     const submit = async (e) => {
         e.preventDefault();
-        const res = await registerUser(form);
+        const res = await addUserFromAdmin(form);
         if (res?.user) {
             setForm({ name: "", email: "", password: "", role: "user" });
         }
@@ -146,11 +142,8 @@ export const AddUser = () => {
             <header className="mb-8 px-2">
                 <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter flex items-center gap-3">
                     <UserPlus className="text-primary" size={32} />
-                    Provision <span className="text-primary">Account</span>
+                    Add User
                 </h2>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1">
-                    Establish new personnel credentials
-                </p>
             </header>
 
             <form
@@ -181,7 +174,7 @@ export const AddUser = () => {
 
                     <div className="space-y-2">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                            Email Node
+                            Email Address
                         </label>
                         <div className="relative">
                             <Mail
@@ -200,10 +193,31 @@ export const AddUser = () => {
                             />
                         </div>
                     </div>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                            Phone
+                        </label>
+                        <div className="relative">
+                            <Phone
+                                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"
+                                size={16}
+                            />
+                            <input
+                                required
+                                type="phone"
+                                value={form.phone}
+                                onChange={(e) =>
+                                    setForm({ ...form, phone: e.target.value })
+                                }
+                                placeholder="CORE@NETWORK.COM"
+                                className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-12 pr-4 text-sm font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-primary/20 transition-all"
+                            />
+                        </div>
+                    </div>
 
                     <div className="space-y-2">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                            Security Key
+                            Password
                         </label>
                         <div className="relative">
                             <Lock
@@ -228,7 +242,7 @@ export const AddUser = () => {
 
                     <div className="space-y-2">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                            Clearance Level
+                            Role
                         </label>
                         <div className="relative">
                             <ShieldCheck
@@ -242,8 +256,8 @@ export const AddUser = () => {
                                 }
                                 className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-12 pr-4 text-sm font-black uppercase appearance-none focus:ring-2 focus:ring-primary/20 transition-all"
                             >
-                                <option value="user">Standard User</option>
-                                <option value="admin">System Admin</option>
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
                             </select>
                         </div>
                     </div>
@@ -262,7 +276,7 @@ export const AddUser = () => {
                                     size={18}
                                     className="group-hover:animate-pulse"
                                 />
-                                Finalize Registration
+                                Add User
                             </>
                         )}
                     </button>

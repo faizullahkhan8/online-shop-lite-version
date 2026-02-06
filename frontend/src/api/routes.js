@@ -5,6 +5,7 @@ export const USER_ROUTES = {
     GET_USER: "/users/get",
     UPDATE_USER: "/users/update",
     GET_ACCESS_TOKEN: "/users/getAccessToken",
+    ADD_USER_FROM_ADMIN: "/users/add",
 };
 
 export const PRODUCT_ROUTES = {
@@ -36,4 +37,9 @@ export const WISHLIST_ROUTES = {
     GET: "/users/wishlist",
     ADD: "/users/wishlist/add",
     REMOVE: "/users/wishlist/remove",
+};
+
+export const SETTINGS_ROUTES = {
+    GET: "/settings",
+    UPDATE: "/settings",
 };

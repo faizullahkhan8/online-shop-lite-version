@@ -155,6 +155,31 @@ export const useUpdateOrderStatus = () => {
     return { updateOrderStatus, loading };
 };
 
+export const useUpdatePaymentStatus = () => {
+    const [loading, setLoading] = useState();
+    const updatePaymentStatus = async ({ orderId, ispaid }) => {
+        try {
+            setLoading(true);
+            const response = await apiClient.patch(
+                `${ORDER_ROUTES.UPDATE_PAYMENT || "/orders/payment"}/${orderId}`,
+                { ispaid },
+            );
+
+            if (response.data) return response.data;
+        } catch (error) {
+            let errorMessage =
+                error.response?.data?.message ||
+                "Something went wronge. try again!";
+            toast.error(errorMessage);
+            console.log("Error in update payment status: ", error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { updatePaymentStatus, loading };
+};
+
 export const useDeleteOrder = () => {
     const [loading, setLoading] = useState();
     const deleteOrder = async (orderId) => {

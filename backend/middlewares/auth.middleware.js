@@ -17,24 +17,34 @@ export const isAuth = expressAsyncHandler(async (req, res, next) => {
     let refreshDecode;
 
     if (accessToken) {
-        accessDecode = await verifyToken(
-            accessToken,
-            process.env.JWT_ACCESS_SECRET
-        );
+        try {
+            accessDecode = verifyToken(
+                accessToken,
+                process.env.JWT_ACCESS_SECRET,
+            );
+        } catch (error) {
+            accessDecode = null;
+        }
     }
 
     if (refreshToken) {
-        refreshDecode = await verifyToken(
-            refreshToken,
-            process.env.JWT_REFRESH_SECRET
-        );
+        try {
+            refreshDecode = verifyToken(
+                refreshToken,
+                process.env.JWT_REFRESH_SECRET,
+            );
+        } catch (error) {
+            refreshDecode = null;
+        }
     }
 
-    if (!accessDecode && !refreshDecode) {
+    const decode = accessDecode || refreshDecode;
+
+    if (!decode) {
         return next(new ErrorResponse("Session Expired Login Again", 401));
     }
 
-    const user = await UserModel.findById(refreshDecode.id);
+    const user = await UserModel.findById(decode.id);
 
     if (!user) {
         return next(new ErrorResponse("User not found", 404));
@@ -44,7 +54,7 @@ export const isAuth = expressAsyncHandler(async (req, res, next) => {
         const newAcessToken = generateToken(
             user,
             "1d",
-            process.env.JWT_ACCESS_SECRET
+            process.env.JWT_ACCESS_SECRET,
         );
 
         setCookie(res, newAcessToken, 1000 * 60 * 60 * 24, "accessToken");
@@ -57,8 +67,9 @@ export const isAuth = expressAsyncHandler(async (req, res, next) => {
 
 export const authorize = (role = []) =>
     expressAsyncHandler(async (req, res, next) => {
-        if (!role.includes(req.user.role)) {
+        const roles = Array.isArray(role) ? role : [role];
+        if (!roles.includes(req.user?.role)) {
             return next(new ErrorResponse("Unauthorized", 401));
         }
-        next();
+        return next();
     });

@@ -6,6 +6,7 @@ import userRouter from "./routers/user.router.js";
 import productRouter from "./routers/product.router.js";
 import categoryRouter from "./routers/category.router.js";
 import orderRouter from "./routers/order.router.js";
+import settingsRouter from "./routers/settings.router.js";
 
 import { errorHandler } from "./middlewares/ErrorHandler.js";
 import cookieParser from "cookie-parser";
@@ -27,6 +28,7 @@ app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/orders", orderRouter);
+app.use("/api/settings", settingsRouter);
 
 app.use(errorHandler);
 connectToDB();

@@ -77,7 +77,7 @@ const Header = () => {
     ];
 
     return (
-        <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-slate-300">
+        <header className="bg-white/80 backdrop-blur-md z-50 shadow-sm border-b border-slate-300">
             <div className="container mx-auto px-4 lg:px-8">
                 <div className="flex items-center justify-between gap-4 md:gap-10 h-20">
                     <Link
@@ -279,7 +279,7 @@ const Header = () => {
                         <Link
                             key={link.path}
                             to={link.path}
-                            className={`text-sm uppercase transition-all font-semibold duration-300 ${
+                            className={`text-sm uppercase transition-all font-semibold duration-100 ${
                                 location.pathname === link.path
                                     ? "text-slate-900 border-b-2 border-slate-900 pb-1"
                                     : "text-slate-400 hover:text-slate-900"

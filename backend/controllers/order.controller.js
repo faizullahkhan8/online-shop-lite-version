@@ -9,30 +9,99 @@ import { ErrorResponse } from "../utils/ErrorResponse.js";
 export const placeOrder = expressAsyncHandler(async (req, res, next) => {
     const OrderModel = getLocalOrderModel();
     const ProductModel = getLocalProductModel();
+    const UserModel = getLocalUserModel();
 
-    if (!OrderModel || !ProductModel) {
+    if (!OrderModel || !ProductModel || !UserModel) {
         return next(new Error("Order model not found"));
     }
 
-    const { items, recipient, payment, grandTotal } = req.body;
+    const {
+        items,
+        recipient,
+        payment,
+        userId,
+        taxAmount,
+        shippingFee,
+        shippingMethod,
+        status,
+    } = req.body;
 
-    if (items.length < 1 || !recipient || !payment || !grandTotal) {
+    if (!Array.isArray(items) || items.length < 1 || !recipient || !payment) {
         return next(new Error("All fields are required"));
     }
 
-    items.forEach(async (prod) => {
-        let tempProd = await ProductModel.findById(prod.product);
-        tempProd.stock -= prod.quantity;
-        tempProd.sold += prod.quantity;
-        tempProd.save({ validateModifiedOnly: true });
+    if (
+        !recipient.name ||
+        !recipient.street ||
+        !recipient.city ||
+        !recipient.phone
+    ) {
+        return next(new ErrorResponse("Recipient fields are required", 400));
+    }
+
+    if (!payment.method) {
+        return next(new ErrorResponse("Payment method is required", 400));
+    }
+
+    const normalizedItems = items.map((item) => {
+        const quantity = Number(item.quantity) || 0;
+        const price = Number(item.price) || 0;
+        if (quantity <= 0 || price < 0) {
+            throw new ErrorResponse(
+                "Item quantity must be greater than 0 and price must be valid",
+                400,
+            );
+        }
+        return {
+            product: item.product,
+            quantity,
+            price,
+            totalAmount: price * quantity,
+        };
     });
 
+    let orderUserId = req.user?._id;
+    if (req.user?.role === "admin" && userId) {
+        const userExists = await UserModel.findById(userId);
+        if (!userExists) {
+            return next(new ErrorResponse("User not found", 404));
+        }
+        orderUserId = userId;
+    }
+
+    for (const prod of normalizedItems) {
+        const tempProd = await ProductModel.findById(prod.product);
+        if (!tempProd) {
+            return next(new ErrorResponse("Product not found", 404));
+        }
+        tempProd.stock -= prod.quantity;
+        tempProd.sold = (tempProd.sold || 0) + prod.quantity;
+        await tempProd.save({ validateModifiedOnly: true });
+    }
+
+    const itemsTotal = normalizedItems.reduce(
+        (sum, item) => sum + item.totalAmount,
+        0,
+    );
+    const computedTax = Number(taxAmount) || 0;
+    const computedShipping = Number(shippingFee) || 0;
+    if (computedTax < 0 || computedShipping < 0) {
+        return next(
+            new ErrorResponse("Tax and shipping must be valid amounts", 400),
+        );
+    }
+    const computedGrandTotal = itemsTotal + computedTax + computedShipping;
+
     const order = new OrderModel({
-        userId: req.user._id,
-        items,
-        grandTotal,
+        userId: orderUserId,
+        items: normalizedItems,
+        taxAmount: computedTax,
+        shippingFee: computedShipping,
+        shippingMethod,
+        grandTotal: computedGrandTotal,
         recipient,
         payment,
+        status: status ?? "pending",
     });
 
     await order.save();
@@ -49,7 +118,7 @@ export const getAllOrder = expressAsyncHandler(async (req, res, next) => {
 
     if (!OrderModel) return next(new ErrorResponse("Model not found!", 400));
 
-    const allOrders = await OrderModel.find({});
+    const allOrders = await OrderModel.find({ isDeleted: false });
 
     return res.status(200).json({
         success: true,
@@ -63,7 +132,10 @@ export const getUserOrders = expressAsyncHandler(async (req, res, next) => {
 
     if (!OrderModel) return next(new ErrorResponse("Model not found!", 400));
 
-    const orders = await OrderModel.find({ userId: req.user._id }).populate({
+    const orders = await OrderModel.find({
+        userId: req.user._id,
+        isDeleted: false,
+    }).populate({
         path: "items.product",
         model: "Product",
     });
@@ -78,7 +150,10 @@ export const getOrderById = expressAsyncHandler(async (req, res, next) => {
 
     if (!OrderModel) return next(new ErrorResponse("Model not found!", 400));
 
-    const order = await OrderModel.findById(req.params.id)
+    const order = await OrderModel.findOne({
+        _id: req.params.id,
+        isDeleted: false,
+    })
         .populate({
             path: "items.product",
             model: "Product",
@@ -115,6 +190,33 @@ export const updateOrderStatus = expressAsyncHandler(async (req, res, next) => {
     });
 });
 
+export const updatePaymentStatus = expressAsyncHandler(async (req, res, next) => {
+    const OrderModel = getLocalOrderModel();
+    if (!OrderModel) return next(new ErrorResponse("Model not found!", 400));
+
+    const { ispaid } = req.body;
+
+    const order = await OrderModel.findById(req.params.id);
+    if (!order) return next(new ErrorResponse("Order not found", 404));
+
+    order.payment = {
+        ...order.payment,
+        ispaid: Boolean(ispaid),
+    };
+
+    await order.save({ validateModifiedOnly: true });
+
+    const populatedOrder = await OrderModel.findById(order._id)
+        .populate("userId")
+        .populate("items.product");
+
+    return res.status(200).json({
+        success: true,
+        message: "Payment status updated.",
+        order: populatedOrder,
+    });
+});
+
 export const deleteOrder = expressAsyncHandler(async (req, res, next) => {
     const OrderModel = getLocalOrderModel();
 
@@ -131,9 +233,12 @@ export const deleteOrder = expressAsyncHandler(async (req, res, next) => {
         );
     }
 
-    await order.remove();
+    order.isDeleted = true;
+    await order.save({ validateModifiedOnly: true });
 
-    return res.status(200).json({ success: true, message: "Order deleted." });
+    return res
+        .status(200)
+        .json({ success: true, message: "Order deleted." });
 });
 
 // Dashboard stats for admin
@@ -147,7 +252,7 @@ export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
     }
 
     // Total sales (sum of grandTotal for all orders)
-    const orders = await OrderModel.find({});
+    const orders = await OrderModel.find({ isDeleted: false });
     const totalSales = orders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
     const totalOrders = orders.length;
 

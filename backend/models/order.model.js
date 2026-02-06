@@ -12,9 +12,25 @@ const orderSchema = new Schema(
                 type: String,
                 required: true,
             },
+            addressLine2: {
+                type: String,
+                default: "",
+            },
             city: {
                 type: String,
                 required: true,
+            },
+            state: {
+                type: String,
+                default: "",
+            },
+            postalCode: {
+                type: String,
+                default: "",
+            },
+            country: {
+                type: String,
+                default: "",
             },
             phone: {
                 type: String,
@@ -46,11 +62,23 @@ const orderSchema = new Schema(
             type: Number,
             required: true,
         },
+        taxAmount: {
+            type: Number,
+            default: 0,
+        },
+        shippingFee: {
+            type: Number,
+            default: 0,
+        },
+        shippingMethod: {
+            type: String,
+            default: "standard",
+        },
         payment: {
             method: {
                 type: String,
                 required: true,
-                enum: ["COD", "online"],
+                enum: ["COD", "online", "card", "bank", "wallet"],
             },
             ispaid: {
                 type: Boolean,
@@ -61,6 +89,10 @@ const orderSchema = new Schema(
             type: String,
             enum: ["pending", "shipped", "delivered", "cancelled"],
             default: "pending",
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false,
         },
     },
     {

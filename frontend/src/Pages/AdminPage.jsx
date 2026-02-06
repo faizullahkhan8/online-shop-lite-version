@@ -9,6 +9,7 @@ import OrdersList from "../Components/Admin/OrdersList.jsx";
 import OrdersDetails from "../Components/Admin/OrdersDetails.jsx";
 import AddOrder from "../Components/Admin/AddOrder.jsx";
 import { UserList, AddUser } from "../Components/Admin/UserComponents.jsx";
+import TaxShippingSettings from "../Components/Admin/TaxShippingSettings.jsx";
 import { LayoutDashboard, Settings, Bell, Search } from "lucide-react";
 
 const AdminPage = () => {
@@ -23,6 +24,8 @@ const AdminPage = () => {
                 return <ProductList />;
             case "products-add":
                 return <AddProduct />;
+            case "products-settings":
+                return <TaxShippingSettings />;
             case "categories-list":
                 return <CategoryList />;
             case "categories-add":

@@ -29,6 +29,18 @@ const ProfilePage = () => {
         setUserData({ ...userData, [e.target.name]: e.target.value });
     };
 
+    const handleAddressChange = (field, value) => {
+        setUserData((prev) => ({
+            ...prev,
+            addresses: [
+                {
+                    ...(prev?.addresses?.[0] || {}),
+                    [field]: value,
+                },
+            ],
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const response = await updateUser({ userId: user._id, user: userData });
@@ -110,37 +122,95 @@ const ProfilePage = () => {
                                         value={userData?.phone}
                                         onChange={handleChange}
                                     />
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
-                                            Default Address
-                                        </label>
-                                        <div className="relative">
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                                                <MapPin size={16} />
-                                            </div>
-                                            <input
-                                                name="address"
-                                                value={
-                                                    userData?.addresses?.[0]
-                                                        ?.address || ""
-                                                }
-                                                onChange={(e) =>
-                                                    setUserData((pre) => ({
-                                                        ...pre,
-                                                        addresses: [
-                                                            {
-                                                                address:
-                                                                    e.target
-                                                                        .value,
-                                                            },
-                                                        ],
-                                                    }))
-                                                }
-                                                type="text"
-                                                className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-4 text-sm font-bold text-slate-900 outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-300"
-                                            />
-                                        </div>
-                                    </div>
+                                    <ProfileInput
+                                        label="Street Address"
+                                        name="street"
+                                        icon={<MapPin size={16} />}
+                                        value={
+                                            userData?.addresses?.[0]?.street ||
+                                            ""
+                                        }
+                                        onChange={(e) =>
+                                            handleAddressChange(
+                                                "street",
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                    <ProfileInput
+                                        label="Apartment / Suite"
+                                        name="addressLine2"
+                                        icon={<MapPin size={16} />}
+                                        value={
+                                            userData?.addresses?.[0]
+                                                ?.addressLine2 || ""
+                                        }
+                                        onChange={(e) =>
+                                            handleAddressChange(
+                                                "addressLine2",
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                    <ProfileInput
+                                        label="City"
+                                        name="city"
+                                        icon={<MapPin size={16} />}
+                                        value={
+                                            userData?.addresses?.[0]?.city || ""
+                                        }
+                                        onChange={(e) =>
+                                            handleAddressChange(
+                                                "city",
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                    <ProfileInput
+                                        label="State / Province"
+                                        name="state"
+                                        icon={<MapPin size={16} />}
+                                        value={
+                                            userData?.addresses?.[0]?.state ||
+                                            ""
+                                        }
+                                        onChange={(e) =>
+                                            handleAddressChange(
+                                                "state",
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                    <ProfileInput
+                                        label="Postal Code"
+                                        name="postalCode"
+                                        icon={<MapPin size={16} />}
+                                        value={
+                                            userData?.addresses?.[0]
+                                                ?.postalCode || ""
+                                        }
+                                        onChange={(e) =>
+                                            handleAddressChange(
+                                                "postalCode",
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                    <ProfileInput
+                                        label="Country"
+                                        name="country"
+                                        icon={<MapPin size={16} />}
+                                        value={
+                                            userData?.addresses?.[0]?.country ||
+                                            ""
+                                        }
+                                        onChange={(e) =>
+                                            handleAddressChange(
+                                                "country",
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
                                 </div>
 
                                 <div className="pt-4 border-t border-slate-50">

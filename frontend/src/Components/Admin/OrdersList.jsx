@@ -4,10 +4,9 @@ import {
     MoreVertical,
     Eye,
     Package,
-    Calendar,
-    MapPin,
-    Receipt,
     Loader2,
+    CreditCard,
+    Truck,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -68,8 +67,14 @@ const OrdersList = () => {
                             <th className="px-2 py-4 text-left text-[10px] w-52 min-w-52 font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
                                 Shipping Address
                             </th>
+                            <th className="px-2 py-4 text-left text-[10px] w-40 min-w-40 font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                Shipping Method
+                            </th>
                             <th className="px-2 py-4 text-right text-[10px] w-34 min-w-34 font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
                                 Payment Status
+                            </th>
+                            <th className="px-2 py-4 text-right text-[10px] w-34 min-w-34 font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                Payment Method
                             </th>
                             <th className="px-2 py-4 text-right text-[10px] w-34 min-w-34 font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
                                 Shipping Status
@@ -109,10 +114,24 @@ const OrdersList = () => {
                                         </span>
                                     </td>
                                     <td className="px-2 py-4">
-                                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide truncate max-w-[150px]">
-                                            {order.recipient?.city},{" "}
+                                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide truncate max-w-[170px]">
                                             {order.recipient?.street}
                                         </p>
+                                        <p className="text-[9px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">
+                                            {order.recipient?.city}{" "}
+                                            {order.recipient?.postalCode
+                                                ? `• ${order.recipient?.postalCode}`
+                                                : ""}
+                                        </p>
+                                    </td>
+                                    <td className="px-2 py-4">
+                                        <div className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-slate-500">
+                                            <Truck
+                                                size={12}
+                                                className="text-primary"
+                                            />
+                                            {order.shippingMethod || "standard"}
+                                        </div>
                                     </td>
                                     <td className="px-2 py-4">
                                         <div
@@ -128,6 +147,15 @@ const OrdersList = () => {
                                             {order.payment?.ispaid
                                                 ? "Cleared"
                                                 : "Unpaid"}
+                                        </div>
+                                    </td>
+                                    <td className="px-2 py-4">
+                                        <div className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-slate-500">
+                                            <CreditCard
+                                                size={12}
+                                                className="text-primary"
+                                            />
+                                            {order.payment?.method || "COD"}
                                         </div>
                                     </td>
                                     <td className="px-2 py-4">
@@ -186,17 +214,9 @@ const OrdersList = () => {
     );
 };
 
-const TableTh = ({ label, icon }) => (
-    <th className="px-8 py-5">
-        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-            {icon} {label}
-        </div>
-    </th>
-);
-
 const TableLoadingState = () => (
     <tr>
-        <td colSpan="7" className="px-8 py-20 text-center">
+        <td colSpan="9" className="px-8 py-20 text-center">
             <div className="flex flex-col items-center gap-3">
                 <Loader2 className="animate-spin text-primary" size={24} />
                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -209,7 +229,7 @@ const TableLoadingState = () => (
 
 const TableEmptyState = () => (
     <tr>
-        <td colSpan="7" className="px-8 py-24 text-center">
+        <td colSpan="9" className="px-8 py-24 text-center">
             <div className="flex flex-col items-center gap-4 opacity-20">
                 <Package size={48} className="text-slate-400" />
                 <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-900">

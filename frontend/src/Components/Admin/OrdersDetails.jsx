@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import {
     useGetOrderById,
     useUpdateOrderStatus,
+    useUpdatePaymentStatus,
     useDeleteOrder,
 } from "../../api/hooks/orders.api.js";
 import {
@@ -15,7 +16,6 @@ import {
     ShieldCheck,
     Truck,
     Clock,
-    CheckCircle2,
 } from "lucide-react";
 
 const OrderDetails = () => {
@@ -26,6 +26,8 @@ const OrderDetails = () => {
     const [order, setOrder] = useState(null);
     const { getOrderById, loading } = useGetOrderById();
     const { updateOrderStatus } = useUpdateOrderStatus();
+    const { updatePaymentStatus, loading: paymentLoading } =
+        useUpdatePaymentStatus();
     const { deleteOrder } = useDeleteOrder();
 
     useEffect(() => {
@@ -42,9 +44,13 @@ const OrderDetails = () => {
         if (res?.order) setOrder(res.order);
     };
 
+    const handlePaymentVerify = async () => {
+        if (!orderId) return;
+        const res = await updatePaymentStatus({ orderId, ispaid: true });
+        if (res?.order) setOrder(res.order);
+    };
+
     const handleDelete = async () => {
-        if (!window.confirm("Permanent deletion cannot be undone. Proceed?"))
-            return;
         const res = await deleteOrder(orderId);
         if (res?.success) navigate(-1);
     };
@@ -59,6 +65,13 @@ const OrderDetails = () => {
             </div>
         );
     }
+
+    const itemsSubtotal = order.items.reduce(
+        (sum, item) => sum + (item.totalAmount || item.quantity * item.price),
+        0,
+    );
+    const taxAmount = Number(order.taxAmount) || 0;
+    const shippingFee = Number(order.shippingFee) || 0;
 
     return (
         <div className="max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-300">
@@ -81,6 +94,9 @@ const OrderDetails = () => {
                             <span className="px-3 py-1 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded-lg">
                                 {order.status}
                             </span>
+                            <span className="px-3 py-1 bg-slate-50 text-slate-500 text-[9px] font-black uppercase tracking-widest rounded-lg border border-slate-100">
+                                {order.payment?.method || "COD"}
+                            </span>
                         </div>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 flex items-center gap-2">
                             <Calendar size={12} /> Transaction Log:{" "}
@@ -90,6 +106,18 @@ const OrderDetails = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
+                    {order.payment?.method !== "COD" &&
+                        !order.payment?.ispaid && (
+                            <button
+                                onClick={handlePaymentVerify}
+                                disabled={paymentLoading}
+                                className="flex items-center gap-2 px-6 py-3 bg-emerald-50 text-emerald-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all disabled:opacity-60"
+                            >
+                                {paymentLoading
+                                    ? "Verifying..."
+                                    : "Verify Payment"}
+                            </button>
+                        )}
                     <button
                         onClick={handleDelete}
                         className="flex items-center gap-2 px-6 py-3 bg-rose-50 text-rose-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all group"
@@ -210,15 +238,15 @@ const OrderDetails = () => {
                             <div className="space-y-2 text-right w-full md:w-64 border-l border-white/10 pl-8">
                                 <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                                     <span>Subtotal</span>
-                                    <span>
-                                        Rs {order.grandTotal?.toLocaleString()}
-                                    </span>
+                                    <span>Rs {itemsSubtotal.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                    <span>Tax</span>
+                                    <span>Rs {taxAmount.toLocaleString()}</span>
                                 </div>
                                 <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                                     <span>Shipping</span>
-                                    <span className="text-emerald-400">
-                                        FREE
-                                    </span>
+                                    <span>Rs {shippingFee.toLocaleString()}</span>
                                 </div>
                                 <div className="flex justify-between pt-4 border-t border-white/10 items-end">
                                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
@@ -249,6 +277,11 @@ const OrderDetails = () => {
                                 <p className="text-[10px] font-bold text-slate-400">
                                     {order.recipient?.phone}
                                 </p>
+                                {order.userId?.email && (
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                                        {order.userId.email}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
@@ -256,7 +289,9 @@ const OrderDetails = () => {
                                 <ShieldCheck size={12} /> Security Status
                             </p>
                             <p className="text-xs font-bold text-emerald-600 uppercase tracking-tight">
-                                Verified Transaction
+                                {order.payment?.ispaid
+                                    ? "Payment Verified"
+                                    : "Awaiting Confirmation"}
                             </p>
                         </div>
                     </section>
@@ -276,9 +311,39 @@ const OrderDetails = () => {
                                 </p>
                                 <p className="text-xs font-bold text-slate-500 leading-relaxed uppercase tracking-tight italic">
                                     {order.recipient.street}
+                                    {order.recipient.addressLine2
+                                        ? `, ${order.recipient.addressLine2}`
+                                        : ""}
                                     <br />
                                     {order.recipient.city}
+                                    {order.recipient.state
+                                        ? `, ${order.recipient.state}`
+                                        : ""}
+                                    {order.recipient.postalCode
+                                        ? ` ${order.recipient.postalCode}`
+                                        : ""}
+                                    {order.recipient.country
+                                        ? `, ${order.recipient.country}`
+                                        : ""}
                                 </p>
+                            </div>
+                        </div>
+                        <div className="mt-6 grid grid-cols-1 gap-3">
+                            <div className="flex items-center justify-between bg-slate-50 rounded-2xl px-4 py-3 border border-slate-100">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                                    Shipping Method
+                                </span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">
+                                    {order.shippingMethod || "standard"}
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between bg-slate-50 rounded-2xl px-4 py-3 border border-slate-100">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                                    Payment Method
+                                </span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">
+                                    {order.payment?.method || "COD"}
+                                </span>
                             </div>
                         </div>
                     </section>
@@ -289,3 +354,4 @@ const OrderDetails = () => {
 };
 
 export default OrderDetails;
+

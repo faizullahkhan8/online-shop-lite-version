@@ -9,6 +9,7 @@ import {
     Loader2,
     MapPin,
     CreditCard,
+    Receipt,
 } from "lucide-react";
 
 const OrderSuccessPage = () => {
@@ -40,6 +41,15 @@ const OrderSuccessPage = () => {
         );
     }
 
+    const itemsSubtotal = order.items?.reduce(
+        (sum, item) =>
+            sum + (item.totalAmount || item.quantity * item.price),
+        0,
+    );
+    const taxAmount = Number(order.taxAmount) || 0;
+    const shippingFee = Number(order.shippingFee) || 0;
+    const grandTotal = Number(order.grandTotal) || 0;
+
     return (
         <div className="bg-slate-50/50 min-h-screen py-12 lg:py-20">
             <div className="container mx-auto px-4">
@@ -70,7 +80,7 @@ const OrderSuccessPage = () => {
                             />
                             <InfoTile
                                 label="Total Amount"
-                                value={`Rs ${order.totalAmount || order.grandTotal}`}
+                                value={`Rs ${grandTotal.toLocaleString()}`}
                                 icon={<CreditCard size={14} />}
                             />
                             <InfoTile
@@ -96,17 +106,54 @@ const OrderSuccessPage = () => {
                                             {order.recipient?.name}
                                         </p>
                                         <p className="text-slate-500 text-sm leading-relaxed mb-4">
-                                            {order.recipient?.street},<br />
+                                            {order.recipient?.street}
+                                            {order.recipient?.addressLine2
+                                                ? `, ${order.recipient.addressLine2}`
+                                                : ""}
+                                            <br />
                                             {order.recipient?.city}
+                                            {order.recipient?.state
+                                                ? `, ${order.recipient.state}`
+                                                : ""}
+                                            {order.recipient?.postalCode
+                                                ? ` ${order.recipient.postalCode}`
+                                                : ""}
+                                            {order.recipient?.country
+                                                ? `, ${order.recipient.country}`
+                                                : ""}
                                         </p>
                                         <p className="text-xs font-bold text-slate-400">
                                             Contact: {order.recipient?.phone}
                                         </p>
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            <span className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest bg-white border border-slate-100 text-slate-500">
+                                                {order.shippingMethod ||
+                                                    "standard"}
+                                            </span>
+                                            <span className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest bg-white border border-slate-100 text-slate-500">
+                                                {order.payment?.method || "COD"}
+                                            </span>
+                                            <span
+                                                className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                                                    order.payment?.ispaid
+                                                        ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                                                        : "bg-amber-50 text-amber-600 border-amber-100"
+                                                }`}
+                                            >
+                                                {order.payment?.ispaid
+                                                    ? "Paid"
+                                                    : "Pending"}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">
+                                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6 flex items-center gap-2">
+                                        <Receipt
+                                            size={14}
+                                            className="text-primary"
+                                        />
                                         Itemized Receipt
                                     </h3>
                                     <div className="space-y-4">
@@ -129,19 +176,46 @@ const OrderSuccessPage = () => {
                                                     </p>
                                                 </div>
                                                 <span className="text-sm font-black text-slate-900">
-                                                    Rs {item.totalAmount}
+                                                    Rs{" "}
+                                                    {(
+                                                        item.totalAmount ||
+                                                        item.quantity *
+                                                            item.price
+                                                    ).toLocaleString()}
                                                 </span>
                                             </div>
                                         ))}
-                                        <div className="pt-4 mt-4 border-t border-dashed border-slate-200 flex justify-between items-center">
-                                            <span className="text-xs font-black uppercase tracking-widest text-slate-900">
-                                                Grand Total
-                                            </span>
-                                            <span className="text-xl font-black text-primary">
-                                                Rs{" "}
-                                                {order.totalAmount ||
-                                                    order.grandTotal}
-                                            </span>
+                                        <div className="pt-4 mt-4 border-t border-dashed border-slate-200 space-y-3">
+                                            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-500">
+                                                <span>Items Subtotal</span>
+                                                <span>
+                                                    Rs{" "}
+                                                    {itemsSubtotal.toLocaleString()}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-500">
+                                                <span>Tax</span>
+                                                <span>
+                                                    Rs{" "}
+                                                    {taxAmount.toLocaleString()}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-500">
+                                                <span>Shipping</span>
+                                                <span>
+                                                    Rs{" "}
+                                                    {shippingFee.toLocaleString()}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between items-center pt-2 border-t border-slate-200">
+                                                <span className="text-xs font-black uppercase tracking-widest text-slate-900">
+                                                    Grand Total
+                                                </span>
+                                                <span className="text-xl font-black text-primary">
+                                                    Rs{" "}
+                                                    {grandTotal.toLocaleString()}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

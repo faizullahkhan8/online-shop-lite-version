@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { usePlaceOrder } from "../api/hooks/orders.api";
+import { useGetSettings } from "../api/hooks/settings.api";
 import { clearCart } from "../store/slices/cartSlice";
 import {
     Truck,
@@ -22,19 +23,28 @@ const CheckoutPage = () => {
     const dispatch = useDispatch();
 
     const { placeOrder, isLoading } = usePlaceOrder();
+    const { getSettings } = useGetSettings();
 
     const [formData, setFormData] = useState({
         recipient: {
             name: user?.name || "",
-            street: "",
-            city: "",
+            street: user?.addresses?.[0]?.street || "",
+            addressLine2: user?.addresses?.[0]?.addressLine2 || "",
+            city: user?.addresses?.[0]?.city || "",
+            state: user?.addresses?.[0]?.state || "",
+            postalCode: user?.addresses?.[0]?.postalCode || "",
+            country: user?.addresses?.[0]?.country || "",
             phone: user?.phone || "",
         },
         payment: {
             method: "COD",
             ispaid: false,
         },
+        taxAmount: 0,
+        shippingFee: 0,
+        shippingMethod: "standard",
     });
+    const [settingsLoaded, setSettingsLoaded] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -51,9 +61,62 @@ const CheckoutPage = () => {
                 payment: { ...prev.payment, [field]: value },
             }));
         } else {
-            setFormData((prev) => ({ ...prev, [name]: value }));
+            setFormData((prev) => ({
+                ...prev,
+                [name]:
+                    name === "taxAmount" || name === "shippingFee"
+                        ? Number(value)
+                        : value,
+            }));
         }
     };
+
+    useEffect(() => {
+        if (!settingsLoaded) {
+            getSettings().then((res) => {
+                if (res?.settings) {
+                    setFormData((prev) => ({
+                        ...prev,
+                        taxAmount: Number(res.settings.taxAmount) || 0,
+                        shippingFee: Number(res.settings.shippingFee) || 0,
+                        shippingMethod:
+                            res.settings.shippingMethod || "standard",
+                    }));
+                }
+                setSettingsLoaded(true);
+            });
+        }
+    }, [settingsLoaded]);
+
+    useEffect(() => {
+        if (!user) return;
+        setFormData((prev) => ({
+            ...prev,
+            recipient: {
+                ...prev.recipient,
+                name: user?.name || prev.recipient.name,
+                phone: user?.phone || prev.recipient.phone,
+                street:
+                    user?.addresses?.[0]?.street || prev.recipient.street,
+                addressLine2:
+                    user?.addresses?.[0]?.addressLine2 ||
+                    prev.recipient.addressLine2,
+                city: user?.addresses?.[0]?.city || prev.recipient.city,
+                state: user?.addresses?.[0]?.state || prev.recipient.state,
+                postalCode:
+                    user?.addresses?.[0]?.postalCode ||
+                    prev.recipient.postalCode,
+                country:
+                    user?.addresses?.[0]?.country || prev.recipient.country,
+            },
+        }));
+    }, [user]);
+
+    useEffect(() => {
+        if (formData.shippingMethod === "pickup" && formData.shippingFee !== 0) {
+            setFormData((prev) => ({ ...prev, shippingFee: 0 }));
+        }
+    }, [formData.shippingMethod]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -69,7 +132,13 @@ const CheckoutPage = () => {
             userId: user?._id,
             recipient: formData.recipient,
             items: formattedItems,
-            grandTotal: totalAmount,
+            taxAmount: Number(formData.taxAmount) || 0,
+            shippingFee: Number(formData.shippingFee) || 0,
+            shippingMethod: formData.shippingMethod,
+            grandTotal:
+                (totalAmount || 0) +
+                (Number(formData.taxAmount) || 0) +
+                (Number(formData.shippingFee) || 0),
             payment: formData.payment,
             status: "pending",
         };
@@ -164,6 +233,42 @@ const CheckoutPage = () => {
                                         onChange={handleChange}
                                         placeholder="123 Luxury Ave"
                                     />
+                                    <CheckoutInput
+                                        label="Apartment / Suite"
+                                        name="recipient.addressLine2"
+                                        icon={<MapPin size={16} />}
+                                        value={formData.recipient.addressLine2}
+                                        onChange={handleChange}
+                                        placeholder="Apt 12B"
+                                        required={false}
+                                    />
+                                    <CheckoutInput
+                                        label="State / Province"
+                                        name="recipient.state"
+                                        icon={<MapPin size={16} />}
+                                        value={formData.recipient.state}
+                                        onChange={handleChange}
+                                        placeholder="California"
+                                        required={false}
+                                    />
+                                    <CheckoutInput
+                                        label="Postal Code"
+                                        name="recipient.postalCode"
+                                        icon={<MapPin size={16} />}
+                                        value={formData.recipient.postalCode}
+                                        onChange={handleChange}
+                                        placeholder="90210"
+                                        required={false}
+                                    />
+                                    <CheckoutInput
+                                        label="Country"
+                                        name="recipient.country"
+                                        icon={<MapPin size={16} />}
+                                        value={formData.recipient.country}
+                                        onChange={handleChange}
+                                        placeholder="USA"
+                                        required={false}
+                                    />
                                 </div>
                             </section>
 
@@ -176,42 +281,61 @@ const CheckoutPage = () => {
                                     02. Payment Method
                                 </h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <PaymentCard
-                                        active={
-                                            formData.payment.method === "COD"
-                                        }
-                                        onClick={() =>
-                                            setFormData((p) => ({
-                                                ...p,
-                                                payment: {
-                                                    ...p.payment,
-                                                    method: "COD",
-                                                },
-                                            }))
-                                        }
-                                        title="Cash on Delivery"
-                                        description="Pay when you receive"
-                                        icon={<Wallet size={20} />}
-                                    />
-                                    <PaymentCard
-                                        active={
-                                            formData.payment.method === "online"
-                                        }
-                                        onClick={() =>
-                                            setFormData((p) => ({
-                                                ...p,
-                                                payment: {
-                                                    ...p.payment,
-                                                    method: "online",
-                                                },
-                                            }))
-                                        }
-                                        title="Online Payment"
-                                        description="Secure Stripe/Card"
-                                        icon={<CreditCard size={20} />}
-                                    />
+                                    {[
+                                        {
+                                            value: "COD",
+                                            title: "Cash on Delivery",
+                                            description: "Pay when you receive",
+                                            icon: <Wallet size={20} />,
+                                        },
+                                        {
+                                            value: "card",
+                                            title: "Card Payment",
+                                            description: "Visa / MasterCard",
+                                            icon: <CreditCard size={20} />,
+                                        },
+                                        {
+                                            value: "bank",
+                                            title: "Bank Transfer",
+                                            description: "Direct bank transfer",
+                                            icon: <CreditCard size={20} />,
+                                        },
+                                        {
+                                            value: "wallet",
+                                            title: "Wallet",
+                                            description: "Mobile wallet",
+                                            icon: <Wallet size={20} />,
+                                        },
+                                        {
+                                            value: "online",
+                                            title: "Online Payment",
+                                            description: "Secure online",
+                                            icon: <CreditCard size={20} />,
+                                        },
+                                    ].map((method) => (
+                                        <PaymentCard
+                                            key={method.value}
+                                            active={
+                                                formData.payment.method ===
+                                                method.value
+                                            }
+                                            onClick={() =>
+                                                setFormData((p) => ({
+                                                    ...p,
+                                                    payment: {
+                                                        ...p.payment,
+                                                        method: method.value,
+                                                    },
+                                                }))
+                                            }
+                                            title={method.title}
+                                            description={method.description}
+                                            icon={method.icon}
+                                        />
+                                    ))}
                                 </div>
                             </section>
+
                         </form>
                     </div>
 
@@ -243,9 +367,21 @@ const CheckoutPage = () => {
 
                             <div className="space-y-4 pt-8 border-t border-white/10 mb-8">
                                 <div className="flex justify-between text-slate-400 text-[10px] font-black uppercase tracking-widest">
+                                    <span>Tax</span>
+                                    <span>
+                                        Rs{" "}
+                                        {Number(
+                                            formData.taxAmount || 0,
+                                        ).toFixed(0)}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between text-slate-400 text-[10px] font-black uppercase tracking-widest">
                                     <span>Shipping</span>
-                                    <span className="text-emerald-400">
-                                        Free
+                                    <span>
+                                        Rs{" "}
+                                        {Number(
+                                            formData.shippingFee || 0,
+                                        ).toFixed(0)}
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center pt-2">
@@ -253,7 +389,13 @@ const CheckoutPage = () => {
                                         Grand Total
                                     </span>
                                     <span className="text-2xl font-black text-white">
-                                        Rs {totalAmount?.toFixed(0)}
+                                        Rs{" "}
+                                        {(
+                                            (totalAmount || 0) +
+                                            (Number(formData.taxAmount) || 0) +
+                                            (Number(formData.shippingFee) ||
+                                                0)
+                                        ).toFixed(0)}
                                     </span>
                                 </div>
                             </div>
@@ -288,7 +430,16 @@ const CheckoutPage = () => {
     );
 };
 
-const CheckoutInput = ({ label, name, value, onChange, placeholder, icon }) => (
+const CheckoutInput = ({
+    label,
+    name,
+    value,
+    onChange,
+    placeholder,
+    icon,
+    type = "text",
+    required = true,
+}) => (
     <div className="space-y-2">
         <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
             {label}
@@ -298,7 +449,8 @@ const CheckoutInput = ({ label, name, value, onChange, placeholder, icon }) => (
                 {icon}
             </div>
             <input
-                required
+                required={required}
+                type={type}
                 name={name}
                 value={value}
                 onChange={onChange}

@@ -87,14 +87,14 @@ export const useLogoutUser = () => {
     };
 };
 
-const useGetUser = () => {
+export const useGetUser = () => {
     const [loading, setLoading] = useState(false);
 
     const getUser = async ({ userId }) => {
         setLoading(true);
         try {
             const response = await apiClient.get(
-                `${USER_ROUTES.GET_USER}/${userId}`
+                `${USER_ROUTES.GET_USER}/${userId}`,
             );
 
             if (response.data) {
@@ -116,6 +116,38 @@ const useGetUser = () => {
     };
 };
 
+export const useAddUserFromAdmin = () => {
+    const [loading, setLoading] = useState(false);
+
+    const addUserFromAdmin = async (userData) => {
+        setLoading(true);
+        try {
+            const response = await apiClient.post(
+                USER_ROUTES.ADD_USER_FROM_ADMIN || "/users/add",
+                userData,
+            );
+
+            if (response.data) {
+                toast.success("User created successfully by admin");
+                return response.data;
+            }
+        } catch (error) {
+            const ErrorMessage =
+                error.response?.data?.message || "Failed to create user";
+            toast.error(ErrorMessage);
+            console.log("Error in Admin User Creation", error);
+            return;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return {
+        addUserFromAdmin,
+        loading,
+    };
+};
+
 export const useUpdateUser = () => {
     const [loading, setLoading] = useState(false);
 
@@ -124,7 +156,7 @@ export const useUpdateUser = () => {
         try {
             const response = await apiClient.put(
                 `${USER_ROUTES.UPDATE_USER}/${userId}`,
-                user
+                user,
             );
 
             if (response.data) {
@@ -202,7 +234,7 @@ export const useRemoveFromWishlist = () => {
         setLoading(true);
         try {
             const response = await apiClient.delete(
-                `${WISHLIST_ROUTES.REMOVE}/${productId}`
+                `${WISHLIST_ROUTES.REMOVE}/${productId}`,
             );
 
             if (response.data) return response.data;
@@ -227,7 +259,7 @@ export const useGetAllUsers = () => {
         setLoading(true);
         try {
             const response = await apiClient.get(
-                USER_ROUTES.GET_ALL || "/users/all"
+                USER_ROUTES.GET_ALL || "/users/all",
             );
             if (response.data) return response.data;
         } catch (error) {

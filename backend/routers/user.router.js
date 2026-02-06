@@ -10,6 +10,7 @@ import {
     addToWishlist,
     removeFromWishlist,
     getAllUsers,
+    addUserFromAdmin,
 } from "../controllers/user.controller.js";
 import { isAuth, authorize } from "../middlewares/auth.middleware.js";
 
@@ -24,6 +25,7 @@ router.get("/getAccessToken", getAccessToken);
 
 // Admin: get all users
 router.get("/all", isAuth, authorize(["admin"]), getAllUsers);
+router.post("/add", isAuth, authorize(["admin"]), addUserFromAdmin);
 
 // Wishlist routes
 router.get("/wishlist", isAuth, getWishlist);
