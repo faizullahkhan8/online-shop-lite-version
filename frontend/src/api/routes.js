@@ -49,3 +49,8 @@ export const PROMOTION_ROUTES = {
     GET_ACTIVE: "/promotions/active",
 };
 
+export const REVIEW_ROUTES = {
+    ADD: "/reviews",
+    GET_BY_PRODUCT: "/reviews", // GET /reviews/:productId
+};
+

@@ -96,7 +96,7 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
     for (const prod of normalizedItems) {
         const tempProd = await ProductModel.findById(prod.product);
         tempProd.stock -= prod.quantity;
-        tempProd.sold = (tempProd.sold || 0) + prod.quantity;
+        tempProd.sold += prod.quantity;
         await tempProd.save({ validateModifiedOnly: true });
     }
 

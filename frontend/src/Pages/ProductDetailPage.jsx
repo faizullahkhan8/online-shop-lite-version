@@ -19,6 +19,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../store/slices/cartSlice";
 import { toggleWishlist } from "../store/slices/wishlistSlice";
 import { useAddToWishlist, useRemoveFromWishlist } from "../api/hooks/user.api";
+import StarRating from "../Components/UI/StarRating";
+import ProductReviews from "../Components/Product/ProductReviews";
 
 const ProductDetailPage = () => {
     const { id } = useParams();
@@ -122,9 +124,16 @@ const ProductDetailPage = () => {
                                 )}
                             </div>
 
-                            <h1 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight mb-4 uppercase">
+                            <h1 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase">
                                 {product?.name}
                             </h1>
+
+                            <div className="flex items-center gap-4 mb-6">
+                                <StarRating rating={product?.rating || 0} readonly size={16} />
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                    {product?.numReviews || 0} Reviews
+                                </span>
+                            </div>
 
                             <p className="text-slate-500 leading-relaxed mb-8 font-medium">
                                 {product?.description ||
@@ -165,7 +174,7 @@ const ProductDetailPage = () => {
                                             className="text-primary"
                                         />
                                         <span>
-                                            {product?.soldCount || 0}+ Sold
+                                            {product?.sold || 0} items Sold
                                         </span>
                                     </div>
                                 </div>
@@ -261,6 +270,9 @@ const ProductDetailPage = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Product Reviews Section */}
+                {product && <ProductReviews productId={product._id || product.id} />}
             </div>
         </div>
     );
