@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Timer } from "lucide-react";
-import ProductCard from "../ProductCard";
+import ProductCard from "../../Components/ProductCard";
 
 const DealsAndOffers = ({ items }) => {
     const [timeLeft] = useState({

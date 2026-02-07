@@ -18,7 +18,7 @@ const CheckoutPage = lazy(() => import("./Pages/CheckoutPage"));
 const OrdersPage = lazy(() => import("./Pages/OrdersPage"));
 const OrderSuccessPage = lazy(() => import("./Pages/OrderSuccessPage"));
 const ProfilePage = lazy(() => import("./Pages/ProfilePage"));
-const ProtectedRoute = lazy(() => import("./Components/auth/ProtectedRoute"));
+const ProtectedRoute = lazy(() => import("./Components/Auth/ProtectedRoute"));
 const AdminPage = lazy(() => import("./Pages/AdminPage"));
 const ContactUsPage = lazy(() => import("./Pages/ContactUsPage"));
 

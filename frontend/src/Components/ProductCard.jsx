@@ -42,10 +42,13 @@ const ProductCard = ({ product }) => {
         }
     };
 
-    let originalPrice = null;
-    if (product?.discount > 0) {
-        originalPrice = (product.price * 1.1).toFixed(2);
-    }
+    const isDiscounted =
+        product?.effectivePrice !== undefined &&
+        product?.effectivePrice < product?.price;
+    const displayPrice = isDiscounted
+        ? product.effectivePrice
+        : product?.price;
+    const strikePrice = isDiscounted ? product.price : null;
 
     const rating = Math.floor(product?.rating || 0);
 
@@ -55,9 +58,11 @@ const ProductCard = ({ product }) => {
             className="group flex flex-col h-full bg-white rounded-2xl border border-slate-100 p-2 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300"
         >
             <div className="relative aspect-square w-full bg-slate-50/50 rounded-xl overflow-hidden">
-                {product?.discount > 0 && (
-                    <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-md">
-                        -{product.discount}%
+                {isDiscounted && (
+                    <div className="absolute top-2 left-2 z-10 bg-rose-600 text-white text-[9px] font-black px-2 py-1 rounded-lg shadow-lg shadow-rose-500/20 uppercase tracking-widest">
+                        {product.promotion?.discountType === "PERCENTAGE"
+                            ? `-${product.promotion.discountValue}%`
+                            : "OFF"}
                     </div>
                 )}
 
@@ -111,11 +116,11 @@ const ProductCard = ({ product }) => {
                 <div className="mt-auto pt-2 flex flex-col gap-2">
                     <div className="flex flex-col">
                         <span className="text-base font-black text-slate-900 leading-none">
-                            Rs: {product?.price}
+                            Rs: {displayPrice?.toLocaleString()}
                         </span>
-                        {originalPrice && (
-                            <span className="text-[10px] text-slate-400 line-through mt-0.5">
-                                Rs: {originalPrice}
+                        {strikePrice && (
+                            <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest line-through mt-0.5 opacity-60">
+                                Rs: {strikePrice?.toLocaleString()}
                             </span>
                         )}
                     </div>

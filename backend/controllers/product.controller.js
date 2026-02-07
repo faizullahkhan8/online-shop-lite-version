@@ -4,6 +4,8 @@ import { ErrorResponse } from "../utils/ErrorResponse.js";
 
 import fs from "fs/promises";
 import path from "path";
+import { getEffectivePrice } from "../utils/promotionHelper.js";
+
 
 export const createProduct = expressAsyncHandler(async (req, res, next) => {
     const ProductModel = getLocalProductModel();
@@ -76,10 +78,26 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
 
     const totalProducts = await ProductModel.countDocuments(query);
 
+    // Enrich products with promotional pricing
+    const productsWithPromos = await Promise.all(
+        products.map(async (product) => {
+            const { price: effectivePrice, promotion } = await getEffectivePrice(
+                product._id,
+                product.price,
+            );
+            return {
+                ...product.toObject(),
+                id: product._id,
+                effectivePrice,
+                promotion,
+            };
+        }),
+    );
+
     return res.status(200).json({
         success: true,
         message: "Products fetched successfully",
-        products,
+        products: productsWithPromos,
         totalPages: Math.ceil(totalProducts / Number(limit)),
         currentPage: Number(page),
         totalProducts,
@@ -94,11 +112,22 @@ export const getProductById = expressAsyncHandler(async (req, res, next) => {
     const { id } = req.params;
 
     const product = await ProductModel.findById(id).populate("category");
+    if (!product) return next(new ErrorResponse("Product not found", 404));
+
+    const { price: effectivePrice, promotion } = await getEffectivePrice(
+        product._id,
+        product.price,
+    );
 
     return res.status(200).json({
         success: true,
         message: "Product fetched successfully",
-        product,
+        product: {
+            ...product.toObject(),
+            id: product._id,
+            effectivePrice,
+            promotion,
+        },
     });
 });
 

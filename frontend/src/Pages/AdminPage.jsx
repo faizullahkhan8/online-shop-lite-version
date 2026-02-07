@@ -10,7 +10,9 @@ import OrdersDetails from "../Components/Admin/OrdersDetails.jsx";
 import AddOrder from "../Components/Admin/AddOrder.jsx";
 import { UserList, AddUser } from "../Components/Admin/UserComponents.jsx";
 import TaxShippingSettings from "../Components/Admin/TaxShippingSettings.jsx";
+import PromotionBuilder from "../Components/Admin/PromotionBuilder.jsx";
 import { LayoutDashboard, Settings, Bell, Search } from "lucide-react";
+
 
 const AdminPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -40,8 +42,11 @@ const AdminPage = () => {
                 return <OrdersDetails />;
             case "orders-add":
                 return <AddOrder />;
+            case "promotions":
+                return <PromotionBuilder />;
             default:
                 return <DashboardHome />;
+
         }
     };
 

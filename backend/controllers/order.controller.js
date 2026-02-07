@@ -5,6 +5,7 @@ import {
     getLocalUserModel,
 } from "../config/localDb.js";
 import { ErrorResponse } from "../utils/ErrorResponse.js";
+import { getEffectivePrice } from "../utils/promotionHelper.js";
 
 export const placeOrder = expressAsyncHandler(async (req, res, next) => {
     const OrderModel = getLocalOrderModel();
@@ -43,22 +44,44 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("Payment method is required", 400));
     }
 
-    const normalizedItems = items.map((item) => {
-        const quantity = Number(item.quantity) || 0;
-        const price = Number(item.price) || 0;
-        if (quantity <= 0 || price < 0) {
-            throw new ErrorResponse(
-                "Item quantity must be greater than 0 and price must be valid",
-                400,
-            );
-        }
-        return {
-            product: item.product,
-            quantity,
-            price,
-            totalAmount: price * quantity,
-        };
-    });
+    // Normalize and validate items with current promotional prices
+    let normalizedItems;
+    try {
+        normalizedItems = await Promise.all(
+            items.map(async (item) => {
+                const quantity = Number(item.quantity) || 0;
+                const tempProd = await ProductModel.findById(item.product);
+                if (!tempProd) {
+                    throw new ErrorResponse(
+                        `Product not found: ${item.product}`,
+                        404,
+                    );
+                }
+
+                // SECURITY: Re-calculate the price on server side
+                const { price: effectivePrice } = await getEffectivePrice(
+                    tempProd._id,
+                    tempProd.price,
+                );
+
+                if (quantity <= 0) {
+                    throw new ErrorResponse(
+                        "Item quantity must be greater than 0",
+                        400,
+                    );
+                }
+
+                return {
+                    product: item.product,
+                    quantity,
+                    price: effectivePrice,
+                    totalAmount: effectivePrice * quantity,
+                };
+            }),
+        );
+    } catch (error) {
+        return next(error);
+    }
 
     let orderUserId = req.user?._id;
     if (req.user?.role === "admin" && userId) {
@@ -69,11 +92,9 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
         orderUserId = userId;
     }
 
+    // Process stock and sold count
     for (const prod of normalizedItems) {
         const tempProd = await ProductModel.findById(prod.product);
-        if (!tempProd) {
-            return next(new ErrorResponse("Product not found", 404));
-        }
         tempProd.stock -= prod.quantity;
         tempProd.sold = (tempProd.sold || 0) + prod.quantity;
         await tempProd.save({ validateModifiedOnly: true });
@@ -122,7 +143,7 @@ export const getAllOrder = expressAsyncHandler(async (req, res, next) => {
 
     return res.status(200).json({
         success: true,
-        message: "All orders fatched.",
+        message: "All orders fetched.",
         orders: allOrders,
     });
 });
@@ -236,12 +257,9 @@ export const deleteOrder = expressAsyncHandler(async (req, res, next) => {
     order.isDeleted = true;
     await order.save({ validateModifiedOnly: true });
 
-    return res
-        .status(200)
-        .json({ success: true, message: "Order deleted." });
+    return res.status(200).json({ success: true, message: "Order deleted." });
 });
 
-// Dashboard stats for admin
 export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
     const OrderModel = getLocalOrderModel();
     const ProductModel = getLocalProductModel();
@@ -251,7 +269,6 @@ export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("Model not found!", 400));
     }
 
-    // Total sales (sum of grandTotal for all orders)
     const orders = await OrderModel.find({ isDeleted: false });
     const totalSales = orders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
     const totalOrders = orders.length;

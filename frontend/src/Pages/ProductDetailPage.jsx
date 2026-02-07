@@ -131,6 +131,29 @@ const ProductDetailPage = () => {
                                     "Experience the perfect blend of performance and design with our latest addition to the collection."}
                             </p>
 
+                            <div className="mb-8 p-6 bg-slate-900 rounded-3xl text-white flex flex-col items-center sm:items-start group/price overflow-hidden relative">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl translate-x-1/2 -translate-y-1/2" />
+                                <span className="text-[10px] font-black uppercase text-slate-400 tracking-[0.3em] mb-2 relative">
+                                    Current Valuation
+                                </span>
+                                <div className="flex items-center gap-4 relative">
+                                    <span className="text-4xl font-black tracking-tighter text-white">
+                                        PKR{" "}
+                                        {(
+                                            product?.effectivePrice ||
+                                            product?.price
+                                        )?.toLocaleString()}
+                                    </span>
+                                    {product?.effectivePrice <
+                                        product?.price && (
+                                        <span className="text-sm font-black text-slate-500 line-through uppercase tracking-widest">
+                                            PKR{" "}
+                                            {product?.price?.toLocaleString()}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+
                             <div className="flex items-center gap-8 mb-8 pb-8 border-b border-slate-100">
                                 <div className="flex flex-col">
                                     <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">

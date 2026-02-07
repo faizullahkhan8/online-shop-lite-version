@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import clsx from "clsx";
 
@@ -11,33 +11,52 @@ const Select = ({
     className,
 }) => {
     const [open, setOpen] = useState(false);
+    const containerRef = useRef(null);
 
     const selectedOption = options.find((opt) => opt.value === value);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                containerRef.current &&
+                !containerRef.current.contains(event.target)
+            ) {
+                setOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     return (
-        <div className={clsx("relative h-full max-w-max min-w-50", className)}>
+        <div ref={containerRef} className={clsx("relative w-full", className)}>
             {/* Trigger */}
             <button
                 type="button"
                 disabled={disabled}
                 onClick={() => setOpen((prev) => !prev)}
                 className={clsx(
-                    "flex items-center justify-between h-full min-w-50",
-                    "px-4 py-2 bg-white border-gray-300",
+                    "flex items-center justify-between w-full",
+                    "px-4 py-2",
+                    "bg-white border border-gray-300 rounded-md",
                     "text-sm outline-none",
                     "hover:bg-gray-50 transition-colors",
-                    "disabled:bg-gray-100 disabled:cursor-not-allowed",
+                    "disabled:bg-gray-100 disabled:cursor-not-allowed"
                 )}
             >
-                <span className="truncate mr-2 text-gray-800 text-md">
+                <span className="truncate mr-2 text-gray-800">
                     {selectedOption?.label || placeholder}
                 </span>
 
                 <ChevronDown
                     size={16}
                     className={clsx(
-                        "text-gray-500 transition-transform duration-100",
-                        open && "rotate-180",
+                        "text-gray-500 transition-transform duration-150 shrink-0",
+                        open && "rotate-180"
                     )}
                 />
             </button>
@@ -46,10 +65,10 @@ const Select = ({
             {open && !disabled && (
                 <div
                     className={clsx(
-                        "absolute z-50 mt-1 left-0",
-                        "w-50 max-h-75",
+                        "absolute z-50 mt-1 inset-x-0",
+                        "max-h-64",
                         "bg-white border border-gray-200 rounded-md",
-                        "shadow-lg py-1 overflow-y-auto",
+                        "shadow-lg py-1 overflow-y-auto"
                     )}
                 >
                     {options.map((option) => (
@@ -64,7 +83,7 @@ const Select = ({
                                 "hover:bg-blue-50 hover:text-blue-700",
                                 value === option.value
                                     ? "bg-blue-50 text-blue-700 font-medium"
-                                    : "text-gray-700",
+                                    : "text-gray-700"
                             )}
                         >
                             {option.label}

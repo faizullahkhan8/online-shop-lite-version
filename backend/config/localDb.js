@@ -5,6 +5,8 @@ import categorySchema from "../models/category.model.js";
 import orderSchema from "../models/order.model.js";
 import wishlistSchema from "../models/wishlist.model.js";
 import settingsSchema from "../models/settings.model.js";
+import promotionSchema from "../models/promotion.model.js";
+
 
 let localDbConnection = null;
 let localUserModel;
@@ -13,6 +15,8 @@ let localCategoryModel;
 let localOrderModel;
 let localWishlistModel;
 let localSettingsModel;
+let localPromotionModel;
+
 
 export const connectToDB = async () => {
     try {
@@ -42,6 +46,11 @@ export const connectToDB = async () => {
             "Settings",
             settingsSchema,
         );
+        localPromotionModel = localDbConnection.model(
+            "Promotion",
+            promotionSchema,
+        );
+
     } catch (error) {
         console.log(error);
     }
@@ -53,3 +62,5 @@ export const getLocalCategoryModel = () => localCategoryModel || null;
 export const getLocalOrderModel = () => localOrderModel || null;
 export const getLocalWishlistModel = () => localWishlistModel || null;
 export const getLocalSettingsModel = () => localSettingsModel || null;
+export const getLocalPromotionModel = () => localPromotionModel || null;
+

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import HeroSection from "../components/home/HeroSection";
-import DealsAndOffers from "../components/home/DealsAndOffers";
+import HeroSection from "../Components/Home/HeroSection";
+import DealsAndOffers from "../Components/Home/DealsAndOffers";
+import PromotionSection from "../Components/Home/PromotionSection";
 import { useGetAllProducts } from "../api/hooks/product.api";
+
 import { Link } from "react-router-dom";
 import ProductCard from "../Components/ProductCard";
 
@@ -21,6 +23,11 @@ const HomePage = () => {
     return (
         <div className="min-h-screen bg-slate-50/30 pb-20 flex flex-col gap-12">
             <HeroSection />
+
+            <div className="mt-8">
+                <PromotionSection />
+            </div>
+
 
             {/* <div className="mt-4">
                 <DealsAndOffers items={products.slice(0, 6)} />

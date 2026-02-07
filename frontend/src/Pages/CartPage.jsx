@@ -59,7 +59,7 @@ const CartPage = () => {
                 <div className="lg:col-span-8 space-y-6">
                     {items.length === 0 ? (
                         <div className="bg-white border border-slate-100 rounded-[3rem] py-20 px-6 flex flex-col items-center justify-center shadow-2xl shadow-slate-200/50">
-                            <div className="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center mb-6">
+                            <div className="w-24 h-24 bg-slate-50 rounded-4xl flex items-center justify-center mb-6">
                                 <ShoppingBag
                                     size={40}
                                     className="text-slate-200"
@@ -82,9 +82,9 @@ const CartPage = () => {
                         items.map((item) => (
                             <div
                                 key={item._id}
-                                className="bg-white border border-slate-100 rounded-[2.5rem] p-6 flex flex-col sm:flex-row gap-6 items-center shadow-xl shadow-slate-200/40 hover:border-primary/20 transition-all relative overflow-hidden group"
+                                className="bg-white border border-slate-100 rounded-4xl p-6 flex flex-col sm:flex-row gap-6 items-center shadow-xl shadow-slate-200/40 hover:border-primary/20 transition-all relative overflow-hidden group"
                             >
-                                <div className="w-32 h-32 bg-slate-50 rounded-2xl p-4 flex-shrink-0 relative overflow-hidden border border-slate-100">
+                                <div className="w-32 h-32 bg-slate-50 rounded-2xl p-4 shrink-0 relative overflow-hidden border border-slate-100">
                                     <img
                                         src={`${import.meta.env.VITE_BACKEND_URL}/${item.image}`}
                                         alt={item.name}
@@ -96,9 +96,16 @@ const CartPage = () => {
                                     <h4 className="font-black text-slate-900 text-lg uppercase tracking-tight mb-1">
                                         {item.name}
                                     </h4>
-                                    <p className="text-sm font-bold text-primary mb-4 tracking-tighter">
-                                        Unit: Rs {item.price.toLocaleString()}
-                                    </p>
+                                    <div className="flex flex-col mb-4">
+                                        {item.originalPrice !== item.price && (
+                                            <p className="text-[10px] font-black text-slate-400 mb-0.5 uppercase tracking-widest line-through opacity-60">
+                                                Rs {item.originalPrice?.toLocaleString()}
+                                            </p>
+                                        )}
+                                        <p className="text-sm font-bold text-primary tracking-tighter">
+                                            Unit: Rs {item.price.toLocaleString()}
+                                        </p>
+                                    </div>
 
                                     <div className="flex items-center justify-center sm:justify-start gap-6">
                                         <div className="flex items-center bg-slate-100 rounded-xl p-1">

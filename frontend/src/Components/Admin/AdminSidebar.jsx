@@ -12,13 +12,32 @@ import {
     LayoutDashboardIcon,
     Globe,
     Receipt,
+    LogOut,
+    Loader2,
+    Percent,
 } from "lucide-react";
+
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useLogoutUser } from "../../api/hooks/user.api";
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/slices/authSlice";
 
 const AdminSidebar = ({ searchParams, setSearchParams }) => {
     const [collapsed] = useState(false);
     const activeTab = searchParams.get("tab");
+
+    const { logoutUser, loading } = useLogoutUser({});
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleSignOut = async () => {
+        const response = await logoutUser();
+        if (response.success) {
+            dispatch(logout());
+            navigate("/");
+        }
+    };
 
     const colors = {
         primary: "#3b82f6",
@@ -224,11 +243,48 @@ const AdminSidebar = ({ searchParams, setSearchParams }) => {
                             Add User
                         </MenuItem>
                     </SubMenu>
+
+                    <div
+                        className={`px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mt-4 transition-opacity ${
+                            collapsed ? "opacity-0" : "opacity-100"
+                        }`}
+                    >
+                        Strategic Marketing
+                    </div>
+
+                    <MenuItem
+                        icon={<Percent size={18} />}
+                        onClick={() => setSearchParams({ tab: "promotions" })}
+                        active={activeTab === "promotions"}
+                    >
+                        Promotions
+                    </MenuItem>
+
                     <MenuItem
                         component={<Link to={"http://localhost:5173/"} />}
+
                         icon={<Globe size={16} />}
                     >
                         Vist Site
+                    </MenuItem>
+                    <MenuItem
+                        onClick={handleSignOut}
+                        icon={
+                            loading ? (
+                                <Loader2
+                                    size={20}
+                                    className="animate-spin text-red-500"
+                                />
+                            ) : (
+                                <LogOut size={16} className="rotate-180" />
+                            )
+                        }
+                    >
+                        {loading ? (
+                            <span className="text-red-500">Logging out</span>
+                        ) : (
+                            "Logout"
+                        )}
                     </MenuItem>
                 </Menu>
             </div>

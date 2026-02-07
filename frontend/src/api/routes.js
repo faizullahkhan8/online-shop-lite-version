@@ -43,3 +43,9 @@ export const SETTINGS_ROUTES = {
     GET: "/settings",
     UPDATE: "/settings",
 };
+
+export const PROMOTION_ROUTES = {
+    CREATE: "/promotions",
+    GET_ACTIVE: "/promotions/active",
+};
+
