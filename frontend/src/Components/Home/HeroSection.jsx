@@ -1,93 +1,88 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
-import FashionImage from "../../assets/images/man-white.jpg";
-import HomeInterior from "../../assets//images/Home Interior.png";
-
-const BannerImage = "https://pngimg.com/uploads/macbook/macbook_PNG65.png";
+import { Loader2 } from "lucide-react";
+import { useGetHeroSlides } from "../../api/hooks/hero.api.js";
 
 const HeroSection = () => {
+    const { getSlides, slides, loading } = useGetHeroSlides();
     const [currentSlide, setCurrentSlide] = useState(0);
 
-    const slides = [
-        {
-            title: "Latest Trending",
-            headline: "Electronic Items",
-            subtitle: "Learn more",
-            bg: "bg-[#e3f0ff]",
-            img: BannerImage,
-            accent: "text-blue-600",
-        },
-        {
-            title: "Summer Collection",
-            headline: "Fashion Trends",
-            subtitle: "Shop now",
-            bg: "bg-[#fff1e6]",
-            img: FashionImage,
-            accent: "text-orange-600",
-        },
-        {
-            title: "Modern Living",
-            headline: "Home Interiors",
-            subtitle: "Discover comfort",
-            bg: "bg-[#e8f5e9]",
-            img: HomeInterior,
-            accent: "text-emerald-600",
-        },
-    ];
+    useEffect(() => {
+        getSlides();
+    }, [getSlides]);
 
     useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % slides.length);
-        }, 5000);
-        return () => clearInterval(timer);
+        if (slides.length > 0) {
+            const timer = setInterval(() => {
+                setCurrentSlide((prev) => (prev + 1) % slides.length);
+            }, 5000);
+            return () => clearInterval(timer);
+        }
     }, [slides.length]);
+
+    if (loading && slides.length === 0) {
+        return (
+            <div className="container mx-auto px-4 py-8">
+                <div className="h-[350px] md:h-[500px] bg-white border border-slate-100 rounded-[2.5rem] flex items-center justify-center">
+                    <Loader2 className="animate-spin text-primary" size={32} />
+                </div>
+            </div>
+        );
+    }
+
+    if (slides.length === 0) return null;
+
+    const activeSlide = slides[currentSlide];
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="bg-white border border-slate-100 rounded-[2.5rem] p-4 lg:p-6 shadow-sm">
-                <div
-                    className={`relative w-full h-[350px] md:h-[500px] rounded-[2rem] overflow-hidden transition-all duration-500 ${slides[currentSlide].bg}`}
-                >
-                    <div className="absolute inset-0 flex items-center px-8 md:px-16 z-20">
-                        <div className="max-w-xl">
-                            <p
-                                className={`font-black uppercase tracking-[0.2em] text-[10px] md:text-xs mb-4 opacity-80 ${slides[currentSlide].accent}`}
-                            >
-                                {slides[currentSlide].title}
+            <div className={`relative overflow-hidden rounded-[2.5rem] ${activeSlide.bg}`}>
+                {/* Soft overlay for depth */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
+                
+                {/* Single combined container - FIXED HEIGHT */}
+                <div className="relative grid md:grid-cols-2 gap-8 items-center h-[500px] px-8 md:px-16 py-12">
+                    
+                    {/* Text side - LEFT */}
+                    <div className="relative h-full flex flex-col justify-center">
+                        <div className="space-y-6 pb-16">
+                            <p className={`font-bold uppercase tracking-widest text-xs ${activeSlide.accent}`}>
+                                {activeSlide.title}
                             </p>
-                            <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-8 leading-tight">
-                                {slides[currentSlide].headline}
+                            <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight">
+                                {activeSlide.headline}
                             </h2>
-                            <Link
-                                to="/products"
-                                className="inline-flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:bg-primary transition-all shadow-xl active:scale-95"
-                            >
-                                {slides[currentSlide].subtitle}
-                                <ArrowRight size={20} />
-                            </Link>
+                            {activeSlide.subtitle && (
+                                <p className="text-base md:text-lg text-slate-700 leading-relaxed max-w-md">
+                                    {activeSlide.subtitle}
+                                </p>
+                            )}
+                        </div>
+                        
+                        {/* Indicators - FIXED POSITION */}
+                        <div className="absolute bottom-0 flex gap-3">
+                            {slides.map((_, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => setCurrentSlide(idx)}
+                                    className={`h-2 rounded-full transition-all duration-300 ${
+                                        currentSlide === idx
+                                            ? "w-12 bg-slate-900"
+                                            : "w-2 bg-slate-400/50 hover:bg-slate-400/80"
+                                    }`}
+                                />
+                            ))}
                         </div>
                     </div>
 
-                    <img
-                        src={slides[currentSlide].img}
-                        alt="Hero"
-                        className="absolute right-0 bottom-0 h-full w-full md:w-1/2 object-contain object-bottom-right mix-blend-multiply opacity-90 transition-all duration-1000 p-4 md:p-12"
-                    />
-
-                    <div className="absolute bottom-8 left-8 md:left-16 flex gap-3 z-30">
-                        {slides.map((_, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => setCurrentSlide(idx)}
-                                className={`h-2 rounded-full transition-all duration-300 ${
-                                    currentSlide === idx
-                                        ? "w-10 bg-slate-900"
-                                        : "w-2 bg-slate-400/40"
-                                }`}
-                            />
-                        ))}
+                    {/* Image side - RIGHT - FIXED DIMENSIONS */}
+                    <div className="flex items-center justify-center h-full overflow-hidden">
+                        <img
+                            src={`${import.meta.env.VITE_BACKEND_URL}/${activeSlide.image}`}
+                            alt="Hero"
+                            className="w-full h-full object-contain drop-shadow-2xl transition-all duration-1000 hover:scale-105"
+                        />
                     </div>
+                    
                 </div>
             </div>
         </div>

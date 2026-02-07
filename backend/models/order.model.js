@@ -52,6 +52,13 @@ const orderSchema = new Schema(
                     type: Number,
                     required: true,
                 },
+                originalPrice: {
+                    type: Number,
+                },
+                discount: {
+                    type: Number,
+                    default: 0,
+                },
                 totalAmount: {
                     type: Number,
                     required: true,

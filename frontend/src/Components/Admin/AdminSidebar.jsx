@@ -15,6 +15,7 @@ import {
     LogOut,
     Loader2,
     Percent,
+    MonitorPlay,
 } from "lucide-react";
 
 import { useState } from "react";
@@ -258,6 +259,14 @@ const AdminSidebar = ({ searchParams, setSearchParams }) => {
                         active={activeTab === "promotions"}
                     >
                         Promotions
+                    </MenuItem>
+
+                    <MenuItem
+                        icon={<MonitorPlay size={18} />}
+                        onClick={() => setSearchParams({ tab: "hero-manager" })}
+                        active={activeTab === "hero-manager"}
+                    >
+                        Hero Content
                     </MenuItem>
 
                     <MenuItem

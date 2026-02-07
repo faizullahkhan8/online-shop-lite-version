@@ -28,7 +28,16 @@ const AddOrder = () => {
     const [users, setUsers] = useState([]);
     const [orderData, setOrderData] = useState({
         userId: "",
-        items: [{ product: "", quantity: 1, price: 0, totalAmount: 0 }],
+        items: [
+            {
+                product: "",
+                quantity: 1,
+                originalPrice: 0,
+                discount: 0,
+                price: 0,
+                totalAmount: 0,
+            },
+        ],
         recipient: {
             name: "",
             street: "",
@@ -60,7 +69,14 @@ const AddOrder = () => {
             ...orderData,
             items: [
                 ...orderData.items,
-                { product: "", quantity: 1, price: 0, totalAmount: 0 },
+                {
+                    product: "",
+                    quantity: 1,
+                    originalPrice: 0,
+                    discount: 0,
+                    price: 0,
+                    totalAmount: 0,
+                },
             ],
         });
     };
@@ -72,16 +88,33 @@ const AddOrder = () => {
 
     const updateItem = (index, field, value) => {
         const newItems = [...orderData.items];
+        const item = { ...newItems[index] };
+
         if (field === "product") {
             const selectedProd = products.find((p) => p._id === value);
-            newItems[index].product = value;
-            newItems[index].price = selectedProd?.price || 0;
+            item.product = value;
+            item.originalPrice = selectedProd?.price || 0;
+            // Calculate initial discount from effectivePrice if available
+            if (selectedProd?.effectivePrice < selectedProd?.price) {
+                item.discount = selectedProd.price - selectedProd.effectivePrice;
+                item.price = selectedProd.effectivePrice;
+            } else {
+                item.discount = 0;
+                item.price = selectedProd?.price || 0;
+            }
+        } else if (field === "price") {
+            item.price = value;
+            item.discount = item.originalPrice - value;
+        } else if (field === "discount") {
+            item.discount = value;
+            item.price = item.originalPrice - value;
         } else {
-            newItems[index][field] = value;
+            item[field] = value;
         }
-        newItems[index].totalAmount =
-            (Number(newItems[index].price) || 0) *
-            (Number(newItems[index].quantity) || 0);
+
+        item.totalAmount =
+            (Number(item.price) || 0) * (Number(item.quantity) || 0);
+        newItems[index] = item;
         setOrderData({ ...orderData, items: newItems });
     };
 
@@ -146,7 +179,7 @@ const AddOrder = () => {
             onSubmit={handleSubmit}
             className="max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-500"
         >
-            <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-100 pb-8">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 border-b border-slate-100 pb-8">
                 <div className="space-y-1">
                     <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter flex items-center gap-4">
                         <div className="p-3 bg-primary rounded-2xl text-white shadow-xl shadow-primary/20">
@@ -154,17 +187,14 @@ const AddOrder = () => {
                         </div>
                         Manual{" "}
                         <span className="text-primary text-outline-1">
-                            Provisioning
+                            Order
                         </span>
                     </h2>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] ml-1">
-                        System-Level Order Override
-                    </p>
                 </div>
 
-                <div className="bg-slate-900 rounded-[2rem] p-6 text-right min-w-[280px] shadow-2xl shadow-slate-900/20 border border-slate-800">
+                <div className="bg-slate-900 rounded-4xl p-3 min-w-[280px] shadow-2xl shadow-slate-900/20 border border-slate-800">
                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">
-                        Aggregate Liability
+                        Total Amount
                     </p>
                     <p className="text-3xl font-black text-white tracking-tighter">
                         <span className="text-primary mr-2">PKR</span>
@@ -181,7 +211,7 @@ const AddOrder = () => {
                         <div className="flex items-center justify-between mb-8 border-b border-slate-50 pb-4">
                             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                 <Hash size={14} className="text-primary" />{" "}
-                                Manifest Items
+                                Order Items
                             </h3>
                         </div>
 
@@ -189,9 +219,9 @@ const AddOrder = () => {
                             {orderData.items.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="group grid grid-cols-12 gap-4 items-end bg-slate-50/50 p-6 rounded-3xl transition-all hover:bg-white hover:shadow-lg hover:shadow-slate-100 border border-transparent hover:border-slate-100"
+                                    className="group grid grid-cols-3 gap-4 items-end bg-slate-50/50 p-3 rounded-3xl transition-all hover:bg-white hover:shadow-lg hover:shadow-slate-100 border border-transparent hover:border-slate-100"
                                 >
-                                    <div className="col-span-12 lg:col-span-5 space-y-2">
+                                    <div className="col-span-3 space-y-2 flex flex-col items-start">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
                                             Item Select
                                         </label>
@@ -212,9 +242,34 @@ const AddOrder = () => {
                                             }
                                         />
                                     </div>
-                                    <div className="col-span-4 lg:col-span-2 space-y-2">
+                                    <div className="space-y-2 flex flex-col items-start">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-nowrap">
+                                            Ref Price
+                                        </label>
+                                        <div className="w-full bg-slate-100/50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-black text-slate-400">
+                                            {item.originalPrice}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2 flex flex-col items-start">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                                            Unit Price
+                                            Discount
+                                        </label>
+                                        <Input
+                                            type="number"
+                                            value={item.discount}
+                                            onChange={(e) =>
+                                                updateItem(
+                                                    index,
+                                                    "discount",
+                                                    Number(e.target.value),
+                                                )
+                                            }
+                                            className="w-full"
+                                        />
+                                    </div>
+                                    <div className="space-y-2 flex flex-col items-start">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-nowrap">
+                                            Net Price
                                         </label>
                                         <Input
                                             type="number"
@@ -229,9 +284,9 @@ const AddOrder = () => {
                                             className="w-full"
                                         />
                                     </div>
-                                    <div className="col-span-4 lg:col-span-2 space-y-2">
+                                    <div className="space-y-2 flex flex-col items-start">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                                            Quantity
+                                            Qty
                                         </label>
                                         <Input
                                             type="number"
@@ -246,7 +301,7 @@ const AddOrder = () => {
                                             className="w-full"
                                         />
                                     </div>
-                                    <div className="col-span-3 lg:col-span-2 pb-4">
+                                    <div>
                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
                                             Subtotal
                                         </p>
@@ -256,7 +311,7 @@ const AddOrder = () => {
                                             ).toFixed(2)}
                                         </p>
                                     </div>
-                                    <div className="col-span-1 lg:col-span-1 pb-2 flex justify-end">
+                                    <div>
                                         <button
                                             type="button"
                                             onClick={() => removeItem(index)}

@@ -11,6 +11,7 @@ import AddOrder from "../Components/Admin/AddOrder.jsx";
 import { UserList, AddUser } from "../Components/Admin/UserComponents.jsx";
 import TaxShippingSettings from "../Components/Admin/TaxShippingSettings.jsx";
 import PromotionBuilder from "../Components/Admin/PromotionBuilder.jsx";
+import HeroManager from "../Components/Admin/HeroManager.jsx";
 import { LayoutDashboard, Settings, Bell, Search } from "lucide-react";
 
 
@@ -44,6 +45,8 @@ const AdminPage = () => {
                 return <AddOrder />;
             case "promotions":
                 return <PromotionBuilder />;
+            case "hero-manager":
+                return <HeroManager />;
             default:
                 return <DashboardHome />;
 

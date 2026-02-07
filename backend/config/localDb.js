@@ -6,6 +6,7 @@ import orderSchema from "../models/order.model.js";
 import wishlistSchema from "../models/wishlist.model.js";
 import settingsSchema from "../models/settings.model.js";
 import promotionSchema from "../models/promotion.model.js";
+import heroSchema from "../models/hero.model.js";
 
 
 let localDbConnection = null;
@@ -16,6 +17,7 @@ let localOrderModel;
 let localWishlistModel;
 let localSettingsModel;
 let localPromotionModel;
+let localHeroModel;
 
 
 export const connectToDB = async () => {
@@ -50,6 +52,7 @@ export const connectToDB = async () => {
             "Promotion",
             promotionSchema,
         );
+        localHeroModel = localDbConnection.model("Hero", heroSchema);
 
     } catch (error) {
         console.log(error);
@@ -63,4 +66,5 @@ export const getLocalOrderModel = () => localOrderModel || null;
 export const getLocalWishlistModel = () => localWishlistModel || null;
 export const getLocalSettingsModel = () => localSettingsModel || null;
 export const getLocalPromotionModel = () => localPromotionModel || null;
+export const getLocalHeroModel = () => localHeroModel || null;
 
