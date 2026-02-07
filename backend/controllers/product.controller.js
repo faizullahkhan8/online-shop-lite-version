@@ -1,9 +1,6 @@
 import expressAsyncHandler from "express-async-handler";
 import { getLocalProductModel } from "../config/localDb.js";
 import { ErrorResponse } from "../utils/ErrorResponse.js";
-
-import fs from "fs/promises";
-import path from "path";
 import { getEffectivePrice } from "../utils/promotionHelper.js";
 import { deleteImageKitFile } from "../utils/DeleteFileImageKit.js";
 
