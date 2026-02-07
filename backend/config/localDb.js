@@ -10,6 +10,7 @@ import heroSchema from "../models/hero.model.js";
 import reviewSchema from "../models/review.model.js";
 
 
+let connectionPromise = null;
 let localDbConnection = null;
 let localUserModel;
 let localProductModel;
@@ -21,47 +22,55 @@ let localPromotionModel;
 let localHeroModel;
 let localReviewModel;
 
-
 export const connectToDB = async () => {
-    try {
-        // MONGO_URI_ATLAS
-        // MONGO_URI_LOCAL
+    if (connectionPromise) return connectionPromise;
 
-        localDbConnection = await mongoose
-            .createConnection(process.env.MONGO_URI_LOCAL, {
-                dbName: "online_shop_for_ssi_client",
-            })
-            .asPromise();
+    connectionPromise = (async () => {
+        try {
+            // MONGO_URI_ATLAS
+            // MONGO_URI_LOCAL
 
-        if (localDbConnection) {
-            console.log(`Connected to MongoDB: ${localDbConnection.host}`);
+            localDbConnection = await mongoose
+                .createConnection(process.env.MONGO_URI_LOCAL, {
+                    dbName: "online_shop_for_ssi_client",
+                })
+                .asPromise();
+
+            if (localDbConnection) {
+                console.log(`Connected to MongoDB: ${localDbConnection.host}`);
+            }
+
+            localUserModel = localDbConnection.model("User", userSchema);
+            localProductModel = localDbConnection.model("Product", productSchema);
+            localCategoryModel = localDbConnection.model(
+                "Category",
+                categorySchema,
+            );
+            localOrderModel = localDbConnection.model("Order", orderSchema);
+            localWishlistModel = localDbConnection.model(
+                "Wishlist",
+                wishlistSchema,
+            );
+            localSettingsModel = localDbConnection.model(
+                "Settings",
+                settingsSchema,
+            );
+            localPromotionModel = localDbConnection.model(
+                "Promotion",
+                promotionSchema,
+            );
+            localHeroModel = localDbConnection.model("Hero", heroSchema);
+            localReviewModel = localDbConnection.model("Review", reviewSchema);
+
+            return localDbConnection;
+        } catch (error) {
+            console.log("Database connection error:", error);
+            connectionPromise = null; // Allow retry on next request
+            throw error;
         }
+    })();
 
-        localUserModel = localDbConnection.model("User", userSchema);
-        localProductModel = localDbConnection.model("Product", productSchema);
-        localCategoryModel = localDbConnection.model(
-            "Category",
-            categorySchema,
-        );
-        localOrderModel = localDbConnection.model("Order", orderSchema);
-        localWishlistModel = localDbConnection.model(
-            "Wishlist",
-            wishlistSchema,
-        );
-        localSettingsModel = localDbConnection.model(
-            "Settings",
-            settingsSchema,
-        );
-        localPromotionModel = localDbConnection.model(
-            "Promotion",
-            promotionSchema,
-        );
-        localHeroModel = localDbConnection.model("Hero", heroSchema);
-        localReviewModel = localDbConnection.model("Review", reviewSchema);
-
-    } catch (error) {
-        console.log(error);
-    }
+    return connectionPromise;
 };
 
 export const getLocalUserModel = () => localUserModel || null;

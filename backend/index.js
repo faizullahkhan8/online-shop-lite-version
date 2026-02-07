@@ -14,6 +14,7 @@ import reviewRouter from "./routers/review.router.js";
 
 import { errorHandler } from "./middlewares/ErrorHandler.js";
 import cookieParser from "cookie-parser";
+import { ErrorResponse } from "./utils/ErrorResponse.js";
 dotenv.config();
 
 const app = express();
@@ -22,11 +23,21 @@ app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 app.use(
     cors({
-        origin: [process.env.FRONTEND_URL,"http://localhost:5173"],
+        origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
         credentials: true,
     })
 );
+
+// Middleware to ensure DB connection
+app.use(async (req, res, next) => {
+    try {
+        await connectToDB();
+        next();
+    } catch (error) {
+        return next(new ErrorResponse("Database connection failed", 500));
+    }
+});
 
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
@@ -39,7 +50,9 @@ app.use("/api/reviews", reviewRouter);
 
 
 app.use(errorHandler);
-connectToDB();
+
+// Initial connection attempt
+connectToDB().catch(err => console.error("Initial DB connection failed:", err));
 
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server is running on port ${process.env.PORT || 3000}`);
