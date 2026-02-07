@@ -18,6 +18,7 @@ const ProductListPage = () => {
     const [viewMode, setViewMode] = useState("grid");
     const [searchParams, setSearchParams] = useSearchParams();
     const [products, setProducts] = useState([]);
+    const [totalPages, setTotalPages] = useState(1);
     const { getAllProducts, loading: productLoading } = useGetAllProducts();
 
     const page = parseInt(searchParams.get("page") || "1");
@@ -33,24 +34,19 @@ const ProductListPage = () => {
 
     useEffect(() => {
         (async () => {
-            const response = await getAllProducts();
+            const response = await getAllProducts({ 
+                page, 
+                search: searchQuery 
+            });
             if (response?.success) {
                 setProducts(response.products);
+                setTotalPages(response.totalPages || 1);
             }
         })();
-    }, []);
+    }, [page, searchQuery]);
 
-    const filteredProducts = useMemo(() => {
-        // If searchQuery is empty, null, or undefined, return everything
-        if (!searchQuery?.trim()) {
-            return products;
-        }
-
-        // Otherwise, return the filtered subset
-        return products.filter((p) =>
-            p.name.toLowerCase().includes(searchQuery.toLowerCase()),
-        );
-    }, [products, searchQuery]);
+    // Searching is now handled on the server side
+    const displayProducts = products;
 
     return (
         <div className="bg-slate-50/50 min-h-screen">
@@ -88,7 +84,15 @@ const ProductListPage = () => {
                                     type="text"
                                     placeholder="Search products..."
                                     className="px-4 py-2 text-md w-full outline-none bg-transparent"
-                                    value={searchParams.get("search") || ""}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setSearchParams((prev) => {
+                                            if (val) prev.set("search", val);
+                                            else prev.delete("search");
+                                            prev.set("page", 1); // Reset to first page on search
+                                            return prev;
+                                        });
+                                    }}
                                 />
                                 <Search />
                             </div>
@@ -119,7 +123,7 @@ const ProductListPage = () => {
                             </div>
                         ) : products?.length === 0 ? (
                             <div className="bg-white border border-slate-100 rounded-[3rem] py-24 px-6 flex flex-col items-center justify-center shadow-xl shadow-slate-200/50">
-                                <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mb-6">
+                                <div className="w-20 h-20 bg-slate-50 rounded-4xl flex items-center justify-center mb-6">
                                     <PackageSearch
                                         size={32}
                                         className="text-slate-300"
@@ -142,7 +146,7 @@ const ProductListPage = () => {
                                         : "flex flex-col gap-6"
                                 }
                             >
-                                {filteredProducts?.map((product) =>
+                                {displayProducts?.map((product) =>
                                     viewMode === "grid" ? (
                                         <ProductCard
                                             key={product._id}
@@ -158,9 +162,10 @@ const ProductListPage = () => {
                             </div>
                         )}
 
-                        <div className="mt-16">
+                        <div className="mt-16 flex justify-center">
                             <Pagination
                                 currentPage={page}
+                                totalPages={totalPages}
                                 onPageChange={handlePageChange}
                             />
                         </div>

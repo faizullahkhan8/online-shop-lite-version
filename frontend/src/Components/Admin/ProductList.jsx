@@ -8,15 +8,18 @@ import {
     MoreVertical,
     PackageOpen,
     Trash,
-    ExternalLink,
-    RefreshCw,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import DeleteDialog from "../../UI/DialogBox.jsx";
+import Pagination from "../Pagination.jsx";
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
+    const [totalPages, setTotalPages] = useState(1);
+    const [searchParams, setSearchParams] = useSearchParams();
     const [activeMenuId, setActiveMenuId] = useState(null);
+
+    const page = parseInt(searchParams.get("page") || "1");
 
     const { getAllProducts, loading: getAllProductsLoading } =
         useGetAllProducts();
@@ -29,12 +32,20 @@ const ProductList = () => {
 
     useEffect(() => {
         (async () => {
-            const response = await getAllProducts();
+            const response = await getAllProducts({ page, limit: 10 });
             if (response?.success) {
                 setProducts(response.products);
+                setTotalPages(response.totalPages || 1);
             }
         })();
-    }, []);
+    }, [page]);
+
+    const handlePageChange = (newPage) => {
+        setSearchParams((prev) => {
+            prev.set("page", newPage);
+            return prev;
+        });
+    };
 
     const handleDelete = async () => {
         const response = await deleteProduct(productState.data._id);
@@ -246,6 +257,14 @@ const ProductList = () => {
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <div className="flex justify-center">
+                <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                />
             </div>
         </div>
     );

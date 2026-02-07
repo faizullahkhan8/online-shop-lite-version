@@ -9,6 +9,8 @@ import {
     Loader2,
     AlertCircle,
 } from "lucide-react";
+import DashboardCharts from "./DashboardCharts";
+import InventoryAlerts from "./InventoryAlerts";
 
 const DashboardHome = () => {
     const { stats, loading, error } = useDashboardStats();
@@ -78,6 +80,10 @@ const DashboardHome = () => {
                     color="slate"
                 />
             </div>
+
+            <InventoryAlerts inventory={stats?.inventory} />
+
+            <DashboardCharts stats={stats} />
         </div>
     );
 };

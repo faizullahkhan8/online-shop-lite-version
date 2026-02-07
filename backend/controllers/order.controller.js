@@ -269,12 +269,80 @@ export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("Model not found!", 400));
     }
 
-    const orders = await OrderModel.find({ isDeleted: false });
+    const orders = await OrderModel.find({ isDeleted: false }).populate("items.product");
     const totalSales = orders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
     const totalOrders = orders.length;
 
     const totalProducts = await ProductModel.countDocuments();
     const totalUsers = await UserModel.countDocuments();
+
+    // 1. Daily Sales for the last 30 days
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const dailySales = await OrderModel.aggregate([
+        {
+            $match: {
+                createdAt: { $gte: thirtyDaysAgo },
+                isDeleted: false,
+            },
+        },
+        {
+            $group: {
+                _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                total: { $sum: "$grandTotal" },
+                count: { $sum: 1 },
+            },
+        },
+        { $sort: { _id: 1 } },
+    ]);
+
+    // 2. Category Distribution (Sales and Product Count)
+    const categoryStats = await ProductModel.aggregate([
+        {
+            $group: {
+                _id: "$category",
+                count: { $sum: 1 },
+                totalSold: { $sum: "$sold" },
+            },
+        },
+        {
+            $lookup: {
+                from: "categories",
+                localField: "_id",
+                foreignField: "_id",
+                as: "categoryInfo",
+            },
+        },
+        { $unwind: "$categoryInfo" },
+        {
+            $project: {
+                name: "$categoryInfo.name",
+                count: 1,
+                totalSold: 1,
+            },
+        },
+    ]);
+
+    // 3. Order Status Analysis
+    const orderStatusStats = await OrderModel.aggregate([
+        { $match: { isDeleted: false } },
+        {
+            $group: {
+                _id: "$status",
+                count: { $sum: 1 },
+            },
+        },
+    ]);
+
+    // 4. Inventory Alerts (Out of Stock and Low Stock)
+    const outOfStockItems = await ProductModel.find({ 
+        $or: [{ stock: 0 }, { stock: { $lte: 0 } }, { stock: null }, { stock: { $exists: false } }] 
+    }).select("name stock price image");
+
+    const lowStockItems = await ProductModel.find({ 
+        stock: { $gt: 0, $lte: 5 } 
+    }).select("name stock price image");
 
     return res.status(200).json({
         success: true,
@@ -283,6 +351,15 @@ export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
             totalOrders,
             totalProducts,
             totalUsers,
+            dailySales,
+            categoryStats,
+            orderStatusStats,
+            inventory: {
+                outOfStock: outOfStockItems,
+                lowStock: lowStockItems,
+                outOfStockCount: outOfStockItems.length,
+                lowStockCount: lowStockItems.length,
+            },
         },
     });
 });
