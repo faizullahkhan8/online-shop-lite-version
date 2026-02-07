@@ -102,7 +102,7 @@ const ProductDetailPage = () => {
                         <div className="space-y-6">
                             <div className="aspect-square bg-slate-50 rounded-[2.5rem] border border-slate-100 flex items-center justify-center p-12 group">
                                 <img
-                                    src={`${import.meta.env.VITE_BACKEND_URL}/${product?.image}`}
+                                    src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product?.image}`}
                                     alt={product?.name}
                                     className="max-h-full w-full object-contain transition-transform duration-300 group-hover:scale-110"
                                 />

@@ -43,7 +43,7 @@ const InventoryAlerts = ({ inventory }) => {
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 bg-slate-100 rounded-xl overflow-hidden p-2">
                                         <img 
-                                            src={`${import.meta.env.VITE_BACKEND_URL}/${item.image}`} 
+                                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.image}`} 
                                             alt={item.name}
                                             className="w-full h-full object-contain"
                                         />
@@ -97,7 +97,7 @@ const InventoryAlerts = ({ inventory }) => {
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 bg-slate-100 rounded-xl overflow-hidden p-2">
                                         <img 
-                                            src={`${import.meta.env.VITE_BACKEND_URL}/${item.image}`} 
+                                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.image}`} 
                                             alt={item.name}
                                             className="w-full h-full object-contain"
                                         />

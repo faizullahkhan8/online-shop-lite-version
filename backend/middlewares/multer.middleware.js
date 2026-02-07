@@ -1,82 +1,98 @@
 import multer from "multer";
-import fs from "fs";
-import path from "path";
-
-const BACKEND_SERVER_IMAGE_PATH = "public/images/product-images";
-const REMOVE_BG_API_KEY = "jmDbtt3JyAwgvXpkMxAhxT84";
-
-if (!fs.existsSync(BACKEND_SERVER_IMAGE_PATH)) {
-    fs.mkdirSync(BACKEND_SERVER_IMAGE_PATH, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, BACKEND_SERVER_IMAGE_PATH);
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        const ext = file.originalname.split(".").pop();
-        cb(null, `${file.fieldname}-${uniqueSuffix}.${ext}`);
-    },
-});
+import imagekit from "../config/imagekit.js";
+import FormData from "form-data";
 
 export const upload = multer({
-    storage: storage,
-    limits: { fileSize: 1024 * 1024 * 5 },
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith("image/")) {
+      return cb(new Error("Only images allowed"));
+    }
+    cb(null, true);
+  }
 });
 
+
+
+const REMOVE_BG_API_KEY = process.env.REMOVE_BG_API_KEY;
+
 export const handleOptionalBackgroundRemoval = async (req, res, next) => {
-    let isRemoveBg = false;
+  let isRemoveBg = false;
 
-    try {
-        if (req.body.data) {
-            const parsedData = JSON.parse(req.body.data);
-            isRemoveBg =
-                parsedData.isRemoveBg === true ||
-                parsedData.isRemoveBg === "true";
-        } else {
-            isRemoveBg = req.body.isRemoveBg === "true";
-        }
-    } catch (e) {
-        console.error("Error parsing metadata:", e);
+  try {
+    if (req.body.data) {
+      const parsed = JSON.parse(req.body.data);
+      isRemoveBg = parsed.isRemoveBg === true || parsed.isRemoveBg === "true";
+    } else {
+      isRemoveBg = req.body.isRemoveBg === "true";
+    }
+  } catch { }
+
+  if (!req.file || !isRemoveBg) return next();
+
+  try {
+    const formData = new FormData();
+    formData.append("image_file", req.file.buffer, {
+      filename: req.file.originalname,
+      contentType: req.file.mimetype
+    });
+    formData.append("size", "auto");
+
+    const response = await fetch(
+      "https://api.remove.bg/v1.0/removebg",
+      {
+        method: "POST",
+        headers: {
+          "X-Api-Key": REMOVE_BG_API_KEY
+        },
+        body: formData
+      }
+    );
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`remove.bg failed: ${text}`);
     }
 
-    if (!req.file || !isRemoveBg) {
-        return next();
-    }
+    const buffer = Buffer.from(await response.arrayBuffer());
 
-    try {
-        const filePath = path.resolve(req.file.path);
-        const formData = new FormData();
+    // 🔁 Replace original buffer
+    req.file.buffer = buffer;
 
-        formData.append(
-            "image_file",
-            new Blob([fs.readFileSync(filePath)]),
-            req.file.filename,
-        );
-        formData.append("size", "auto");
+    next();
+  } catch (err) {
+    console.error("Background removal failed:", err.message);
+    next(); // fail-open (upload original image)
+  }
+};
 
-        const response = await fetch("https://api.remove.bg/v1.0/removebg", {
-            method: "POST",
-            headers: { "X-Api-Key": REMOVE_BG_API_KEY },
-            body: formData,
-        });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(
-                `Remove.bg API failed: ${JSON.stringify(errorData)}`,
-            );
-        }
 
-        const arrayBuffer = await response.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
 
-        fs.writeFileSync(filePath, buffer);
+export const imagekitUpload = async (req, res, next) => {
+  if (!req.file) return next();
 
-        next();
-    } catch (error) {
-        console.error("Background removal error:", error);
-        next();
-    }
+  try {
+    const result = await imagekit.files.upload({
+      file: req.file.buffer.toString("base64"),
+      fileName: req.file.originalname,
+      folder: "/products",
+      useUniqueFileName: true
+    });
+
+    req.image = {
+      fileId: result.fileId,
+      name: result.name,
+      url: result.url,
+      filePath: result.filePath
+    };
+
+    next();
+  } catch (err) {
+    res.status(500).json({
+      message: "ImageKit upload failed",
+      error: err.message
+    });
+  }
 };

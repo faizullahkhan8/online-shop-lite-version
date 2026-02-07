@@ -81,7 +81,7 @@ const ProductCard = ({ product }) => {
                 </button>
 
                 <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/${product?.image}`}
+                    src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product?.image}`}
                     alt={product?.name}
                     loading="lazy"
                     className="absolute inset-0 w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500 mix-blend-multiply"

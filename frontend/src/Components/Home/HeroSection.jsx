@@ -77,7 +77,7 @@ const HeroSection = () => {
                     {/* Image side - RIGHT - FIXED DIMENSIONS */}
                     <div className="flex items-center justify-center h-full overflow-hidden">
                         <img
-                            src={`${import.meta.env.VITE_BACKEND_URL}/${activeSlide.image}`}
+                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${activeSlide.image}`}
                             alt="Hero"
                             className="w-full h-full object-contain drop-shadow-2xl transition-all duration-1000 hover:scale-105"
                         />

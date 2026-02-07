@@ -13,6 +13,7 @@ const productSchema = new Schema(
         },
         stock: { type: Number, required: true },
         image: { type: String, required: true },
+        imagekitFileId: { type: String, required: true },
         rating: { type: Number, default: 0 },
         numReviews: { type: Number, default: 0 },
     },

@@ -46,7 +46,7 @@ const ProductListItem = ({ product }) => {
 
             <div className="w-full md:w-56 h-56 bg-slate-50 rounded-[1.5rem] flex-shrink-0 flex items-center justify-center relative p-6 overflow-hidden">
                 <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/${product?.image}`}
+                    src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product?.image}`}
                     alt={product.name}
                     className="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
                 />

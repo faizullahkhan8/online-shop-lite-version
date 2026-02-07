@@ -86,7 +86,7 @@ const AddProduct = () => {
 
         if (typeof productData.image === "string") {
             setPreviewUrl(
-                `${import.meta.env.VITE_BACKEND_URL}/${productData.image}`,
+                `${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${productData.image}`,
             );
         }
     }, [productData.image]);

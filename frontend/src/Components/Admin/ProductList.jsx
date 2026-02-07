@@ -128,7 +128,7 @@ const ProductList = () => {
                                             <div className="flex items-center gap-4">
                                                 <div className="relative w-14 h-14 rounded-2xl overflow-hidden bg-slate-100 border border-slate-100 shadow-sm group-hover:scale-105 transition-transform">
                                                     <img
-                                                        src={`${import.meta.env.VITE_BACKEND_URL}/${product.image}`}
+                                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product.image}`}
                                                         className="w-full h-full object-cover"
                                                         alt={product.name}
                                                     />

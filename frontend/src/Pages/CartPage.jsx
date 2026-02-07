@@ -86,7 +86,7 @@ const CartPage = () => {
                             >
                                 <div className="w-32 h-32 bg-slate-50 rounded-2xl p-4 shrink-0 relative overflow-hidden border border-slate-100">
                                     <img
-                                        src={`${import.meta.env.VITE_BACKEND_URL}/${item.image}`}
+                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.image}`}
                                         alt={item.name}
                                         className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                                     />

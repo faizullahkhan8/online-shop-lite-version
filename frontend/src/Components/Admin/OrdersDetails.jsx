@@ -167,7 +167,7 @@ const OrderDetails = () => {
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-4">
                                                     <img
-                                                        src={`${import.meta.env.VITE_BACKEND_URL}/${item.product.image}`}
+                                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.product.image}`}
                                                         className="w-14 h-14 object-cover rounded-2xl border border-slate-100 group-hover:scale-105 transition-transform"
                                                         alt={item.product.name}
                                                     />

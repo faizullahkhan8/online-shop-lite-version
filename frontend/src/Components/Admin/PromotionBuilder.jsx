@@ -381,7 +381,7 @@ const PromotionBuilder = () => {
                                             >
                                                 <div className="w-full aspect-square bg-slate-50 rounded-xl overflow-hidden border border-slate-100 p-2">
                                                     <img
-                                                        src={`${import.meta.env.VITE_BACKEND_URL}/${p.image}`}
+                                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${p.image}`}
                                                         className="w-full h-full object-contain"
                                                         alt={p.name}
                                                     />
@@ -469,7 +469,7 @@ const PromotionBuilder = () => {
                                         <div className="flex items-center gap-3 overflow-hidden">
                                             <div className="w-10 h-10 shrink-0 bg-white rounded-lg p-1 border">
                                                 <img
-                                                    src={`${import.meta.env.VITE_BACKEND_URL}/${p.image}`}
+                                                    src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${p.image}`}
                                                     className="w-full h-full object-contain"
                                                     alt={p.name}
                                                 />

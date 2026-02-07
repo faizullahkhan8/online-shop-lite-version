@@ -54,7 +54,7 @@ const Grid = ({ title, bannerImg, items }) => {
 
                                 <div className="flex justify-center items-center h-28 mb-4">
                                     <img
-                                        src={`${import.meta.env.VITE_BACKEND_URL}/${item.image}`}
+                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.image}`}
                                         alt={item.name}
                                         className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300 mix-blend-multiply"
                                     />

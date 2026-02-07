@@ -57,7 +57,7 @@ const HeroManager = () => {
             isActive: slide.isActive,
             isRemoveBg: false,
         });
-        setPreviewUrl(`${import.meta.env.VITE_BACKEND_URL}/${slide.image}`);
+        setPreviewUrl(`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${slide.image}`);
         setIsModalOpen(true);
     };
 
@@ -164,7 +164,7 @@ const HeroManager = () => {
                         >
                             <div className={`h-48 relative overflow-hidden ${slide.bg}`}>
                                 <img
-                                    src={`${import.meta.env.VITE_BACKEND_URL}/${slide.image}`}
+                                    src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${slide.image}`}
                                     alt={slide.title}
                                     className="w-full h-full object-contain"
                                 />

@@ -194,7 +194,7 @@ const PromotionSection = () => {
 
                                     <div className="aspect-square rounded-2xl overflow-hidden bg-slate-50 mb-4">
                                         <img
-                                            src={`${import.meta.env.VITE_BACKEND_URL}/${product.image}`}
+                                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product.image}`}
                                             className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
                                             alt={product.name}
                                         />

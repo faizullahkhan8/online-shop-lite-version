@@ -15,7 +15,7 @@ export const createCategory = expressAsyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("Name is required", 400));
     }
 
-    const category = await CategoryModel.create({ name, parentId, isActive });
+    const category = await CategoryModel.create({ name, parentId: parentId || null, isActive });
 
     res.status(201).json({
         success: true,
