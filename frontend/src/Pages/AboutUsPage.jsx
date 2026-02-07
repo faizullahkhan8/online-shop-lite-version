@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Globe, Mail, MapPin, Phone, Award } from "lucide-react";
-import TestAvatar from "../assets/images/avatar.jpg";
+import TestAvatar from "../assets/images/avatar.png";
 
 const AboutUs = () => {
     return (
