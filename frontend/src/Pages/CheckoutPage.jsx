@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { usePlaceOrder } from "../api/hooks/orders.api";
 import { useGetSettings } from "../api/hooks/settings.api";
-import { clearCart } from "../store/slices/cartSlice";
+import { removeSelectedItems } from "../store/slices/cartSlice";
 import {
     Truck,
     CreditCard,
@@ -17,10 +17,14 @@ import {
 } from "lucide-react";
 
 const CheckoutPage = () => {
-    const { items, totalAmount } = useSelector((state) => state.cart);
+    const { items: allItems } = useSelector((state) => state.cart);
     const { user } = useSelector((state) => state.auth);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    // Only process selected items
+    const items = allItems.filter((item) => item.selected);
+    const totalAmount = items.reduce((sum, item) => sum + item.totalPrice, 0);
 
     const { placeOrder, isLoading } = usePlaceOrder();
     const { getSettings } = useGetSettings();
@@ -146,7 +150,9 @@ const CheckoutPage = () => {
         try {
             const response = await placeOrder(orderData);
             if (response?.success && response?.order?._id) {
-                dispatch(clearCart());
+                // Only remove the items that were successfully checked out
+                const checkedOutProductIds = formattedItems.map(item => item.product);
+                dispatch(removeSelectedItems({ productIds: checkedOutProductIds }));
                 navigate("/orders/success", {
                     state: { orderId: response.order._id },
                 });
@@ -158,49 +164,49 @@ const CheckoutPage = () => {
 
     if (items.length === 0) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50/50">
-                <div className="w-20 h-20 bg-slate-100 rounded-[2rem] flex items-center justify-center mb-6">
-                    <Wallet className="text-slate-300" size={32} />
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+                <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                    <Wallet className="text-gray-300" size={32} />
                 </div>
-                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight mb-2">
+                <h2 className="text-lg font-semibold text-gray-900 mb-2">
                     Cart is empty
                 </h2>
-                <p className="text-slate-400 font-medium mb-8">
-                    Add some premium tech to your collection first.
+                <p className="text-gray-500 mb-6">
+                    Add some items to your cart first.
                 </p>
                 <Link
                     to="/products"
-                    className="bg-slate-900 text-white px-8 py-3 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-primary transition-all"
+                    className="bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
                 >
-                    Browse Catalog
+                    Browse Products
                 </Link>
             </div>
         );
     }
 
     return (
-        <div className="bg-slate-50/50 min-h-screen py-12">
+        <div className="bg-gray-50 min-h-screen py-8">
             <div className="container mx-auto px-4 max-w-6xl">
                 <Link
                     to="/cart"
-                    className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 font-black uppercase text-[10px] tracking-widest mb-8 transition-colors"
+                    className="inline-flex items-center gap-1.5 text-gray-600 hover:text-gray-900 font-medium text-sm mb-6 transition-colors"
                 >
-                    <ArrowLeft size={14} /> Back to Cart
+                    <ArrowLeft size={16} /> Back to Cart
                 </Link>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                    <div className="lg:col-span-2 space-y-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-2 space-y-6">
                         <form
                             id="checkout-form"
                             onSubmit={handleSubmit}
-                            className="space-y-8"
+                            className="space-y-6"
                         >
-                            <section className="bg-white border border-slate-100 rounded-[2.5rem] p-8 lg:p-10 shadow-xl shadow-slate-200/40">
-                                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8 flex items-center gap-2">
-                                    <Truck size={16} className="text-primary" />{" "}
-                                    01. Shipping Information
+                            <section className="bg-white border border-gray-200 rounded-lg p-6 lg:p-8">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                                    <Truck size={18} className="text-blue-600" />
+                                    Shipping Information
                                 </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <CheckoutInput
                                         label="Full Name"
                                         name="recipient.name"
@@ -231,7 +237,7 @@ const CheckoutPage = () => {
                                         icon={<MapPin size={16} />}
                                         value={formData.recipient.street}
                                         onChange={handleChange}
-                                        placeholder="123 Luxury Ave"
+                                        placeholder="123 Main St"
                                     />
                                     <CheckoutInput
                                         label="Apartment / Suite"
@@ -272,45 +278,45 @@ const CheckoutPage = () => {
                                 </div>
                             </section>
 
-                            <section className="bg-white border border-slate-100 rounded-[2.5rem] p-8 lg:p-10 shadow-xl shadow-slate-200/40">
-                                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8 flex items-center gap-2">
+                            <section className="bg-white border border-gray-200 rounded-lg p-6 lg:p-8">
+                                <h3 className="text-sm font-semibold text-gray-900 mb-6 flex items-center gap-2">
                                     <CreditCard
-                                        size={16}
-                                        className="text-primary"
-                                    />{" "}
-                                    02. Payment Method
+                                        size={18}
+                                        className="text-blue-600"
+                                    />
+                                    Payment Method
                                 </h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {[
                                         {
                                             value: "COD",
                                             title: "Cash on Delivery",
                                             description: "Pay when you receive",
-                                            icon: <Wallet size={20} />,
+                                            icon: <Wallet size={18} />,
                                         },
                                         {
                                             value: "card",
                                             title: "Card Payment",
                                             description: "Visa / MasterCard",
-                                            icon: <CreditCard size={20} />,
+                                            icon: <CreditCard size={18} />,
                                         },
                                         {
                                             value: "bank",
                                             title: "Bank Transfer",
                                             description: "Direct bank transfer",
-                                            icon: <CreditCard size={20} />,
+                                            icon: <CreditCard size={18} />,
                                         },
                                         {
                                             value: "wallet",
-                                            title: "Wallet",
-                                            description: "Mobile wallet",
-                                            icon: <Wallet size={20} />,
+                                            title: "Mobile Wallet",
+                                            description: "Digital payment",
+                                            icon: <Wallet size={18} />,
                                         },
                                         {
                                             value: "online",
                                             title: "Online Payment",
-                                            description: "Secure online",
-                                            icon: <CreditCard size={20} />,
+                                            description: "Secure checkout",
+                                            icon: <CreditCard size={18} />,
                                         },
                                     ].map((method) => (
                                         <PaymentCard
@@ -340,33 +346,33 @@ const CheckoutPage = () => {
                     </div>
 
                     <div className="lg:col-span-1">
-                        <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white sticky top-8 shadow-2xl shadow-slate-900/20">
-                            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8">
+                        <div className="bg-gray-900 rounded-lg p-6 text-white sticky top-8">
+                            <h3 className="text-sm font-semibold text-gray-300 mb-6">
                                 Order Summary
                             </h3>
-                            <div className="space-y-6 mb-8 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                            <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2">
                                 {items.map((item) => (
                                     <div
                                         key={item._id}
-                                        className="flex justify-between items-start group"
+                                        className="flex justify-between items-start"
                                     >
-                                        <div className="space-y-1">
-                                            <p className="text-sm font-bold text-white leading-tight">
+                                        <div className="space-y-0.5">
+                                            <p className="text-sm font-medium text-white leading-tight">
                                                 {item.name}
                                             </p>
-                                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                                                QTY: {item.quantity}
+                                            <p className="text-xs text-gray-400">
+                                                Qty: {item.quantity}
                                             </p>
                                         </div>
-                                        <span className="text-sm font-black text-primary">
+                                        <span className="text-sm font-semibold text-white">
                                             Rs {item.totalPrice.toFixed(0)}
                                         </span>
                                     </div>
                                 ))}
                             </div>
 
-                            <div className="space-y-4 pt-8 border-t border-white/10 mb-8">
-                                <div className="flex justify-between text-slate-400 text-[10px] font-black uppercase tracking-widest">
+                            <div className="space-y-3 pt-6 border-t border-gray-700 mb-6">
+                                <div className="flex justify-between text-sm text-gray-400">
                                     <span>Tax</span>
                                     <span>
                                         Rs{" "}
@@ -375,7 +381,7 @@ const CheckoutPage = () => {
                                         ).toFixed(0)}
                                     </span>
                                 </div>
-                                <div className="flex justify-between text-slate-400 text-[10px] font-black uppercase tracking-widest">
+                                <div className="flex justify-between text-sm text-gray-400">
                                     <span>Shipping</span>
                                     <span>
                                         Rs{" "}
@@ -384,11 +390,11 @@ const CheckoutPage = () => {
                                         ).toFixed(0)}
                                     </span>
                                 </div>
-                                <div className="flex justify-between items-center pt-2">
-                                    <span className="text-sm font-black uppercase tracking-widest">
+                                <div className="flex justify-between items-center pt-3 border-t border-gray-700">
+                                    <span className="text-sm font-medium">
                                         Grand Total
                                     </span>
-                                    <span className="text-2xl font-black text-white">
+                                    <span className="text-xl font-semibold text-white">
                                         Rs{" "}
                                         {(
                                             (totalAmount || 0) +
@@ -404,7 +410,7 @@ const CheckoutPage = () => {
                                 type="submit"
                                 form="checkout-form"
                                 disabled={isLoading}
-                                className="w-full bg-primary text-white h-14 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] flex items-center justify-center gap-3 hover:bg-white hover:text-slate-900 transition-all active:scale-95 disabled:opacity-50"
+                                className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isLoading ? (
                                     <Loader2
@@ -416,10 +422,10 @@ const CheckoutPage = () => {
                                 )}
                             </button>
 
-                            <div className="mt-6 flex items-center justify-center gap-2 text-slate-500">
+                            <div className="mt-4 flex items-center justify-center gap-2 text-gray-400">
                                 <ShieldCheck size={14} />
-                                <span className="text-[9px] font-black uppercase tracking-widest">
-                                    Secure Encrypted Checkout
+                                <span className="text-xs">
+                                    Secure Checkout
                                 </span>
                             </div>
                         </div>
@@ -440,12 +446,12 @@ const CheckoutInput = ({
     type = "text",
     required = true,
 }) => (
-    <div className="space-y-2">
-        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
+    <div className="space-y-1.5">
+        <label className="text-sm font-medium text-gray-700">
             {label}
         </label>
         <div className="relative">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                 {icon}
             </div>
             <input
@@ -455,7 +461,7 @@ const CheckoutInput = ({
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
-                className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-4 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-300"
+                className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-10 pr-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-gray-400"
             />
         </div>
     </div>
@@ -464,23 +470,24 @@ const CheckoutInput = ({
 const PaymentCard = ({ active, onClick, title, description, icon }) => (
     <div
         onClick={onClick}
-        className={`p-6 rounded-[2rem] border-2 cursor-pointer transition-all ${
-            active
-                ? "border-primary bg-slate-50"
-                : "border-slate-50 bg-white hover:border-slate-200"
-        }`}
+        className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${active
+            ? "border-blue-600 bg-blue-50"
+            : "border-gray-200 bg-white hover:border-gray-300"
+            }`}
     >
         <div
-            className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${active ? "bg-primary text-white" : "bg-slate-100 text-slate-400"}`}
+            className={`w-9 h-9 rounded-lg flex items-center justify-center mb-3 ${active ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-400"
+                }`}
         >
             {icon}
         </div>
         <p
-            className={`font-black uppercase tracking-tight text-sm ${active ? "text-slate-900" : "text-slate-400"}`}
+            className={`font-medium text-sm ${active ? "text-gray-900" : "text-gray-600"
+                }`}
         >
             {title}
         </p>
-        <p className="text-[10px] font-medium text-slate-400 mt-1">
+        <p className="text-xs text-gray-500 mt-0.5">
             {description}
         </p>
     </div>

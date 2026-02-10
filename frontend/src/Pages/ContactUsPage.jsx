@@ -22,11 +22,11 @@ const ContactPage = () => {
     const handleSendEmail = (e) => {
         e.preventDefault();
         const businessEmail = "faizullahofficial0@gmail.com";
-        const subject = encodeURIComponent(`DIRECT_INQUIRY: ${formData.name}`);
+        const subject = encodeURIComponent(`Contact Inquiry: ${formData.name}`);
         const body = encodeURIComponent(
-            `SENDER: ${formData.name}\n` +
-                `---------------------------\n` +
-                `CONTENT:\n${formData.message}`,
+            `Name: ${formData.name}\n` +
+            `---------------------------\n` +
+            `Message:\n${formData.message}`,
         );
 
         const gmailUrl =
@@ -37,57 +37,58 @@ const ContactPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-slate-900 selection:text-white relative overflow-hidden">
-            <main className="relative z-10 px-6 md:px-12 py-10 max-w-7xl mx-auto">
-                <div className="text-center mb-20">
-                    <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tight uppercase">
+        <div className="min-h-screen bg-gray-50 text-gray-900">
+            <main className="px-6 md:px-12 py-8 max-w-7xl mx-auto">
+                <div className="mb-8 pb-4 border-b border-gray-200">
+                    <h1 className="text-3xl md:text-4xl font-semibold text-gray-900">
                         Get In Touch
                     </h1>
+                    <p className="text-gray-600 mt-2">We'd love to hear from you</p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    <div className="lg:col-span-5 space-y-6">
-                        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-2xl shadow-slate-200/50">
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-8 border-b border-slate-50 pb-4">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <div className="lg:col-span-5 space-y-4">
+                        <div className="bg-white p-5 rounded-lg border border-gray-200">
+                            <h3 className="text-sm font-semibold text-gray-900 mb-4 pb-3 border-b border-gray-100">
                                 Contact Information
                             </h3>
-                            <div className="space-y-10">
-                                <div className="flex items-center gap-6 group">
-                                    <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-all duration-500">
-                                        <MapPin size={20} />
+                            <div className="space-y-4">
+                                <div className="flex items-start gap-4 group">
+                                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 group-hover:bg-blue-600 group-hover:text-white transition-colors flex-shrink-0">
+                                        <MapPin size={18} />
                                     </div>
                                     <div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
+                                        <span className="text-xs font-medium text-gray-500 block mb-1">
                                             Location
                                         </span>
-                                        <span className="text-sm font-bold text-slate-900">
+                                        <span className="text-sm text-gray-900">
                                             Fazal Shah Mitha Khel Bannu, KP
                                             Pakistan
                                         </span>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-6 group">
-                                    <div className="w-12 h-12 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-all duration-500">
-                                        <Phone size={20} />
+                                <div className="flex items-start gap-4 group">
+                                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 group-hover:bg-blue-600 group-hover:text-white transition-colors flex-shrink-0">
+                                        <Phone size={18} />
                                     </div>
                                     <div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
+                                        <span className="text-xs font-medium text-gray-500 block mb-1">
                                             WhatsApp
                                         </span>
-                                        <span className="text-sm font-bold text-slate-900">
+                                        <span className="text-sm text-gray-900">
                                             +92 332 8753452
                                         </span>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-6 group">
-                                    <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-all duration-500">
-                                        <Mail size={20} />
+                                <div className="flex items-start gap-4 group">
+                                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 group-hover:bg-blue-600 group-hover:text-white transition-colors flex-shrink-0">
+                                        <Mail size={18} />
                                     </div>
                                     <div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
+                                        <span className="text-xs font-medium text-gray-500 block mb-1">
                                             Email
                                         </span>
-                                        <span className="text-sm font-bold text-slate-900 underline decoration-slate-200 underline-offset-4">
+                                        <span className="text-sm text-blue-600 break-all">
                                             faizullahofficial0@gmail.com
                                         </span>
                                     </div>
@@ -95,11 +96,11 @@ const ContactPage = () => {
                             </div>
                         </div>
 
-                        <div className="border border-slate-100 bg-slate-900 py-4 px-6 rounded-2xl flex justify-between items-center text-white">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">
-                                Social Accounts
+                        <div className="border border-gray-200 bg-gray-900 py-3 px-5 rounded-lg flex justify-between items-center text-white">
+                            <span className="text-sm font-medium text-gray-300">
+                                Follow Us
                             </span>
-                            <div className="flex gap-6">
+                            <div className="flex gap-4">
                                 <Instagram
                                     size={18}
                                     className="hover:text-blue-400 cursor-pointer transition-colors"
@@ -117,107 +118,100 @@ const ContactPage = () => {
                     </div>
 
                     <div className="lg:col-span-7">
-                        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-2xl shadow-slate-200/60 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[5rem]" />
+                        <div className="bg-white p-5 rounded-lg border border-gray-200">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                                    <Mail className="text-white" size={20} />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-semibold text-gray-900">
+                                        Send us a Message
+                                    </h2>
+                                    <p className="text-sm text-gray-500">
+                                        We'll get back to you soon
+                                    </p>
+                                </div>
+                            </div>
 
-                            <div className="relative z-10">
-                                <div className="flex items-center gap-4 mb-10">
-                                    <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center shadow-lg shadow-slate-900/20">
-                                        <Mail
-                                            className="text-white"
-                                            size={24}
-                                        />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase">
-                                            Contact Us From
-                                        </h2>
-                                    </div>
+                            <form onSubmit={handleSendEmail} className="space-y-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-sm font-medium text-gray-700">
+                                        Your Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={formData.name}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                name: e.target.value,
+                                            })
+                                        }
+                                        placeholder="Enter your full name"
+                                        className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    />
                                 </div>
 
-                                <form
-                                    onSubmit={handleSendEmail}
-                                    className="space-y-8"
+                                <div className="space-y-1.5">
+                                    <label className="text-sm font-medium text-gray-700">
+                                        Message
+                                    </label>
+                                    <textarea
+                                        required
+                                        rows={5}
+                                        value={formData.message}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                message: e.target.value,
+                                            })
+                                        }
+                                        placeholder="How can we help you?"
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="w-full py-2.5 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
                                 >
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-                                            Your Identity
-                                        </label>
-                                        <input
-                                            type="text"
-                                            required
-                                            value={formData.name}
-                                            onChange={(e) =>
-                                                setFormData({
-                                                    ...formData,
-                                                    name: e.target.value,
-                                                })
-                                            }
-                                            placeholder="FULL NAME"
-                                            className="w-full h-12 px-6 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:bg-white focus:outline-none focus:ring-4 focus:ring-slate-900/5 transition-all"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-                                            Message Content
-                                        </label>
-                                        <textarea
-                                            required
-                                            rows={5}
-                                            value={formData.message}
-                                            onChange={(e) =>
-                                                setFormData({
-                                                    ...formData,
-                                                    message: e.target.value,
-                                                })
-                                            }
-                                            placeholder="HOW CAN WE ASSIST?"
-                                            className="w-full px-6 py-6 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:bg-white focus:outline-none focus:ring-4 focus:ring-slate-900/5 transition-all resize-none"
-                                        />
-                                    </div>
-                                    <button
-                                        type="submit"
-                                        className="w-full h-12 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] shadow-xl shadow-slate-900/20 hover:bg-slate-800 transition-all active:scale-95 flex items-center justify-center gap-4"
-                                    >
-                                        Transmit via Gmail
-                                        <ArrowRight size={18} />
-                                    </button>
-                                </form>
-                            </div>
+                                    Send via Gmail
+                                    <ArrowRight size={16} />
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </main>
 
-            <footer className="relative z-10 px-6 md:px-12 py-16 border-t border-slate-100 bg-white/50">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="flex flex-col items-center md:items-start gap-4">
-                        <div className="text-2xl font-black tracking-tighter uppercase">
-                            Registry.
+            <footer className="px-6 md:px-12 py-8 border-t border-gray-200 bg-white mt-12">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex flex-col items-center md:items-start gap-2">
+                        <div className="text-xl font-semibold text-gray-900">
+                            Registry
                         </div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
-                            © 2024 System Registry. SSL Encrypted.
+                        <p className="text-xs text-gray-500">
+                            © 2024 System Registry. All rights reserved.
                         </p>
                     </div>
-                    <div className="flex gap-10 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
+                    <div className="flex gap-6 text-sm text-gray-600">
                         <a
                             href="#"
-                            className="hover:text-slate-900 transition-colors"
+                            className="hover:text-blue-600 transition-colors"
                         >
                             Privacy
                         </a>
                         <a
                             href="#"
-                            className="hover:text-slate-900 transition-colors"
+                            className="hover:text-blue-600 transition-colors"
                         >
                             Security
                         </a>
                         <a
                             href="#"
-                            className="hover:text-slate-900 transition-colors"
+                            className="hover:text-blue-600 transition-colors"
                         >
-                            Node Status
+                            Status
                         </a>
                     </div>
                 </div>

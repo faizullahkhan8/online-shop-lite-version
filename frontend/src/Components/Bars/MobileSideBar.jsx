@@ -28,47 +28,46 @@ const MobileSideBar = ({
         <>
             {isMenuOpen && (
                 <div
-                    className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] md:hidden transition-all duration-300 opacity-100"
+                    className="fixed inset-0 bg-black/40 z-[60] md:hidden transition-opacity"
                     onClick={() => setIsMenuOpen(false)}
                 />
             )}
 
             <div
-                className={`fixed top-0 right-0 h-full w-[85%] max-w-[320px] bg-white z-[70] md:hidden transform transition-all duration-300 ease-out shadow-[-20px_0_50px_rgba(0,0,0,0.1)] flex flex-col ${
-                    isMenuOpen ? "translate-x-0" : "translate-x-full"
-                }`}
+                className={`fixed top-0 right-0 h-full w-[85%] max-w-[320px] bg-white z-[70] md:hidden transform transition-transform duration-300 shadow-xl flex flex-col ${isMenuOpen ? "translate-x-0" : "translate-x-full"
+                    }`}
             >
-                <div className="flex items-center justify-between p-5 border-b border-slate-50">
+                <div className="flex items-center justify-between p-4 border-b border-gray-200">
                     <div className="flex items-center gap-2">
-                        <img src="./logo.png" alt="Logo" className="h-7 w-7" />
-                        <span className="font-black text-slate-900 text-lg tracking-tighter">
-                            NAVIGATION
+                        <img src="./logo.png" alt="Logo" className="h-6 w-6" />
+                        <span className="font-semibold text-gray-900 text-base">
+                            Menu
                         </span>
                     </div>
                     <button
                         onClick={() => setIsMenuOpen(false)}
-                        className="p-2 rounded-xl bg-slate-50 text-slate-400 hover:text-primary transition-colors"
+                        className="p-1.5 rounded-lg bg-gray-100 text-gray-600 hover:text-gray-900 transition-colors"
                     >
                         <X size={20} />
                     </button>
                 </div>
 
                 <div className="flex-1 overflow-y-auto overflow-x-hidden">
-                    <div className="p-6">
+                    <div className="p-4">
                         {isAuthenticated ? (
-                            <div className="bg-slate-900 rounded-3xl p-5 text-white shadow-xl shadow-slate-200">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20">
+                            <div className="bg-gray-900 rounded-lg p-4 text-white">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
                                         <User
-                                            size={24}
+                                            size={20}
                                             className="text-white"
                                         />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-[10px] font-bold text-white/50 uppercase tracking-[0.2em]">
+                                        <p className="text-xs text-white/60">
                                             Welcome back
                                         </p>
-                                        <p className="font-bold text-base truncate">
+                                        <p className="font-semibold text-sm truncate">
                                             {user?.name}
                                         </p>
                                     </div>
@@ -77,28 +76,28 @@ const MobileSideBar = ({
                                     <Link
                                         to="/profile"
                                         onClick={() => setIsMenuOpen(false)}
-                                        className="flex-1 bg-white/10 hover:bg-white/20 text-center py-2 rounded-xl text-xs font-bold transition-colors"
+                                        className="flex-1 bg-white/10 hover:bg-white/20 text-center py-2 rounded-lg text-xs font-medium transition-colors"
                                     >
                                         Profile
                                     </Link>
-                                    <button className="px-3 bg-red-500/20 hover:bg-red-500/40 text-red-200 py-2 rounded-xl transition-colors">
+                                    <button className="px-3 bg-red-500/20 hover:bg-red-500/30 text-red-200 py-2 rounded-lg transition-colors">
                                         <LogOut size={16} />
                                     </button>
                                 </div>
                             </div>
                         ) : (
-                            <div className="bg-primary rounded-3xl p-6 text-white shadow-xl shadow-primary/30">
-                                <h3 className="font-black text-xl mb-2">
+                            <div className="bg-blue-600 rounded-lg p-4 text-white">
+                                <h3 className="font-semibold text-lg mb-1">
                                     Start Shopping
                                 </h3>
-                                <p className="text-white/80 text-xs mb-4 leading-relaxed">
+                                <p className="text-white/80 text-xs mb-3 leading-relaxed">
                                     Login to track orders and manage your
                                     favorites.
                                 </p>
                                 <Link
                                     to="/login"
                                     onClick={() => setIsMenuOpen(false)}
-                                    className="block w-full bg-white text-primary text-center py-3 rounded-2xl text-sm font-black uppercase tracking-wider shadow-lg"
+                                    className="block w-full bg-white text-blue-600 text-center py-2 rounded-lg text-sm font-medium"
                                 >
                                     Login / Register
                                 </Link>
@@ -107,7 +106,7 @@ const MobileSideBar = ({
                     </div>
 
                     <div className="mt-2">
-                        <p className="px-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">
+                        <p className="px-4 text-xs font-medium text-gray-500 mb-2">
                             Menu
                         </p>
 
@@ -117,7 +116,7 @@ const MobileSideBar = ({
                                 to="/admin-dashboard"
                                 icon={<LayoutDashboard size={20} />}
                                 label="Admin Panel"
-                                color="text-indigo-500"
+                                color="text-indigo-600"
                             />
                         )}
 
@@ -154,8 +153,8 @@ const MobileSideBar = ({
                         />
                     </div>
 
-                    <div className="mt-6 border-t border-slate-50 pt-6 pb-10">
-                        <p className="px-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">
+                    <div className="mt-4 border-t border-gray-100 pt-4 pb-8">
+                        <p className="px-4 text-xs font-medium text-gray-500 mb-2">
                             Support
                         </p>
                         <NavItem
@@ -173,14 +172,14 @@ const MobileSideBar = ({
                     </div>
                 </div>
 
-                <div className="p-6 bg-slate-50/50 border-t border-slate-100">
-                    <div className="flex items-center justify-between text-slate-400">
-                        <span className="text-[10px] font-bold uppercase tracking-widest">
+                <div className="p-4 bg-gray-50 border-t border-gray-100">
+                    <div className="flex items-center justify-between text-gray-500">
+                        <span className="text-xs">
                             © 2026 E-Store
                         </span>
-                        <div className="flex gap-4">
-                            <Globe size={16} />
-                            <span className="text-[10px] font-bold uppercase">
+                        <div className="flex gap-2 items-center">
+                            <Globe size={14} />
+                            <span className="text-xs">
                                 EN
                             </span>
                         </div>
@@ -198,30 +197,30 @@ const NavItem = ({
     icon,
     label,
     badge,
-    color = "text-slate-600",
+    color = "text-gray-600",
     setIsMenuOpen,
 }) => (
     <Link
         to={to}
         onClick={() => setIsMenuOpen(false)}
-        className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-all active:bg-slate-100 group"
+        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors group"
     >
         <div
-            className={`p-2 rounded-xl bg-slate-50 group-hover:bg-white group-hover:shadow-sm transition-all ${color}`}
+            className={`p-1.5 rounded-lg bg-gray-100 group-hover:bg-gray-200 transition-colors ${color}`}
         >
             {icon}
         </div>
-        <span className="font-bold text-slate-700 text-sm flex-1 uppercase tracking-wide">
+        <span className="font-medium text-gray-700 text-sm flex-1">
             {label}
         </span>
         {badge > 0 ? (
-            <span className="bg-primary text-white text-[10px] font-black px-2 py-1 rounded-lg">
+            <span className="bg-blue-600 text-white text-xs font-semibold px-2 py-0.5 rounded">
                 {badge}
             </span>
         ) : (
             <ChevronRight
                 size={16}
-                className="text-slate-300 group-hover:translate-x-1 transition-transform"
+                className="text-gray-300 group-hover:translate-x-0.5 transition-transform"
             />
         )}
     </Link>

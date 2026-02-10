@@ -1,8 +1,7 @@
 import expressAsyncHandler from "express-async-handler";
 import { getLocalHeroModel } from "../config/localDb.js";
 import { ErrorResponse } from "../utils/ErrorResponse.js";
-import fs from "fs";
-import path from "path";
+import { deleteImageKitFile } from "../utils/DeleteFileImageKit.js";
 
 export const getHeroSlides = expressAsyncHandler(async (req, res, next) => {
     const HeroModel = getLocalHeroModel();
@@ -19,13 +18,14 @@ export const createHeroSlide = expressAsyncHandler(async (req, res, next) => {
     const data = JSON.parse(req.body.data);
     const { title, headline, subtitle, bg, accent, order } = data;
 
-    if (!req.file) return next(new ErrorResponse("Image is required", 400));
+    if (!req.image) return next(new ErrorResponse("Image is required", 400));
 
     const slide = await HeroModel.create({
         title,
         headline,
         subtitle,
-        image: req.file.path, // relative path from public
+        image: req.image.filePath || "",
+        imagekitFileId: req.image.fileId || "",
         bg,
         accent,
         order,
@@ -45,12 +45,10 @@ export const updateHeroSlide = expressAsyncHandler(async (req, res, next) => {
     const slide = await HeroModel.findById(id);
     if (!slide) return next(new ErrorResponse("Slide not found", 404));
 
-    if (req.file) {
-        // Remove old image
-        if (fs.existsSync(slide.image)) {
-            fs.unlinkSync(slide.image);
-        }
-        slide.image = req.file.path;
+    if (req.image) {
+        await deleteImageKitFile(slide.imagekitFileId);
+        slide.image = req.image.filePath || "";
+        slide.imagekitFileId = req.image.fileId || "";
     }
 
     slide.title = title || slide.title;
@@ -74,10 +72,7 @@ export const deleteHeroSlide = expressAsyncHandler(async (req, res, next) => {
     const slide = await HeroModel.findById(id);
     if (!slide) return next(new ErrorResponse("Slide not found", 404));
 
-    // Remove image
-    if (fs.existsSync(slide.image)) {
-        fs.unlinkSync(slide.image);
-    }
+    await deleteImageKitFile(slide.imagekitFileId);
 
     await slide.deleteOne();
 

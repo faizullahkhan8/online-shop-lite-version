@@ -24,8 +24,12 @@ const promotionSchema = new Schema(
         ],
         status: {
             type: String,
-            enum: ["ACTIVE", "SCHEDULED", "EXPIRED"],
+            enum: ["ACTIVE", "SCHEDULED", "EXPIRED", "CANCELLED", "INACTIVE"],
             default: "SCHEDULED",
+        },
+        order: {
+            type: Number,
+            default: 0,
         },
     },
     {

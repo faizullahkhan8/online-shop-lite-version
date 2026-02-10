@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import Input from "../../UI/Input.jsx";
 import Button from "../../UI/Button.jsx";
@@ -12,6 +13,7 @@ import {
     Layers,
     DollarSign,
     Box,
+    Boxes,
 } from "lucide-react";
 import {
     useCreateProuduct,
@@ -28,6 +30,7 @@ const INITAIL_STATE = {
     description: "",
     category: "",
     stock: "",
+    lowStock: "",
     image: null,
     isRemoveBg: false,
 };
@@ -36,11 +39,18 @@ const AddProduct = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
-    const isEditing = searchParams.get("isEditing") === "true";
-    const selectedProduct =
-        JSON.parse(searchParams.get("product")) || INITAIL_STATE;
+    const parseProductFromParams = () => {
+        try {
+            const raw = searchParams.get("product");
+            return raw ? JSON.parse(raw) : INITAIL_STATE;
+        } catch {
+            return INITAIL_STATE;
+        }
+    };
 
-    const [productData, setProductData] = useState(selectedProduct);
+    const [productData, setProductData] = useState(parseProductFromParams);
+    const isEditing = Boolean(productData?._id);
+
     const [categories, setCategories] = useState([]);
     const [previewUrl, setPreviewUrl] = useState("");
 
@@ -48,20 +58,6 @@ const AddProduct = () => {
         useCreateProuduct();
     const { updateProduct, loading: updateProductLoading } = useUpdateProduct();
     const { getAllCategories } = useGetAllCategories();
-
-    useEffect(() => {
-        if (isEditing) {
-            try {
-                const product = JSON.parse(searchParams.get("product"));
-                if (product) setProductData(product);
-            } catch (err) {
-                console.error("Failed to parse product data", err);
-            }
-        } else {
-            setProductData(INITAIL_STATE);
-            setPreviewUrl("");
-        }
-    }, [isEditing, searchParams]);
 
     useEffect(() => {
         (async () => {
@@ -113,8 +109,7 @@ const AddProduct = () => {
             formData.append("data", JSON.stringify(textData));
 
             const response = await createProduct(formData);
-            if (response.success)
-                navigate("/admin-dashboard?tab=products-list");
+            if (response.success) navigate("/admin-dashboard/products");
         } else {
             if (productData.image instanceof File) {
                 formData.append("image", productData.image);
@@ -132,53 +127,62 @@ const AddProduct = () => {
         }
     };
 
-    console.log(productData);
-
     return (
-        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="space-y-6">
+            {/* Header */}
             <header className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
-                        {isEditing ? "Modify Product" : "Initialize Product"}
+                    <h2 className="text-2xl font-bold text-gray-900">
+                        {isEditing ? "Edit Product" : "Add New Product"}
                     </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                        {isEditing
+                            ? "Update product information"
+                            : "Create a new product listing"}
+                    </p>
                 </div>
                 <button
                     onClick={() => navigate(-1)}
-                    className="p-3 text-slate-400 hover:text-slate-900 transition-colors"
+                    className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
                 >
-                    <X size={24} />
+                    <X size={20} />
                 </button>
             </header>
 
+            {/* Form */}
             <form
                 onSubmit={handleSubmit}
-                className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-20"
+                className="grid grid-cols-1 lg:grid-cols-12 gap-6"
             >
+                {/* Left Column - Product Details */}
                 <div className="lg:col-span-7 space-y-6">
-                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 space-y-6">
+                    <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm space-y-5">
+                        {/* Product Name */}
                         <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
-                                <Hash size={12} className="text-primary" />{" "}
+                            <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                <Hash size={14} className="text-blue-600" />
                                 Product Name
                             </label>
                             <Input
                                 type="text"
                                 id="name"
                                 value={productData?.name}
-                                placeholder="e.g. CORE-SERIES MK I"
-                                className="w-full bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-primary/20"
+                                placeholder="Enter product name"
+                                className="w-full"
                                 onChange={handleChange}
+                                required
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        {/* Price and Stock */}
+                        <div className="grid grid-cols-3 gap-4">
                             <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
+                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                     <DollarSign
-                                        size={12}
-                                        className="text-primary"
-                                    />{" "}
-                                    Price
+                                        size={14}
+                                        className="text-blue-600"
+                                    />
+                                    Price (Rs)
                                 </label>
                                 <Input
                                     type="number"
@@ -186,33 +190,54 @@ const AddProduct = () => {
                                     value={productData?.price}
                                     placeholder="0.00"
                                     step="0.01"
-                                    className="w-full bg-slate-50 border-none rounded-2xl"
+                                    className="w-full"
                                     onChange={handleChange}
+                                    required
                                 />
                             </div>
                             <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
-                                    <Box size={12} className="text-primary" />{" "}
-                                    Stock
+                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                    <Boxes
+                                        size={16}
+                                        className="text-blue-600"
+                                    />
+                                    Stock Quantity
                                 </label>
                                 <Input
                                     type="number"
                                     id="stock"
                                     value={productData?.stock}
                                     placeholder="0"
-                                    className="w-full bg-slate-50 border-none rounded-2xl"
+                                    className="w-full"
                                     onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                    <Box size={14} className="text-blue-600" />
+                                    Low Stock
+                                </label>
+                                <Input
+                                    type="number"
+                                    id="lowStock"
+                                    value={productData?.lowStock}
+                                    placeholder="0"
+                                    className="w-full"
+                                    onChange={handleChange}
+                                    required
                                 />
                             </div>
                         </div>
 
+                        {/* Category */}
                         <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
-                                <Layers size={12} className="text-primary" />{" "}
+                            <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                <Layers size={14} className="text-blue-600" />
                                 Category
                             </label>
                             <Select
-                                placeholder="Select Category..."
+                                placeholder="Select category"
                                 id="category"
                                 value={productData?.category}
                                 onChange={(value) =>
@@ -221,56 +246,60 @@ const AddProduct = () => {
                                     })
                                 }
                                 options={categories.map((cat) => ({
-                                    label: cat.name.toUpperCase(),
+                                    label: cat.name,
                                     value: cat._id,
                                 }))}
-                                className="bg-slate-50 border-none rounded-2xl"
+                                className="w-full"
                             />
                         </div>
 
+                        {/* Description */}
                         <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
-                                <Layers size={12} className="text-primary" />{" "}
+                            <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                <Layers size={14} className="text-blue-600" />
                                 Description
                             </label>
                             <Input
                                 type="textarea"
                                 id="description"
                                 value={productData?.description}
-                                placeholder="Enter detailed specifications..."
+                                placeholder="Enter product description"
                                 rows={6}
-                                className="w-full bg-slate-50 border-none rounded-2xl resize-none"
+                                className="w-full resize-none"
                                 onChange={handleChange}
                             />
                         </div>
                     </div>
                 </div>
 
+                {/* Right Column - Image Upload & Actions */}
                 <div className="lg:col-span-5 space-y-6">
-                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40">
-                        <div className="flex gap-2 justify-between">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
+                    {/* Image Upload */}
+                    <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                        <div className="flex items-center justify-between mb-3">
+                            <label className="text-sm font-medium text-gray-700">
                                 Product Image
                             </label>
-                            <div className="flex gap-2 items-center">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
-                                    Remove Background
+                            <div className="flex items-center gap-2">
+                                <label className="text-xs font-medium text-gray-600">
+                                    Remove BG
                                 </label>
                                 <input
                                     type="checkbox"
-                                    value={productData?.isRemoveBg}
+                                    checked={productData?.isRemoveBg}
                                     onChange={(e) =>
                                         setProductData((pre) => ({
                                             ...pre,
                                             isRemoveBg: e.target.checked,
                                         }))
                                     }
+                                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                 />
                             </div>
                         </div>
                         <label
                             htmlFor="image"
-                            className="group relative flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-slate-200 rounded-[2rem] hover:border-primary/50 hover:bg-slate-50 transition-all cursor-pointer overflow-hidden"
+                            className="group relative flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-gray-50 transition-all cursor-pointer overflow-hidden"
                         >
                             {previewUrl ? (
                                 <div className="absolute inset-0">
@@ -279,25 +308,25 @@ const AddProduct = () => {
                                         alt="Preview"
                                         className="w-full h-full object-cover"
                                     />
-                                    <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <p className="text-[10px] font-black text-white uppercase tracking-widest">
-                                            Replace Image
+                                    <div className="absolute inset-0 bg-gray-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <p className="text-sm font-medium text-white">
+                                            Change Image
                                         </p>
                                     </div>
                                 </div>
                             ) : (
                                 <div className="text-center p-6">
-                                    <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                                    <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-50 transition-colors">
                                         <ImageIcon
-                                            size={28}
-                                            className="text-slate-300 group-hover:text-primary transition-colors"
+                                            size={24}
+                                            className="text-gray-400 group-hover:text-blue-600 transition-colors"
                                         />
                                     </div>
-                                    <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest">
+                                    <p className="text-sm font-medium text-gray-900 mb-1">
                                         Upload Product Image
                                     </p>
-                                    <p className="text-[9px] font-bold text-slate-400 mt-2">
-                                        RAW, PNG, JPG (MAX 10MB)
+                                    <p className="text-xs text-gray-500">
+                                        PNG, JPG, WEBP (Max 10MB)
                                     </p>
                                 </div>
                             )}
@@ -311,27 +340,38 @@ const AddProduct = () => {
                         </label>
                     </div>
 
+                    {/* Action Buttons */}
                     <div className="flex flex-col gap-3">
                         <Button
                             type="submit"
                             disabled={
                                 createProductLoading || updateProductLoading
                             }
-                            className="w-full py-6 rounded-2xl bg-slate-900 text-white hover:bg-primary transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-900/20"
+                            className="w-full py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {createProductLoading || updateProductLoading ? (
-                                <Loader className="animate-spin" size={20} />
+                                <>
+                                    <Loader
+                                        className="animate-spin"
+                                        size={18}
+                                    />
+                                    <span className="text-sm font-medium">
+                                        {isEditing
+                                            ? "Updating..."
+                                            : "Creating..."}
+                                    </span>
+                                </>
                             ) : isEditing ? (
                                 <>
                                     <Save size={18} />
-                                    <span className="text-xs font-black uppercase tracking-widest">
+                                    <span className="text-sm font-medium">
                                         Update Product
                                     </span>
                                 </>
                             ) : (
                                 <>
                                     <Plus size={18} />
-                                    <span className="text-xs font-black uppercase tracking-widest">
+                                    <span className="text-sm font-medium">
                                         Create Product
                                     </span>
                                 </>
@@ -340,9 +380,9 @@ const AddProduct = () => {
                         <button
                             type="button"
                             onClick={() => navigate(-1)}
-                            className="w-full py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-rose-500 transition-colors"
+                            className="w-full py-3 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
                         >
-                            Cancel & Go Back
+                            Cancel
                         </button>
                     </div>
                 </div>

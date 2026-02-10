@@ -11,7 +11,7 @@ export const usePlaceOrder = () => {
             setLoading(true);
             const response = await apiClient.post(
                 ORDER_ROUTES.PLACE,
-                orderData
+                orderData,
             );
 
             if (response.data) {
@@ -103,7 +103,7 @@ export const useGetOrderById = () => {
         try {
             setLoading(true);
             const response = await apiClient.get(
-                `${ORDER_ROUTES.GET_BY_ID}/${orderId}`
+                `${ORDER_ROUTES.GET_BY_ID}/${orderId}`,
             );
 
             if (response.data && response.data.order) {
@@ -137,7 +137,7 @@ export const useUpdateOrderStatus = () => {
             setLoading(true);
             const response = await apiClient.patch(
                 `${ORDER_ROUTES.UPDATE}/${orderId}`,
-                { status }
+                { status },
             );
 
             if (response.data) return response.data;
@@ -186,7 +186,7 @@ export const useDeleteOrder = () => {
         try {
             setLoading(true);
             const response = await apiClient.delete(
-                `${ORDER_ROUTES.DELETE}/${orderId}`
+                `${ORDER_ROUTES.DELETE}/${orderId}`,
             );
 
             if (response.data) return response.data;
@@ -202,4 +202,88 @@ export const useDeleteOrder = () => {
     };
 
     return { deleteOrder, loading };
+};
+
+export const useCancelOrderItem = () => {
+    const [loading, setLoading] = useState(false);
+
+    const cancelOrderItem = async ({ orderId, itemId, reason }) => {
+        try {
+            setLoading(true);
+
+            const response = await apiClient.put(
+                `${ORDER_ROUTES.CANCEL_ITEM || "/orders"}/${orderId}/items/${itemId}/cancel`,
+                { reason },
+            );
+
+            if (response.data) {
+                toast.success("Order item cancelled successfully.");
+
+                // normalize order if backend returns updated order
+                if (response.data.order) {
+                    const o = response.data.order;
+                    response.data.order = {
+                        ...o,
+                        id: o._id,
+                        date: o.createdAt,
+                        totalAmount: o.grandTotal ?? o.totalAmount,
+                    };
+                }
+
+                return response.data;
+            }
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.message ||
+                "Something went wrong. Try again!";
+            toast.error(errorMessage);
+            console.log("Error in cancel order item:", error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { cancelOrderItem, loading };
+};
+
+export const useCancelOrder = () => {
+    const [loading, setLoading] = useState(false);
+
+    const cancelOrder = async ({ orderId, reason }) => {
+        try {
+            setLoading(true);
+
+            const response = await apiClient.put(
+                `${ORDER_ROUTES.CANCEL || "/orders"}/${orderId}/cancel`,
+                { reason },
+            );
+
+            if (response.data) {
+                toast.success("Order cancelled successfully.");
+
+                // normalize updated order for UI consistency
+                if (response.data.order) {
+                    const o = response.data.order;
+                    response.data.order = {
+                        ...o,
+                        id: o._id,
+                        date: o.createdAt,
+                        totalAmount: o.grandTotal ?? o.totalAmount,
+                    };
+                }
+
+                return response.data;
+            }
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.message ||
+                "Something went wrong. Try again!";
+            toast.error(errorMessage);
+            console.log("Error in cancel order:", error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { cancelOrder, loading };
 };

@@ -15,6 +15,8 @@ import {
 const ProfilePage = () => {
     const { user } = useSelector((state) => state.auth);
     const [userData, setUserData] = useState(null);
+    const [avatarPreview, setAvatarPreview] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
     const dispatch = useDispatch();
 
     const { updateUser, loading: updateUserLoading } = useUpdateUser();
@@ -27,6 +29,14 @@ const ProfilePage = () => {
 
     const handleChange = (e) => {
         setUserData({ ...userData, [e.target.name]: e.target.value });
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setSelectedFile(file);
+            setAvatarPreview(URL.createObjectURL(file));
+        }
     };
 
     const handleAddressChange = (field, value) => {
@@ -43,10 +53,17 @@ const ProfilePage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await updateUser({ userId: user._id, user: userData });
+        const formData = new FormData();
+        formData.append("data", JSON.stringify(userData));
+        if (selectedFile) {
+            formData.append("avatar", selectedFile);
+        }
 
-        if (response.user) {
+        const response = await updateUser({ userId: user._id, user: formData });
+
+        if (response && response.user) {
             dispatch(loginSuccess(response.user));
+            setSelectedFile(null);
         }
     };
 
@@ -77,6 +94,7 @@ const ProfilePage = () => {
                                 <div className="w-32 h-32 rounded-[2.5rem] bg-slate-100 overflow-hidden border-4 border-white shadow-inner">
                                     <img
                                         src={
+                                            avatarPreview ||
                                             user?.avatar ||
                                             `https://ui-avatars.com/api/?name=${user?.name}&background=0f172a&color=fff`
                                         }
@@ -84,9 +102,19 @@ const ProfilePage = () => {
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
-                                <button className="absolute -bottom-2 -right-2 w-10 h-10 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg border-4 border-white hover:scale-110 transition-transform">
+                                <label
+                                    htmlFor="avatar-upload"
+                                    className="absolute -bottom-2 -right-2 w-10 h-10 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg border-4 border-white hover:scale-110 transition-transform cursor-pointer"
+                                >
                                     <Camera size={16} />
-                                </button>
+                                </label>
+                                <input
+                                    id="avatar-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={handleImageChange}
+                                />
                             </div>
                             <h2 className="text-lg font-black text-slate-900 uppercase tracking-tight truncate">
                                 {user?.name || "Guest User"}
@@ -263,11 +291,10 @@ const ProfileInput = ({
                 onChange={onChange}
                 disabled={disabled}
                 type={type}
-                className={`w-full border-none rounded-2xl pl-12 pr-4 py-4 text-sm font-bold outline-none transition-all ${
-                    disabled
+                className={`w-full border-none rounded-2xl pl-12 pr-4 py-4 text-sm font-bold outline-none transition-all ${disabled
                         ? "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60"
                         : "bg-slate-50 text-slate-900 focus:ring-2 focus:ring-primary/20"
-                }`}
+                    }`}
             />
         </div>
     </div>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import HeroSection from "../Components/Home/HeroSection";
-import DealsAndOffers from "../Components/Home/DealsAndOffers";
 import PromotionSection from "../Components/Home/PromotionSection";
 import { useGetAllProducts } from "../api/hooks/product.api";
 
@@ -27,11 +26,6 @@ const HomePage = () => {
             <div className="mt-8">
                 <PromotionSection />
             </div>
-
-
-            {/* <div className="mt-4">
-                <DealsAndOffers items={products.slice(0, 6)} />
-            </div> */}
 
             <section className="container mx-auto px-4 mt-12">
                 <div className="flex items-center justify-between mb-8">

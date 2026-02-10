@@ -6,6 +6,7 @@ import {
 } from "../config/localDb.js";
 import { generateToken, setCookie, verifyToken } from "../utils/jwt.js";
 import { ErrorResponse } from "../utils/ErrorResponse.js";
+import { deleteImageKitFile } from "../utils/DeleteFileImageKit.js";
 
 export const registerUser = asyncHandler(async (req, res, next) => {
     const UserModel = getLocalUserModel();
@@ -145,7 +146,17 @@ export const updateUser = asyncHandler(async (req, res, next) => {
     }
 
     const userId = req.params.id;
-    const { name, phone, address, addresses } = req.body;
+    let updateData = req.body;
+
+    if (req.body.data) {
+        try {
+            updateData = JSON.parse(req.body.data);
+        } catch (error) {
+            return next(new ErrorResponse("Invalid data format", 400));
+        }
+    }
+
+    const { name, phone, address, addresses } = updateData;
 
     const user = await UserModel.findById(userId);
 
@@ -175,6 +186,18 @@ export const updateUser = asyncHandler(async (req, res, next) => {
                 country: nextAddress.country || "",
             },
         ];
+    }
+
+    if (req.image?.fileId) {
+        if (user.avatarFileId) {
+            try {
+                await deleteImageKitFile(user.avatarFileId);
+            } catch (err) {
+                console.error("Failed to delete old avatar from ImageKit:", err);
+            }
+        }
+        user.avatar = req.image.url;
+        user.avatarFileId = req.image.fileId;
     }
 
     const updatedUser = await user.save({ validateModifiedOnly: true });

@@ -54,10 +54,10 @@ const ProductDetailPage = () => {
 
     if (productLoading) {
         return (
-            <div className="w-full h-screen flex flex-col items-center justify-center bg-slate-50/50">
-                <Loader2 className="animate-spin text-primary mb-4" size={40} />
-                <p className="text-[11px] font-black uppercase tracking-widest text-slate-400">
-                    Loading details...
+            <div className="w-full h-screen flex flex-col items-center justify-center bg-gray-50">
+                <Loader2 className="animate-spin text-blue-600 mb-4" size={40} />
+                <p className="text-sm font-medium text-gray-500">
+                    Loading product details...
                 </p>
             </div>
         );
@@ -93,60 +93,66 @@ const ProductDetailPage = () => {
     ];
 
     return (
-        <div className="bg-slate-50/50 min-h-screen">
-            <div className="container mx-auto px-4 lg:px-8 py-8 lg:py-12">
+        <div className="bg-gray-50 min-h-screen">
+            <div className="container mx-auto px-4 lg:px-8 py-6 lg:py-8">
                 <Breadcrumb items={breadcrumbItems} />
 
-                <div className="mt-8 bg-white border border-slate-100 rounded-[3rem] shadow-xl shadow-slate-200/50 overflow-hidden">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 p-8 lg:p-16">
-                        <div className="space-y-6">
-                            <div className="aspect-square bg-slate-50 rounded-[2.5rem] border border-slate-100 flex items-center justify-center p-12 group">
+                <div className="mt-6 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 lg:p-10">
+                        {/* Product Image */}
+                        <div className="space-y-4">
+                            <div className="aspect-square bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center p-8 group overflow-hidden">
                                 <img
                                     src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product?.image}`}
                                     alt={product?.name}
-                                    className="max-h-full w-full object-contain transition-transform duration-300 group-hover:scale-110"
+                                    className="max-h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
                                 />
                             </div>
                         </div>
 
+                        {/* Product Details */}
                         <div className="flex flex-col">
-                            <div className="mb-6">
+                            {/* Stock Status */}
+                            <div className="mb-4">
                                 {product?.stock > 0 ? (
-                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-100">
-                                        <Check size={12} strokeWidth={3} /> In
-                                        Stock
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium border border-green-200">
+                                        <Check size={14} strokeWidth={2.5} />
+                                        In Stock
                                     </span>
                                 ) : (
-                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-rose-100">
-                                        <X size={12} strokeWidth={3} /> Out of
-                                        Stock
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 text-red-700 rounded-full text-xs font-medium border border-red-200">
+                                        <X size={14} strokeWidth={2.5} />
+                                        Out of Stock
                                     </span>
                                 )}
                             </div>
 
-                            <h1 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase">
+                            {/* Product Name */}
+                            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
                                 {product?.name}
                             </h1>
 
-                            <div className="flex items-center gap-4 mb-6">
+                            {/* Rating */}
+                            <div className="flex items-center gap-3 mb-5">
                                 <StarRating rating={product?.rating || 0} readonly size={16} />
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                    {product?.numReviews || 0} Reviews
+                                <span className="text-sm text-gray-500">
+                                    {product?.numReviews || 0} reviews
                                 </span>
                             </div>
 
-                            <p className="text-slate-500 leading-relaxed mb-8 font-medium">
+                            {/* Description */}
+                            <p className="text-gray-600 leading-relaxed mb-6">
                                 {product?.description ||
                                     "Experience the perfect blend of performance and design with our latest addition to the collection."}
                             </p>
 
-                            <div className="mb-8 p-6 bg-slate-900 rounded-3xl text-white flex flex-col items-center sm:items-start group/price overflow-hidden relative">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl translate-x-1/2 -translate-y-1/2" />
-                                <span className="text-[10px] font-black uppercase text-slate-400 tracking-[0.3em] mb-2 relative">
-                                    Current Valuation
+                            {/* Price Section */}
+                            <div className="mb-6 p-5 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg text-white">
+                                <span className="text-xs font-medium text-blue-100 mb-2 block">
+                                    Price
                                 </span>
-                                <div className="flex items-center gap-4 relative">
-                                    <span className="text-4xl font-black tracking-tighter text-white">
+                                <div className="flex items-baseline gap-3">
+                                    <span className="text-3xl font-bold">
                                         PKR{" "}
                                         {(
                                             product?.effectivePrice ||
@@ -155,37 +161,38 @@ const ProductDetailPage = () => {
                                     </span>
                                     {product?.effectivePrice <
                                         product?.price && (
-                                        <span className="text-sm font-black text-slate-500 line-through uppercase tracking-widest">
-                                            PKR{" "}
-                                            {product?.price?.toLocaleString()}
-                                        </span>
-                                    )}
+                                            <span className="text-sm font-medium text-blue-200 line-through">
+                                                PKR{" "}
+                                                {product?.price?.toLocaleString()}
+                                            </span>
+                                        )}
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-8 mb-8 pb-8 border-b border-slate-100">
+                            {/* Product Stats */}
+                            <div className="flex items-center gap-6 mb-6 pb-6 border-b border-gray-200">
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">
-                                        Total Sales
+                                    <span className="text-xs font-medium text-gray-500 mb-1">
+                                        Sales
                                     </span>
-                                    <div className="flex items-center gap-2 text-slate-900 font-bold">
+                                    <div className="flex items-center gap-2 text-gray-900 font-semibold text-sm">
                                         <Package
                                             size={16}
-                                            className="text-primary"
+                                            className="text-blue-600"
                                         />
                                         <span>
-                                            {product?.sold || 0} items Sold
+                                            {product?.sold || 0} sold
                                         </span>
                                     </div>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">
-                                        Catalog Unit
+                                    <span className="text-xs font-medium text-gray-500 mb-1">
+                                        Category
                                     </span>
-                                    <div className="flex items-center gap-2 text-slate-900 font-bold">
+                                    <div className="flex items-center gap-2 text-gray-900 font-semibold text-sm">
                                         <Boxes
                                             size={16}
-                                            className="text-primary"
+                                            className="text-blue-600"
                                         />
                                         <span>
                                             {product?.category?.name || "Tech"}
@@ -194,47 +201,52 @@ const ProductDetailPage = () => {
                                 </div>
                             </div>
 
-                            <div className="space-y-6">
-                                <div className="flex items-center gap-6">
-                                    <div className="flex items-center bg-slate-50 rounded-2xl p-1 border border-slate-100">
+                            {/* Quantity and Cart */}
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-4">
+                                    {/* Quantity Selector */}
+                                    <div className="flex items-center bg-gray-100 rounded-lg border border-gray-300">
                                         <button
                                             onClick={() =>
                                                 setQuantity(
                                                     Math.max(1, quantity - 1),
                                                 )
                                             }
-                                            className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors"
+                                            className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-200 transition-colors rounded-l-lg"
                                         >
                                             <Minus size={16} />
                                         </button>
-                                        <span className="w-12 text-center font-black text-slate-900">
+                                        <span className="w-12 text-center font-semibold text-gray-900">
                                             {quantity}
                                         </span>
                                         <button
                                             onClick={() =>
                                                 setQuantity(quantity + 1)
                                             }
-                                            className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors"
+                                            className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-200 transition-colors rounded-r-lg"
                                         >
                                             <Plus size={16} />
                                         </button>
                                     </div>
+
+                                    {/* Add to Cart Button */}
                                     <button
                                         onClick={handleAddToCart}
                                         disabled={product?.stock <= 0}
-                                        className="flex-1 bg-slate-900 text-white h-12 lg:h-14 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] flex items-center justify-center gap-3 hover:bg-primary transition-all active:scale-95 shadow-xl shadow-slate-900/10 disabled:opacity-50 disabled:hover:bg-slate-900"
+                                        className="flex-1 bg-blue-600 text-white h-11 rounded-lg font-medium text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600"
                                     >
-                                        <ShoppingCart size={18} /> Add to Cart
+                                        <ShoppingCart size={18} />
+                                        Add to Cart
                                     </button>
                                 </div>
 
+                                {/* Wishlist Button */}
                                 <button
                                     onClick={handleWishlist}
-                                    className={`w-full h-12 lg:h-14 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] flex items-center justify-center gap-3 border-2 transition-all ${
-                                        isInWishlist
-                                            ? "bg-rose-50 border-rose-100 text-rose-500"
-                                            : "bg-white border-slate-100 text-slate-400 hover:text-rose-500 hover:border-rose-100"
-                                    }`}
+                                    className={`w-full h-11 rounded-lg font-medium text-sm flex items-center justify-center gap-2 border transition-colors ${isInWishlist
+                                        ? "bg-red-50 border-red-200 text-red-600 hover:bg-red-100"
+                                        : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+                                        }`}
                                 >
                                     <Heart
                                         size={18}
@@ -245,24 +257,25 @@ const ProductDetailPage = () => {
                                         }
                                     />
                                     {isInWishlist
-                                        ? "Saved in Wishlist"
+                                        ? "Saved to Wishlist"
                                         : "Add to Wishlist"}
                                 </button>
                             </div>
 
-                            <div className="mt-12 grid grid-cols-2 gap-4">
-                                <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl">
-                                    <Truck className="text-primary" size={20} />
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">
+                            {/* Features */}
+                            <div className="mt-8 grid grid-cols-2 gap-3">
+                                <div className="flex items-center gap-2.5 p-3.5 bg-gray-50 rounded-lg border border-gray-200">
+                                    <Truck className="text-blue-600" size={20} />
+                                    <span className="text-xs font-medium text-gray-700">
                                         Fast Delivery
                                     </span>
                                 </div>
-                                <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl">
+                                <div className="flex items-center gap-2.5 p-3.5 bg-gray-50 rounded-lg border border-gray-200">
                                     <ShieldCheck
-                                        className="text-primary"
+                                        className="text-blue-600"
                                         size={20}
                                     />
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">
+                                    <span className="text-xs font-medium text-gray-700">
                                         Secure Warranty
                                     </span>
                                 </div>

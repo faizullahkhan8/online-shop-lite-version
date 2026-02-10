@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     items: [],
     totalAmount: 0,
+    selectedTotalAmount: 0,
 };
 
 const cartSlice = createSlice({
@@ -24,16 +25,23 @@ const cartSlice = createSlice({
                     name: newItem.name,
                     price: priceToUse,
                     originalPrice: newItem.price,
+                    stock: newItem.stock,
                     image: newItem.image,
                     quantity: 1,
                     totalPrice: priceToUse,
+                    selected: true, // New items are selected by default
                 });
             } else {
                 existingItem.quantity++;
-                existingItem.totalPrice = existingItem.price * existingItem.quantity;
+                existingItem.totalPrice =
+                    existingItem.price * existingItem.quantity;
             }
             state.totalAmount = state.items.reduce(
                 (total, item) => total + item.totalPrice,
+                0,
+            );
+            state.selectedTotalAmount = state.items.reduce(
+                (total, item) => total + (item.selected ? item.totalPrice : 0),
                 0,
             );
         },
@@ -42,7 +50,15 @@ const cartSlice = createSlice({
             const existingItem = state.items.find((item) => item._id === _id);
             if (existingItem) {
                 state.items = state.items.filter((item) => item._id !== _id);
-                state.totalAmount -= existingItem.totalPrice;
+                state.totalAmount = state.items.reduce(
+                    (total, item) => total + item.totalPrice,
+                    0,
+                );
+                state.selectedTotalAmount = state.items.reduce(
+                    (total, item) =>
+                        total + (item.selected ? item.totalPrice : 0),
+                    0,
+                );
             }
         },
         updateQuantity: (state, action) => {
@@ -53,17 +69,63 @@ const cartSlice = createSlice({
                 existingItem.totalPrice = existingItem.price * quantity;
                 state.totalAmount = state.items.reduce(
                     (total, item) => total + item.totalPrice,
-                    0
+                    0,
+                );
+                state.selectedTotalAmount = state.items.reduce(
+                    (total, item) =>
+                        total + (item.selected ? item.totalPrice : 0),
+                    0,
                 );
             }
         },
         clearCart: (state) => {
             state.items = [];
             state.totalAmount = 0;
+            state.selectedTotalAmount = 0;
+        },
+        toggleItemSelection: (state, action) => {
+            const { _id } = action.payload;
+            const item = state.items.find((item) => item._id === _id);
+            if (item) {
+                item.selected = !item.selected;
+                state.selectedTotalAmount = state.items.reduce(
+                    (total, item) =>
+                        total + (item.selected ? item.totalPrice : 0),
+                    0,
+                );
+            }
+        },
+        toggleAllSelection: (state, action) => {
+            const { selected } = action.payload;
+            state.items.forEach((item) => {
+                item.selected = selected;
+            });
+            state.selectedTotalAmount = selected ? state.totalAmount : 0;
+        },
+        removeSelectedItems: (state, action) => {
+            const { productIds } = action.payload;
+            state.items = state.items.filter(
+                (item) => !productIds.includes(item._id),
+            );
+            state.totalAmount = state.items.reduce(
+                (total, item) => total + item.totalPrice,
+                0,
+            );
+            state.selectedTotalAmount = state.items.reduce(
+                (total, item) => total + (item.selected ? item.totalPrice : 0),
+                0,
+            );
         },
     },
 });
 
-export const { addToCart, removeFromCart, updateQuantity, clearCart } =
-    cartSlice.actions;
+export const {
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    toggleItemSelection,
+    toggleAllSelection,
+    removeSelectedItems,
+} = cartSlice.actions;
 export default cartSlice.reducer;

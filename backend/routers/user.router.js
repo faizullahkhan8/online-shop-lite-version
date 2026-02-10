@@ -13,6 +13,7 @@ import {
     addUserFromAdmin,
 } from "../controllers/user.controller.js";
 import { isAuth, authorize } from "../middlewares/auth.middleware.js";
+import { upload, imagekitUpload } from "../middlewares/multer.middleware.js";
 
 const router = express.Router();
 
@@ -20,7 +21,13 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", isAuth, logoutUser);
 router.get("/get/:id", isAuth, getUser);
-router.put("/update/:id", isAuth, updateUser);
+router.put(
+    "/update/:id",
+    isAuth,
+    upload.single("avatar"),
+    imagekitUpload,
+    updateUser,
+);
 router.get("/getAccessToken", getAccessToken);
 
 // Admin: get all users

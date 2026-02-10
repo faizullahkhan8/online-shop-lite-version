@@ -31,6 +31,10 @@ const userSchema = new Schema(
             type: String,
             default: "",
         },
+        avatarFileId: {
+            type: String,
+            default: "",
+        },
         addresses: [
             {
                 street: { type: String, default: "" },

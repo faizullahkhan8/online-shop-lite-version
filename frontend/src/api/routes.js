@@ -31,6 +31,7 @@ export const ORDER_ROUTES = {
     UPDATE: "/orders/update", // PATCH /orders/update/:id
     DELETE: "/orders/delete", // DELETE /orders/delete/:id
     DASHBOARD_STATS: "/orders/dashboard-stats", // GET /orders/dashboard-stats
+    CANCEL: "/orders", // PUT /orders/:id/cancel
 };
 
 export const WISHLIST_ROUTES = {
@@ -47,10 +48,12 @@ export const SETTINGS_ROUTES = {
 export const PROMOTION_ROUTES = {
     CREATE: "/promotions",
     GET_ACTIVE: "/promotions/active",
+    GET_ALL: "/promotions",
+    UPDATE: "/promotions",
+    DELETE: "/promotions",
 };
 
 export const REVIEW_ROUTES = {
     ADD: "/reviews",
     GET_BY_PRODUCT: "/reviews", // GET /reviews/:productId
 };
-

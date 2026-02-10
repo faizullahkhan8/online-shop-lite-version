@@ -157,6 +157,11 @@ export const useUpdateUser = () => {
             const response = await apiClient.put(
                 `${USER_ROUTES.UPDATE_USER}/${userId}`,
                 user,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                },
             );
 
             if (response.data) {

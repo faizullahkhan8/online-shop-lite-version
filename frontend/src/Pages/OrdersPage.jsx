@@ -9,6 +9,8 @@ import {
     ShoppingBag,
     Loader2,
 } from "lucide-react";
+import CancellationModal from "../Components/CancellationModal.jsx";
+import { useCancelOrder } from "../api/hooks/orders.api.js";
 
 const OrdersPage = () => {
     const [orders, setOrders] = useState([]);
@@ -24,88 +26,127 @@ const OrdersPage = () => {
     const getStatusStyles = (status) => {
         switch (status?.toLowerCase()) {
             case "delivered":
-                return "bg-emerald-50 text-emerald-600 border-emerald-100";
+                return "bg-green-50 text-green-700 border-green-200";
             case "pending":
-                return "bg-amber-50 text-amber-600 border-amber-100";
+                return "bg-amber-50 text-amber-700 border-amber-200";
             case "shipped":
-                return "bg-blue-50 text-blue-600 border-blue-100";
+                return "bg-blue-50 text-blue-700 border-blue-200";
             default:
-                return "bg-slate-50 text-slate-600 border-slate-100";
+                return "bg-gray-50 text-gray-600 border-gray-200";
+        }
+    };
+
+    const [cancelModal, setCancelModal] = useState({
+        isOpen: false,
+        orderId: null,
+    });
+
+    const { cancelOrder, loading: cancelLoading } = useCancelOrder();
+
+    const handleOpenCancelModal = (orderId) => {
+        setCancelModal({ isOpen: true, orderId });
+    };
+
+    const handleCloseCancelModal = () => {
+        setCancelModal({ isOpen: false, orderId: null });
+    };
+
+    const handleConfirmCancel = async (reason) => {
+        if (!cancelModal.orderId) return;
+
+        const res = await cancelOrder({ orderId: cancelModal.orderId, reason });
+        if (res?.success) {
+            // Update local state
+            setOrders(orders.map(order =>
+                order.id === cancelModal.orderId
+                    ? { ...order, status: 'cancelled' }
+                    : order
+            ));
+            handleCloseCancelModal();
         }
     };
 
     return (
-        <div className="container mx-auto px-4 lg:px-8 py-12 min-h-[70vh]">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div className="container mx-auto px-4 lg:px-8 py-8 min-h-[70vh]">
+            <CancellationModal
+                isOpen={cancelModal.isOpen}
+                onClose={handleCloseCancelModal}
+                onConfirm={handleConfirmCancel}
+                loading={cancelLoading}
+                title="Cancel Order"
+                description="Are you sure you want to cancel this order? This action cannot be undone and we will stop processing your shipment."
+            />
+
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4 pb-4 border-b border-gray-200">
                 <div>
                     <div className="flex items-center gap-2 mb-2">
-                        <Package className="text-primary" size={20} />
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        <Package className="text-blue-600" size={20} />
+                        <span className="text-sm text-gray-500 font-medium">
                             Order History
                         </span>
                     </div>
-                    <h1 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
-                        My <span className="text-primary">Orders</span>
+                    <h1 className="text-2xl lg:text-3xl font-semibold text-gray-900">
+                        My Orders
                     </h1>
                 </div>
             </div>
 
             {loading ? (
-                <div className="flex flex-col items-center justify-center py-32 bg-white border border-slate-100 rounded-[3rem] shadow-xl shadow-slate-200/50">
+                <div className="flex flex-col items-center justify-center py-24 bg-white border border-gray-200 rounded-lg">
                     <Loader2
-                        className="animate-spin text-primary mb-4"
-                        size={40}
+                        className="animate-spin text-blue-600 mb-3"
+                        size={32}
                     />
-                    <p className="text-slate-400 font-bold uppercase tracking-widest text-[11px]">
-                        Syncing your orders...
+                    <p className="text-gray-500 text-sm">
+                        Loading your orders...
                     </p>
                 </div>
             ) : orders.length === 0 ? (
-                <div className="bg-white border border-slate-100 rounded-[3rem] py-20 px-6 flex flex-col items-center justify-center shadow-2xl shadow-slate-200/50">
-                    <div className="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center mb-6">
-                        <ShoppingBag size={40} className="text-slate-200" />
+                <div className="bg-white border border-gray-200 rounded-lg py-16 px-6 flex flex-col items-center justify-center">
+                    <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                        <ShoppingBag size={32} className="text-gray-300" />
                     </div>
-                    <h3 className="text-xl font-black text-slate-900 mb-2">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
                         No orders found
                     </h3>
-                    <p className="text-slate-400 text-sm mb-8 max-w-xs text-center font-medium">
+                    <p className="text-gray-500 text-sm mb-6 max-w-xs text-center">
                         You haven't placed any orders yet. Once you do, they'll
                         appear here.
                     </p>
                     <Link
                         to="/products"
-                        className="flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-primary transition-all active:scale-95 shadow-lg shadow-slate-900/20"
+                        className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
                     >
                         Start Shopping
                         <ChevronRight size={16} />
                     </Link>
                 </div>
             ) : (
-                <div className="space-y-6">
+                <div className="space-y-4">
                     {orders.map((order) => (
                         <div
-                            key={order.id}
-                            className="bg-white border border-slate-100 rounded-[2.5rem] p-6 lg:p-8 shadow-xl shadow-slate-200/40 hover:border-primary/20 transition-all group"
+                            key={order._id}
+                            className="bg-white border border-gray-200 rounded-lg p-5 lg:p-6 hover:border-blue-500 hover:shadow-md transition-all"
                         >
-                            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 border-b border-slate-50 pb-6 mb-6">
-                                <div className="flex flex-wrap gap-4 lg:gap-8">
+                            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-gray-100 pb-4 mb-4">
+                                <div className="flex flex-wrap gap-6">
                                     <div className="space-y-1">
-                                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                            <Tag size={12} /> Order Reference
+                                        <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                                            <Tag size={14} /> Order ID
                                         </div>
-                                        <div className="text-sm font-black text-slate-900">
-                                            #{order.id}
+                                        <div className="text-sm font-semibold text-gray-900">
+                                            #{order._id}
                                         </div>
                                     </div>
                                     <div className="space-y-1">
-                                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                            <Calendar size={12} /> Date Placed
+                                        <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                                            <Calendar size={14} /> Date
                                         </div>
-                                        <div className="text-sm font-bold text-slate-600">
+                                        <div className="text-sm font-medium text-gray-700">
                                             {new Date(
                                                 order.date,
                                             ).toLocaleDateString("en-US", {
-                                                month: "long",
+                                                month: "short",
                                                 day: "numeric",
                                                 year: "numeric",
                                             })}
@@ -113,15 +154,24 @@ const OrdersPage = () => {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between w-full lg:w-auto gap-2">
-                                    <span
-                                        className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${getStatusStyles(order.status)}`}
-                                    >
-                                        {order.status}
-                                    </span>
-                                    <div className="text-xl font-black text-primary">
-                                        Rs:{" "}
-                                        {order.totalAmount?.toLocaleString(
+                                <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between w-full lg:w-auto gap-3">
+                                    <div className="flex items-center gap-3">
+                                        {order.status === 'pending' && (
+                                            <button
+                                                onClick={() => handleOpenCancelModal(order._id)}
+                                                className="px-3 py-1 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
+                                            >
+                                                Cancel Order
+                                            </button>
+                                        )}
+                                        <span
+                                            className={`px-3 py-1 rounded text-xs font-medium border ${getStatusStyles(order.status)}`}
+                                        >
+                                            {order.status}
+                                        </span>
+                                    </div>
+                                    <div className="text-lg font-semibold text-gray-900">
+                                        Rs {order.totalAmount?.toLocaleString(
                                             undefined,
                                             { minimumFractionDigits: 2 },
                                         )}
@@ -129,31 +179,31 @@ const OrdersPage = () => {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {order.items.map((item, idx) => (
                                     <div
                                         key={idx}
-                                        className="flex gap-4 items-center bg-slate-50/50 p-4 rounded-2xl border border-transparent hover:border-slate-100 transition-all"
+                                        className="flex gap-3 items-center bg-gray-50 p-3 rounded-lg border border-gray-100 hover:border-gray-200 transition-all"
                                     >
-                                        <div className="w-16 h-16 bg-white border border-slate-100 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0">
+                                        <div className="w-14 h-14 bg-white border border-gray-200 rounded-lg flex items-center justify-center overflow-hidden shrink-0">
                                             <img
                                                 src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.product?.image}`}
-                                                className="w-full h-full object-contain p-2"
+                                                className="w-full h-full object-contain p-1.5"
                                                 alt="product"
                                             />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <div className="font-black text-slate-900 text-sm truncate uppercase tracking-tight">
+                                            <div className="font-medium text-gray-900 text-sm truncate">
                                                 {item.title ||
                                                     item.product?.name}
                                             </div>
-                                            <div className="flex items-center gap-3 mt-1">
-                                                <span className="text-[10px] font-black text-slate-400 uppercase">
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className="text-xs text-gray-500">
                                                     Qty: {item.quantity}
                                                 </span>
-                                                <div className="w-1 h-1 bg-slate-200 rounded-full" />
-                                                <span className="text-[10px] font-black text-primary uppercase">
-                                                    Fulfilled
+                                                <div className="w-1 h-1 bg-gray-300 rounded-full" />
+                                                <span className={`text-xs font-medium ${item.status === 'cancelled' ? 'text-red-600' : 'text-green-600'}`}>
+                                                    {item.status === 'cancelled' ? 'Cancelled' : 'Fulfilled'}
                                                 </span>
                                             </div>
                                         </div>

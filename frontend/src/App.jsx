@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import LoadingSpinner from "./Components/LoadingSpinner";
 import AboutPage from "./Pages/AboutUsPage";
+import AdminLayout from "./Layout/AdminLayout.jsx";
 
 const BaseLayout = lazy(() => import("./Layout/BaseLayout"));
 const HomePage = lazy(() => import("./Pages/HomePage"));
@@ -19,8 +20,24 @@ const OrdersPage = lazy(() => import("./Pages/OrdersPage"));
 const OrderSuccessPage = lazy(() => import("./Pages/OrderSuccessPage"));
 const ProfilePage = lazy(() => import("./Pages/ProfilePage"));
 const ProtectedRoute = lazy(() => import("./Components/Auth/ProtectedRoute"));
-const AdminPage = lazy(() => import("./Pages/AdminPage"));
 const ContactUsPage = lazy(() => import("./Pages/ContactUsPage"));
+const PromotionsPage = lazy(() => import("./Pages/PromotionsPage.jsx"));
+
+// Admin Pages
+const DashboardPage = lazy(() => import("./Pages/Admin/DashboardPage"));
+const ProductsListPage = lazy(() => import("./Pages/Admin/ProductsListPage"));
+const AddProductPage = lazy(() => import("./Pages/Admin/AddProductPage"));
+const TaxShippingPage = lazy(() => import("./Pages/Admin/TaxShippingPage"));
+const CategoriesListPage = lazy(() => import("./Pages/Admin/CategoriesListPage"));
+const OrdersListPage = lazy(() => import("./Pages/Admin/OrdersListPage"));
+const OrderDetailsPage = lazy(() => import("./Pages/Admin/OrderDetailsPage"));
+const AddOrderPage = lazy(() => import("./Pages/Admin/AddOrderPage"));
+const UsersListPage = lazy(() => import("./Pages/Admin/UsersListPage"));
+const AddUserPage = lazy(() => import("./Pages/Admin/AddUserPage"));
+const AdminPromotionsPage = lazy(() => import("./Pages/Admin/PromotionsPage"));
+const PromotionBuilderPage = lazy(() => import("./Pages/Admin/PromotionBuilderPage"));
+const HeroManagerPage = lazy(() => import("./Pages/Admin/HeroManagerPage"));
+
 
 const App = () => {
     return (
@@ -38,6 +55,7 @@ const App = () => {
                         <Route path="products" element={<ProductListPage />} />
                         <Route path="contact-us" element={<ContactUsPage />} />
                         <Route path="about-us" element={<AboutPage />} />
+                        <Route path="promotions" element={<PromotionsPage />} />
                         <Route
                             path="product/:id"
                             element={<ProductDetailPage />}
@@ -96,15 +114,31 @@ const App = () => {
                         />
                     </Route>
                     <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+
+                    {/* Admin Routes */}
                     <Route
-                        path="admin-dashboard"
+                        path="/admin-dashboard"
                         element={
                             <ProtectedRoute roles={["admin"]}>
-                                <AdminPage />
+                                <AdminLayout />
                             </ProtectedRoute>
                         }
-                    />
-                    <Route path="/register" element={<RegisterPage />} />
+                    >
+                        <Route index element={<DashboardPage />} />
+                        <Route path="products" element={<ProductsListPage />} />
+                        <Route path="products/add" element={<AddProductPage />} />
+                        <Route path="settings/tax-shipping" element={<TaxShippingPage />} />
+                        <Route path="categories" element={<CategoriesListPage />} />
+                        <Route path="orders" element={<OrdersListPage />} />
+                        <Route path="orders/:id" element={<OrderDetailsPage />} />
+                        <Route path="orders/add" element={<AddOrderPage />} />
+                        <Route path="users" element={<UsersListPage />} />
+                        <Route path="users/add" element={<AddUserPage />} />
+                        <Route path="promotions" element={<AdminPromotionsPage />} />
+                        <Route path="promotions/create" element={<PromotionBuilderPage />} />
+                        <Route path="hero" element={<HeroManagerPage />} />
+                    </Route>
                 </Routes>
             </Suspense>
         </>

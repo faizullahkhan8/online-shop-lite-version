@@ -9,7 +9,6 @@ import promotionSchema from "../models/promotion.model.js";
 import heroSchema from "../models/hero.model.js";
 import reviewSchema from "../models/review.model.js";
 
-
 let connectionPromise = null;
 let localDbConnection = null;
 let localUserModel;
@@ -27,11 +26,11 @@ export const connectToDB = async () => {
 
     connectionPromise = (async () => {
         try {
-            // MONGO_URI_ATLAS
+            // MONGO_URI_ONLINE
             // MONGO_URI_LOCAL
 
             localDbConnection = await mongoose
-                .createConnection(process.env.MONGO_URI_LOCAL, {
+                .createConnection(process.env.MONGO_URI_ONLINE, {
                     dbName: "online_shop_for_ssi_client",
                 })
                 .asPromise();
@@ -41,7 +40,10 @@ export const connectToDB = async () => {
             }
 
             localUserModel = localDbConnection.model("User", userSchema);
-            localProductModel = localDbConnection.model("Product", productSchema);
+            localProductModel = localDbConnection.model(
+                "Product",
+                productSchema,
+            );
             localCategoryModel = localDbConnection.model(
                 "Category",
                 categorySchema,
@@ -82,4 +84,3 @@ export const getLocalSettingsModel = () => localSettingsModel || null;
 export const getLocalPromotionModel = () => localPromotionModel || null;
 export const getLocalHeroModel = () => localHeroModel || null;
 export const getLocalReviewModel = () => localReviewModel || null;
-

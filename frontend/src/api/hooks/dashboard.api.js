@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import apiClient from "../apiClient";
 import { ORDER_ROUTES } from "../routes";
 
-export const useDashboardStats = () => {
+export const useDashboardStats = ({ startDate, endDate } = {}) => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -11,7 +11,13 @@ export const useDashboardStats = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await apiClient.get(ORDER_ROUTES.DASHBOARD_STATS);
+            const params = {};
+            if (startDate) params.startDate = startDate.toISOString();
+            if (endDate) params.endDate = endDate.toISOString();
+
+            const response = await apiClient.get(ORDER_ROUTES.DASHBOARD_STATS, {
+                params,
+            });
             if (response.data && response.data.stats) {
                 setStats(response.data.stats);
             } else {
@@ -26,7 +32,7 @@ export const useDashboardStats = () => {
 
     useEffect(() => {
         fetchStats();
-    }, []);
+    }, [startDate, endDate]);
 
     return { stats, loading, error };
 };

@@ -26,53 +26,53 @@ const WishlistPage = () => {
     }, []);
 
     return (
-        <div className="container mx-auto px-4 lg:px-8 py-12 min-h-[70vh]">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div className="container mx-auto px-4 lg:px-8 py-8 min-h-[70vh]">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4 pb-4 border-b border-gray-200">
                 <div>
                     <div className="flex items-center gap-2 mb-2">
                         <Heart
-                            className="text-primary"
+                            className="text-blue-600"
                             size={20}
                             fill="currentColor"
                         />
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                        <span className="text-sm text-gray-500 font-medium">
                             Personal Collection
                         </span>
                     </div>
-                    <h1 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
-                        My <span className="text-primary">Wishlist</span>
+                    <h1 className="text-2xl lg:text-3xl font-semibold text-gray-900">
+                        My Wishlist
                     </h1>
                 </div>
-                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-                    {items.length} {items.length === 1 ? "Item" : "Items"} Saved
+                <p className="text-sm font-medium text-gray-600">
+                    {items.length} {items.length === 1 ? "item" : "items"} saved
                 </p>
             </div>
 
             {items.length === 0 ? (
-                <div className="bg-white border border-slate-100 rounded-[3rem] py-20 px-6 flex flex-col items-center justify-center shadow-2xl shadow-slate-200/50">
-                    <div className="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center mb-6 relative">
-                        <Heart size={40} className="text-slate-200" />
-                        <div className="absolute top-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
-                            <ShoppingBag size={14} className="text-primary" />
+                <div className="bg-white border border-gray-200 rounded-lg py-16 px-6 flex flex-col items-center justify-center">
+                    <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mb-4 relative">
+                        <Heart size={32} className="text-gray-300" />
+                        <div className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-200">
+                            <ShoppingBag size={12} className="text-blue-600" />
                         </div>
                     </div>
-                    <h3 className="text-xl font-black text-slate-900 mb-2">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
                         Your wishlist is empty
                     </h3>
-                    <p className="text-slate-400 text-sm mb-8 max-w-xs text-center font-medium">
+                    <p className="text-gray-500 text-sm mb-6 max-w-xs text-center">
                         Looks like you haven't saved any items yet. Start
                         exploring our latest collections!
                     </p>
                     <Link
                         to="/products"
-                        className="flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-primary transition-all active:scale-95 shadow-lg shadow-slate-900/20"
+                        className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
                     >
                         Browse Products
                         <ArrowRight size={16} />
                     </Link>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {items.filter(Boolean).map((product, idx) => {
                         const key = product?.id || product?._id || idx;
                         if (!product || (!product.id && !product._id))
@@ -81,9 +81,9 @@ const WishlistPage = () => {
                         return (
                             <div key={key} className="group flex flex-col">
                                 <ProductCard product={product} />
-                                <div className="mt-4 px-2">
+                                <div className="mt-3 px-1">
                                     <button
-                                        className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 transition-colors"
+                                        className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-red-600 transition-colors"
                                         onClick={async () => {
                                             await removeFromWishlist(
                                                 product._id || product.id,
@@ -92,7 +92,7 @@ const WishlistPage = () => {
                                         }}
                                     >
                                         <Trash2 size={14} />
-                                        Remove from list
+                                        Remove
                                     </button>
                                 </div>
                             </div>

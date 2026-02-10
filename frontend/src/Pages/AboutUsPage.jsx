@@ -4,15 +4,14 @@ import TestAvatar from "../assets/images/avatar.jpg";
 
 const AboutUs = () => {
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-gray-50">
             {/* Hero Section */}
-
-            <div className="container mx-auto px-4 lg:px-8 py-16">
-                <div className="text-center max-w-3xl mx-auto">
-                    <h1 className="text-4xl lg:text-6xl font-black text-slate-900 m-4 tracking-tight">
-                        About <span className="text-primary">E-Shop</span>
+            <div className="container mx-auto px-4 lg:px-8 py-8">
+                <div className="text-center max-w-3xl mx-auto pb-6 border-b border-gray-200">
+                    <h1 className="text-3xl lg:text-4xl font-semibold text-gray-900 mb-3">
+                        About E-Shop
                     </h1>
-                    <p className="text-lg text-slate-600">
+                    <p className="text-base text-gray-600">
                         Your trusted destination for premium quality products
                         and exceptional service.
                     </p>
@@ -20,38 +19,35 @@ const AboutUs = () => {
             </div>
 
             {/* Admin Section */}
-            <section className="py-16 lg:py-24">
+            <section className="py-8 lg:py-12">
                 <div className="container mx-auto px-4 lg:px-8">
-                    <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                    <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                         <div className="grid lg:grid-cols-2 gap-0">
                             {/* Admin Image */}
-                            <div className="bg-gradient-to-br from-primary/10 to-slate-50 p-8 lg:p-12 flex items-center justify-center">
+                            <div className="bg-gradient-to-br from-blue-50 to-gray-50 p-8 lg:p-10 flex items-center justify-center">
                                 <div className="relative">
-                                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl"></div>
-                                    <div className="relative w-64 h-64 lg:w-80 lg:h-80 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white shadow-2xl shadow-primary/30">
-                                        <div className="text-center">
-                                            <img
-                                                src={TestAvatar}
-                                                alt="avatar"
-                                                className="w-full h-full rounded-full"
-                                            />
-                                        </div>
+                                    <div className="w-56 h-56 lg:w-64 lg:h-64 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white shadow-lg overflow-hidden">
+                                        <img
+                                            src={TestAvatar}
+                                            alt="Faiz Ullah Khan"
+                                            className="w-full h-full object-cover"
+                                        />
                                     </div>
                                 </div>
                             </div>
 
                             {/* Admin Details */}
-                            <div className="p-8 lg:p-12 flex flex-col justify-center">
+                            <div className="p-8 lg:p-10 flex flex-col justify-center">
                                 <div className="mb-6">
-                                    <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full mb-4">
-                                        <span className="text-xs font-bold uppercase tracking-wider">
+                                    <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1 rounded border border-blue-200 mb-3">
+                                        <span className="text-xs font-medium">
                                             Founder & CEO
                                         </span>
                                     </div>
-                                    <h2 className="text-3xl lg:text-4xl font-black text-slate-900 mb-3">
+                                    <h2 className="text-2xl lg:text-3xl font-semibold text-gray-900 mb-3">
                                         Faiz Ullah Khan
                                     </h2>
-                                    <p className="text-slate-600 leading-relaxed mb-6">
+                                    <p className="text-gray-600 leading-relaxed mb-6">
                                         A passionate entrepreneur dedicated to
                                         revolutionizing the e-commerce
                                         experience. With a vision to provide
@@ -63,44 +59,44 @@ const AboutUs = () => {
                                 </div>
 
                                 {/* Contact Information */}
-                                <div className="space-y-4">
-                                    <div className="flex items-center gap-3 text-slate-700">
-                                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                            <Mail size={18} />
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-3 text-gray-700">
+                                        <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                                            <Mail size={16} />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            <p className="text-xs font-medium text-gray-500">
                                                 Email
                                             </p>
-                                            <p className="font-semibold">
+                                            <p className="font-medium text-sm">
                                                 faiz@eshop.com
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3 text-slate-700">
-                                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                            <Phone size={18} />
+                                    <div className="flex items-center gap-3 text-gray-700">
+                                        <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                                            <Phone size={16} />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            <p className="text-xs font-medium text-gray-500">
                                                 Phone
                                             </p>
-                                            <p className="font-semibold">
+                                            <p className="font-medium text-sm">
                                                 +92 300 1234567
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3 text-slate-700">
-                                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                            <MapPin size={18} />
+                                    <div className="flex items-center gap-3 text-gray-700">
+                                        <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                                            <MapPin size={16} />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            <p className="text-xs font-medium text-gray-500">
                                                 Location
                                             </p>
-                                            <p className="font-semibold">
+                                            <p className="font-medium text-sm">
                                                 Islamabad, Pakistan
                                             </p>
                                         </div>
@@ -113,14 +109,14 @@ const AboutUs = () => {
             </section>
 
             {/* Mission & Vision */}
-            <section className="py-16 bg-white border-y border-slate-200">
+            <section className="py-8 bg-white border-y border-gray-200">
                 <div className="container mx-auto px-4 lg:px-8">
-                    <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
-                        <div className="bg-slate-50 rounded-2xl p-8 border border-slate-100">
-                            <h3 className="text-2xl font-black text-slate-900 mb-4">
+                    <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-6">
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-3">
                                 Our Mission
                             </h3>
-                            <p className="text-slate-600 leading-relaxed">
+                            <p className="text-gray-600 leading-relaxed text-sm">
                                 To provide our customers with the best shopping
                                 experience by offering high-quality products,
                                 competitive prices, and outstanding customer
@@ -129,11 +125,11 @@ const AboutUs = () => {
                             </p>
                         </div>
 
-                        <div className="bg-slate-50 rounded-2xl p-8 border border-slate-100">
-                            <h3 className="text-2xl font-black text-slate-900 mb-4">
+                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-3">
                                 Our Vision
                             </h3>
-                            <p className="text-slate-600 leading-relaxed">
+                            <p className="text-gray-600 leading-relaxed text-sm">
                                 To become the most trusted and preferred
                                 e-commerce platform, known for innovation,
                                 reliability, and customer-centric approach. We
@@ -146,19 +142,19 @@ const AboutUs = () => {
             </section>
 
             {/* CTA Section */}
-            <section className="py-16">
+            <section className="py-12">
                 <div className="container mx-auto px-4 lg:px-8">
-                    <div className="max-w-4xl mx-auto bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-12 text-white text-center shadow-2xl">
-                        <h2 className="text-3xl lg:text-4xl font-black mb-4">
+                    <div className="max-w-4xl mx-auto bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg p-10 text-white text-center shadow-md">
+                        <h2 className="text-2xl lg:text-3xl font-semibold mb-3">
                             Ready to Start Shopping?
                         </h2>
-                        <p className="text-slate-300 mb-8 max-w-2xl mx-auto">
+                        <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
                             Discover our wide range of premium products and
                             enjoy a seamless shopping experience.
                         </p>
                         <Link
                             to="/products"
-                            className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-xl font-bold text-sm transition-all active:scale-95 shadow-xl shadow-primary/30"
+                            className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium text-sm transition-colors"
                         >
                             Browse Products
                         </Link>

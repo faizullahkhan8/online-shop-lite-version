@@ -11,7 +11,6 @@ import promotionRouter from "./routers/promotion.router.js";
 import heroRouter from "./routers/hero.router.js";
 import reviewRouter from "./routers/review.router.js";
 
-
 import { errorHandler } from "./middlewares/ErrorHandler.js";
 import cookieParser from "cookie-parser";
 import { ErrorResponse } from "./utils/ErrorResponse.js";
@@ -26,7 +25,7 @@ app.use(
         origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
         credentials: true,
-    })
+    }),
 );
 
 // Middleware to ensure DB connection
@@ -39,6 +38,10 @@ app.use(async (req, res, next) => {
     }
 });
 
+app.get("/", (req, res) => {
+    res.json({ message: "Welcome to the API" });
+});
+
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
@@ -48,11 +51,12 @@ app.use("/api/promotions", promotionRouter);
 app.use("/api/hero", heroRouter);
 app.use("/api/reviews", reviewRouter);
 
-
 app.use(errorHandler);
 
 // Initial connection attempt
-connectToDB().catch(err => console.error("Initial DB connection failed:", err));
+connectToDB().catch((err) =>
+    console.error("Initial DB connection failed:", err),
+);
 
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server is running on port ${process.env.PORT || 3000}`);

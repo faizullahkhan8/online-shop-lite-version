@@ -29,54 +29,58 @@ const ProductReviews = ({ productId }) => {
     };
 
     return (
-        <div className="space-y-12 py-12 border-t border-slate-100">
-            <header className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded-2xl text-primary">
-                    <MessageSquare size={24} />
+        <div className="space-y-8 py-8 border-t border-gray-200">
+            {/* Header */}
+            <header className="flex items-center gap-3">
+                <div className="p-2.5 bg-blue-100 rounded-lg text-blue-600">
+                    <MessageSquare size={20} />
                 </div>
                 <div>
-                    <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+                    <h3 className="text-xl font-bold text-gray-900">
                         Customer Reviews
                     </h3>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                        {reviews.length} {reviews.length === 1 ? "Review" : "Reviews"} for this product
+                    <p className="text-sm text-gray-500">
+                        {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
                     </p>
                 </div>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* Review Form */}
                 <div className="lg:col-span-5">
-                    <div className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100 sticky top-24">
-                        <h4 className="text-lg font-black text-slate-900 uppercase tracking-tight mb-6">
+                    <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 sticky top-24">
+                        <h4 className="text-base font-semibold text-gray-900 mb-5">
                             Write a Review
                         </h4>
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-5">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-                                    Rating
+                                <label className="text-sm font-medium text-gray-700">
+                                    Your Rating
                                 </label>
                                 <StarRating rating={rating} setRating={setRating} size={24} />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-                                    Your Experience
+                                <label className="text-sm font-medium text-gray-700">
+                                    Your Review
                                 </label>
                                 <textarea
                                     value={comment}
                                     onChange={(e) => setComment(e.target.value)}
-                                    placeholder="Tell others what you think..."
-                                    className="w-full bg-white border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-primary/20 min-h-[120px] resize-none"
+                                    placeholder="Share your experience with this product..."
+                                    className="w-full bg-white border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[120px] resize-none"
                                     required
                                 />
                             </div>
                             <button
                                 type="submit"
                                 disabled={addLoading || rating === 0}
-                                className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-primary transition-all shadow-xl shadow-slate-900/10 flex items-center justify-center gap-3 disabled:opacity-50"
+                                className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {addLoading ? (
-                                    <Loader2 className="animate-spin" size={18} />
+                                    <>
+                                        <Loader2 className="animate-spin" size={16} />
+                                        Submitting...
+                                    </>
                                 ) : (
                                     "Submit Review"
                                 )}
@@ -86,11 +90,16 @@ const ProductReviews = ({ productId }) => {
                 </div>
 
                 {/* Review List */}
-                <div className="lg:col-span-7 space-y-6">
-                    {reviews.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-20 bg-white border border-dashed border-slate-200 rounded-[2.5rem]">
-                            <MessageSquare className="text-slate-200 mb-4" size={48} />
-                            <p className="text-slate-400 font-bold uppercase tracking-widest text-[11px]">
+                <div className="lg:col-span-7 space-y-4">
+                    {reviewsLoading ? (
+                        <div className="flex flex-col items-center justify-center py-12 bg-white border border-gray-200 rounded-lg">
+                            <Loader2 className="animate-spin text-blue-600 mb-3" size={32} />
+                            <p className="text-sm text-gray-500">Loading reviews...</p>
+                        </div>
+                    ) : reviews.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-12 bg-white border border-dashed border-gray-300 rounded-lg">
+                            <MessageSquare className="text-gray-300 mb-3" size={40} />
+                            <p className="text-sm text-gray-500 text-center">
                                 No reviews yet. Be the first to share your experience!
                             </p>
                         </div>
@@ -98,26 +107,30 @@ const ProductReviews = ({ productId }) => {
                         reviews.map((review) => (
                             <div
                                 key={review._id}
-                                className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all space-y-4"
+                                className="bg-white p-6 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors space-y-3"
                             >
                                 <div className="flex justify-between items-start">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                                            <User size={20} />
+                                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                                            <User size={18} />
                                         </div>
                                         <div>
-                                            <h5 className="text-sm font-black text-slate-900 uppercase">
+                                            <h5 className="text-sm font-semibold text-gray-900">
                                                 {review.name}
                                             </h5>
-                                            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                                <Calendar size={10} />
-                                                {new Date(review.createdAt).toLocaleDateString()}
+                                            <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                                                <Calendar size={12} />
+                                                {new Date(review.createdAt).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric'
+                                                })}
                                             </div>
                                         </div>
                                     </div>
                                     <StarRating rating={review.rating} readonly size={14} />
                                 </div>
-                                <p className="text-slate-600 text-sm leading-relaxed">
+                                <p className="text-sm text-gray-600 leading-relaxed">
                                     {review.comment}
                                 </p>
                             </div>

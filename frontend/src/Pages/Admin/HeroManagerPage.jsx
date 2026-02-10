@@ -9,8 +9,6 @@ import {
     Loader2,
     Eye,
     EyeOff,
-    MoveUp,
-    MoveDown,
 } from "lucide-react";
 import {
     useGetHeroSlides,
@@ -118,75 +116,69 @@ const HeroManager = () => {
 
     const bgPresets = [
         { name: "Blue Sky", class: "bg-[#e3f0ff]", accent: "text-blue-600" },
-        { name: "Peach Sun", class: "bg-[#fff1e6]", accent: "text-orange-600" },
-        { name: "Mint Fresh", class: "bg-[#e8f5e9]", accent: "text-emerald-600" },
-        { name: "Industrial Slate", class: "bg-slate-100", accent: "text-slate-900" },
-        { name: "Cyber Purple", class: "bg-purple-50", accent: "text-purple-600" },
+        { name: "Peach", class: "bg-[#fff1e6]", accent: "text-orange-600" },
+        { name: "Mint", class: "bg-[#e8f5e9]", accent: "text-emerald-600" },
+        { name: "Slate", class: "bg-slate-100", accent: "text-slate-900" },
+        { name: "Purple", class: "bg-purple-50", accent: "text-purple-600" },
     ];
 
     return (
-        <div className="space-y-8">
-            <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-100 pb-8">
-                <div className="space-y-1">
-                    <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter flex items-center gap-4">
-                        <div className="p-3 bg-primary rounded-2xl text-white shadow-xl shadow-primary/20">
-                            <ImageIcon size={28} />
-                        </div>
-                        Hero{" "}
-                        <span className="text-primary text-outline-1">
-                            Management
-                        </span>
+        <div className="space-y-6">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+                        <ImageIcon className="text-blue-600" size={24} />
+                        Hero Slides
                     </h2>
+                    <p className="text-sm text-gray-600 mt-1">Manage homepage carousel slides</p>
                 </div>
 
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="group bg-slate-900 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center gap-3 hover:bg-primary transition-all shadow-xl shadow-slate-900/10 active:scale-95"
+                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors"
                 >
-                    <Plus size={18} className="group-hover:rotate-90 transition-transform" />
-                    Deploy New Slide
+                    <Plus size={16} />
+                    Add Slide
                 </button>
             </header>
 
             {loading ? (
-                <div className="flex flex-col items-center justify-center py-32 bg-white border border-slate-100 rounded-[3rem] shadow-xl shadow-slate-200/50">
-                    <Loader2 className="animate-spin text-primary mb-4" size={40} />
-                    <p className="text-slate-400 font-bold uppercase tracking-widest text-[11px]">
-                        Synchronizing Slides...
-                    </p>
+                <div className="flex flex-col items-center justify-center py-24 bg-white border border-gray-200 rounded-lg">
+                    <Loader2 className="animate-spin text-blue-600 mb-3" size={32} />
+                    <p className="text-sm text-gray-500">Loading slides...</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {slides.map((slide) => (
                         <div
                             key={slide._id}
-                            className="group relative bg-white border border-slate-100 rounded-4xl overflow-hidden shadow-xl shadow-slate-200/40 hover:border-primary/20 transition-all"
+                            className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-blue-500 hover:shadow-md transition-all"
                         >
-                            <div className={`h-48 relative overflow-hidden ${slide.bg}`}>
+                            <div className={`h-40 relative overflow-hidden ${slide.bg}`}>
                                 <img
                                     src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${slide.image}`}
                                     alt={slide.title}
                                     className="w-full h-full object-contain"
                                 />
-                                <div className="absolute top-4 right-4 flex gap-2">
-                                    <div className={`p-2 rounded-xl backdrop-blur-md bg-white/50 border border-white/20 text-slate-900`}>
+                                <div className="absolute top-3 right-3 flex gap-2">
+                                    <div className="p-1.5 rounded-lg bg-white/90 border border-gray-200 text-gray-700">
                                         {slide.isActive ? <Eye size={14} /> : <EyeOff size={14} />}
                                     </div>
-                                    <div className="p-2 rounded-xl backdrop-blur-md bg-white/50 border border-white/20 text-slate-900 font-black text-[10px]">
+                                    <div className="px-2 py-1 rounded-lg bg-white/90 border border-gray-200 text-gray-700 text-xs font-medium">
                                         #{slide.order}
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="p-6 space-y-4">
+                            <div className="p-4 space-y-3">
                                 <div>
-                                    <h3 className={`text-[10px] font-black uppercase tracking-widest mb-1 ${slide.accent}`}>
+                                    <h3 className={`text-xs font-medium mb-1 ${slide.accent}`}>
                                         {slide.title}
                                     </h3>
-                                    <h4 className="text-xl font-black text-slate-900 leading-tight">
+                                    <h4 className="text-base font-semibold text-gray-900 leading-tight">
                                         {slide.headline}
                                     </h4>
-                                    <p className="text-xs font-medium text-slate-400 mt-1 line-clamp-1">
+                                    <p className="text-sm text-gray-500 mt-1 line-clamp-1">
                                         {slide.subtitle}
                                     </p>
                                 </div>
@@ -194,14 +186,14 @@ const HeroManager = () => {
                                 <div className="flex items-center gap-2 pt-2">
                                     <button
                                         onClick={() => handleEdit(slide)}
-                                        className="flex-1 flex items-center justify-center gap-2 bg-slate-50 text-slate-600 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all group"
+                                        className="flex-1 flex items-center justify-center gap-1.5 bg-gray-50 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-900 hover:text-white transition-all"
                                     >
-                                        <Edit3 size={14} className="group-hover:scale-110 transition-transform" />
-                                        Modify
+                                        <Edit3 size={14} />
+                                        Edit
                                     </button>
                                     <button
                                         onClick={() => handleDelete(slide._id)}
-                                        className="p-3 bg-rose-50 text-rose-400 rounded-xl hover:bg-rose-500 hover:text-white transition-all"
+                                        className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all"
                                     >
                                         <Trash2 size={16} />
                                     </button>
@@ -213,41 +205,39 @@ const HeroManager = () => {
             )}
 
             {isModalOpen && (
-                <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
-                    <div className="bg-white rounded-[3rem] w-full max-w-2xl overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-300">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-lg w-full max-w-2xl overflow-hidden shadow-xl relative">
                         <button
                             onClick={handleClose}
-                            className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all z-10"
+                            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all z-10"
                         >
                             <X size={20} />
                         </button>
 
-                        <div className="p-8 lg:p-12 overflow-y-auto max-h-[90vh]">
-                            <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-8 flex items-center gap-3">
-                                <div className="p-2 bg-primary rounded-xl text-white">
-                                    <ImageIcon size={20} />
-                                </div>
-                                {editingSlide ? "Edit Slide" : "Initialize New Slide"}
+                        <div className="p-6 overflow-y-auto max-h-[90vh]">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                                <ImageIcon className="text-blue-600" size={20} />
+                                {editingSlide ? "Edit Slide" : "Add New Slide"}
                             </h3>
 
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <form onSubmit={handleSubmit} className="space-y-5">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <div className="space-y-4">
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                                                Image Content
+                                        <div className="space-y-1.5">
+                                            <label className="text-sm font-medium text-gray-700">
+                                                Image
                                             </label>
                                             <div
                                                 onClick={() => document.getElementById("hero-image").click()}
-                                                className="aspect-video bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center p-4 cursor-pointer hover:border-primary hover:bg-slate-100 transition-all group overflow-hidden"
+                                                className="aspect-video bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center p-4 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all overflow-hidden"
                                             >
                                                 {previewUrl ? (
                                                     <img src={previewUrl} className="w-full h-full object-contain" alt="Preview" />
                                                 ) : (
                                                     <>
-                                                        <ImageIcon size={32} className="text-slate-300 mb-2 group-hover:text-primary transition-colors" />
-                                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                                            Click to Upload
+                                                        <ImageIcon size={32} className="text-gray-300 mb-2" />
+                                                        <p className="text-sm text-gray-500">
+                                                            Click to upload
                                                         </p>
                                                     </>
                                                 )}
@@ -262,103 +252,104 @@ const HeroManager = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                                                Active Status
+                                            <label className="text-sm font-medium text-gray-700">
+                                                Settings
                                             </label>
                                             <div className="flex flex-col gap-2">
-                                                <label className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl cursor-pointer">
+                                                <label className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg cursor-pointer">
                                                     <input
                                                         type="checkbox"
                                                         checked={formData.isActive}
                                                         onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                                                        className="w-5 h-5 rounded-lg border-2 border-slate-200 text-primary focus:ring-primary/20 transition-all"
+                                                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                                     />
-                                                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest text-nowrap">
-                                                        Slide Visibility
+                                                    <span className="text-sm text-gray-700">
+                                                        Active
                                                     </span>
                                                 </label>
-                                                <label className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl cursor-pointer">
+                                                <label className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg cursor-pointer">
                                                     <input
                                                         type="checkbox"
                                                         checked={formData.isRemoveBg}
                                                         onChange={(e) => setFormData({ ...formData, isRemoveBg: e.target.checked })}
-                                                        className="w-5 h-5 rounded-lg border-2 border-slate-200 text-primary focus:ring-primary/20 transition-all"
+                                                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                                     />
-                                                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest text-nowrap">
-                                                        Remove Bg
+                                                    <span className="text-sm text-gray-700">
+                                                        Remove Background
                                                     </span>
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="space-y-4 text-nowrap">
-                                        <div className="space-y-2 flex flex-col items-start">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 ">
-                                                Title (e.g. Latest Trending)
+                                    <div className="space-y-4">
+                                        <div className="space-y-1.5">
+                                            <label className="text-sm font-medium text-gray-700">
+                                                Title
                                             </label>
                                             <Input
                                                 value={formData.title}
                                                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                                placeholder="Collection Name"
+                                                placeholder="Latest Trending"
                                                 className="w-full"
                                                 required
                                             />
                                         </div>
-                                        <div className="space-y-2 flex flex-col items-start">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                                                Headline (e.g. Electronic Items)
+                                        <div className="space-y-1.5">
+                                            <label className="text-sm font-medium text-gray-700">
+                                                Headline
                                             </label>
                                             <Input
                                                 value={formData.headline}
                                                 onChange={(e) => setFormData({ ...formData, headline: e.target.value })}
                                                 className="w-full"
-                                                placeholder="Main Promotion"
+                                                placeholder="Electronic Items"
                                                 required
                                             />
                                         </div>
-                                        <div className="space-y-2 flex flex-col items-start">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                                                Subtitle (e.g. Premium Tech Selection)
+                                        <div className="space-y-1.5">
+                                            <label className="text-sm font-medium text-gray-700">
+                                                Subtitle
                                             </label>
                                             <Input
                                                 value={formData.subtitle}
                                                 onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
                                                 className="w-full"
-                                                placeholder="Supporting Context"
+                                                placeholder="Premium Tech Selection"
                                             />
                                         </div>
-                                        <div className="space-y-2 flex flex-col items-start">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                                                Sequence Order
+                                        <div className="space-y-1.5">
+                                            <label className="text-sm font-medium text-gray-700">
+                                                Order
                                             </label>
                                             <Input
                                                 type="number"
                                                 value={formData.order}
                                                 onChange={(e) => setFormData({ ...formData, order: Number(e.target.value) })}
                                                 className="w-full"
-                                                placeholder="Sort Order"
+                                                placeholder="0"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="space-y-4 flex flex-col items-start">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                                        Style Presets
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-gray-700">
+                                        Background Style
                                     </label>
-                                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                                    <div className="grid grid-cols-5 gap-2">
                                         {bgPresets.map((preset) => (
                                             <button
                                                 key={preset.name}
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, bg: preset.class, accent: preset.accent })}
-                                                className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
-                                                    formData.bg === preset.class ? "border-primary bg-primary/5" : "border-slate-100 hover:border-slate-200"
-                                                }`}
+                                                className={`p-2 rounded-lg border-2 transition-all flex flex-col items-center gap-1.5 ${formData.bg === preset.class
+                                                    ? "border-blue-600 bg-blue-50"
+                                                    : "border-gray-200 hover:border-gray-300"
+                                                    }`}
                                             >
-                                                <div className={`w-8 h-8 rounded-lg shadow-inner ${preset.class}`} />
-                                                <span className="text-[8px] font-black uppercase tracking-widest text-slate-500 whitespace-nowrap">
+                                                <div className={`w-8 h-8 rounded ${preset.class}`} />
+                                                <span className="text-xs text-gray-600">
                                                     {preset.name}
                                                 </span>
                                             </button>
@@ -369,14 +360,17 @@ const HeroManager = () => {
                                 <button
                                     type="submit"
                                     disabled={addLoading || updateLoading}
-                                    className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-primary transition-all shadow-xl shadow-slate-900/10 flex items-center justify-center gap-3 disabled:opacity-50"
+                                    className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {(addLoading || updateLoading) ? (
-                                        <Loader2 className="animate-spin" size={18} />
+                                        <>
+                                            <Loader2 className="animate-spin" size={16} />
+                                            Saving...
+                                        </>
                                     ) : (
                                         <>
-                                            <Save size={18} />
-                                            {editingSlide ? "Update Node" : "Deploy Slide"}
+                                            <Save size={16} />
+                                            {editingSlide ? "Update Slide" : "Add Slide"}
                                         </>
                                     )}
                                 </button>

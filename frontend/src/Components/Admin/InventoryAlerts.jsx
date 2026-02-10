@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const InventoryAlerts = ({ inventory }) => {
     const navigate = useNavigate();
-    
+
     if (!inventory || (inventory.outOfStockCount === 0 && inventory.lowStockCount === 0)) {
         return null;
     }
@@ -11,55 +11,55 @@ const InventoryAlerts = ({ inventory }) => {
     const { outOfStock, lowStock, outOfStockCount, lowStockCount } = inventory;
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
             {/* Out of Stock Alert */}
             {outOfStockCount > 0 && (
-                <div className="bg-rose-50 border border-rose-100 rounded-[2.5rem] p-8 space-y-4">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-6 space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="p-3 bg-rose-500 text-white rounded-2xl">
-                                <XCircle size={20} />
+                            <div className="p-2.5 bg-red-500 text-white rounded-lg">
+                                <XCircle size={18} />
                             </div>
                             <div>
-                                <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">
+                                <h3 className="text-sm font-semibold text-gray-900">
                                     Out of Stock
                                 </h3>
-                                <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">
-                                    {outOfStockCount} Items require restock
+                                <p className="text-xs font-medium text-red-600">
+                                    {outOfStockCount} {outOfStockCount === 1 ? 'item' : 'items'} require restock
                                 </p>
                             </div>
                         </div>
-                        <button 
+                        <button
                             onClick={() => navigate("/admin-dashboard?tab=products-list")}
-                            className="p-2 hover:bg-rose-100 rounded-xl transition-colors text-rose-500"
+                            className="p-2 hover:bg-red-100 rounded-lg transition-colors text-red-600"
                         >
-                            <ArrowRight size={20} />
+                            <ArrowRight size={18} />
                         </button>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2.5">
                         {outOfStock.slice(0, 3).map((item) => (
-                            <div key={item._id} className="flex items-center justify-between bg-white/50 p-4 rounded-2xl border border-rose-100/50">
+                            <div key={item._id} className="flex items-center justify-between bg-white p-3.5 rounded-lg border border-red-100">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-slate-100 rounded-xl overflow-hidden p-2">
-                                        <img 
-                                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.image}`} 
+                                    <div className="w-10 h-10 bg-gray-100 rounded-lg overflow-hidden p-1.5">
+                                        <img
+                                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.image}`}
                                             alt={item.name}
                                             className="w-full h-full object-contain"
                                         />
                                     </div>
-                                    <span className="text-xs font-bold text-slate-700 uppercase truncate max-w-[150px]">
+                                    <span className="text-sm font-medium text-gray-700 truncate max-w-[150px]">
                                         {item.name}
                                     </span>
                                 </div>
-                                <span className="text-[10px] font-black text-rose-600 bg-rose-50 px-2 py-1 rounded-lg">
-                                    STOCK: 0
+                                <span className="text-xs font-semibold text-red-600 bg-red-50 px-2.5 py-1 rounded-md border border-red-200">
+                                    Stock: 0
                                 </span>
                             </div>
                         ))}
                         {outOfStockCount > 3 && (
-                            <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-widest pt-2">
-                                + {outOfStockCount - 3} more items
+                            <p className="text-xs font-medium text-gray-500 text-center pt-1">
+                                +{outOfStockCount - 3} more {outOfStockCount - 3 === 1 ? 'item' : 'items'}
                             </p>
                         )}
                     </div>
@@ -68,52 +68,52 @@ const InventoryAlerts = ({ inventory }) => {
 
             {/* Low Stock Alert */}
             {lowStockCount > 0 && (
-                <div className="bg-amber-50 border border-amber-100 rounded-[2.5rem] p-8 space-y-4">
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="p-3 bg-amber-500 text-white rounded-2xl shadow-lg shadow-amber-500/20">
-                                <AlertTriangle size={20} />
+                            <div className="p-2.5 bg-amber-500 text-white rounded-lg">
+                                <AlertTriangle size={18} />
                             </div>
                             <div>
-                                <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">
+                                <h3 className="text-sm font-semibold text-gray-900">
                                     Low Stock Warning
                                 </h3>
-                                <p className="text-[10px] font-bold text-amber-600 uppercase tracking-widest">
-                                    {lowStockCount} Items running low
+                                <p className="text-xs font-medium text-amber-600">
+                                    {lowStockCount} {lowStockCount === 1 ? 'item' : 'items'} running low
                                 </p>
                             </div>
                         </div>
-                        <button 
+                        <button
                             onClick={() => navigate("/admin/products")}
-                            className="p-2 hover:bg-amber-100 rounded-xl transition-colors text-amber-600"
+                            className="p-2 hover:bg-amber-100 rounded-lg transition-colors text-amber-600"
                         >
-                            <ArrowRight size={20} />
+                            <ArrowRight size={18} />
                         </button>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2.5">
                         {lowStock.slice(0, 3).map((item) => (
-                            <div key={item._id} className="flex items-center justify-between bg-white/50 p-4 rounded-2xl border border-amber-100/50">
+                            <div key={item._id} className="flex items-center justify-between bg-white p-3.5 rounded-lg border border-amber-100">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-slate-100 rounded-xl overflow-hidden p-2">
-                                        <img 
-                                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.image}`} 
+                                    <div className="w-10 h-10 bg-gray-100 rounded-lg overflow-hidden p-1.5">
+                                        <img
+                                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.image}`}
                                             alt={item.name}
                                             className="w-full h-full object-contain"
                                         />
                                     </div>
-                                    <span className="text-xs font-bold text-slate-700 uppercase truncate max-w-[150px]">
+                                    <span className="text-sm font-medium text-gray-700 truncate max-w-[150px]">
                                         {item.name}
                                     </span>
                                 </div>
-                                <span className="text-[10px] font-black text-amber-600 bg-amber-50 px-2 py-1 rounded-lg">
-                                    STOCK: {item.stock}
+                                <span className="text-xs font-semibold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
+                                    Stock: {item.stock}
                                 </span>
                             </div>
                         ))}
                         {lowStockCount > 3 && (
-                            <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-widest pt-2">
-                                + {lowStockCount - 3} more items
+                            <p className="text-xs font-medium text-gray-500 text-center pt-1">
+                                +{lowStockCount - 3} more {lowStockCount - 3 === 1 ? 'item' : 'items'}
                             </p>
                         )}
                     </div>

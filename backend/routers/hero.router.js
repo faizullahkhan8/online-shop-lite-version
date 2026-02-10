@@ -5,13 +5,34 @@ import {
     updateHeroSlide,
     deleteHeroSlide,
 } from "../controllers/hero.controller.js";
-import { upload, handleOptionalBackgroundRemoval } from "../middlewares/multer.middleware.js";
+import {
+    upload,
+    handleOptionalBackgroundRemoval,
+    imagekitUpload,
+} from "../middlewares/multer.middleware.js";
+import { authorize, isAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
 router.get("/", getHeroSlides);
-router.post("/", upload.single("image"), handleOptionalBackgroundRemoval, createHeroSlide);
-router.put("/:id", upload.single("image"), handleOptionalBackgroundRemoval, updateHeroSlide);
-router.delete("/:id", deleteHeroSlide);
+router.post(
+    "/",
+    isAuth,
+    authorize("admin"),
+    upload.single("image"),
+    handleOptionalBackgroundRemoval,
+    imagekitUpload,
+    createHeroSlide,
+);
+router.put(
+    "/:id",
+    isAuth,
+    authorize("admin"),
+    upload.single("image"),
+    handleOptionalBackgroundRemoval,
+    imagekitUpload,
+    updateHeroSlide,
+);
+router.delete("/:id", isAuth, authorize("admin"), deleteHeroSlide);
 
 export default router;

@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
     handleOptionalBackgroundRemoval,
     upload,
-    imagekitUpload
+    imagekitUpload,
 } from "../middlewares/multer.middleware.js";
 import {
     createProduct,
@@ -21,7 +21,7 @@ router.post(
     authorize(["admin"]),
     upload.single("image"),
     handleOptionalBackgroundRemoval,
-    imagekitUpload,
+    // imagekitUpload,
     createProduct,
 );
 router.patch(

@@ -10,23 +10,31 @@ import {
     Loader2,
     Percent,
     Calendar,
+    X,
 } from "lucide-react";
 import { useGetAllProducts } from "../../api/hooks/product.api";
-import { useAddPromotion } from "../../api/hooks/promotion.api";
-import { useNavigate } from "react-router-dom";
+import { useAddPromotion, useUpdatePromotion, useGetPromotionById } from "../../api/hooks/promotion.api";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import Input from "../../UI/Input";
 import Select from "../../UI/Select";
 
 const PromotionBuilder = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const editId = searchParams.get("id");
+
     const { getAllProducts } = useGetAllProducts();
-    const { addPromotion, loading: promotionLoading } = useAddPromotion();
+    const { addPromotion, loading: addLoading } = useAddPromotion();
+    const { updatePromotion, loading: updateLoading } = useUpdatePromotion();
+    const { getPromotionById, loading: fetchLoading } = useGetPromotionById();
+
+    const loading = addLoading || updateLoading || (editId && fetchLoading);
 
     const [promotionData, setPromotionData] = useState({
         title: "",
-        type: "FLASH_DEAL", // FLASH_DEAL or OFFER
-        discountType: "PERCENTAGE", // PERCENTAGE or FIXED_AMOUNT
+        type: "FLASH_DEAL",
+        discountType: "PERCENTAGE",
         discountValue: 0,
         startTime: "",
         endTime: "",
@@ -41,6 +49,28 @@ const PromotionBuilder = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [errors, setErrors] = useState({});
 
+    // Fetch existing promotion if editing
+    useEffect(() => {
+        if (editId) {
+            const loadPromotion = async () => {
+                const data = await getPromotionById(editId);
+                if (data && data.promotion) {
+                    const p = data.promotion;
+                    setPromotionData({
+                        title: p.title,
+                        type: p.type,
+                        discountType: p.discountType,
+                        discountValue: p.discountValue,
+                        startTime: new Date(p.startTime).toISOString().slice(0, 16),
+                        endTime: new Date(p.endTime).toISOString().slice(0, 16),
+                    });
+                    setSelectedProducts(p.products);
+                }
+            };
+            loadPromotion();
+        }
+    }, [editId, getPromotionById]);
+
     // Fetch products based on search or page changes
     const fetchProducts = useCallback(async () => {
         setIsSearching(true);
@@ -49,7 +79,9 @@ const PromotionBuilder = () => {
             const response = await getAllProducts({
                 search: productSearch,
                 page: page,
-                limit: 12, // Increased limit for grid view
+                limit: 12,
+                excludeActivePromotions: true,
+                currentPromotionId: editId,
             });
             if (response?.success) {
                 setAvailableProducts(response.products);
@@ -133,51 +165,55 @@ const PromotionBuilder = () => {
             products: selectedProducts.map((p) => p._id),
         };
 
-        const result = await addPromotion(data);
+        let result;
+        if (editId) {
+            result = await updatePromotion(editId, data);
+        } else {
+            result = await addPromotion(data);
+        }
+
         if (result?.success) {
-            navigate("/admin?tab=dashboard");
+            navigate("/admin-dashboard?tab=promotions");
         }
     };
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="space-y-6">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-slate-100 rounded-3xl p-4 shadow-lg shadow-slate-200/40">
-                <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-slate-900 rounded-2xl flex items-center justify-center text-primary shadow-2xl shadow-slate-900/20">
-                        <Zap size={28} />
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-gray-200 rounded-lg p-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                        <Zap size={24} />
                     </div>
                     <div>
-                        <h1 className="text-xl font-black text-slate-900 uppercase tracking-tight">
-                            Promotion <span className="text-primary">Builder</span>
+                        <h1 className="text-xl font-semibold text-gray-900">
+                            {editId ? "Edit Promotion" : "Create Promotion"}
                         </h1>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                            Strategic Marketing Module
+                        <span className="text-sm text-gray-500">
+                            {editId ? "Update campaign details" : "Build a new campaign"}
                         </span>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-2">
                     <button
-                        onClick={() => navigate("/admin?tab=dashboard")}
-                        className="px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all border border-slate-100 hover:bg-slate-50"
+                        onClick={() => navigate("/admin-dashboard/promotions")}
+                        className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:bg-gray-50"
                     >
                         Cancel
                     </button>
                     <button
                         form="promotion-form"
                         type="submit"
-                        disabled={
-                            promotionLoading || selectedProducts.length === 0
-                        }
-                        className="flex items-center gap-2 bg-slate-900 text-primary px-6 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-primary hover:text-white transition-all active:scale-95 shadow-lg shadow-slate-900/20 disabled:opacity-50"
+                        disabled={loading || selectedProducts.length === 0}
+                        className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {promotionLoading ? (
+                        {loading ? (
                             <Loader2 className="animate-spin" size={16} />
                         ) : (
                             <Save size={16} />
                         )}
-                        Authorize
+                        {editId ? "Update" : "Create"}
                     </button>
                 </div>
             </div>
@@ -188,14 +224,14 @@ const PromotionBuilder = () => {
                 className="grid grid-cols-1 lg:grid-cols-12 gap-6"
             >
                 {/* Configuration Panel */}
-                <div className="lg:col-span-5 space-y-6">
-                    <section className="bg-white border border-slate-100 rounded-3xl p-5 shadow-lg shadow-slate-200/40">
-                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6 flex items-center gap-2">
-                            <Settings size={14} className="text-primary" />
+                <div className="lg:col-span-5 space-y-4">
+                    <section className="bg-white border border-gray-200 rounded-lg p-5">
+                        <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <Settings size={16} className="text-blue-600" />
                             Configuration
                         </h3>
 
-                        <div className="space-y-5">
+                        <div className="space-y-4">
                             <Input
                                 label="Promotion Title"
                                 placeholder="e.g., Summer Sale"
@@ -207,7 +243,7 @@ const PromotionBuilder = () => {
                                 error={errors.title}
                             />
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-3">
                                 <Select
                                     label="Type"
                                     value={promotionData.type}
@@ -221,7 +257,7 @@ const PromotionBuilder = () => {
                                     ]}
                                 />
                                 <Select
-                                    label="Discount Logic"
+                                    label="Discount Type"
                                     value={promotionData.discountType}
                                     onChange={(val) =>
                                         handleDataChange("discountType", val)
@@ -234,36 +270,32 @@ const PromotionBuilder = () => {
                                 />
                             </div>
 
-                            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 block">
+                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <label className="text-sm font-medium text-gray-700 mb-2 block">
                                     Discount Value
                                 </label>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex-1">
-                                        <input
-                                            type="number"
-                                            value={promotionData.discountValue}
-                                            onChange={(e) =>
-                                                handleDataChange(
-                                                    "discountValue",
-                                                    Number(e.target.value),
-                                                )
-                                            }
-                                            className="w-full bg-white border-none rounded-lg px-4 py-2 text-xl font-black text-slate-900 focus:ring-2 focus:ring-primary/20 transition-all"
-                                        />
-                                    </div>
-                                    <div className="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center text-primary shadow-md">
-                                        {promotionData.discountType ===
-                                        "PERCENTAGE" ? (
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="number"
+                                        value={promotionData.discountValue}
+                                        onChange={(e) =>
+                                            handleDataChange(
+                                                "discountValue",
+                                                Number(e.target.value),
+                                            )
+                                        }
+                                        className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 text-lg font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    />
+                                    <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white">
+                                        {promotionData.discountType === "PERCENTAGE" ? (
                                             <Percent size={18} />
                                         ) : (
-                                            <span className="font-black text-sm">PKR</span>
+                                            <span className="font-semibold text-sm">PKR</span>
                                         )}
                                     </div>
-
                                 </div>
                                 {errors.discountValue && (
-                                    <p className="text-[10px] text-red-500 font-bold mt-2">
+                                    <p className="text-xs text-red-600 mt-1">
                                         {errors.discountValue}
                                     </p>
                                 )}
@@ -271,15 +303,15 @@ const PromotionBuilder = () => {
                         </div>
                     </section>
 
-                    <section className="bg-slate-900 rounded-3xl p-5 shadow-lg shadow-slate-900/40 text-white">
-                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-6 flex items-center gap-2">
-                            <Calendar size={14} className="text-primary" />
+                    <section className="bg-gray-900 rounded-lg p-5 text-white">
+                        <h3 className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
+                            <Calendar size={16} className="text-blue-400" />
                             Timeline
                         </h3>
 
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <div className="space-y-1.5">
-                                <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                <label className="text-sm font-medium text-gray-400">
                                     Start Time
                                 </label>
                                 <input
@@ -288,15 +320,15 @@ const PromotionBuilder = () => {
                                     onChange={(e) =>
                                         handleDataChange("startTime", e.target.value)
                                     }
-                                    className="w-full bg-slate-800 border-none rounded-lg px-3 py-2 text-xs font-bold text-white focus:ring-2 focus:ring-primary/30"
+                                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                                 {errors.startTime && (
-                                    <p className="text-[9px] text-primary font-bold">{errors.startTime}</p>
+                                    <p className="text-xs text-red-400">{errors.startTime}</p>
                                 )}
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                <label className="text-sm font-medium text-gray-400">
                                     End Time
                                 </label>
                                 <input
@@ -305,41 +337,38 @@ const PromotionBuilder = () => {
                                     onChange={(e) =>
                                         handleDataChange("endTime", e.target.value)
                                     }
-                                    className="w-full bg-slate-800 border-none rounded-lg px-3 py-2 text-xs font-bold text-white focus:ring-2 focus:ring-primary/30"
+                                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                                 {errors.endTime && (
-                                    <p className="text-[9px] text-primary font-bold">{errors.endTime}</p>
+                                    <p className="text-xs text-red-400">{errors.endTime}</p>
                                 )}
                             </div>
                         </div>
                     </section>
                 </div>
 
-                {/* Inventory Mapping */}
-                <div className="lg:col-span-7 space-y-6">
-                    <section className="bg-white border border-slate-100 rounded-3xl shadow-lg shadow-slate-200/40 flex flex-col min-h-[400px]">
-                        <div className="p-6 border-b border-slate-100">
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 flex items-center gap-2">
-                                <Package size={14} className="text-primary" />
+                {/* Product Selection */}
+                <div className="lg:col-span-7 space-y-4">
+                    <section className="bg-white border border-gray-200 rounded-lg flex flex-col min-h-[400px]">
+                        <div className="p-5 border-b border-gray-200">
+                            <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <Package size={16} className="text-blue-600" />
                                 Product Selection
                             </h3>
 
                             <div className="relative">
                                 <input
                                     type="text"
-                                    placeholder="Search for products to add..."
+                                    placeholder="Search products..."
                                     value={productSearch}
                                     onChange={(e) =>
                                         setProductSearch(e.target.value)
                                     }
-                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-10 pr-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
-                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                     {isSearching ? (
-                                        <Loader2
-                                            className="animate-spin"
-                                            size={18}
-                                        />
+                                        <Loader2 className="animate-spin" size={18} />
                                     ) : (
                                         <Search size={18} />
                                     )}
@@ -347,23 +376,20 @@ const PromotionBuilder = () => {
                             </div>
                         </div>
 
-                        <div className="flex-1 p-6 overflow-y-auto custom-scrollbar">
+                        <div className="flex-1 p-5 overflow-y-auto">
                             {isSearching && availableProducts.length === 0 ? (
                                 <div className="h-full flex items-center justify-center">
-                                    <Loader2
-                                        className="animate-spin text-primary"
-                                        size={32}
-                                    />
+                                    <Loader2 className="animate-spin text-blue-600" size={32} />
                                 </div>
                             ) : noProductFound ? (
-                                <div className="h-full flex flex-col items-center justify-center text-center p-8 opacity-50">
-                                    <Search size={32} className="text-slate-300 mb-3" />
-                                    <p className="text-xs font-bold text-slate-400">
-                                        No products found matching your search.
+                                <div className="h-full flex flex-col items-center justify-center text-center p-8">
+                                    <Search size={32} className="text-gray-300 mb-2" />
+                                    <p className="text-sm text-gray-500">
+                                        No products found
                                     </p>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
                                     {availableProducts.map((p) => {
                                         const isSelected = selectedProducts.some(
                                             (sp) => sp._id === p._id,
@@ -373,13 +399,12 @@ const PromotionBuilder = () => {
                                                 key={p._id}
                                                 type="button"
                                                 onClick={() => toggleProduct(p)}
-                                                className={`group relative p-3 rounded-2xl border transition-all flex flex-col items-center text-center gap-3 ${
-                                                    isSelected
-                                                        ? "bg-primary/5 border-primary shadow-sm"
-                                                        : "bg-white border-slate-100 hover:border-slate-200 shadow-sm"
-                                                }`}
+                                                className={`relative p-3 rounded-lg border transition-all flex flex-col items-center text-center gap-2 ${isSelected
+                                                    ? "bg-blue-50 border-blue-500"
+                                                    : "bg-white border-gray-200 hover:border-gray-300"
+                                                    }`}
                                             >
-                                                <div className="w-full aspect-square bg-slate-50 rounded-xl overflow-hidden border border-slate-100 p-2">
+                                                <div className="w-full aspect-square bg-gray-50 rounded-lg overflow-hidden border border-gray-100 p-2">
                                                     <img
                                                         src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${p.image}`}
                                                         className="w-full h-full object-contain"
@@ -387,16 +412,16 @@ const PromotionBuilder = () => {
                                                     />
                                                 </div>
                                                 <div className="w-full">
-                                                    <p className="text-[10px] font-black text-slate-900 uppercase tracking-tight truncate w-full">
+                                                    <p className="text-xs font-medium text-gray-900 truncate">
                                                         {p.name}
                                                     </p>
-                                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                                                    <p className="text-xs text-gray-500 mt-0.5">
                                                         PKR {p.price.toLocaleString()}
                                                     </p>
                                                 </div>
                                                 {isSelected && (
-                                                    <div className="absolute top-2 right-2 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center shadow-lg animate-in zoom-in duration-300">
-                                                        <Plus size={14} className="rotate-45" />
+                                                    <div className="absolute top-2 right-2 w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center">
+                                                        <Plus size={12} className="rotate-45" />
                                                     </div>
                                                 )}
                                             </button>
@@ -406,31 +431,25 @@ const PromotionBuilder = () => {
                             )}
                         </div>
 
-                        {/* Pagination Controls */}
+                        {/* Pagination */}
                         {totalPages > 1 && (
-                            <div className="px-6 py-4 border-t border-slate-50 flex items-center justify-between">
+                            <div className="px-5 py-3 border-t border-gray-200 flex items-center justify-between">
                                 <button
                                     type="button"
                                     disabled={page === 1}
-                                    onClick={() =>
-                                        setPage((prev) => Math.max(1, prev - 1))
-                                    }
-                                    className="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all border border-slate-100 hover:bg-slate-50 disabled:opacity-30"
+                                    onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+                                    className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:bg-gray-50 disabled:opacity-30"
                                 >
                                     Previous
                                 </button>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                                <span className="text-sm text-gray-600">
                                     Page {page} of {totalPages}
                                 </span>
                                 <button
                                     type="button"
                                     disabled={page === totalPages}
-                                    onClick={() =>
-                                        setPage((prev) =>
-                                            Math.min(totalPages, prev + 1),
-                                        )
-                                    }
-                                    className="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all border border-slate-100 hover:bg-slate-50 disabled:opacity-30"
+                                    onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
+                                    className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:bg-gray-50 disabled:opacity-30"
                                 >
                                     Next
                                 </button>
@@ -439,35 +458,35 @@ const PromotionBuilder = () => {
                     </section>
                 </div>
 
-                {/* Selected Items Panel */}
+                {/* Selected Products */}
                 <div className="lg:col-span-12">
-                    <section className="bg-white border border-slate-100 rounded-3xl p-6 shadow-lg shadow-slate-200/40">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
-                                <Plus size={14} className="text-primary" />
-                                Selected Inventory Cluster
+                    <section className="bg-white border border-gray-200 rounded-lg p-5">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                                <Plus size={16} className="text-blue-600" />
+                                Selected Products
                             </h3>
-                            <span className="bg-slate-900 text-primary px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">
-                                {selectedProducts.length} Units Mapped
+                            <span className="bg-gray-900 text-white px-3 py-1 rounded text-sm font-medium">
+                                {selectedProducts.length} selected
                             </span>
                         </div>
 
                         {selectedProducts.length === 0 ? (
-                            <div className="py-12 flex flex-col items-center justify-center opacity-40">
-                                <Package size={40} className="text-slate-300 mb-4" />
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                    Queue Empty: Select products to initialize
+                            <div className="py-12 flex flex-col items-center justify-center">
+                                <Package size={40} className="text-gray-300 mb-3" />
+                                <p className="text-sm text-gray-500">
+                                    No products selected
                                 </p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
                                 {selectedProducts.map((p) => (
                                     <div
                                         key={p._id}
-                                        className="bg-slate-50 border border-slate-100 rounded-2xl p-3 flex items-center justify-between group"
+                                        className="bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center justify-between group"
                                     >
-                                        <div className="flex items-center gap-3 overflow-hidden">
-                                            <div className="w-10 h-10 shrink-0 bg-white rounded-lg p-1 border">
+                                        <div className="flex items-center gap-2 overflow-hidden min-w-0">
+                                            <div className="w-10 h-10 shrink-0 bg-white rounded-lg p-1 border border-gray-200">
                                                 <img
                                                     src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${p.image}`}
                                                     className="w-full h-full object-contain"
@@ -475,19 +494,14 @@ const PromotionBuilder = () => {
                                                 />
                                             </div>
                                             <div className="min-w-0">
-                                                <p className="text-[10px] font-bold text-slate-900 uppercase truncate">
+                                                <p className="text-xs font-medium text-gray-900 truncate">
                                                     {p.name}
                                                 </p>
-                                                <p className="text-[9px] font-black text-primary mt-0.5">
+                                                <p className="text-xs text-blue-600 mt-0.5">
                                                     Rs{" "}
-                                                    {(promotionData.discountType ===
-                                                    "PERCENTAGE"
-                                                        ? p.price -
-                                                          (p.price *
-                                                              promotionData.discountValue) /
-                                                              100
-                                                        : p.price -
-                                                          promotionData.discountValue
+                                                    {(promotionData.discountType === "PERCENTAGE"
+                                                        ? p.price - (p.price * promotionData.discountValue) / 100
+                                                        : p.price - promotionData.discountValue
                                                     ).toLocaleString()}
                                                 </p>
                                             </div>
@@ -495,9 +509,9 @@ const PromotionBuilder = () => {
                                         <button
                                             type="button"
                                             onClick={() => toggleProduct(p)}
-                                            className="w-7 h-7 shrink-0 rounded-lg flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                                            className="w-6 h-6 shrink-0 rounded flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all"
                                         >
-                                            <Trash2 size={12} />
+                                            <Trash2 size={14} />
                                         </button>
                                     </div>
                                 ))}

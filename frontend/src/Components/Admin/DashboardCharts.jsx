@@ -13,7 +13,14 @@ import {
     Cell,
 } from "recharts";
 
-const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#6366f1"];
+const COLORS = [
+    "#2563eb",
+    "#10b981",
+    "#f59e0b",
+    "#ef4444",
+    "#8b5cf6",
+    "#6366f1",
+];
 
 const DashboardCharts = ({ stats }) => {
     if (!stats) return null;
@@ -21,69 +28,111 @@ const DashboardCharts = ({ stats }) => {
     const { dailySales, categoryStats, orderStatusStats } = stats;
 
     // Formatting daily sales for the chart
-    const revenueData = dailySales?.map((item) => ({
-        date: new Date(item._id).toLocaleDateString(undefined, {
-            month: "short",
-            day: "numeric",
-        }),
-        revenue: item.total,
-    })) || [];
+    const revenueData =
+        dailySales?.map((item) => ({
+            date: new Date(item._id).toLocaleDateString(undefined, {
+                month: "short",
+                day: "numeric",
+            }),
+            revenue: item.total,
+        })) || [];
 
-    const categoryData = categoryStats?.map((item) => ({
-        name: item.name,
-        sales: item.totalSold,
-        products: item.count,
-    })) || [];
+    const categoryData =
+        categoryStats?.map((item) => ({
+            name: item.name,
+            sales: item.totalSold,
+            products: item.count,
+        })) || [];
 
-    const statusData = orderStatusStats?.map((item) => ({
-        name: item._id.toUpperCase(),
-        value: item.count,
-    })) || [];
+    const statusData =
+        orderStatusStats?.map((item) => ({
+            name:
+                item._id.charAt(0).toUpperCase() +
+                item._id.slice(1).toLowerCase(),
+            value: item.count,
+        })) || [];
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {/* Revenue Area Chart */}
-            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40">
-                <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-8">
+            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                <h3 className="text-sm font-semibold text-gray-900 mb-6">
                     Revenue Trends (Last 30 Days)
                 </h3>
                 <div className="h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={revenueData}>
                             <defs>
-                                <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1} />
-                                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                <linearGradient
+                                    id="colorRev"
+                                    x1="0"
+                                    y1="0"
+                                    x2="0"
+                                    y2="1"
+                                >
+                                    <stop
+                                        offset="5%"
+                                        stopColor="#2563eb"
+                                        stopOpacity={0.1}
+                                    />
+                                    <stop
+                                        offset="95%"
+                                        stopColor="#2563eb"
+                                        stopOpacity={0}
+                                    />
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                            <CartesianGrid
+                                strokeDasharray="3 3"
+                                vertical={false}
+                                stroke="#e5e7eb"
+                            />
                             <XAxis
                                 dataKey="date"
                                 axisLine={false}
                                 tickLine={false}
-                                tick={{ fill: "#94a3b8", fontSize: 10, fontWeight: 700 }}
+                                tick={{
+                                    fill: "#6b7280",
+                                    fontSize: 12,
+                                    fontWeight: 500,
+                                }}
                             />
                             <YAxis
                                 axisLine={false}
                                 tickLine={false}
-                                tick={{ fill: "#94a3b8", fontSize: 10, fontWeight: 700 }}
+                                tick={{
+                                    fill: "#6b7280",
+                                    fontSize: 12,
+                                    fontWeight: 500,
+                                }}
                                 tickFormatter={(value) => `Rs ${value}`}
                             />
                             <Tooltip
                                 contentStyle={{
-                                    backgroundColor: "#1e293b",
+                                    backgroundColor: "#1f2937",
                                     border: "none",
-                                    borderRadius: "12px",
+                                    borderRadius: "8px",
                                     color: "#fff",
+                                    boxShadow:
+                                        "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                                 }}
-                                itemStyle={{ color: "#fff", fontSize: "12px", fontWeight: 700 }}
-                                labelStyle={{ color: "#94a3b8", fontSize: "10px", fontWeight: 700, marginBottom: "4px" }}
+                                itemStyle={{
+                                    color: "#fff",
+                                    fontSize: "13px",
+                                    fontWeight: 500,
+                                }}
+                                labelStyle={{
+                                    color: "#9ca3af",
+                                    fontSize: "12px",
+                                    fontWeight: 500,
+                                    marginBottom: "4px",
+                                }}
                             />
                             <Area
                                 type="monotone"
                                 dataKey="revenue"
-                                stroke="#3b82f6"
-                                strokeWidth={3}
+                                stroke="#2563eb"
+                                strokeWidth={2}
                                 fillOpacity={1}
                                 fill="url(#colorRev)"
                             />
@@ -93,38 +142,56 @@ const DashboardCharts = ({ stats }) => {
             </div>
 
             {/* Category Performance Bar Chart */}
-            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40">
-                <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-8">
+            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                <h3 className="text-sm font-semibold text-gray-900 mb-6">
                     Category Performance
                 </h3>
                 <div className="h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={categoryData}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                            <CartesianGrid
+                                strokeDasharray="3 3"
+                                vertical={false}
+                                stroke="#e5e7eb"
+                            />
                             <XAxis
                                 dataKey="name"
                                 axisLine={false}
                                 tickLine={false}
-                                tick={{ fill: "#94a3b8", fontSize: 10, fontWeight: 700 }}
+                                tick={{
+                                    fill: "#6b7280",
+                                    fontSize: 12,
+                                    fontWeight: 500,
+                                }}
                             />
                             <YAxis
                                 axisLine={false}
                                 tickLine={false}
-                                tick={{ fill: "#94a3b8", fontSize: 10, fontWeight: 700 }}
+                                tick={{
+                                    fill: "#6b7280",
+                                    fontSize: 12,
+                                    fontWeight: 500,
+                                }}
                             />
                             <Tooltip
-                                cursor={{ fill: "#f8fafc" }}
+                                cursor={{ fill: "#f9fafb" }}
                                 contentStyle={{
-                                    backgroundColor: "#1e293b",
+                                    backgroundColor: "#1f2937",
                                     border: "none",
-                                    borderRadius: "12px",
+                                    borderRadius: "8px",
                                     color: "#fff",
+                                    boxShadow:
+                                        "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                                 }}
-                                itemStyle={{ color: "#fff", fontSize: "12px", fontWeight: 700 }}
+                                itemStyle={{
+                                    color: "#fff",
+                                    fontSize: "13px",
+                                    fontWeight: 500,
+                                }}
                             />
                             <Bar
                                 dataKey="sales"
-                                fill="#6366f1"
+                                fill="#2563eb"
                                 radius={[6, 6, 0, 0]}
                                 barSize={40}
                             />
@@ -134,8 +201,8 @@ const DashboardCharts = ({ stats }) => {
             </div>
 
             {/* Order Status Pie Chart */}
-            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40">
-                <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-8">
+            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                <h3 className="text-sm font-semibold text-gray-900 mb-6">
                     Order Status Breakdown
                 </h3>
                 <div className="h-[300px] w-full">
@@ -147,43 +214,77 @@ const DashboardCharts = ({ stats }) => {
                                 cy="50%"
                                 innerRadius={60}
                                 outerRadius={80}
-                                paddingAngle={8}
+                                paddingAngle={5}
                                 dataKey="value"
                             >
                                 {statusData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={COLORS[index % COLORS.length]}
+                                    />
                                 ))}
                             </Pie>
                             <Tooltip
                                 contentStyle={{
-                                    backgroundColor: "#1e293b",
+                                    backgroundColor: "#1f2937",
                                     border: "none",
-                                    borderRadius: "12px",
+                                    borderRadius: "8px",
                                     color: "#fff",
+                                    boxShadow:
+                                        "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                                 }}
-                                itemStyle={{ color: "#fff", fontSize: "12px", fontWeight: 700 }}
+                                itemStyle={{
+                                    color: "#fff",
+                                    fontSize: "13px",
+                                    fontWeight: 500,
+                                }}
                             />
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
+                {/* Legend */}
+                <div className="mt-4 flex flex-wrap gap-3 justify-center">
+                    {statusData.map((entry, index) => (
+                        <div
+                            key={entry.name}
+                            className="flex items-center gap-2"
+                        >
+                            <div
+                                className="w-3 h-3 rounded-full"
+                                style={{
+                                    backgroundColor:
+                                        COLORS[index % COLORS.length],
+                                }}
+                            />
+                            <span className="text-xs font-medium text-gray-600">
+                                {entry.name} ({entry.value})
+                            </span>
+                        </div>
+                    ))}
+                </div>
             </div>
 
             {/* Quick Stats Grid */}
-            <div className="grid grid-cols-2 gap-6">
-                <div className="bg-slate-900 p-8 rounded-[2.5rem] flex flex-col justify-center">
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">
+            <div className="grid grid-cols-2 gap-5">
+                <div className="bg-gray-900 p-6 rounded-lg flex flex-col justify-center">
+                    <span className="text-xs font-medium text-gray-400 mb-2">
                         Avg Order Value
                     </span>
-                    <h4 className="text-2xl font-black text-white">
-                        Rs {stats?.totalOrders > 0 ? (stats?.totalSales / stats?.totalOrders).toFixed(0).toLocaleString() : 0}
+                    <h4 className="text-2xl font-bold text-white">
+                        Rs{" "}
+                        {stats?.totalOrders > 0
+                            ? (stats?.totalSales / stats?.totalOrders)
+                                  .toFixed(0)
+                                  .toLocaleString()
+                            : 0}
                     </h4>
                 </div>
-                <div className="bg-primary p-8 rounded-[2.5rem] flex flex-col justify-center shadow-xl shadow-primary/20">
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/60 mb-2">
-                        Items Inventory
+                <div className="bg-blue-600 p-6 rounded-lg flex flex-col justify-center shadow-sm">
+                    <span className="text-xs font-medium text-blue-100 mb-2">
+                        Total Inventory
                     </span>
-                    <h4 className="text-2xl font-black text-white">
-                        {stats?.totalProducts}+ Units
+                    <h4 className="text-2xl font-bold text-white">
+                        {stats?.totalProducts} Units
                     </h4>
                 </div>
             </div>

@@ -9,6 +9,8 @@ import {
     updatePaymentStatus,
     deleteOrder,
     getDashboardStats,
+    cancelOrder,
+    cancelOrderItem,
 } from "../controllers/order.controller.js";
 
 const router = new Router();
@@ -24,5 +26,14 @@ router.get("/:id", isAuth, getOrderById);
 router.patch("/update/:id", isAuth, authorize("admin"), updateOrderStatus);
 router.patch("/payment/:id", isAuth, authorize("admin"), updatePaymentStatus);
 router.delete("/delete/:id", isAuth, authorize("admin"), deleteOrder);
+
+// Cancellation routes
+router.put("/:id/cancel", isAuth, cancelOrder);
+router.put(
+    "/:id/items/:itemId/cancel",
+    isAuth,
+    authorize("admin"),
+    cancelOrderItem,
+);
 
 export default router;

@@ -55,24 +55,23 @@ const ProductCard = ({ product }) => {
     return (
         <Link
             to={`/product/${product?._id}`}
-            className="group flex flex-col h-full bg-white rounded-2xl border border-slate-100 p-2 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300"
+            className="group flex flex-col h-full bg-white rounded-lg border border-gray-200 p-3 hover:border-blue-500 hover:shadow-md transition-all"
         >
-            <div className="relative aspect-square w-full bg-slate-50/50 rounded-xl overflow-hidden">
+            <div className="relative aspect-square w-full bg-gray-50 rounded-lg overflow-hidden border border-gray-100">
                 {isDiscounted && (
-                    <div className="absolute top-2 left-2 z-10 bg-rose-600 text-white text-[9px] font-black px-2 py-1 rounded-lg shadow-lg shadow-rose-500/20 uppercase tracking-widest">
+                    <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded shadow-sm">
                         {product.promotion?.discountType === "PERCENTAGE"
                             ? `-${product.promotion.discountValue}%`
-                            : "OFF"}
+                            : "SALE"}
                     </div>
                 )}
 
                 <button
                     onClick={handleWishlist}
-                    className={`absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center rounded-lg backdrop-blur-md transition-all ${
-                        isInWishlist
-                            ? "bg-red-500 text-white shadow-md shadow-red-200"
-                            : "bg-white/80 text-slate-400 hover:text-red-500 hover:bg-white shadow-sm"
-                    }`}
+                    className={`absolute top-2 right-2 z-10 w-7 h-7 flex items-center justify-center rounded-lg transition-all ${isInWishlist
+                        ? "bg-red-500 text-white shadow-sm"
+                        : "bg-white text-gray-400 hover:text-red-500 shadow-sm border border-gray-200"
+                        }`}
                 >
                     <Heart
                         size={14}
@@ -84,11 +83,11 @@ const ProductCard = ({ product }) => {
                     src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product?.image}`}
                     alt={product?.name}
                     loading="lazy"
-                    className="absolute inset-0 w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500 mix-blend-multiply"
+                    className="absolute inset-0 w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300"
                 />
             </div>
 
-            <div className="px-1.5 pt-3 pb-1 flex flex-col flex-1">
+            <div className="px-1 pt-3 pb-1 flex flex-col flex-1">
                 <div className="flex items-center gap-1 mb-1.5">
                     <div className="flex text-amber-400">
                         {[...Array(5)].map((_, i) => (
@@ -99,37 +98,37 @@ const ProductCard = ({ product }) => {
                                 className={
                                     i < rating
                                         ? "text-amber-400"
-                                        : "text-slate-200"
+                                        : "text-gray-200"
                                 }
                             />
                         ))}
                     </div>
-                    <span className="text-[10px] font-black text-slate-400">
+                    <span className="text-xs font-medium text-gray-500">
                         ({product?.rating || 0})
                     </span>
                 </div>
 
-                <h3 className="text-slate-700 font-bold text-[13px] mb-2 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                <h3 className="text-gray-900 font-medium text-sm mb-2 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
                     {product?.name || "Premium Product"}
                 </h3>
 
                 <div className="mt-auto pt-2 flex flex-col gap-2">
                     <div className="flex flex-col">
-                        <span className="text-base font-black text-slate-900 leading-none">
-                            Rs: {displayPrice?.toLocaleString()}
+                        <span className="text-base font-semibold text-gray-900 leading-none">
+                            Rs {displayPrice?.toLocaleString()}
                         </span>
                         {strikePrice && (
-                            <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest line-through mt-0.5 opacity-60">
-                                Rs: {strikePrice?.toLocaleString()}
+                            <span className="text-xs text-gray-400 line-through mt-0.5">
+                                Rs {strikePrice?.toLocaleString()}
                             </span>
                         )}
                     </div>
 
                     <button
                         onClick={handleAddToCart}
-                        className="w-full flex items-center justify-center gap-1.5 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest py-2.5 rounded-lg hover:bg-primary transition-all active:scale-95 shadow-md shadow-slate-200"
+                        className="w-full flex items-center justify-center gap-1.5 bg-blue-600 text-white text-xs font-medium py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
                     >
-                        <ShoppingCart size={12} />
+                        <ShoppingCart size={14} />
                         Add to Cart
                     </button>
                 </div>

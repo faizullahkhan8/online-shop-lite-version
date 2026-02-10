@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema, SchemaTypes, Types } from "mongoose";
 
 const orderSchema = new Schema(
     {
@@ -63,6 +63,19 @@ const orderSchema = new Schema(
                     type: Number,
                     required: true,
                 },
+                status: {
+                    type: String,
+                    enum: ["active", "cancelled"],
+                    default: "active",
+                },
+                cancellationReason: {
+                    type: String,
+                    default: "",
+                },
+                cancelledBy: {
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
             },
         ],
         grandTotal: {
@@ -101,10 +114,18 @@ const orderSchema = new Schema(
             type: Boolean,
             default: false,
         },
+        cancellationReason: {
+            type: String,
+            default: "",
+        },
+        cancelledBy: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
     },
     {
         timestamps: true,
-    }
+    },
 );
 
 export default orderSchema;

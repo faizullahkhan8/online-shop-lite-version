@@ -18,7 +18,7 @@ import { usePlaceOrder } from "../../api/hooks/orders.api.js";
 import { useGetAllUsers } from "../../api/hooks/user.api.js";
 import { useNavigate } from "react-router-dom";
 
-const AddOrder = () => {
+const AddOrderPage = () => {
     const { getAllProducts, loading: productsLoading } = useGetAllProducts();
     const { placeOrder, loading: orderLoading } = usePlaceOrder();
     const { getAllUsers, loading: usersLoading } = useGetAllUsers();
@@ -94,7 +94,6 @@ const AddOrder = () => {
             const selectedProd = products.find((p) => p._id === value);
             item.product = value;
             item.originalPrice = selectedProd?.price || 0;
-            // Calculate initial discount from effectivePrice if available
             if (selectedProd?.effectivePrice < selectedProd?.price) {
                 item.discount = selectedProd.price - selectedProd.effectivePrice;
                 item.price = selectedProd.effectivePrice;
@@ -175,42 +174,38 @@ const AddOrder = () => {
     };
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-500"
-        >
-            <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-3 border-b border-slate-100 pb-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Header */}
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-6 border-b border-gray-200">
                 <div className="space-y-1">
-                    <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter flex items-center gap-4">
-                        <div className="p-3 bg-primary rounded-2xl text-white shadow-xl shadow-primary/20">
-                            <ShoppingBag size={28} />
+                    <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                        <div className="p-2.5 bg-blue-600 rounded-lg text-white">
+                            <ShoppingBag size={20} />
                         </div>
-                        Manual{" "}
-                        <span className="text-primary text-outline-1">
-                            Order
-                        </span>
+                        Create Manual Order
                     </h2>
+                    <p className="text-sm text-gray-500 ml-11">
+                        Add a new order directly to the system
+                    </p>
                 </div>
 
-                <div className="bg-slate-900 rounded-4xl p-3 min-w-[280px] shadow-2xl shadow-slate-900/20 border border-slate-800">
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">
-                        Total Amount
+                <div className="bg-blue-600 rounded-lg p-4 min-w-[240px] shadow-sm">
+                    <p className="text-xs font-medium text-blue-100 mb-1">
+                        Grand Total
                     </p>
-                    <p className="text-3xl font-black text-white tracking-tighter">
-                        <span className="text-primary mr-2">PKR</span>
-                        {grandTotal.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                        })}
+                    <p className="text-2xl font-bold text-white">
+                        Rs {grandTotal.toLocaleString()}
                     </p>
                 </div>
             </header>
 
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+                {/* Left Column - Order Items */}
                 <div className="xl:col-span-8 space-y-6">
-                    <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
-                        <div className="flex items-center justify-between mb-8 border-b border-slate-50 pb-4">
-                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                <Hash size={14} className="text-primary" />{" "}
+                    <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                        <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+                            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                                <Hash size={16} className="text-blue-600" />
                                 Order Items
                             </h3>
                         </div>
@@ -219,11 +214,11 @@ const AddOrder = () => {
                             {orderData.items.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="group grid grid-cols-3 gap-4 items-end bg-slate-50/50 p-3 rounded-3xl transition-all hover:bg-white hover:shadow-lg hover:shadow-slate-100 border border-transparent hover:border-slate-100"
+                                    className="grid grid-cols-3 gap-4 items-end bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
                                 >
-                                    <div className="col-span-3 space-y-2 flex flex-col items-start">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                                            Item Select
+                                    <div className="col-span-3 space-y-1.5">
+                                        <label className="text-xs font-medium text-gray-700">
+                                            Product
                                         </label>
                                         <Select
                                             disabled={productsLoading}
@@ -232,26 +227,22 @@ const AddOrder = () => {
                                                 value: p._id,
                                             }))}
                                             value={item.product}
-                                            placeholder="Choose Inventory Node"
+                                            placeholder="Select product"
                                             onChange={(val) =>
-                                                updateItem(
-                                                    index,
-                                                    "product",
-                                                    val,
-                                                )
+                                                updateItem(index, "product", val)
                                             }
                                         />
                                     </div>
-                                    <div className="space-y-2 flex flex-col items-start">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-nowrap">
-                                            Ref Price
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-medium text-gray-700">
+                                            Original Price
                                         </label>
-                                        <div className="w-full bg-slate-100/50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-black text-slate-400">
-                                            {item.originalPrice}
+                                        <div className="w-full bg-gray-100 border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium text-gray-500">
+                                            Rs {item.originalPrice}
                                         </div>
                                     </div>
-                                    <div className="space-y-2 flex flex-col items-start">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-medium text-gray-700">
                                             Discount
                                         </label>
                                         <Input
@@ -267,9 +258,9 @@ const AddOrder = () => {
                                             className="w-full"
                                         />
                                     </div>
-                                    <div className="space-y-2 flex flex-col items-start">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-nowrap">
-                                            Net Price
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-medium text-gray-700">
+                                            Price
                                         </label>
                                         <Input
                                             type="number"
@@ -284,9 +275,9 @@ const AddOrder = () => {
                                             className="w-full"
                                         />
                                     </div>
-                                    <div className="space-y-2 flex flex-col items-start">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                                            Qty
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-medium text-gray-700">
+                                            Quantity
                                         </label>
                                         <Input
                                             type="number"
@@ -301,21 +292,19 @@ const AddOrder = () => {
                                             className="w-full"
                                         />
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                                    <div className="space-y-1.5">
+                                        <p className="text-xs font-medium text-gray-700">
                                             Subtotal
                                         </p>
-                                        <p className="font-black text-slate-900 text-sm">
-                                            {(
-                                                item.price * item.quantity
-                                            ).toFixed(2)}
+                                        <p className="text-sm font-semibold text-gray-900 bg-gray-100 border border-gray-200 rounded-lg px-3 py-2">
+                                            Rs {(item.price * item.quantity).toFixed(2)}
                                         </p>
                                     </div>
-                                    <div>
+                                    <div className="flex items-end">
                                         <button
                                             type="button"
                                             onClick={() => removeItem(index)}
-                                            className="p-3 text-rose-400 hover:bg-rose-50 hover:text-rose-600 rounded-2xl transition-all"
+                                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                                         >
                                             <Trash2 size={18} />
                                         </button>
@@ -327,44 +316,44 @@ const AddOrder = () => {
                         <button
                             type="button"
                             onClick={addItem}
-                            className="w-full mt-6 py-4 border-2 border-dashed border-slate-200 rounded-3xl text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2 group"
+                            className="w-full mt-4 py-3 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all flex items-center justify-center gap-2"
                         >
-                            <Plus
-                                size={16}
-                                className="group-hover:rotate-90 transition-transform"
-                            />
-                            Append Data Row
+                            <Plus size={18} />
+                            Add Item
                         </button>
                     </div>
                 </div>
 
+                {/* Right Column - Customer & Details */}
                 <div className="xl:col-span-4 space-y-6">
-                    <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100 space-y-8">
-                        <section className="space-y-4">
-                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-50 pb-4">
-                                <User size={14} className="text-primary" />{" "}
-                                Customer Assignment
+                    <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 space-y-6">
+                        {/* Customer Section */}
+                        <section className="space-y-3">
+                            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2 pb-3 border-b border-gray-200">
+                                <User size={16} className="text-blue-600" />
+                                Customer
                             </h3>
                             <Select
                                 disabled={usersLoading}
                                 options={users?.map((u) => ({
-                                    label: `${u.name} • ${u.email}`,
+                                    label: `${u.name} (${u.email})`,
                                     value: u._id,
                                 }))}
                                 value={orderData.userId}
-                                placeholder="Select Customer"
+                                placeholder="Select customer"
                                 onChange={handleUserSelect}
                                 className="w-full max-w-none"
                             />
                         </section>
 
-                        <section className="space-y-4">
-                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-50 pb-4">
-                                <Truck size={14} className="text-primary" />{" "}
-                                Delivery Logistics
+                        {/* Shipping Address Section */}
+                        <section className="space-y-3">
+                            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2 pb-3 border-b border-gray-200">
+                                <Truck size={16} className="text-blue-600" />
+                                Shipping Address
                             </h3>
                             <Input
-                                placeholder="Recipient Designation"
+                                placeholder="Recipient name"
                                 value={orderData.recipient.name}
                                 onChange={(e) =>
                                     setOrderData({
@@ -378,7 +367,7 @@ const AddOrder = () => {
                                 className="w-full"
                             />
                             <Input
-                                placeholder="Sector/Street Address"
+                                placeholder="Street address"
                                 value={orderData.recipient.street}
                                 onChange={(e) =>
                                     setOrderData({
@@ -392,7 +381,7 @@ const AddOrder = () => {
                                 className="w-full"
                             />
                             <Input
-                                placeholder="Apartment / Suite / Landmark"
+                                placeholder="Apartment, suite, etc. (optional)"
                                 value={orderData.recipient.addressLine2}
                                 onChange={(e) =>
                                     setOrderData({
@@ -405,9 +394,9 @@ const AddOrder = () => {
                                 }
                                 className="w-full"
                             />
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-3">
                                 <Input
-                                    placeholder="City Node"
+                                    placeholder="City"
                                     value={orderData.recipient.city}
                                     onChange={(e) =>
                                         setOrderData({
@@ -421,7 +410,7 @@ const AddOrder = () => {
                                     className="w-full"
                                 />
                                 <Input
-                                    placeholder="Comms Link"
+                                    placeholder="Phone"
                                     value={orderData.recipient.phone}
                                     onChange={(e) =>
                                         setOrderData({
@@ -435,9 +424,9 @@ const AddOrder = () => {
                                     className="w-full"
                                 />
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-3">
                                 <Input
-                                    placeholder="State / Province"
+                                    placeholder="State/Province"
                                     value={orderData.recipient.state}
                                     onChange={(e) =>
                                         setOrderData({
@@ -451,7 +440,7 @@ const AddOrder = () => {
                                     className="w-full"
                                 />
                                 <Input
-                                    placeholder="Postal Code"
+                                    placeholder="Postal code"
                                     value={orderData.recipient.postalCode}
                                     onChange={(e) =>
                                         setOrderData({
@@ -481,24 +470,19 @@ const AddOrder = () => {
                             />
                         </section>
 
-                        <section className="space-y-4">
-                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-50 pb-4">
-                                <CreditCard
-                                    size={14}
-                                    className="text-primary"
-                                />{" "}
-                                Transaction Protocol
+                        {/* Payment Section */}
+                        <section className="space-y-3">
+                            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2 pb-3 border-b border-gray-200">
+                                <CreditCard size={16} className="text-blue-600" />
+                                Payment
                             </h3>
                             <Select
                                 options={[
                                     { label: "Cash on Delivery", value: "COD" },
-                                    {
-                                        label: "Online Clearance",
-                                        value: "online",
-                                    },
+                                    { label: "Online Payment", value: "online" },
                                     { label: "Card Payment", value: "card" },
                                     { label: "Bank Transfer", value: "bank" },
-                                    { label: "Wallet", value: "wallet" },
+                                    { label: "Mobile Wallet", value: "wallet" },
                                 ]}
                                 value={orderData.payment.method}
                                 onChange={(val) =>
@@ -513,7 +497,7 @@ const AddOrder = () => {
                                 className="w-full max-w-none"
                             />
                             {orderData.payment.method !== "COD" && (
-                                <label className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl cursor-pointer group">
+                                <label className="flex items-center gap-2.5 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
                                     <input
                                         type="checkbox"
                                         checked={orderData.payment.ispaid}
@@ -526,56 +510,62 @@ const AddOrder = () => {
                                                 },
                                             })
                                         }
-                                        className="w-5 h-5 rounded-lg border-2 border-slate-200 text-primary focus:ring-primary/20 transition-all"
+                                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                     />
-                                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
-                                        Verify Payment Fulfillment
+                                    <span className="text-sm font-medium text-gray-700">
+                                        Payment received
                                     </span>
                                 </label>
                             )}
                         </section>
 
-                        <section className="space-y-4">
-                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-50 pb-4">
-                                <Receipt size={14} className="text-primary" />{" "}
-                                Charges & Routing
+                        {/* Shipping & Fees Section */}
+                        <section className="space-y-3">
+                            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2 pb-3 border-b border-gray-200">
+                                <Receipt size={16} className="text-blue-600" />
+                                Shipping & Fees
                             </h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                <Input
-                                    type="number"
-                                    placeholder="Tax Amount"
-                                    value={orderData.taxAmount}
-                                    onChange={(e) =>
-                                        setOrderData({
-                                            ...orderData,
-                                            taxAmount: Number(e.target.value),
-                                        })
-                                    }
-                                    className="w-full"
-                                />
-                                <Input
-                                    type="number"
-                                    placeholder="Shipping Fee"
-                                    value={orderData.shippingFee}
-                                    onChange={(e) =>
-                                        setOrderData({
-                                            ...orderData,
-                                            shippingFee: Number(
-                                                e.target.value,
-                                            ),
-                                        })
-                                    }
-                                    className="w-full"
-                                />
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-medium text-gray-700">
+                                        Tax Amount
+                                    </label>
+                                    <Input
+                                        type="number"
+                                        placeholder="0.00"
+                                        value={orderData.taxAmount}
+                                        onChange={(e) =>
+                                            setOrderData({
+                                                ...orderData,
+                                                taxAmount: Number(e.target.value),
+                                            })
+                                        }
+                                        className="w-full"
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-medium text-gray-700">
+                                        Shipping Fee
+                                    </label>
+                                    <Input
+                                        type="number"
+                                        placeholder="0.00"
+                                        value={orderData.shippingFee}
+                                        onChange={(e) =>
+                                            setOrderData({
+                                                ...orderData,
+                                                shippingFee: Number(e.target.value),
+                                            })
+                                        }
+                                        className="w-full"
+                                    />
+                                </div>
                             </div>
                             <Select
                                 options={[
-                                    {
-                                        label: "Standard Ground",
-                                        value: "standard",
-                                    },
-                                    { label: "Express Air", value: "express" },
-                                    { label: "In-Store Pickup", value: "pickup" },
+                                    { label: "Standard Shipping", value: "standard" },
+                                    { label: "Express Shipping", value: "express" },
+                                    { label: "Store Pickup", value: "pickup" },
                                 ]}
                                 value={orderData.shippingMethod}
                                 onChange={(val) =>
@@ -586,66 +576,43 @@ const AddOrder = () => {
                                 }
                                 className="w-full max-w-none"
                             />
-                            <div className="bg-slate-50 rounded-2xl p-4">
-                                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
+
+                            {/* Order Summary */}
+                            <div className="bg-gray-50 rounded-lg p-4 space-y-2 border border-gray-200">
+                                <div className="flex items-center justify-between text-sm text-gray-600">
                                     <span>Items Subtotal</span>
-                                    <span>
-                                        PKR{" "}
-                                        {itemsSubtotal.toLocaleString(
-                                            undefined,
-                                            {
-                                                minimumFractionDigits: 2,
-                                            },
-                                        )}
-                                    </span>
+                                    <span className="font-medium">Rs {itemsSubtotal.toFixed(2)}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-400 mt-2">
+                                <div className="flex items-center justify-between text-sm text-gray-600">
                                     <span>Tax</span>
-                                    <span>
-                                        PKR{" "}
-                                        {taxAmount.toLocaleString(undefined, {
-                                            minimumFractionDigits: 2,
-                                        })}
-                                    </span>
+                                    <span className="font-medium">Rs {taxAmount.toFixed(2)}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-400 mt-2">
+                                <div className="flex items-center justify-between text-sm text-gray-600">
                                     <span>Shipping</span>
-                                    <span>
-                                        PKR{" "}
-                                        {shippingFee.toLocaleString(
-                                            undefined,
-                                            {
-                                                minimumFractionDigits: 2,
-                                            },
-                                        )}
-                                    </span>
+                                    <span className="font-medium">Rs {shippingFee.toFixed(2)}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-xs font-black uppercase tracking-widest text-slate-900 mt-4">
+                                <div className="flex items-center justify-between text-base font-bold text-gray-900 pt-2 border-t border-gray-200">
                                     <span>Grand Total</span>
-                                    <span>
-                                        PKR{" "}
-                                        {grandTotal.toLocaleString(undefined, {
-                                            minimumFractionDigits: 2,
-                                        })}
-                                    </span>
+                                    <span>Rs {grandTotal.toFixed(2)}</span>
                                 </div>
                             </div>
                         </section>
 
+                        {/* Submit Button */}
                         <button
                             type="submit"
                             disabled={orderLoading}
-                            className="group w-full bg-slate-900 text-white rounded-3xl py-6 font-black uppercase tracking-[0.3em] text-[10px] flex items-center justify-center gap-3 hover:bg-primary transition-all shadow-2xl shadow-slate-900/20 active:scale-[0.98] disabled:opacity-50"
+                            className="w-full bg-blue-600 text-white rounded-lg py-3 font-medium text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {orderLoading ? (
-                                <Loader2 className="animate-spin" size={18} />
+                                <>
+                                    <Loader2 className="animate-spin" size={18} />
+                                    Creating order...
+                                </>
                             ) : (
                                 <>
-                                    <Save
-                                        size={18}
-                                        className="group-hover:scale-110 transition-transform"
-                                    />
-                                    Authorize Order
+                                    <Save size={18} />
+                                    Create Order
                                 </>
                             )}
                         </button>
@@ -656,4 +623,4 @@ const AddOrder = () => {
     );
 };
 
-export default AddOrder;
+export default AddOrderPage;

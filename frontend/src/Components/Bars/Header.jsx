@@ -21,17 +21,17 @@ import MobileSideBar from "./MobileSideBar";
 const NavIcon = ({ to, icon, label, badge }) => (
     <Link
         to={to}
-        className="flex flex-col items-center gap-1.5 text-slate-600 hover:text-primary transition-all duration-300 relative group"
+        className="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors relative group"
     >
-        <div className="relative p-2 rounded-xl group-hover:bg-primary/10 transition-colors">
+        <div className="relative p-1.5 rounded-lg group-hover:bg-blue-50 transition-colors">
             {icon}
             {badge > 0 && (
-                <span className="absolute top-1 right-1 bg-primary text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white shadow-lg animate-in zoom-in duration-300">
+                <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">
                     {badge}
                 </span>
             )}
         </div>
-        <span className="text-[11px] font-semibold uppercase tracking-wider hidden lg:block opacity-80 group-hover:opacity-100">
+        <span className="text-xs font-medium hidden lg:block">
             {label}
         </span>
     </Link>
@@ -72,34 +72,35 @@ const Header = () => {
     const navLinks = [
         { name: "Home", path: "/" },
         { name: "Products", path: "/products" },
+        { name: "Promotions", path: "/promotions" },
         { name: "Contact Us", path: "/contact-us" },
         { name: "About Us", path: "/about-us" },
     ];
 
     return (
-        <header className="bg-white/80 backdrop-blur-md z-50 shadow-sm border-b border-slate-300">
+        <header className="bg-white z-50 shadow-sm border-b border-gray-200">
             <div className="container mx-auto px-4 lg:px-8">
-                <div className="flex items-center justify-between gap-4 md:gap-10 h-20">
+                <div className="flex items-center justify-between gap-4 md:gap-8 h-16">
                     <Link
                         to="/"
-                        className="flex items-center gap-3 shrink-0 group transition-transform active:scale-95"
+                        className="flex items-center gap-2 shrink-0 group"
                     >
-                        <div className="flex items-center gap-2 animate-in fade-in duration-300">
-                            <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform">
-                                <Globe className="text-white" size={28} />
+                        <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center group-hover:bg-blue-700 transition-colors">
+                                <Globe className="text-white" size={24} />
                             </div>
                             <div>
-                                <p className="font-black text-lg uppercase tracking-tighter text-slate-900">
+                                <p className="font-semibold text-base text-gray-900">
                                     E-Shop
                                 </p>
-                                <p className="text-xs">By Faiz Ullah Khan</p>
+                                <p className="text-xs text-gray-500">By Faiz Ullah Khan</p>
                             </div>
                         </div>
                     </Link>
 
-                    <div className="hidden md:flex flex-1 max-w-2xl group">
-                        <div className="flex w-full bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden focus-within:bg-white focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all duration-300">
-                            <div className="flex items-center pl-4 text-slate-400">
+                    <div className="hidden md:flex flex-1 max-w-xl">
+                        <div className="flex w-full bg-gray-50 border border-gray-200 rounded-lg overflow-hidden focus-within:bg-white focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+                            <div className="flex items-center pl-3 text-gray-400">
                                 <Search size={18} />
                             </div>
                             <input
@@ -107,56 +108,54 @@ const Header = () => {
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") handleSearch(e);
                                 }}
-                                placeholder="Search premium products..."
-                                className="flex-1 px-4 py-3 outline-none bg-transparent text-sm text-slate-700 placeholder:text-slate-400 font-medium"
+                                placeholder="Search products..."
+                                className="flex-1 px-3 py-2 outline-none bg-transparent text-sm text-gray-900 placeholder:text-gray-400"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <div className="hidden lg:block border-l border-slate-200 my-2"></div>
-
                             <button
                                 onClick={handleSearch}
-                                className="bg-primary text-white px-8 py-3 font-bold text-sm hover:bg-primary-dark transition-all active:scale-95 shadow-lg shadow-primary/20"
+                                className="bg-blue-600 text-white px-6 py-2 font-medium text-sm hover:bg-blue-700 transition-colors"
                             >
-                                SEARCH
+                                Search
                             </button>
                         </div>
                     </div>
 
-                    <div className="hidden md:flex items-center gap-2 lg:gap-6 relative">
+                    <div className="hidden md:flex items-center gap-4 lg:gap-6 relative">
                         <NavIcon
                             to="/wishlist"
-                            icon={<Heart size={22} />}
+                            icon={<Heart size={20} />}
                             label="Wishlist"
                         />
                         <NavIcon
                             to="/orders"
-                            icon={<Package size={22} />}
+                            icon={<Package size={20} />}
                             label="Orders"
                         />
                         <NavIcon
                             to="/cart"
-                            icon={<ShoppingCart size={22} />}
+                            icon={<ShoppingCart size={20} />}
                             label="Cart"
                             badge={cartCount}
                         />
 
-                        <div className="h-8 w-px bg-slate-200 mx-2"></div>
+                        <div className="h-6 w-px bg-gray-200 mx-1"></div>
 
                         {isAuthenticated ? (
                             <div className="relative">
                                 <button
-                                    className="flex items-center gap-2 p-1 pr-3 rounded-full border border-slate-100 hover:border-primary/30 hover:bg-slate-50 transition-all duration-300 shadow-sm"
+                                    className="flex items-center gap-2 p-1 pr-2 rounded-lg border border-gray-200 hover:border-blue-500 hover:bg-gray-50 transition-all"
                                     onClick={() =>
                                         setUserDropDownOpen(!userDropDownOpen)
                                     }
                                 >
-                                    <div className="w-9 h-9 rounded-full flex items-center justify-center bg-primary/10 text-primary">
-                                        <User size={20} />
+                                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-50 text-blue-600">
+                                        <User size={18} />
                                     </div>
                                     <ChevronDown
                                         size={14}
-                                        className={`text-slate-400 transition-transform duration-300 ${userDropDownOpen ? "rotate-180" : ""}`}
+                                        className={`text-gray-400 transition-transform ${userDropDownOpen ? "rotate-180" : ""}`}
                                     />
                                 </button>
 
@@ -168,31 +167,31 @@ const Header = () => {
                                             }
                                             className="fixed inset-0 z-40"
                                         ></div>
-                                        <div className="absolute top-[120%] right-0 w-56 rounded-2xl bg-white shadow-2xl shadow-slate-200/50 border border-slate-100 p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-100">
-                                            <div className="px-4 py-3 border-b border-slate-50 mb-1">
-                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                        <div className="absolute top-full right-0 mt-2 w-56 rounded-lg bg-white shadow-lg border border-gray-200 p-2 z-50">
+                                            <div className="px-3 py-2 border-b border-gray-100 mb-1">
+                                                <p className="text-xs text-gray-500 font-medium">
                                                     Account
                                                 </p>
-                                                <p className="text-sm font-bold text-slate-700 truncate">
+                                                <p className="text-sm font-semibold text-gray-900 truncate">
                                                     {user?.name || "User"}
                                                 </p>
                                             </div>
                                             <Link
                                                 to="/profile"
-                                                className="flex gap-3 items-center hover:bg-slate-50 p-3 rounded-xl cursor-pointer text-slate-600 hover:text-primary transition-colors"
+                                                className="flex gap-2 items-center hover:bg-gray-50 p-2 rounded-lg cursor-pointer text-gray-700 hover:text-blue-600 transition-colors"
                                                 onClick={() =>
                                                     setUserDropDownOpen(false)
                                                 }
                                             >
                                                 <User size={18} />
-                                                <span className="text-sm font-semibold">
+                                                <span className="text-sm font-medium">
                                                     Profile Settings
                                                 </span>
                                             </Link>
                                             {role === "admin" && (
                                                 <Link
                                                     to="/admin-dashboard"
-                                                    className="flex gap-3 items-center hover:bg-slate-50 p-3 rounded-xl cursor-pointer text-slate-600 hover:text-primary transition-colors"
+                                                    className="flex gap-2 items-center hover:bg-gray-50 p-2 rounded-lg cursor-pointer text-gray-700 hover:text-blue-600 transition-colors"
                                                     onClick={() =>
                                                         setUserDropDownOpen(
                                                             false,
@@ -202,18 +201,18 @@ const Header = () => {
                                                     <LayoutDashboard
                                                         size={18}
                                                     />
-                                                    <span className="text-sm font-semibold">
+                                                    <span className="text-sm font-medium">
                                                         Admin Panel
                                                     </span>
                                                 </Link>
                                             )}
-                                            <div className="my-1 border-t border-slate-50"></div>
+                                            <div className="my-1 border-t border-gray-100"></div>
                                             <button
                                                 onClick={handleSignOut}
-                                                className="w-full flex gap-3 items-center hover:bg-red-50 p-3 rounded-xl cursor-pointer text-red-500 transition-colors"
+                                                className="w-full flex gap-2 items-center hover:bg-red-50 p-2 rounded-lg cursor-pointer text-red-600 transition-colors"
                                             >
                                                 <LogOut size={18} />
-                                                <span className="text-sm font-semibold">
+                                                <span className="text-sm font-medium">
                                                     Sign Out
                                                 </span>
                                             </button>
@@ -222,25 +221,25 @@ const Header = () => {
                                 )}
                             </div>
                         ) : (
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
                                 <Link
                                     to="/login"
-                                    className="text-sm font-bold text-slate-600 hover:text-primary transition-colors px-2"
+                                    className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors px-3"
                                 >
                                     Login
                                 </Link>
                                 <Link
                                     to="/register"
-                                    className="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-primary hover:shadow-lg hover:shadow-primary/30 transition-all active:scale-95"
+                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
                                 >
-                                    Join Now
+                                    Sign Up
                                 </Link>
                             </div>
                         )}
                     </div>
 
                     <button
-                        className="md:hidden p-2 rounded-xl bg-slate-50 text-slate-600 hover:text-primary hover:bg-primary/10 transition-all"
+                        className="md:hidden p-2 rounded-lg bg-gray-50 text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all"
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                     >
                         <Menu size={24} />
@@ -248,18 +247,18 @@ const Header = () => {
                 </div>
             </div>
 
-            <div className="md:hidden px-4 pb-4">
-                <div className="flex w-full bg-slate-50 border border-slate-200 rounded-xl overflow-hidden focus-within:bg-white focus-within:border-primary transition-all">
+            <div className="md:hidden px-4 pb-3">
+                <div className="flex w-full bg-gray-50 border border-gray-200 rounded-lg overflow-hidden focus-within:bg-white focus-within:border-blue-500 transition-all">
                     <input
                         type="text"
                         placeholder="Search products..."
-                        className="flex-1 px-4 py-2.5 outline-none bg-transparent text-sm"
+                        className="flex-1 px-3 py-2 outline-none bg-transparent text-sm"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     <button
                         onClick={handleSearch}
-                        className="px-4 text-slate-400"
+                        className="px-3 text-gray-400"
                     >
                         <Search size={18} />
                     </button>
@@ -273,17 +272,16 @@ const Header = () => {
                 cartCount={cartCount}
             />
 
-            <div className="container mx-auto px-4 lg:px-8 py-3!">
-                <nav className="flex items-center gap-8">
+            <div className="container mx-auto px-4 lg:px-8 py-2!">
+                <nav className="flex items-center gap-6">
                     {navLinks.map((link) => (
                         <Link
                             key={link.path}
                             to={link.path}
-                            className={`text-sm uppercase transition-all font-semibold duration-100 ${
-                                location.pathname === link.path
-                                    ? "text-slate-900 border-b-2 border-slate-900 pb-1"
-                                    : "text-slate-400 hover:text-slate-900"
-                            }`}
+                            className={`text-sm font-medium transition-colors ${location.pathname === link.path
+                                ? "text-blue-600"
+                                : "text-gray-600 hover:text-gray-900"
+                                }`}
                         >
                             {link.name}
                         </Link>

@@ -211,32 +211,35 @@ export const updateOrderStatus = expressAsyncHandler(async (req, res, next) => {
     });
 });
 
-export const updatePaymentStatus = expressAsyncHandler(async (req, res, next) => {
-    const OrderModel = getLocalOrderModel();
-    if (!OrderModel) return next(new ErrorResponse("Model not found!", 400));
+export const updatePaymentStatus = expressAsyncHandler(
+    async (req, res, next) => {
+        const OrderModel = getLocalOrderModel();
+        if (!OrderModel)
+            return next(new ErrorResponse("Model not found!", 400));
 
-    const { ispaid } = req.body;
+        const { ispaid } = req.body;
 
-    const order = await OrderModel.findById(req.params.id);
-    if (!order) return next(new ErrorResponse("Order not found", 404));
+        const order = await OrderModel.findById(req.params.id);
+        if (!order) return next(new ErrorResponse("Order not found", 404));
 
-    order.payment = {
-        ...order.payment,
-        ispaid: Boolean(ispaid),
-    };
+        order.payment = {
+            ...order.payment,
+            ispaid: Boolean(ispaid),
+        };
 
-    await order.save({ validateModifiedOnly: true });
+        await order.save({ validateModifiedOnly: true });
 
-    const populatedOrder = await OrderModel.findById(order._id)
-        .populate("userId")
-        .populate("items.product");
+        const populatedOrder = await OrderModel.findById(order._id)
+            .populate("userId")
+            .populate("items.product");
 
-    return res.status(200).json({
-        success: true,
-        message: "Payment status updated.",
-        order: populatedOrder,
-    });
-});
+        return res.status(200).json({
+            success: true,
+            message: "Payment status updated.",
+            order: populatedOrder,
+        });
+    },
+);
 
 export const deleteOrder = expressAsyncHandler(async (req, res, next) => {
     const OrderModel = getLocalOrderModel();
@@ -260,6 +263,123 @@ export const deleteOrder = expressAsyncHandler(async (req, res, next) => {
     return res.status(200).json({ success: true, message: "Order deleted." });
 });
 
+export const cancelOrder = expressAsyncHandler(async (req, res, next) => {
+    const OrderModel = getLocalOrderModel();
+    const ProductModel = getLocalProductModel();
+
+    if (!OrderModel || !ProductModel)
+        return next(new ErrorResponse("Model not found!", 400));
+
+    const { reason } = req.body;
+    const order = await OrderModel.findById(req.params.id);
+
+    if (!order) return next(new ErrorResponse("Order not found", 404));
+
+    // Ensure user owns the order (if not admin)
+    if (
+        req.user.role !== "admin" &&
+        order.userId.toString() !== req.user._id.toString()
+    ) {
+        return next(
+            new ErrorResponse("Not authorized to cancel this order", 403),
+        );
+    }
+
+    if (order.status !== "pending") {
+        return next(
+            new ErrorResponse("Only pending orders can be cancelled", 400),
+        );
+    }
+
+    order.status = "cancelled";
+    order.cancellationReason = reason || "No reason provided";
+    order.cancelledBy = req.user._id;
+
+    // Restore stock
+    for (const item of order.items) {
+        if (item.status !== "cancelled") {
+            const product = await ProductModel.findById(item.product);
+            if (product) {
+                product.stock += item.quantity;
+                product.sold -= item.quantity;
+                await product.save({ validateModifiedOnly: true });
+            }
+            item.status = "cancelled"; // Mark all items as cancelled
+        }
+    }
+
+    await order.save({ validateModifiedOnly: true });
+
+    return res.status(200).json({
+        success: true,
+        message: "Order cancelled successfully",
+        order,
+    });
+});
+
+export const cancelOrderItem = expressAsyncHandler(async (req, res, next) => {
+    const OrderModel = getLocalOrderModel();
+    const ProductModel = getLocalProductModel();
+
+    if (!OrderModel || !ProductModel)
+        return next(new ErrorResponse("Model not found!", 400));
+
+    const { itemId } = req.params;
+    const { reason } = req.body;
+
+    const order = await OrderModel.findById(req.params.id);
+
+    if (!order) return next(new ErrorResponse("Order not found", 404));
+
+    // Find the item
+    const itemIndex = order.items.findIndex(
+        (item) => item._id.toString() === itemId,
+    );
+
+    if (itemIndex === -1) {
+        return next(new ErrorResponse("Item not found in order", 404));
+    }
+
+    const item = order.items[itemIndex];
+
+    if (item.status === "cancelled") {
+        return next(new ErrorResponse("Item is already cancelled", 400));
+    }
+
+    // Update item status
+    item.status = "cancelled";
+    item.cancellationReason = reason || "Admin cancelled item";
+    item.cancelledBy = req.user._id;
+
+    // Restore stock
+    const product = await ProductModel.findById(item.product);
+    if (product) {
+        product.stock += item.quantity;
+        product.sold -= item.quantity;
+        await product.save({ validateModifiedOnly: true });
+    }
+
+    // Recalculate totals
+    // We subtract the item's totalAmount from grandTotal
+    // Note: tax and shipping might need adjustment based on business logic,
+    // but for now we'll just subtract the item cost.
+    order.grandTotal -= item.totalAmount;
+    if (order.grandTotal < 0) order.grandTotal = 0;
+
+    await order.save({ validateModifiedOnly: true });
+
+    // Populate for response
+    const populatedOrder = await OrderModel.findById(order._id)
+        .populate("userId")
+        .populate("items.product");
+
+    return res.status(200).json({
+        success: true,
+        message: "Item cancelled successfully",
+        order: populatedOrder,
+    });
+});
+
 export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
     const OrderModel = getLocalOrderModel();
     const ProductModel = getLocalProductModel();
@@ -269,27 +389,57 @@ export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("Model not found!", 400));
     }
 
-    const orders = await OrderModel.find({ isDeleted: false }).populate("items.product");
+    // Get date range from query params
+    const { startDate, endDate } = req.query;
+
+    // Build date filter
+    const dateFilter = { isDeleted: false };
+    if (startDate || endDate) {
+        dateFilter.createdAt = {};
+        if (startDate) {
+            dateFilter.createdAt.$gte = new Date(startDate);
+        }
+        if (endDate) {
+            dateFilter.createdAt.$lte = new Date(endDate);
+        }
+    }
+
+    // Apply date filter to orders
+    const orders = await OrderModel.find(dateFilter).populate("items.product");
     const totalSales = orders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
     const totalOrders = orders.length;
 
     const totalProducts = await ProductModel.countDocuments();
     const totalUsers = await UserModel.countDocuments();
 
-    // 1. Daily Sales for the last 30 days
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    // 1. Daily Sales
+    // Use provided start date or default to 30 days ago
+    let salesStartDate;
+    if (startDate) {
+        salesStartDate = new Date(startDate);
+    } else {
+        salesStartDate = new Date();
+        salesStartDate.setDate(salesStartDate.getDate() - 30);
+    }
+
+    const dailySalesFilter = {
+        createdAt: { $gte: salesStartDate },
+        isDeleted: false,
+    };
+
+    if (endDate) {
+        dailySalesFilter.createdAt.$lte = new Date(endDate);
+    }
 
     const dailySales = await OrderModel.aggregate([
         {
-            $match: {
-                createdAt: { $gte: thirtyDaysAgo },
-                isDeleted: false,
-            },
+            $match: dailySalesFilter,
         },
         {
             $group: {
-                _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                _id: {
+                    $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+                },
                 total: { $sum: "$grandTotal" },
                 count: { $sum: 1 },
             },
@@ -297,7 +447,6 @@ export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
         { $sort: { _id: 1 } },
     ]);
 
-    // 2. Category Distribution (Sales and Product Count)
     const categoryStats = await ProductModel.aggregate([
         {
             $group: {
@@ -324,9 +473,9 @@ export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
         },
     ]);
 
-    // 3. Order Status Analysis
+    // 3. Order Status Analysis - filtered by date
     const orderStatusStats = await OrderModel.aggregate([
-        { $match: { isDeleted: false } },
+        { $match: dateFilter },
         {
             $group: {
                 _id: "$status",
@@ -335,13 +484,18 @@ export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
         },
     ]);
 
-    // 4. Inventory Alerts (Out of Stock and Low Stock)
-    const outOfStockItems = await ProductModel.find({ 
-        $or: [{ stock: 0 }, { stock: { $lte: 0 } }, { stock: null }, { stock: { $exists: false } }] 
+    // 4. Inventory Alerts
+    const outOfStockItems = await ProductModel.find({
+        $or: [
+            { stock: 0 },
+            { stock: { $lte: 0 } },
+            { stock: null },
+            { stock: { $exists: false } },
+        ],
     }).select("name stock price image");
 
-    const lowStockItems = await ProductModel.find({ 
-        stock: { $gt: 0, $lte: 5 } 
+    const lowStockItems = await ProductModel.find({
+        stock: { $gt: 0, $lte: 5 },
     }).select("name stock price image");
 
     return res.status(200).json({

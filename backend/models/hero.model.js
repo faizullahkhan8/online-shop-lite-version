@@ -17,6 +17,10 @@ const heroSlideSchema = new Schema(
             type: String,
             required: true,
         },
+        imagekitFileId: {
+            type: String,
+            required: true,
+        },
         bg: {
             type: String,
             default: "bg-[#e3f0ff]",
