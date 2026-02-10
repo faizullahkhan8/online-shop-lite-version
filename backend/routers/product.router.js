@@ -21,7 +21,7 @@ router.post(
     authorize(["admin"]),
     upload.single("image"),
     handleOptionalBackgroundRemoval,
-    // imagekitUpload,
+    imagekitUpload,
     createProduct,
 );
 router.patch(

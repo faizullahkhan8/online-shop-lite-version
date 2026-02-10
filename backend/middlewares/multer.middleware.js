@@ -1,6 +1,7 @@
 import multer from "multer";
 import imagekit from "../config/imagekit.js";
 import FormData from "form-data";
+import fetch from "node-fetch";
 
 export const upload = multer({
     storage: multer.memoryStorage(),
@@ -16,70 +17,70 @@ export const upload = multer({
 const REMOVE_BG_API_KEY = process.env.REMOVE_BG_API_KEY;
 
 export const handleOptionalBackgroundRemoval = async (req, res, next) => {
-    console.log("entred");
     let isRemoveBg = false;
 
-    // 1. Determine if removal is requested
+    // 1️⃣ Read remove flag safely
     try {
         if (req.body.data) {
             const parsed = JSON.parse(req.body.data);
-            isRemoveBg = String(parsed.isRemoveBg) === "true";
+            isRemoveBg =
+                parsed.isRemoveBg === true || parsed.isRemoveBg === "true";
         } else {
-            isRemoveBg = String(req.body.isRemoveBg) === "true";
+            isRemoveBg =
+                req.body.isRemoveBg === "true" || req.body.isRemoveBg === true;
         }
-    } catch (e) {
-        console.warn(
-            "Failed to parse request data for background removal flags.",
-        );
+    } catch {
+        isRemoveBg = false;
     }
 
-    // 2. Short-circuit if not needed
-    console.log("isRemoveBg is ", isRemoveBg);
     if (!req.file || !isRemoveBg) return next();
-    console.log("isRemoveBg is ", isRemoveBg);
 
     try {
         const formData = new FormData();
-        // Pass the buffer directly with options
+
+        // MUST pass buffer as-is
         formData.append("image_file", req.file.buffer, {
             filename: req.file.originalname,
             contentType: req.file.mimetype,
         });
+
         formData.append("size", "auto");
 
         const response = await fetch("https://api.remove.bg/v1.0/removebg", {
             method: "POST",
             headers: {
                 "X-Api-Key": process.env.REMOVE_BG_API_KEY,
-                ...formData.getHeaders(), // IMPORTANT: Includes the boundary
+                ...formData.getHeaders(),
             },
             body: formData,
         });
 
+        // 🚨 If error, LOG EVERYTHING
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(
-                `remove.bg API error: ${response.status} - ${JSON.stringify(errorData)}`,
-            );
+            const errorText = await response.text();
+            console.error("remove.bg error:", errorText);
+            throw new Error(`remove.bg failed (${response.status})`);
         }
 
-        // 3. Update the request object
-        const arrayBuffer = await response.arrayBuffer();
-        req.file.buffer = Buffer.from(arrayBuffer);
+        const buffer = Buffer.from(await response.arrayBuffer());
 
-        // Update size to reflect the new, usually smaller file
-        req.file.size = req.file.buffer.length;
+        // 2️⃣ Overwrite original image
+        req.file.buffer = buffer;
+        req.file.size = buffer.length;
+        req.file.mimetype = "image/png"; // remove.bg always returns PNG
 
-        console.log("Background removed successfully.");
+        console.log("✅ Background removed successfully");
         next();
     } catch (err) {
-        console.error("Background removal bypassed due to error:", err.message);
-        // Fail-open: Proceed with original image if API fails
-        next();
+        console.error("❌ Background removal failed:", err);
+        next(); // fail-open
     }
 };
+
 export const imagekitUpload = async (req, res, next) => {
-    if (!req.file) return next();
+    if (!req.file) {
+        return next();
+    }
 
     try {
         const result = await imagekit.files.upload({
@@ -91,15 +92,16 @@ export const imagekitUpload = async (req, res, next) => {
 
         req.image = {
             fileId: result.fileId,
-            name: result.name,
             url: result.url,
+            name: result.name,
             filePath: result.filePath,
         };
 
         next();
     } catch (err) {
-        res.status(500).json({
-            message: "ImageKit upload failed",
+        console.error("❌ ImageKit upload failed:", err);
+        return res.status(500).json({
+            message: "Image upload failed",
             error: err.message,
         });
     }

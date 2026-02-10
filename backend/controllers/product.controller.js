@@ -23,6 +23,12 @@ export const createProduct = expressAsyncHandler(async (req, res, next) => {
     if (isProductExist)
         return next(new ErrorResponse("Product already exists", 400));
 
+    if (!req.image) {
+        return res.status(400).json({
+            message: "Image upload failed. Product image is required.",
+        });
+    }
+
     const product = await ProductModel.create({
         name,
         price,
