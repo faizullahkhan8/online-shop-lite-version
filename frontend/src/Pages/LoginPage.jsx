@@ -42,101 +42,104 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12">
-            <div className="absolute top-0 left-0 w-full h-64 bg-primary/5 -skew-y-6 transform -translate-y-32" />
-
-            <div className="relative w-full max-w-md">
-                <div className="bg-white p-10 rounded-[3rem] shadow-2xl shadow-slate-200 border border-slate-100">
-                    <div className="flex flex-col items-center mb-10">
-                        <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 mb-4">
-                            <ShieldCheck className="text-white" size={32} />
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50 px-4 py-12">
+            <div className="w-full max-w-md">
+                <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-200">
+                    {/* Header */}
+                    <div className="flex flex-col items-center mb-8">
+                        <div className="w-14 h-14 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm mb-4">
+                            <ShieldCheck className="text-white" size={28} />
                         </div>
-                        <h2 className="text-3xl font-black text-slate-900 tracking-tight">
+                        <h2 className="text-2xl font-bold text-gray-900">
                             Welcome Back
                         </h2>
-                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-2">
-                            Login to your account
+                        <p className="text-gray-500 text-sm mt-1">
+                            Sign in to your account
                         </p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Form */}
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        {/* Email Field */}
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 ml-1">
+                            <label className="text-sm font-medium text-gray-700">
                                 Email Address
                             </label>
-                            <div className="relative group">
+                            <div className="relative">
                                 <Mail
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors"
+                                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                                     size={18}
                                 />
                                 <input
                                     type="email"
                                     placeholder="name@company.com"
-                                    className="w-full h-14 pl-12 pr-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                    className="w-full h-11 pl-10 pr-4 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
+                                    required
                                 />
                             </div>
                         </div>
 
+                        {/* Password Field */}
                         <div className="space-y-1.5">
-                            <div className="flex justify-between items-center ml-1">
-                                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            <div className="flex justify-between items-center">
+                                <label className="text-sm font-medium text-gray-700">
                                     Password
                                 </label>
                                 <Link
                                     to="#"
-                                    className="text-[10px] font-black text-primary uppercase tracking-wider hover:underline"
+                                    className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
                                 >
-                                    Forgot?
+                                    Forgot password?
                                 </Link>
                             </div>
-                            <div className="relative group">
+                            <div className="relative">
                                 <Lock
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors"
+                                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                                     size={18}
                                 />
                                 <input
                                     type="password"
-                                    placeholder="••••••••"
-                                    className="w-full h-14 pl-12 pr-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                    placeholder="Enter your password"
+                                    className="w-full h-11 pl-10 pr-4 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                     value={password}
-                                    onChange={(e) =>
-                                        setPassword(e.target.value)
-                                    }
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
                                 />
                             </div>
                         </div>
 
+                        {/* Submit Button */}
                         <button
                             type="submit"
                             disabled={loginLoading}
-                            className="w-full h-14 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-slate-900/20 hover:bg-primary transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:bg-slate-900"
+                            className="w-full h-11 bg-blue-600 text-white rounded-lg font-medium text-sm shadow-sm hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600"
                         >
                             {loginLoading ? (
-                                <Loader2 className="animate-spin" size={20} />
+                                <>
+                                    <Loader2 className="animate-spin" size={18} />
+                                    Signing in...
+                                </>
                             ) : (
-                                "Secure Login"
+                                "Sign In"
                             )}
                         </button>
                     </form>
 
-                    <div className="mt-8 text-center">
-                        <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest">
+                    {/* Sign Up Link */}
+                    <div className="mt-6 text-center">
+                        <p className="text-sm text-gray-600">
                             Don't have an account?{" "}
                             <Link
                                 to="/register"
-                                className="text-primary hover:text-blue-700 underline underline-offset-4"
+                                className="font-medium text-blue-600 hover:text-blue-700 transition-colors"
                             >
-                                Join for free
+                                Sign up
                             </Link>
                         </p>
                     </div>
                 </div>
-
-                <p className="text-center mt-8 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    Protected by 256-bit SSL encryption
-                </p>
             </div>
         </div>
     );

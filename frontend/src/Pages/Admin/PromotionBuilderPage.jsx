@@ -10,7 +10,6 @@ import {
     Loader2,
     Percent,
     Calendar,
-    X,
 } from "lucide-react";
 import { useGetAllProducts } from "../../api/hooks/product.api";
 import { useAddPromotion, useUpdatePromotion, useGetPromotionById } from "../../api/hooks/promotion.api";
@@ -101,10 +100,7 @@ const PromotionBuilder = () => {
     }, [productSearch, page, getAllProducts]);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            fetchProducts();
-        }, 300);
-        return () => clearTimeout(timer);
+        fetchProducts();
     }, [fetchProducts]);
 
     // Reset page when search changes
@@ -173,7 +169,7 @@ const PromotionBuilder = () => {
         }
 
         if (result?.success) {
-            navigate("/admin-dashboard?tab=promotions");
+            navigate("/admin-dashboard/promotions");
         }
     };
 
@@ -385,7 +381,7 @@ const PromotionBuilder = () => {
                                 <div className="h-full flex flex-col items-center justify-center text-center p-8">
                                     <Search size={32} className="text-gray-300 mb-2" />
                                     <p className="text-sm text-gray-500">
-                                        No products found
+                                        No products found or all products are already in active promotions
                                     </p>
                                 </div>
                             ) : (

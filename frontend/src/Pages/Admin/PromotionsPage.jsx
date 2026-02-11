@@ -243,7 +243,7 @@ const PromotionManager = () => {
                                     <button
                                         onClick={() =>
                                             navigate(
-                                                `/admin-dashboard?tab=promotions-create&id=${promo._id}`,
+                                                `/admin-dashboard/promotions/create?id=${promo._id}`,
                                             )
                                         }
                                         className="w-8 h-8 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-500 flex items-center justify-center transition-colors"
