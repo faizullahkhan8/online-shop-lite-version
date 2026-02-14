@@ -118,7 +118,7 @@ const App = () => {
                         /> */}
                     </Route>
                     <Route path="*" element={<Navigate to="/" replace />} />
-                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/auth/admin/login" element={<LoginPage />} />
                     {/* <Route path="/register" element={<RegisterPage />} /> */}
 
                     {/* Admin Routes */}

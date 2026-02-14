@@ -5,10 +5,9 @@ import {
     Link,
     useSearchParams,
 } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { useGetOrderById } from "../api/hooks/orders.api";
 import { getLastGuestOrder } from "../utils/guestOrders";
-import { Check, Loader2, Mail, Phone } from "lucide-react";
+import { Check, Loader2, Mail, Tag } from "lucide-react";
 
 const OrderSuccessPage = () => {
     const location = useLocation();
@@ -35,8 +34,6 @@ const OrderSuccessPage = () => {
         })();
     }, [orderId, navigate]);
 
-    console.log(order);
-
     if (loading || !order) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-white">
@@ -52,12 +49,30 @@ const OrderSuccessPage = () => {
         );
     }
 
+    // Calculate totals from order model
     const itemsSubtotal = order.items?.reduce(
-        (sum, item) => sum + (item.totalAmount || item.quantity * item.price),
+        (sum, item) => sum + (item.totalAmount || 0),
+        0,
+    );
+    const totalDiscounts = order.items?.reduce(
+        (sum, item) => sum + (item.discountTotal || 0),
         0,
     );
     const shippingFee = Number(order.shippingFee) || 0;
+    const taxAmount = Number(order.taxAmount) || 0;
     const grandTotal = Number(order.grandTotal) || 0;
+
+    // Get payment method display
+    const getPaymentMethodDisplay = (method) => {
+        const methods = {
+            COD: "Cash on Delivery (COD)",
+            online: "Online Payment",
+            card: "Credit/Debit Card",
+            bank: "Bank Transfer",
+            wallet: "Digital Wallet",
+        };
+        return methods[method] || method;
+    };
 
     return (
         <div className="bg-white min-h-screen">
@@ -71,12 +86,20 @@ const OrderSuccessPage = () => {
                             <div>
                                 <p className="text-zinc-400 text-md tracking-tight">
                                     Confirmation #
-                                    {(order.id || order._id).toUpperCase()}
+                                    {(order.id || order._id)
+                                        ?.toString()
+                                        .toUpperCase()}
                                 </p>
                                 <h1 className="text-2xl font-medium text-zinc-900 mt-1">
                                     Thank you,{" "}
                                     {order.recipient?.name?.split(" ")[0]}!
                                 </h1>
+                                <p className="text-sm text-zinc-500 mt-2">
+                                    Order Status:{" "}
+                                    <span className="font-semibold capitalize">
+                                        {order.status}
+                                    </span>
+                                </p>
                             </div>
                         </header>
 
@@ -85,10 +108,13 @@ const OrderSuccessPage = () => {
                                 Your order is confirmed
                             </h2>
                             <p className="text-sm text-zinc-600 leading-relaxed font-light">
-                                We will be in touch with you shortly to finalize
-                                your order. Please note that your purchase is
-                                not complete until a member of our team confirms
-                                your order.
+                                {order.status === "pending"
+                                    ? "We will be in touch with you shortly to finalize your order. Please note that your purchase is not complete until a member of our team confirms your order."
+                                    : order.status === "shipped"
+                                      ? "Your order has been shipped and is on its way to you."
+                                      : order.status === "delivered"
+                                        ? "Your order has been successfully delivered."
+                                        : "Your order has been received and is being processed."}
                             </p>
                         </section>
 
@@ -102,10 +128,12 @@ const OrderSuccessPage = () => {
                                     <h3 className="text-sm font-semibold text-zinc-900 mb-2">
                                         Contact information
                                     </h3>
-                                    <p className="text-sm text-zinc-600">
-                                        {order.recipient?.email ||
-                                            order.user?.email}
-                                    </p>
+                                    <div className="text-sm text-zinc-600 space-y-1">
+                                        <p>{order.recipient?.phone}</p>
+                                        {order.recipient?.email && (
+                                            <p>{order.recipient.email}</p>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div>
@@ -115,13 +143,25 @@ const OrderSuccessPage = () => {
                                     <div className="flex items-center gap-2">
                                         <div className="px-2 py-0.5 border border-zinc-200 rounded bg-zinc-50 flex items-center gap-1">
                                             <span className="text-sm font-bold text-zinc-400">
-                                                $
+                                                {order.payment?.method === "COD"
+                                                    ? "$"
+                                                    : "💳"}
                                             </span>
                                         </div>
-                                        <p className="text-sm text-zinc-600">
-                                            Cash on Delivery (COD) · Rs{" "}
-                                            {grandTotal.toLocaleString()}
-                                        </p>
+                                        <div className="flex flex-col">
+                                            <p className="text-sm text-zinc-600">
+                                                {getPaymentMethodDisplay(
+                                                    order.payment?.method,
+                                                )}{" "}
+                                                · Rs{" "}
+                                                {grandTotal.toLocaleString()}
+                                            </p>
+                                            <p className="text-xs text-zinc-400">
+                                                {order.payment?.ispaid
+                                                    ? "✓ Paid"
+                                                    : "Payment pending"}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -137,8 +177,20 @@ const OrderSuccessPage = () => {
                                                 {order.recipient.addressLine2}
                                             </p>
                                         )}
-                                        <p>{order.recipient?.city}</p>
-                                        <p>{order.recipient?.country}</p>
+                                        <p>
+                                            {[
+                                                order.recipient?.city,
+                                                order.recipient?.state,
+                                            ]
+                                                .filter(Boolean)
+                                                .join(", ")}
+                                        </p>
+                                        {order.recipient?.postalCode && (
+                                            <p>{order.recipient.postalCode}</p>
+                                        )}
+                                        {order.recipient?.country && (
+                                            <p>{order.recipient.country}</p>
+                                        )}
                                         <p>{order.recipient?.phone}</p>
                                     </div>
                                 </div>
@@ -155,8 +207,20 @@ const OrderSuccessPage = () => {
                                                 {order.recipient.addressLine2}
                                             </p>
                                         )}
-                                        <p>{order.recipient?.city}</p>
-                                        <p>{order.recipient?.country}</p>
+                                        <p>
+                                            {[
+                                                order.recipient?.city,
+                                                order.recipient?.state,
+                                            ]
+                                                .filter(Boolean)
+                                                .join(", ")}
+                                        </p>
+                                        {order.recipient?.postalCode && (
+                                            <p>{order.recipient.postalCode}</p>
+                                        )}
+                                        {order.recipient?.country && (
+                                            <p>{order.recipient.country}</p>
+                                        )}
                                         <p>{order.recipient?.phone}</p>
                                     </div>
                                 </div>
@@ -165,12 +229,27 @@ const OrderSuccessPage = () => {
                                     <h3 className="text-sm font-semibold text-zinc-900 mb-2">
                                         Shipping method
                                     </h3>
-                                    <p className="text-sm text-zinc-600">
+                                    <p className="text-sm text-zinc-600 capitalize">
+                                        {order.shippingMethod || "Standard"}
+                                    </p>
+                                    <p className="text-xs text-zinc-400 mt-1">
                                         {shippingFee === 0
                                             ? "Free Shipping"
-                                            : `Standard Shipping (Rs ${shippingFee})`}
+                                            : `Rs ${shippingFee.toLocaleString()}`}
                                     </p>
                                 </div>
+
+                                {order.trackingToken && (
+                                    <div>
+                                        <h3 className="text-sm font-semibold text-zinc-900 mb-2">
+                                            Tracking Information
+                                        </h3>
+                                        <p className="text-sm text-zinc-600 font-mono">
+                                            {order.trackingToken.slice(0, 20)}
+                                            ...
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </section>
 
@@ -230,48 +309,106 @@ const OrderSuccessPage = () => {
                         </footer>
                     </div>
 
+                    {/* Order Summary Sidebar */}
                     <div className="w-full lg:w-[420px] bg-zinc-50 p-8 lg:p-10 lg:min-h-screen lg:-mt-12 lg:-mb-12 border-l border-zinc-200">
                         <div className="space-y-6">
-                            {order.items?.map((item) => (
-                                <div
-                                    key={item.product?._id || item.product}
-                                    className="flex gap-4"
-                                >
-                                    <div className="relative w-16 h-20 bg-white border border-zinc-200 rounded overflow-hidden flex-shrink-0">
-                                        <img
-                                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.product?.image}`}
-                                            className="w-full h-full object-cover"
-                                            alt={item.product?.name}
-                                        />
-                                        <span className="absolute -top-2 -right-2 bg-zinc-500 text-white text-sm font-bold w-5 h-5 flex items-center justify-center rounded-full">
-                                            {item.quantity}
-                                        </span>
-                                    </div>
-                                    <div className="flex-1 flex justify-between items-start">
-                                        <div className="pr-4">
-                                            <p className="text-[13px] font-medium text-zinc-900 uppercase tracking-tight leading-tight">
-                                                {item.product?.name ||
-                                                    "Product Item"}
-                                            </p>
-                                            <p className="text-md text-zinc-400 uppercase mt-1">
-                                                {typeof item.product
-                                                    ?.collection === "string"
-                                                    ? item.product.collection
-                                                    : item.product?.collection
-                                                          ?.name ||
-                                                      "Apparel"}{" "}
-                                                / {item.size || "Standard"}
-                                            </p>
+                            {order.items?.map((item, index) => {
+                                const productName =
+                                    typeof item.product === "object"
+                                        ? item.product?.name
+                                        : null;
+                                const productImage =
+                                    typeof item.product === "object"
+                                        ? item.product?.image
+                                        : null;
+                                const productCollection =
+                                    typeof item.product === "object"
+                                        ? typeof item.product.collection ===
+                                          "string"
+                                            ? item.product.collection
+                                            : item.product.collection?.name
+                                        : null;
+
+                                return (
+                                    <div key={index} className="space-y-2">
+                                        <div className="flex gap-4">
+                                            <div className="relative w-16 h-20 bg-white border border-zinc-200 rounded overflow-hidden flex-shrink-0">
+                                                {productImage && (
+                                                    <img
+                                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${productImage}`}
+                                                        className="w-full h-full object-cover"
+                                                        alt={
+                                                            productName ||
+                                                            "Product"
+                                                        }
+                                                    />
+                                                )}
+                                                <span className="absolute -top-2 -right-2 bg-zinc-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                                                    {item.quantity}
+                                                </span>
+                                                {item.status ===
+                                                    "cancelled" && (
+                                                    <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center">
+                                                        <span className="text-xs font-bold text-red-600">
+                                                            CANCELLED
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="flex-1 flex justify-between items-start">
+                                                <div className="pr-4">
+                                                    <p className="text-[13px] font-medium text-zinc-900 uppercase tracking-tight leading-tight">
+                                                        {productName ||
+                                                            "Product Item"}
+                                                    </p>
+                                                    <p className="text-xs text-zinc-400 uppercase mt-1">
+                                                        {productCollection ||
+                                                            "Apparel"}
+                                                    </p>
+                                                    {item.originalPrice &&
+                                                        item.originalPrice >
+                                                            item.price && (
+                                                            <p className="text-xs text-zinc-400 line-through mt-1">
+                                                                Rs{" "}
+                                                                {item.originalPrice.toLocaleString()}
+                                                            </p>
+                                                        )}
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-sm font-medium text-zinc-900">
+                                                        Rs{" "}
+                                                        {item.totalAmount.toLocaleString()}
+                                                    </p>
+                                                    {item.discount > 0 && (
+                                                        <p className="text-xs text-green-600 font-medium">
+                                                            {item.discount}% off
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
-                                        <p className="text-sm font-medium text-zinc-900 flex-shrink-0">
-                                            Rs{" "}
-                                            {(
-                                                item.quantity * item.price
-                                            ).toLocaleString()}
-                                        </p>
+
+                                        {/* Item Promotion */}
+                                        {item.promotion?.title && (
+                                            <div className="ml-20 flex items-center gap-1.5 text-xs text-blue-600">
+                                                <Tag size={12} />
+                                                <span>
+                                                    {item.promotion.title}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        {/* Item Cancellation */}
+                                        {item.status === "cancelled" &&
+                                            item.cancellationReason && (
+                                                <div className="ml-20 text-xs text-red-600">
+                                                    Cancelled:{" "}
+                                                    {item.cancellationReason}
+                                                </div>
+                                            )}
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
 
                         <div className="mt-10 pt-10 border-t border-zinc-200 space-y-3">
@@ -279,6 +416,23 @@ const OrderSuccessPage = () => {
                                 <span>Subtotal</span>
                                 <span>Rs {itemsSubtotal.toLocaleString()}</span>
                             </div>
+
+                            {totalDiscounts > 0 && (
+                                <div className="flex justify-between text-sm text-green-600">
+                                    <span>Discounts</span>
+                                    <span>
+                                        -Rs {totalDiscounts.toLocaleString()}
+                                    </span>
+                                </div>
+                            )}
+
+                            {taxAmount > 0 && (
+                                <div className="flex justify-between text-sm text-zinc-600">
+                                    <span>Tax</span>
+                                    <span>Rs {taxAmount.toLocaleString()}</span>
+                                </div>
+                            )}
+
                             <div className="flex justify-between text-sm text-zinc-600 items-center">
                                 <div className="flex items-center gap-1">
                                     <span>Shipping</span>
@@ -289,15 +443,16 @@ const OrderSuccessPage = () => {
                                 <span>
                                     {shippingFee === 0
                                         ? "FREE"
-                                        : `Rs ${shippingFee}`}
+                                        : `Rs ${shippingFee.toLocaleString()}`}
                                 </span>
                             </div>
-                            <div className="flex justify-between items-center pt-4">
+
+                            <div className="flex justify-between items-center pt-4 border-t border-zinc-200">
                                 <span className="text-lg font-medium">
                                     Total
                                 </span>
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-md text-zinc-400">
+                                    <span className="text-xs text-zinc-400">
                                         PKR
                                     </span>
                                     <span className="text-xl font-semibold">
@@ -306,6 +461,20 @@ const OrderSuccessPage = () => {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Order Cancellation Notice */}
+                        {order.status === "cancelled" && (
+                            <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                <p className="text-sm font-semibold text-red-800 mb-1">
+                                    Order Cancelled
+                                </p>
+                                {order.cancellationReason && (
+                                    <p className="text-xs text-red-600">
+                                        Reason: {order.cancellationReason}
+                                    </p>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

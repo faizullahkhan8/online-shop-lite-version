@@ -6,6 +6,10 @@ import {
     useUpdateCollection,
 } from "../../api/hooks/collection.api.js";
 import {
+    useGetAllProducts,
+    useUpdateProduct,
+} from "../../api/hooks/product.api.js";
+import {
     Edit,
     Trash2,
     FolderTree,
@@ -47,6 +51,17 @@ const CollectionsListPage = () => {
         useDeleteCollection();
     const { createCollection, loading: creating } = useCreateCollection();
     const { updateCollection, loading: updating } = useUpdateCollection();
+    const { getAllProducts } = useGetAllProducts();
+    const { updateProduct } = useUpdateProduct();
+
+    const [addProductsModal, setAddProductsModal] = useState({
+        isOpen: false,
+        collectionId: null,
+        collectionName: "",
+    });
+    const [unassignedProducts, setUnassignedProducts] = useState([]);
+    const [selectedProductIds, setSelectedProductIds] = useState([]);
+    const [assigning, setAssigning] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -308,6 +323,38 @@ const CollectionsListPage = () => {
                                                 />
                                             </button>
                                             <button
+                                                onClick={async () => {
+                                                    // open modal and load unassigned products
+                                                    setAddProductsModal({
+                                                        isOpen: true,
+                                                        collectionId: cat._id,
+                                                        collectionName:
+                                                            cat.name,
+                                                    });
+                                                    setSelectedProductIds([]);
+                                                    const resp =
+                                                        await getAllProducts();
+                                                    if (resp?.success) {
+                                                        const unassigned = (
+                                                            resp.products || []
+                                                        ).filter(
+                                                            (p) =>
+                                                                !p.collection,
+                                                        );
+                                                        setUnassignedProducts(
+                                                            unassigned,
+                                                        );
+                                                    }
+                                                }}
+                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                                            >
+                                                <Tag
+                                                    size={16}
+                                                    className="text-green-600"
+                                                />
+                                                <span>Add Products</span>
+                                            </button>
+                                            <button
                                                 onClick={() => {
                                                     setDeleteModal({
                                                         isOpen: true,
@@ -546,6 +593,186 @@ const CollectionsListPage = () => {
                                 </Button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Add Products To Collection Modal */}
+            {addProductsModal.isOpen && (
+                <div className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/50">
+                    <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 className="text-lg font-semibold text-gray-900">
+                                    Add Products to "
+                                    {addProductsModal.collectionName}"
+                                </h3>
+                                <p className="text-sm text-gray-500">
+                                    Select products that are not currently
+                                    assigned to any collection.
+                                </p>
+                            </div>
+                            <button
+                                onClick={() =>
+                                    setAddProductsModal({
+                                        isOpen: false,
+                                        collectionId: null,
+                                        collectionName: "",
+                                    })
+                                }
+                                className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="max-h-[60vh] overflow-auto border border-gray-100 rounded-md">
+                            {unassignedProducts.length === 0 ? (
+                                <div className="p-6 text-center text-sm text-gray-500">
+                                    No unassigned products available.
+                                </div>
+                            ) : (
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="text-left text-xs text-gray-600 border-b">
+                                            <th className="px-4 py-3"> </th>
+                                            <th className="px-4 py-3">
+                                                Product
+                                            </th>
+                                            <th className="px-4 py-3">Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {unassignedProducts.map((p) => (
+                                            <tr
+                                                key={p._id}
+                                                className="border-b hover:bg-gray-50"
+                                            >
+                                                <td className="px-4 py-3">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedProductIds.includes(
+                                                            p._id,
+                                                        )}
+                                                        onChange={(e) => {
+                                                            if (
+                                                                e.target.checked
+                                                            ) {
+                                                                setSelectedProductIds(
+                                                                    (s) => [
+                                                                        ...s,
+                                                                        p._id,
+                                                                    ],
+                                                                );
+                                                            } else {
+                                                                setSelectedProductIds(
+                                                                    (s) =>
+                                                                        s.filter(
+                                                                            (
+                                                                                id,
+                                                                            ) =>
+                                                                                id !==
+                                                                                p._id,
+                                                                        ),
+                                                                );
+                                                            }
+                                                        }}
+                                                    />
+                                                </td>
+                                                <td className="px-4 py-3">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-10 h-10 bg-gray-100 rounded overflow-hidden">
+                                                            {p.image ? (
+                                                                <img
+                                                                    src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${p.image}`}
+                                                                    alt={p.name}
+                                                                    className="w-full h-full object-cover"
+                                                                />
+                                                            ) : null}
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-sm font-medium text-gray-900">
+                                                                {p.name}
+                                                            </div>
+                                                            <div className="text-xs text-gray-500">
+                                                                SKU:{" "}
+                                                                {p.sku || "-"}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-4 py-3 text-sm text-gray-700">
+                                                    Rs {p.price}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
+
+                        <div className="mt-4 flex justify-end gap-3">
+                            <Button
+                                variant="outline"
+                                onClick={() =>
+                                    setAddProductsModal({
+                                        isOpen: false,
+                                        collectionId: null,
+                                        collectionName: "",
+                                    })
+                                }
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={async () => {
+                                    if (selectedProductIds.length === 0)
+                                        return toast.error(
+                                            "Select at least one product",
+                                        );
+                                    setAssigning(true);
+                                    try {
+                                        await Promise.all(
+                                            selectedProductIds.map(
+                                                async (pid) => {
+                                                    const fd = new FormData();
+                                                    fd.append(
+                                                        "data",
+                                                        JSON.stringify({
+                                                            collection:
+                                                                addProductsModal.collectionId,
+                                                        }),
+                                                    );
+                                                    await updateProduct({
+                                                        product: fd,
+                                                        id: pid,
+                                                    });
+                                                },
+                                            ),
+                                        );
+                                        toast.success(
+                                            "Products assigned to collection",
+                                        );
+                                        // refresh page or collections state if needed
+                                        setAddProductsModal({
+                                            isOpen: false,
+                                            collectionId: null,
+                                            collectionName: "",
+                                        });
+                                    } catch (err) {
+                                        console.log(err);
+                                        toast.error(
+                                            "Failed to assign products",
+                                        );
+                                    } finally {
+                                        setAssigning(false);
+                                    }
+                                }}
+                                disabled={assigning}
+                            >
+                                {assigning ? "Assigning..." : "Assign Selected"}
+                            </Button>
+                        </div>
                     </div>
                 </div>
             )}

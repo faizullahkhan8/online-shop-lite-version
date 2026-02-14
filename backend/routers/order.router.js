@@ -20,11 +20,11 @@ import {
 
 const router = new Router();
 
-router.post("/place-order", checkoutLimiter, placeOrder);
+router.post("/place-order", placeOrder);
 router.get("/get-all", isAuth, authorize("admin"), getAllOrder);
 
 // Guest order tracking via token (PUBLIC - no auth required) with rate limiting
-router.get("/track/:trackingToken", trackingLimiter, getOrderByTrackingToken);
+router.get("/track/:trackingToken", getOrderByTrackingToken);
 
 // Dashboard stats (admin only) - must be above /:id
 router.get("/dashboard-stats", isAuth, authorize("admin"), getDashboardStats);

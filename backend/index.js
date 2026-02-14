@@ -2,11 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
-import {
-    checkoutLimiter,
-    trackingLimiter,
-    generalLimiter,
-} from "./middlewares/rateLimiters.js";
+// import {
+//     checkoutLimiter,
+//     trackingLimiter,
+//     generalLimiter,
+// } from "./middlewares/rateLimiters.js";
 import { connectToDB } from "./config/localDb.js";
 import userRouter from "./routers/user.router.js";
 import productRouter from "./routers/product.router.js";
@@ -58,7 +58,7 @@ app.use((req, res, next) => {
 });
 
 // Apply general rate limit to all API requests
-app.use("/api/", generalLimiter);
+// app.use("/api/", generalLimiter);
 
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to the API" });

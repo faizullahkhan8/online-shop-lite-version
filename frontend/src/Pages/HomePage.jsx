@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import ProductCarousel from "../Components/Home/ProductCarousel";
 
 const HomePage = () => {
-    const { getAllProducts, loading } = useGetAllProducts();
+    const { getAllProducts } = useGetAllProducts();
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
