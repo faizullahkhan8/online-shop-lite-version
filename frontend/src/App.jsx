@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -7,7 +7,8 @@ import LoadingSpinner from "./Components/LoadingSpinner";
 import AboutPage from "./Pages/AboutUsPage";
 import AdminLayout from "./Layout/AdminLayout.jsx";
 
-const BaseLayout = lazy(() => import("./Layout/BaseLayout"));
+import BaseLayout from "./Layout/BaseLayout";
+import CollectionsPage from "./Pages/CollectionsPage.jsx";
 const HomePage = lazy(() => import("./Pages/HomePage"));
 const ProductListPage = lazy(() => import("./Pages/ProductListPage"));
 const ProductDetailPage = lazy(() => import("./Pages/ProductDetailPage"));
@@ -18,9 +19,9 @@ const WishlistPage = lazy(() => import("./Pages/WishlistPage"));
 const CheckoutPage = lazy(() => import("./Pages/CheckoutPage"));
 const OrdersPage = lazy(() => import("./Pages/OrdersPage"));
 const OrderSuccessPage = lazy(() => import("./Pages/OrderSuccessPage"));
+const TrackOrderPage = lazy(() => import("./Pages/TrackOrderPage"));
 const ProfilePage = lazy(() => import("./Pages/ProfilePage"));
 const ProtectedRoute = lazy(() => import("./Components/Auth/ProtectedRoute"));
-const ContactUsPage = lazy(() => import("./Pages/ContactUsPage"));
 const PromotionsPage = lazy(() => import("./Pages/PromotionsPage.jsx"));
 
 // Admin Pages
@@ -28,16 +29,19 @@ const DashboardPage = lazy(() => import("./Pages/Admin/DashboardPage"));
 const ProductsListPage = lazy(() => import("./Pages/Admin/ProductsListPage"));
 const AddProductPage = lazy(() => import("./Pages/Admin/AddProductPage"));
 const TaxShippingPage = lazy(() => import("./Pages/Admin/TaxShippingPage"));
-const CategoriesListPage = lazy(() => import("./Pages/Admin/CategoriesListPage"));
+const CollectionsListPage = lazy(
+    () => import("./Pages/Admin/CollectionsListPage"),
+);
 const OrdersListPage = lazy(() => import("./Pages/Admin/OrdersListPage"));
 const OrderDetailsPage = lazy(() => import("./Pages/Admin/OrderDetailsPage"));
 const AddOrderPage = lazy(() => import("./Pages/Admin/AddOrderPage"));
 const UsersListPage = lazy(() => import("./Pages/Admin/UsersListPage"));
 const AddUserPage = lazy(() => import("./Pages/Admin/AddUserPage"));
 const AdminPromotionsPage = lazy(() => import("./Pages/Admin/PromotionsPage"));
-const PromotionBuilderPage = lazy(() => import("./Pages/Admin/PromotionBuilderPage"));
+const PromotionBuilderPage = lazy(
+    () => import("./Pages/Admin/PromotionBuilderPage"),
+);
 const HeroManagerPage = lazy(() => import("./Pages/Admin/HeroManagerPage"));
-
 
 const App = () => {
     return (
@@ -53,30 +57,28 @@ const App = () => {
                     <Route path="/" element={<BaseLayout />}>
                         <Route index element={<HomePage />} />
                         <Route path="products" element={<ProductListPage />} />
-                        <Route path="contact-us" element={<ContactUsPage />} />
+                        <Route
+                            path="contact-us"
+                            element={<Navigate to="/about-us" replace />}
+                        />
                         <Route path="about-us" element={<AboutPage />} />
+                        <Route path="collections" element={<CollectionsPage />} />
                         <Route path="promotions" element={<PromotionsPage />} />
                         <Route
                             path="product/:id"
                             element={<ProductDetailPage />}
                         />
-                        <Route path="cart" element={<CartPage />} />
-                        <Route
-                            path="checkout"
-                            element={
-                                <ProtectedRoute roles={["user", "admin"]}>
-                                    <CheckoutPage />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
+                        {/* <Route path="cart" element={<CartPage />} /> */}
+                        <Route path="checkout" element={<CheckoutPage />} />
+                        <Route path="track-order" element={<TrackOrderPage />} />
+                        {/* <Route
                             path="wishlist"
                             element={
                                 <ProtectedRoute roles={["user", "admin"]}>
                                     <WishlistPage />
                                 </ProtectedRoute>
                             }
-                        />
+                        /> */}
                         <Route
                             path="profile"
                             element={
@@ -95,14 +97,10 @@ const App = () => {
                         />
                         <Route
                             path="orders/success"
-                            element={
-                                <ProtectedRoute roles={["user", "admin"]}>
-                                    <OrderSuccessPage />
-                                </ProtectedRoute>
-                            }
+                            element={<OrderSuccessPage />}
                         />
 
-                        <Route
+                        {/* <Route
                             path="messages"
                             element={
                                 <ProtectedRoute roles={["user", "admin"]}>
@@ -111,10 +109,11 @@ const App = () => {
                                     </div>
                                 </ProtectedRoute>
                             }
-                        />
+                        /> */}
                     </Route>
+                    <Route path="*" element={<Navigate to="/" replace />} />
                     <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
+                    {/* <Route path="/register" element={<RegisterPage />} /> */}
 
                     {/* Admin Routes */}
                     <Route
@@ -127,16 +126,34 @@ const App = () => {
                     >
                         <Route index element={<DashboardPage />} />
                         <Route path="products" element={<ProductsListPage />} />
-                        <Route path="products/add" element={<AddProductPage />} />
-                        <Route path="settings/tax-shipping" element={<TaxShippingPage />} />
-                        <Route path="categories" element={<CategoriesListPage />} />
+                        <Route
+                            path="products/add"
+                            element={<AddProductPage />}
+                        />
+                        <Route
+                            path="settings/tax-shipping"
+                            element={<TaxShippingPage />}
+                        />
+                        <Route
+                            path="collections"
+                            element={<CollectionsListPage />}
+                        />
                         <Route path="orders" element={<OrdersListPage />} />
-                        <Route path="orders/:id" element={<OrderDetailsPage />} />
+                        <Route
+                            path="orders/:id"
+                            element={<OrderDetailsPage />}
+                        />
                         <Route path="orders/add" element={<AddOrderPage />} />
                         <Route path="users" element={<UsersListPage />} />
                         <Route path="users/add" element={<AddUserPage />} />
-                        <Route path="promotions" element={<AdminPromotionsPage />} />
-                        <Route path="promotions/create" element={<PromotionBuilderPage />} />
+                        <Route
+                            path="promotions"
+                            element={<AdminPromotionsPage />}
+                        />
+                        <Route
+                            path="promotions/create"
+                            element={<PromotionBuilderPage />}
+                        />
                         <Route path="hero" element={<HeroManagerPage />} />
                     </Route>
                 </Routes>

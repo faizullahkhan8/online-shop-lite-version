@@ -67,7 +67,7 @@ const ProductListItem = ({ product }) => {
                     <div className="flex justify-between items-start mb-2">
                         <div className="space-y-0.5">
                             <span className="text-xs font-medium text-blue-600">
-                                {product?.category?.name || "Uncategorized"}
+                                {product?.collection?.name || "No Collection"}
                             </span>
                             <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
                                 {product.name}

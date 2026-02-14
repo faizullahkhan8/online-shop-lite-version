@@ -174,17 +174,17 @@ const AdminSidebar = () => {
                     </SubMenu>
 
                     <SubMenu
-                        label="Categories"
+                        label="Collections"
                         icon={<Layers size={18} />}
-                        defaultOpen={location.pathname.includes("categories")}
+                        defaultOpen={location.pathname.includes("collections")}
                     >
                         <MenuItem
                             component={
-                                <NavLink to="/admin-dashboard/categories" />
+                                <NavLink to="/admin-dashboard/collections" />
                             }
                             icon={<ListIcon size={16} />}
                         >
-                            All Categories
+                            All Collections
                         </MenuItem>
                     </SubMenu>
 

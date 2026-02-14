@@ -1,105 +1,92 @@
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Globe, Mail, MapPin, Phone, Award } from "lucide-react";
+import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
 import TestAvatar from "../assets/images/avatar.jpg";
 
 const AboutUs = () => {
+    const businessEmail = "faizullahofficial0@gmail.com";
+
+    const [formData, setFormData] = useState({
+        name: "",
+        message: "",
+    });
+
+    const gmailUrl = useMemo(() => {
+        const subject = encodeURIComponent(`Contact Inquiry: ${formData.name}`);
+        const body = encodeURIComponent(
+            `Name: ${formData.name}\n` +
+            `---------------------------\n` +
+            `Message:\n${formData.message}`,
+        );
+
+        return (
+            `https://mail.google.com/mail/?view=cm&fs=1` +
+            `&to=${businessEmail}&su=${subject}&body=${body}`
+        );
+    }, [businessEmail, formData.name, formData.message]);
+
+    const handleSendEmail = (e) => {
+        e.preventDefault();
+        window.open(gmailUrl, "_blank", "noopener,noreferrer");
+    };
+
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Hero Section */}
-            <div className="container mx-auto px-4 lg:px-8 py-8">
-                <div className="text-center max-w-3xl mx-auto pb-6 border-b border-gray-200">
-                    <h1 className="text-3xl lg:text-4xl font-semibold text-gray-900 mb-3">
-                        About E-Shop
+        <div className="min-h-screen bg-white">
+            <div className="container mx-auto px-4 lg:px-12 py-16">
+                <div className="max-w-4xl">
+                    <h1 className="text-sm uppercase tracking-[0.3em] text-zinc-400 mb-4">
+                        Our Story
                     </h1>
-                    <p className="text-base text-gray-600">
-                        Your trusted destination for premium quality products
-                        and exceptional service.
+                    <h2 className="text-4xl lg:text-5xl font-light text-zinc-900 leading-tight mb-8">
+                        The Studio Edition. <br />
+                        Refining the Editorial <br />
+                        Shopping Experience.
+                    </h2>
+                    <p className="text-zinc-500 max-w-xl text-sm leading-relaxed tracking-wide">
+                        E-Shop is a curated marketplace designed for those who appreciate the intersection of high-fashion aesthetics and seamless digital commerce. We believe in quality over quantity, and service over transactions.
                     </p>
                 </div>
             </div>
 
-            {/* Admin Section */}
-            <section className="py-8 lg:py-12">
-                <div className="container mx-auto px-4 lg:px-8">
-                    <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                        <div className="grid lg:grid-cols-2 gap-0">
-                            {/* Admin Image */}
-                            <div className="bg-gradient-to-br from-blue-50 to-gray-50 p-8 lg:p-10 flex items-center justify-center">
-                                <div className="relative">
-                                    <div className="w-56 h-56 lg:w-64 lg:h-64 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white shadow-lg overflow-hidden">
-                                        <img
-                                            src={TestAvatar}
-                                            alt="Faiz Ullah Khan"
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                </div>
+            <section className="py-20 bg-[#fafafa]">
+                <div className="container mx-auto px-4 lg:px-12">
+                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                        <div className="aspect-[3/4] bg-[#f5f5f5] overflow-hidden relative group cursor-pointer">
+                            <img
+                                src={TestAvatar}
+                                alt="Faiz Ullah Khan"
+                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                            />
+                            <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-sm px-4 py-2">
+                                <span className="text-[9px] uppercase tracking-[0.2em] font-medium">Founder</span>
                             </div>
+                        </div>
 
-                            {/* Admin Details */}
-                            <div className="p-8 lg:p-10 flex flex-col justify-center">
-                                <div className="mb-6">
-                                    <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1 rounded border border-blue-200 mb-3">
-                                        <span className="text-xs font-medium">
-                                            Founder & CEO
-                                        </span>
+                        <div className="lg:pl-12">
+                            <h2 className="text-md uppercase tracking-[0.2em] font-medium text-zinc-900 mb-6">
+                                Faiz Ullah Khan
+                            </h2>
+                            <p className="text-zinc-500 text-sm leading-relaxed mb-10 tracking-wide">
+                                A visionary entrepreneur dedicated to revolutionizing the e-commerce experience. With a focus on editorial presentation and premium logistics, Faiz founded E-Shop to serve as a bridge between high-fashion standards and accessible retail.
+                            </p>
+
+                            <div className="space-y-8">
+                                <div className="flex items-center gap-6">
+                                    <div className="w-12 h-12 bg-white flex items-center justify-center text-zinc-900 border border-zinc-100">
+                                        <Mail size={16} strokeWidth={1.5} />
                                     </div>
-                                    <h2 className="text-2xl lg:text-3xl font-semibold text-gray-900 mb-3">
-                                        Faiz Ullah Khan
-                                    </h2>
-                                    <p className="text-gray-600 leading-relaxed mb-6">
-                                        A passionate entrepreneur dedicated to
-                                        revolutionizing the e-commerce
-                                        experience. With a vision to provide
-                                        quality products and exceptional
-                                        customer service, Faiz founded E-Shop to
-                                        create a trusted marketplace for
-                                        everyone.
-                                    </p>
+                                    <div>
+                                        <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-1">Inquiries</p>
+                                        <p className="text-md font-medium uppercase tracking-wider text-zinc-900">{businessEmail}</p>
+                                    </div>
                                 </div>
-
-                                {/* Contact Information */}
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-3 text-gray-700">
-                                        <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                                            <Mail size={16} />
-                                        </div>
-                                        <div>
-                                            <p className="text-xs font-medium text-gray-500">
-                                                Email
-                                            </p>
-                                            <p className="font-medium text-sm">
-                                                faiz@eshop.com
-                                            </p>
-                                        </div>
+                                <div className="flex items-center gap-6">
+                                    <div className="w-12 h-12 bg-white flex items-center justify-center text-zinc-900 border border-zinc-100">
+                                        <Phone size={16} strokeWidth={1.5} />
                                     </div>
-
-                                    <div className="flex items-center gap-3 text-gray-700">
-                                        <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                                            <Phone size={16} />
-                                        </div>
-                                        <div>
-                                            <p className="text-xs font-medium text-gray-500">
-                                                Phone
-                                            </p>
-                                            <p className="font-medium text-sm">
-                                                +92 300 1234567
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-3 text-gray-700">
-                                        <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                                            <MapPin size={16} />
-                                        </div>
-                                        <div>
-                                            <p className="text-xs font-medium text-gray-500">
-                                                Location
-                                            </p>
-                                            <p className="font-medium text-sm">
-                                                Islamabad, Pakistan
-                                            </p>
-                                        </div>
+                                    <div>
+                                        <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-1">Direct</p>
+                                        <p className="text-md font-medium uppercase tracking-wider text-zinc-900">+92 332 8753452</p>
                                     </div>
                                 </div>
                             </div>
@@ -108,56 +95,99 @@ const AboutUs = () => {
                 </div>
             </section>
 
-            {/* Mission & Vision */}
-            <section className="py-8 bg-white border-y border-gray-200">
-                <div className="container mx-auto px-4 lg:px-8">
-                    <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-6">
-                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                            <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                                Our Mission
+            <section className="py-24 border-y border-zinc-100">
+                <div className="container mx-auto px-4 lg:px-12">
+                    <div className="grid md:grid-cols-2 gap-20">
+                        <div>
+                            <h3 className="text-md uppercase tracking-[0.25em] font-medium text-zinc-900 mb-6">
+                                The Mission
                             </h3>
-                            <p className="text-gray-600 leading-relaxed text-sm">
-                                To provide our customers with the best shopping
-                                experience by offering high-quality products,
-                                competitive prices, and outstanding customer
-                                service. We strive to build lasting
-                                relationships based on trust and satisfaction.
+                            <p className="text-zinc-500 leading-relaxed text-sm tracking-wide">
+                                To provide our clientele with a curated shopping environment that mirrors the sophistication of a high-fashion lookbook, backed by exceptional reliability and personalized service.
                             </p>
                         </div>
-
-                        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                            <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                                Our Vision
+                        <div>
+                            <h3 className="text-md uppercase tracking-[0.25em] font-medium text-zinc-900 mb-6">
+                                The Vision
                             </h3>
-                            <p className="text-gray-600 leading-relaxed text-sm">
-                                To become the most trusted and preferred
-                                e-commerce platform, known for innovation,
-                                reliability, and customer-centric approach. We
-                                aim to make online shopping accessible,
-                                enjoyable, and rewarding for everyone.
+                            <p className="text-zinc-500 leading-relaxed text-sm tracking-wide">
+                                To become the definitive global archive for premium retail, where every interaction is measured by innovation, aesthetic integrity, and a customer-centric philosophy.
                             </p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* CTA Section */}
-            <section className="py-12">
-                <div className="container mx-auto px-4 lg:px-8">
-                    <div className="max-w-4xl mx-auto bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg p-10 text-white text-center shadow-md">
-                        <h2 className="text-2xl lg:text-3xl font-semibold mb-3">
-                            Ready to Start Shopping?
-                        </h2>
-                        <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-                            Discover our wide range of premium products and
-                            enjoy a seamless shopping experience.
-                        </p>
-                        <Link
-                            to="/products"
-                            className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium text-sm transition-colors"
-                        >
-                            Browse Products
-                        </Link>
+            <section className="py-24">
+                <div className="container mx-auto px-4 lg:px-12 text-center">
+                    <h2 className="text-md uppercase tracking-[0.3em] text-zinc-400 mb-6">Explore the Archive</h2>
+                    <h3 className="text-3xl font-light text-zinc-900 mb-10">Discover our latest editorial collections.</h3>
+                    <Link
+                        to="/products"
+                        className="inline-flex items-center gap-4 bg-zinc-900 text-white px-10 py-4 text-md uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all"
+                    >
+                        Browse Collections
+                        <ArrowRight size={14} />
+                    </Link>
+                </div>
+            </section>
+
+            <section className="py-24 bg-[#fafafa] border-t border-zinc-100">
+                <div className="container mx-auto px-4 lg:px-12">
+                    <div className="grid lg:grid-cols-12 gap-16">
+                        <div className="lg:col-span-4">
+                            <h2 className="text-md uppercase tracking-[0.2em] font-medium text-zinc-900 mb-8 pb-4 border-b border-zinc-200">
+                                Contact & Support
+                            </h2>
+                            <div className="space-y-10">
+                                <div className="flex gap-6">
+                                    <MapPin size={18} strokeWidth={1} className="text-zinc-400" />
+                                    <span className="text-md uppercase tracking-wider text-zinc-600 leading-loose">
+                                        Fazal Shah Mitha Khel<br />
+                                        Bannu, KP Pakistan
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="lg:col-span-8 bg-white p-10 lg:p-16 border border-zinc-100 shadow-sm">
+                            <h3 className="text-md uppercase tracking-[0.2em] font-medium text-zinc-900 mb-10">
+                                Send a Message
+                            </h3>
+                            <form onSubmit={handleSendEmail} className="space-y-12">
+                                <div className="relative border-b border-zinc-200 pb-2 focus-within:border-zinc-900 transition-colors">
+                                    <label className="text-[9px] uppercase tracking-widest text-zinc-400 block mb-2">Name</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        placeholder="GUEST NAME"
+                                        className="w-full bg-transparent outline-none text-[12px] uppercase tracking-[0.1em] text-zinc-900 placeholder-zinc-200"
+                                    />
+                                </div>
+
+                                <div className="relative border-b border-zinc-200 pb-2 focus-within:border-zinc-900 transition-colors">
+                                    <label className="text-[9px] uppercase tracking-widest text-zinc-400 block mb-2">Message</label>
+                                    <textarea
+                                        required
+                                        rows={4}
+                                        value={formData.message}
+                                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                                        placeholder="HOW CAN WE ASSIST YOU?"
+                                        className="w-full bg-transparent outline-none text-[12px] uppercase tracking-[0.1em] text-zinc-900 placeholder-zinc-200 resize-none"
+                                    />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="w-full py-4 bg-zinc-900 text-white text-sm uppercase tracking-[0.3em] font-medium hover:bg-zinc-800 transition-colors flex items-center justify-center gap-3"
+                                >
+                                    Submit via Gmail
+                                    <ArrowRight size={14} />
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </section>

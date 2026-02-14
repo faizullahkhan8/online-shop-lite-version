@@ -83,10 +83,11 @@ export const imagekitUpload = async (req, res, next) => {
     }
 
     try {
+        const folder = req.imageFolder || "/products";
         const result = await imagekit.files.upload({
             file: req.file.buffer.toString("base64"),
             fileName: req.file.originalname,
-            folder: "/products",
+            folder,
             useUniqueFileName: true,
         });
 

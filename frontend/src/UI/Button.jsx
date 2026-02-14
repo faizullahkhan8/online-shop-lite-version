@@ -1,25 +1,22 @@
 import clsx from "clsx";
 
 const VARIANTS = {
-    primary: "bg-blue-700 text-white hover:bg-blue-800 focus:ring-[#1447e6]",
-    secondary:
-        "bg-gray-100 text-gray-800 hover:bg-gray-200 focus:ring-gray-400",
-    success: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-600",
-    danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-600",
-    outline:
-        "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-400",
-    ghost: "bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-300",
+    // This "studio" variant matches your provided code block
+    studio: "group relative overflow-hidden border border-zinc-200 bg-white text-zinc-900 hover:border-zinc-900",
+    primary: "bg-zinc-900 text-white hover:bg-zinc-800",
+    outline: "border border-zinc-900 text-zinc-900 hover:bg-zinc-900 hover:text-white",
+    ghost: "bg-transparent text-zinc-700 hover:bg-zinc-100",
 };
 
 const SIZES = {
-    sm: "h-8 px-3 text-sm",
-    md: "h-10 px-4 text-sm",
-    lg: "h-12 px-6 text-base",
+    sm: "px-8 py-3 text-[10px] tracking-[0.2em]",
+    md: "px-12 py-4 text-[11px] tracking-[0.3em]",
+    lg: "px-16 py-5 text-sm tracking-[0.4em]",
 };
 
 const Button = ({
     children,
-    variant = "primary",
+    variant = "studio",
     size = "md",
     type = "button",
     disabled = false,
@@ -33,19 +30,28 @@ const Button = ({
             disabled={disabled || loading}
             onClick={onClick}
             className={clsx(
-                "inline-flex items-center justify-center gap-2 cursor-pointer",
-                "rounded-md font-medium transition-all",
-                "focus:outline-none focus:ring-2 focus:ring-offset-1",
+                "inline-flex items-center justify-center transition-all duration-500 uppercase font-medium",
                 VARIANTS[variant],
                 SIZES[size],
                 (disabled || loading) && "opacity-60 cursor-not-allowed",
                 className
             )}
         >
-            {loading && (
-                <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            {/* The sliding background effect */}
+            {variant === "studio" && (
+                <div className="absolute inset-0 bg-zinc-900 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
             )}
-            {children}
+
+            {/* The Label */}
+            <span className={clsx(
+                "relative z-10 flex items-center gap-2 transition-colors duration-500",
+                variant === "studio" && "group-hover:text-white"
+            )}>
+                {loading && (
+                    <span className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                )}
+                {children}
+            </span>
         </button>
     );
 };

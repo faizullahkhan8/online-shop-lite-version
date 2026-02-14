@@ -20,7 +20,7 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
         items,
         recipient,
         payment,
-        userId,
+        // userId,
         taxAmount,
         shippingFee,
         shippingMethod,
@@ -59,10 +59,8 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
                 }
 
                 // SECURITY: Re-calculate the price on server side
-                const { price: effectivePrice } = await getEffectivePrice(
-                    tempProd._id,
-                    tempProd.price,
-                );
+                const { price: effectivePrice, promotion } =
+                    await getEffectivePrice(tempProd._id, tempProd.price);
 
                 if (quantity <= 0) {
                     throw new ErrorResponse(
@@ -71,10 +69,56 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
                     );
                 }
 
+                // Integrity check (client vs server pricing/promotion)
+                // If the price/promotion changed since the item was added to cart,
+                // reject the order so the client can refresh totals.
+                const clientUnitPrice = Number(item.price);
+                const clientPromoId = item?.promotion?.id?.toString?.();
+                const serverPromoId = promotion?.id?.toString?.();
+
+                if (Number.isFinite(clientUnitPrice)) {
+                    const diff = Math.abs(clientUnitPrice - effectivePrice);
+                    if (diff > 0.01) {
+                        throw new ErrorResponse(
+                            "Pricing has changed. Please review your cart and try again.",
+                            409,
+                        );
+                    }
+                }
+
+                if (clientPromoId || serverPromoId) {
+                    if ((clientPromoId || "") !== (serverPromoId || "")) {
+                        throw new ErrorResponse(
+                            "Promotion has changed. Please review your cart and try again.",
+                            409,
+                        );
+                    }
+                }
+
+                const originalPrice = Number(tempProd.price) || 0;
+                const discountTotal = Math.max(
+                    0,
+                    originalPrice - effectivePrice,
+                );
+                const discountPerUnit = discountTotal / quantity;
+
                 return {
                     product: item.product,
                     quantity,
                     price: effectivePrice,
+                    originalPrice,
+                    discount: discountTotal,
+                    discountPerUnit,
+                    discountTotal,
+                    promotion: promotion
+                        ? {
+                              id: promotion.id,
+                              title: promotion.title,
+                              type: promotion.type,
+                              discountType: promotion.discountType,
+                              discountValue: promotion.discountValue,
+                          }
+                        : null,
                     totalAmount: effectivePrice * quantity,
                 };
             }),
@@ -83,14 +127,14 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
         return next(error);
     }
 
-    let orderUserId = req.user?._id;
-    if (req.user?.role === "admin" && userId) {
-        const userExists = await UserModel.findById(userId);
-        if (!userExists) {
-            return next(new ErrorResponse("User not found", 404));
-        }
-        orderUserId = userId;
-    }
+    // let orderUserId = req.user?._id;
+    // if (req.user?.role === "admin" && userId) {
+    //     const userExists = await UserModel.findById(userId);
+    //     if (!userExists) {
+    //         return next(new ErrorResponse("User not found", 404));
+    //     }
+    //     orderUserId = userId;
+    // }
 
     // Process stock and sold count
     for (const prod of normalizedItems) {
@@ -114,7 +158,7 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
     const computedGrandTotal = itemsTotal + computedTax + computedShipping;
 
     const order = new OrderModel({
-        userId: orderUserId,
+        // userId: orderUserId,
         items: normalizedItems,
         taxAmount: computedTax,
         shippingFee: computedShipping,
@@ -447,26 +491,26 @@ export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
         { $sort: { _id: 1 } },
     ]);
 
-    const categoryStats = await ProductModel.aggregate([
+    const collectionStats = await ProductModel.aggregate([
         {
             $group: {
-                _id: "$category",
+                _id: "$collection",
                 count: { $sum: 1 },
                 totalSold: { $sum: "$sold" },
             },
         },
         {
             $lookup: {
-                from: "categories",
+                from: "collections",
                 localField: "_id",
                 foreignField: "_id",
-                as: "categoryInfo",
+                as: "collectionInfo",
             },
         },
-        { $unwind: "$categoryInfo" },
+        { $unwind: "$collectionInfo" },
         {
             $project: {
-                name: "$categoryInfo.name",
+                name: "$collectionInfo.name",
                 count: 1,
                 totalSold: 1,
             },
@@ -506,7 +550,7 @@ export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
             totalProducts,
             totalUsers,
             dailySales,
-            categoryStats,
+            collectionStats,
             orderStatusStats,
             inventory: {
                 outOfStock: outOfStockItems,

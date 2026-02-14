@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import userSchema from "../models/user.model.js";
 import productSchema from "../models/product.model.js";
-import categorySchema from "../models/category.model.js";
+import collectionSchema from "../models/collection.model.js";
 import orderSchema from "../models/order.model.js";
 import wishlistSchema from "../models/wishlist.model.js";
 import settingsSchema from "../models/settings.model.js";
@@ -13,7 +13,7 @@ let connectionPromise = null;
 let localDbConnection = null;
 let localUserModel;
 let localProductModel;
-let localCategoryModel;
+let localCollectionModel;
 let localOrderModel;
 let localWishlistModel;
 let localSettingsModel;
@@ -44,9 +44,9 @@ export const connectToDB = async () => {
                 "Product",
                 productSchema,
             );
-            localCategoryModel = localDbConnection.model(
-                "Category",
-                categorySchema,
+            localCollectionModel = localDbConnection.model(
+                "Collection",
+                collectionSchema,
             );
             localOrderModel = localDbConnection.model("Order", orderSchema);
             localWishlistModel = localDbConnection.model(
@@ -77,7 +77,7 @@ export const connectToDB = async () => {
 
 export const getLocalUserModel = () => localUserModel || null;
 export const getLocalProductModel = () => localProductModel || null;
-export const getLocalCategoryModel = () => localCategoryModel || null;
+export const getLocalCollectionModel = () => localCollectionModel || null;
 export const getLocalOrderModel = () => localOrderModel || null;
 export const getLocalWishlistModel = () => localWishlistModel || null;
 export const getLocalSettingsModel = () => localSettingsModel || null;

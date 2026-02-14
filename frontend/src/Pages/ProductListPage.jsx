@@ -1,171 +1,101 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import {
-    LayoutGrid,
-    List,
     X,
     SlidersHorizontal,
     PackageSearch,
     Loader2,
-    Search,
 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import ProductCard from "../Components/ProductCard.jsx";
-import ProductListItem from "../Components/ProductListItem";
-import Pagination from "../Components/Pagination";
 import { useGetAllProducts } from "../api/hooks/product.api";
+import ProductCarousel from "../Components/Home/ProductCarousel.jsx";
+import Button from "../UI/Button.jsx";
 
 const ProductListPage = () => {
-    const [viewMode, setViewMode] = useState("grid");
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const [products, setProducts] = useState([]);
-    const [totalPages, setTotalPages] = useState(1);
     const { getAllProducts, loading: productLoading } = useGetAllProducts();
-
-    const page = parseInt(searchParams.get("page") || "1");
     const searchQuery = searchParams.get("search");
-
-    const handlePageChange = (newPage) => {
-        setSearchParams((prev) => {
-            prev.set("page", newPage);
-            return prev;
-        });
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
+    const collectionQuery = searchParams.get("collection");
 
     useEffect(() => {
         (async () => {
             const response = await getAllProducts({
-                page,
-                search: searchQuery
+                search: searchQuery,
+                collection: collectionQuery,
             });
             if (response?.success) {
                 setProducts(response.products);
-                setTotalPages(response.totalPages || 1);
             }
         })();
-    }, [page, searchQuery]);
+    }, [searchQuery, collectionQuery, getAllProducts]);
 
-    // Searching is now handled on the server side
     const displayProducts = products;
 
     return (
-        <div className="bg-gray-50 min-h-screen">
-            <div className="container mx-auto px-4 lg:px-8 py-6 lg:py-8">
-                <div className="mb-6">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-gray-200">
-                        <div>
-                            <div className="flex items-center gap-2 mb-2">
-                                <SlidersHorizontal
-                                    className="text-blue-600"
-                                    size={18}
-                                />
-                                <span className="text-sm text-gray-500 font-medium">
-                                    Premium Collection
-                                </span>
-                            </div>
-                            <h1 className="text-2xl lg:text-3xl font-semibold text-gray-900">
-                                All Products
-                            </h1>
-                        </div>
-                        <div className="text-sm font-medium text-gray-600 bg-white px-4 py-2 rounded-lg border border-gray-200">
-                            {products?.length || 0} Products
-                        </div>
-                    </div>
-                </div>
+        <div className="bg-white min-h-screen">
+            <div className="container px-4 lg:px-12 py-12 lg:py-20">
 
-                <div className="flex flex-col lg:flex-row gap-8 items-start">
-                    <main className="flex-1 w-full">
-                        <div className="bg-white border border-gray-200 rounded-lg p-3 mb-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-                            <div className="w-full flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200">
-                                <Search size={18} className="text-gray-400" />
-                                <input
-                                    type="text"
-                                    placeholder="Search products..."
-                                    className="px-2 py-1 text-sm w-full outline-none bg-transparent text-gray-900 placeholder-gray-400"
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        setSearchParams((prev) => {
-                                            if (val) prev.set("search", val);
-                                            else prev.delete("search");
-                                            prev.set("page", 1); // Reset to first page on search
-                                            return prev;
-                                        });
-                                    }}
-                                />
-                            </div>
 
-                            <div className="flex items-center bg-gray-100 p-1 rounded-lg border border-gray-200">
-                                <ViewButton
-                                    active={viewMode === "grid"}
-                                    onClick={() => setViewMode("grid")}
-                                    icon={<LayoutGrid size={18} />}
-                                />
-                                <ViewButton
-                                    active={viewMode === "list"}
-                                    onClick={() => setViewMode("list")}
-                                    icon={<List size={18} />}
-                                />
-                            </div>
-                        </div>
-
+                <div className="flex flex-col gap-12">
+                    <main className="w-full">
                         {productLoading ? (
-                            <div className="flex flex-col items-center justify-center py-24 bg-white border border-gray-200 rounded-lg">
+                            <div className="flex flex-col items-center justify-center py-40">
                                 <Loader2
-                                    className="animate-spin text-blue-600 mb-3"
-                                    size={32}
+                                    className="animate-spin text-zinc-900 mb-4"
+                                    size={24}
+                                    strokeWidth={1}
                                 />
-                                <p className="text-gray-500 text-sm">
-                                    Loading products...
+                                <p className="text-sm uppercase tracking-[0.3em] text-zinc-400">
+                                    Synchronizing...
                                 </p>
                             </div>
                         ) : products?.length === 0 ? (
-                            <div className="bg-white border border-gray-200 rounded-lg py-16 px-6 flex flex-col items-center justify-center">
-                                <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                            <div className="py-32 px-6 flex flex-col items-center justify-center border border-dashed border-zinc-200">
+                                <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mb-6">
                                     <PackageSearch
-                                        size={32}
-                                        className="text-gray-300"
+                                        size={24}
+                                        strokeWidth={1}
+                                        className="text-zinc-300"
                                     />
                                 </div>
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                    No results found
+                                <h3 className="text-md uppercase tracking-[0.2em] font-medium text-zinc-900 mb-2">
+                                    No Artifacts Found
                                 </h3>
-                                <p className="text-gray-500 text-sm mb-6 max-w-xs text-center">
-                                    We couldn't find any products matching your
-                                    current selection. Try adjusting your
-                                    filters.
+                                <p className="text-sm text-zinc-400 tracking-wide max-w-xs text-center">
+                                    Your search criteria did not match any items in our current collection.
                                 </p>
                             </div>
                         ) : (
-                            <div
-                                className={
-                                    viewMode === "grid"
-                                        ? "grid grid-cols-1 sm:grid-cols-4 xl:grid-cols-6 gap-4"
-                                        : "flex flex-col gap-4"
-                                }
-                            >
-                                {displayProducts?.map((product) =>
-                                    viewMode === "grid" ? (
-                                        <ProductCard
-                                            key={product._id}
-                                            product={product}
-                                        />
-                                    ) : (
-                                        <ProductListItem
-                                            key={product._id}
-                                            product={product}
-                                        />
-                                    ),
-                                )}
+                            <div className="space-y-32">
+                                <section>
+                                    <div className="flex justify-between items-end mb-12 border-b border-zinc-100 pb-6">
+                                        <div>
+                                            <Button variant="outline" className="text-md font-semibold tracking-[0.3em] uppercase text-zinc-900">
+                                                Filters
+                                            </Button>
+                                        </div>
+
+                                        <button className="flex items-center gap-2 text-xs tracking-widest uppercase font-medium hover:text-zinc-500 transition-colors py-2">
+                                            <SlidersHorizontal size={14} strokeWidth={1.5} />
+                                            Refine
+                                        </button>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-6 lg:gap-y-6">
+                                        {displayProducts.map((product) => (
+                                            <ProductCard key={product._id} product={product} />
+                                        ))}
+                                    </div>
+
+                                    <div className="mt-32 flex justify-center">
+                                        <Button variant="studio" size="lg">
+                                            View More
+                                        </Button>
+                                    </div>
+                                </section>
                             </div>
                         )}
-
-                        <div className="mt-12 flex justify-center">
-                            <Pagination
-                                currentPage={page}
-                                totalPages={totalPages}
-                                onPageChange={handlePageChange}
-                            />
-                        </div>
                     </main>
                 </div>
             </div>
@@ -174,27 +104,15 @@ const ProductListPage = () => {
 };
 
 const FilterChip = ({ label, onRemove }) => (
-    <span className="flex items-center gap-2 bg-gray-900 text-white pl-3 pr-2 py-1.5 rounded-lg text-xs font-medium shadow-sm transition-all hover:bg-blue-600 group">
+    <span className="flex items-center gap-2 bg-zinc-900 text-white pl-4 pr-2 py-2 text-sm uppercase tracking-widest transition-all hover:bg-zinc-800">
         {label}
         <button
             onClick={onRemove}
-            className="bg-white/20 p-0.5 rounded group-hover:bg-white/30 transition-colors"
+            className="p-1 hover:bg-white/10 transition-colors"
         >
             <X size={12} />
         </button>
     </span>
-);
-
-const ViewButton = ({ active, onClick, icon }) => (
-    <button
-        onClick={onClick}
-        className={`p-2 rounded transition-all ${active
-            ? "bg-white text-gray-900 shadow-sm"
-            : "text-gray-400 hover:text-gray-600"
-            }`}
-    >
-        {icon}
-    </button>
 );
 
 export default ProductListPage;

@@ -42,38 +42,35 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50 px-4 py-12">
+        <div className="min-h-screen flex items-center justify-center bg-white px-4 py-12">
             <div className="w-full max-w-md">
-                <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-200">
-                    {/* Header */}
-                    <div className="flex flex-col items-center mb-8">
-                        <div className="w-14 h-14 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm mb-4">
-                            <ShieldCheck className="text-white" size={28} />
+                <div className="bg-white p-10 border border-zinc-100 shadow-sm">
+                    <div className="flex flex-col items-center mb-12">
+                        <div className="w-16 h-16 bg-zinc-900 flex items-center justify-center mb-6">
+                            <ShieldCheck className="text-white" size={28} strokeWidth={1} />
                         </div>
-                        <h2 className="text-2xl font-bold text-gray-900">
-                            Welcome Back
+                        <h2 className="text-md uppercase tracking-[0.4em] font-semibold text-zinc-900">
+                            Authentication
                         </h2>
-                        <p className="text-gray-500 text-sm mt-1">
-                            Sign in to your account
+                        <p className="text-sm uppercase tracking-widest text-zinc-400 mt-2">
+                            Access your account
                         </p>
                     </div>
 
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        {/* Email Field */}
-                        <div className="space-y-1.5">
-                            <label className="text-sm font-medium text-gray-700">
+                    <form onSubmit={handleSubmit} className="space-y-8">
+                        <div className="space-y-3">
+                            <label className="text-sm uppercase tracking-widest font-semibold text-zinc-900">
                                 Email Address
                             </label>
                             <div className="relative">
                                 <Mail
-                                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                                    size={18}
+                                    className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-400"
+                                    size={16}
                                 />
                                 <input
                                     type="email"
-                                    placeholder="name@company.com"
-                                    className="w-full h-11 pl-10 pr-4 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                    placeholder="your@email.com"
+                                    className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
@@ -81,28 +78,21 @@ const LoginPage = () => {
                             </div>
                         </div>
 
-                        {/* Password Field */}
-                        <div className="space-y-1.5">
+                        <div className="space-y-3">
                             <div className="flex justify-between items-center">
-                                <label className="text-sm font-medium text-gray-700">
+                                <label className="text-sm uppercase tracking-widest font-semibold text-zinc-900">
                                     Password
                                 </label>
-                                <Link
-                                    to="#"
-                                    className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
-                                >
-                                    Forgot password?
-                                </Link>
                             </div>
                             <div className="relative">
                                 <Lock
-                                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                                    size={18}
+                                    className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-400"
+                                    size={16}
                                 />
                                 <input
                                     type="password"
-                                    placeholder="Enter your password"
-                                    className="w-full h-11 pl-10 pr-4 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                    placeholder="••••••••"
+                                    className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
@@ -110,35 +100,21 @@ const LoginPage = () => {
                             </div>
                         </div>
 
-                        {/* Submit Button */}
                         <button
                             type="submit"
                             disabled={loginLoading}
-                            className="w-full h-11 bg-blue-600 text-white rounded-lg font-medium text-sm shadow-sm hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600"
+                            className="w-full h-14 bg-zinc-900 text-white text-sm uppercase tracking-[0.3em] font-semibold hover:bg-zinc-700 transition-all duration-500 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed mt-10"
                         >
                             {loginLoading ? (
                                 <>
-                                    <Loader2 className="animate-spin" size={18} />
-                                    Signing in...
+                                    <Loader2 className="animate-spin" size={16} strokeWidth={1.5} />
+                                    Verifying...
                                 </>
                             ) : (
                                 "Sign In"
                             )}
                         </button>
                     </form>
-
-                    {/* Sign Up Link */}
-                    <div className="mt-6 text-center">
-                        <p className="text-sm text-gray-600">
-                            Don't have an account?{" "}
-                            <Link
-                                to="/register"
-                                className="font-medium text-blue-600 hover:text-blue-700 transition-colors"
-                            >
-                                Sign up
-                            </Link>
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>

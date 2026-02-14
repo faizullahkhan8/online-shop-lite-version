@@ -16,25 +16,42 @@ const cartSlice = createSlice({
                 newItem.effectivePrice !== undefined
                     ? newItem.effectivePrice
                     : newItem.price;
+            const quantityToAdd = Math.max(1, Number(newItem.quantity) || 1);
             const existingItem = state.items.find(
                 (item) => item._id === newItem._id,
             );
+            const originalPrice = Number(newItem.price) || 0;
+            const unitPrice = Number(priceToUse) || 0;
+            const promotion = newItem.promotion || null;
+            const discountPerUnit = Math.max(0, originalPrice - unitPrice);
             if (!existingItem) {
+                const initialQuantity = Math.min(
+                    quantityToAdd,
+                    Math.max(0, Number(newItem.stock) || quantityToAdd),
+                );
                 state.items.push({
                     _id: newItem._id,
                     name: newItem.name,
-                    price: priceToUse,
-                    originalPrice: newItem.price,
+                    price: unitPrice,
+                    originalPrice,
+                    promotion,
+                    discountPerUnit,
                     stock: newItem.stock,
                     image: newItem.image,
-                    quantity: 1,
-                    totalPrice: priceToUse,
+                    quantity: initialQuantity,
+                    totalPrice: unitPrice * initialQuantity,
+                    discountTotal: discountPerUnit * initialQuantity,
                     selected: true, // New items are selected by default
                 });
             } else {
-                existingItem.quantity++;
-                existingItem.totalPrice =
-                    existingItem.price * existingItem.quantity;
+                const newQuantity = Math.min(
+                    existingItem.quantity + quantityToAdd,
+                    Math.max(0, Number(existingItem.stock) || Infinity),
+                );
+                existingItem.quantity = newQuantity;
+                existingItem.totalPrice = existingItem.price * newQuantity;
+                existingItem.discountTotal =
+                    (existingItem.discountPerUnit || 0) * newQuantity;
             }
             state.totalAmount = state.items.reduce(
                 (total, item) => total + item.totalPrice,
@@ -64,9 +81,17 @@ const cartSlice = createSlice({
         updateQuantity: (state, action) => {
             const { _id, quantity } = action.payload;
             const existingItem = state.items.find((item) => item._id === _id);
-            if (existingItem && quantity > 0) {
-                existingItem.quantity = quantity;
-                existingItem.totalPrice = existingItem.price * quantity;
+            const nextQuantity = Math.max(1, Number(quantity) || 1);
+            if (existingItem) {
+                existingItem.quantity = Math.min(
+                    nextQuantity,
+                    Math.max(0, Number(existingItem.stock) || Infinity),
+                );
+                existingItem.totalPrice =
+                    existingItem.price * existingItem.quantity;
+                existingItem.discountTotal =
+                    (existingItem.discountPerUnit || 0) *
+                    existingItem.quantity;
                 state.totalAmount = state.items.reduce(
                     (total, item) => total + item.totalPrice,
                     0,

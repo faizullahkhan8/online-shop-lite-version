@@ -25,7 +25,7 @@ const COLORS = [
 const DashboardCharts = ({ stats }) => {
     if (!stats) return null;
 
-    const { dailySales, categoryStats, orderStatusStats } = stats;
+    const { dailySales, collectionStats, orderStatusStats } = stats;
 
     // Formatting daily sales for the chart
     const revenueData =
@@ -37,8 +37,8 @@ const DashboardCharts = ({ stats }) => {
             revenue: item.total,
         })) || [];
 
-    const categoryData =
-        categoryStats?.map((item) => ({
+    const collectionData =
+        collectionStats?.map((item) => ({
             name: item.name,
             sales: item.totalSold,
             products: item.count,
@@ -141,14 +141,14 @@ const DashboardCharts = ({ stats }) => {
                 </div>
             </div>
 
-            {/* Category Performance Bar Chart */}
+            {/* Collection Performance Bar Chart */}
             <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                 <h3 className="text-sm font-semibold text-gray-900 mb-6">
-                    Category Performance
+                    Collection Performance
                 </h3>
                 <div className="h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={categoryData}>
+                        <BarChart data={collectionData}>
                             <CartesianGrid
                                 strokeDasharray="3 3"
                                 vertical={false}

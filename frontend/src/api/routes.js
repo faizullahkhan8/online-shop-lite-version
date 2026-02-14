@@ -16,11 +16,11 @@ export const PRODUCT_ROUTES = {
     GET_BY_ID: "/products/get",
 };
 
-export const CATEGORY_ROUTES = {
-    CREATE: "/categories/create",
-    GET_ALL: "/categories/all",
-    UPDATE_CATEGORY: "/categories/update",
-    DELETE_CATEGORY: "/categories/delete",
+export const COLLECTION_ROUTES = {
+    CREATE: "/collections/create",
+    GET_ALL: "/collections/all",
+    UPDATE_COLLECTION: "/collections/update",
+    DELETE_COLLECTION: "/collections/delete",
 };
 
 export const ORDER_ROUTES = {

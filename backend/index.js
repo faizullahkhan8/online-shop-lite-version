@@ -4,7 +4,7 @@ import cors from "cors";
 import { connectToDB } from "./config/localDb.js";
 import userRouter from "./routers/user.router.js";
 import productRouter from "./routers/product.router.js";
-import categoryRouter from "./routers/category.router.js";
+import collectionRouter from "./routers/collection.router.js";
 import orderRouter from "./routers/order.router.js";
 import settingsRouter from "./routers/settings.router.js";
 import promotionRouter from "./routers/promotion.router.js";
@@ -44,7 +44,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
-app.use("/api/categories", categoryRouter);
+app.use("/api/collections", collectionRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/settings", settingsRouter);
 app.use("/api/promotions", promotionRouter);

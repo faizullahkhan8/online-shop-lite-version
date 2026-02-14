@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import HeroSection from "../Components/Home/HeroSection";
 import PromotionSection from "../Components/Home/PromotionSection";
 import { useGetAllProducts } from "../api/hooks/product.api";
-
 import { Link } from "react-router-dom";
-import ProductCard from "../Components/ProductCard";
+import ProductCarousel from "../Components/Home/ProductCarousel";
 
 const HomePage = () => {
     const { getAllProducts, loading } = useGetAllProducts();
@@ -17,46 +16,23 @@ const HomePage = () => {
                 setProducts(response.products);
             }
         })();
-    }, []);
+    }, [getAllProducts]);
 
     return (
-        <div className="min-h-screen bg-slate-50/30 pb-20 flex flex-col gap-12">
+        <div className="min-h-screen bg-white pb-32 flex flex-col gap-18">
             <HeroSection />
 
-            <div className="mt-8">
-                <PromotionSection />
-            </div>
-
-            <section className="container mx-auto px-4 mt-12">
-                <div className="flex items-center justify-between mb-8">
-                    <div>
-                        <h2 className="text-2xl font-black text-slate-900">
-                            Recommended for You
-                        </h2>
-                        <p className="text-sm text-slate-400 font-medium">
-                            Based on your recent activity
-                        </p>
-                    </div>
-                    <Link
-                        to="/products"
-                        className="text-xs font-black uppercase tracking-widest text-primary hover:underline"
-                    >
-                        See All Products
-                    </Link>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                    {products.map((prod) => (
-                        <ProductCard key={prod._id} product={prod} />
-                    ))}
-                </div>
-
-                {loading && (
-                    <div className="flex justify-center mt-12">
-                        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-                    </div>
-                )}
+            <section>
+                <ProductCarousel products={products} title={"Trending Products"} isViewAll={true} />
             </section>
+            <section>
+                <ProductCarousel products={products} title={"Top Selling Products"} isViewAll={true} />
+            </section>
+            <section>
+                <ProductCarousel products={products} title={"Best Today's"} isViewAll={true} />
+            </section>
+
+
         </div>
     );
 };

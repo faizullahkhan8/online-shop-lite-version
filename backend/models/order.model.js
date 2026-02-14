@@ -1,8 +1,8 @@
-import { Schema, SchemaTypes, Types } from "mongoose";
+import { Schema } from "mongoose";
 
 const orderSchema = new Schema(
     {
-        userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+        userId: { type: Schema.Types.ObjectId, ref: "User" },
         recipient: {
             name: {
                 type: String,
@@ -58,6 +58,21 @@ const orderSchema = new Schema(
                 discount: {
                     type: Number,
                     default: 0,
+                },
+                discountPerUnit: {
+                    type: Number,
+                    default: 0,
+                },
+                discountTotal: {
+                    type: Number,
+                    default: 0,
+                },
+                promotion: {
+                    id: { type: Schema.Types.ObjectId, ref: "Promotion" },
+                    title: { type: String, default: "" },
+                    type: { type: String, default: "" },
+                    discountType: { type: String, default: "" },
+                    discountValue: { type: Number, default: 0 },
                 },
                 totalAmount: {
                     type: Number,

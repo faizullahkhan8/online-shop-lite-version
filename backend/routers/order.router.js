@@ -15,14 +15,14 @@ import {
 
 const router = new Router();
 
-router.post("/place-order", isAuth, placeOrder);
+router.post("/place-order", placeOrder);
 router.get("/get-all", isAuth, authorize("admin"), getAllOrder);
 
 // Dashboard stats (admin only) - must be above /:id
 router.get("/dashboard-stats", isAuth, authorize("admin"), getDashboardStats);
 
 router.get("/my-orders", isAuth, getUserOrders);
-router.get("/:id", isAuth, getOrderById);
+router.get("/:id", getOrderById);
 router.patch("/update/:id", isAuth, authorize("admin"), updateOrderStatus);
 router.patch("/payment/:id", isAuth, authorize("admin"), updatePaymentStatus);
 router.delete("/delete/:id", isAuth, authorize("admin"), deleteOrder);

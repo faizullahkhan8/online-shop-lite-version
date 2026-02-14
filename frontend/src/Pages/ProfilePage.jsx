@@ -68,45 +68,46 @@ const ProfilePage = () => {
     };
 
     return (
-        <div className="bg-slate-50/50 min-h-screen py-12">
-            <div className="container mx-auto px-4 max-w-4xl">
-                <header className="mb-10 flex items-end justify-between">
+        <div className="bg-white min-h-screen py-20">
+            <div className="container mx-auto px-6 max-w-5xl">
+                <header className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-100 pb-10">
                     <div>
-                        <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tight">
-                            Account Settings
+                        <h1 className="text-sm font-bold text-zinc-900 uppercase tracking-[0.4em] mb-3">
+                            Account Profile
                         </h1>
-                        <p className="text-slate-500 font-medium mt-1">
-                            Manage your public profile and delivery preferences.
+                        <p className="text-md text-zinc-400 uppercase tracking-widest leading-relaxed max-w-md">
+                            Identity verification and logistics configuration.
+                            Ensure all data points are current for optimal service.
                         </p>
                     </div>
-                    <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-xl border border-emerald-100">
-                        <ShieldCheck size={16} className="text-emerald-500" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">
-                            Verified Account
+                    <div className="flex items-center gap-3 px-4 py-2 bg-zinc-900 rounded-none shadow-sm">
+                        <ShieldCheck size={14} className="text-white" />
+                        <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-white">
+                            Status: Verified
                         </span>
                     </div>
                 </header>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-1">
-                        <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 text-center shadow-xl shadow-slate-200/40">
-                            <div className="relative inline-block mb-6">
-                                <div className="w-32 h-32 rounded-[2.5rem] bg-slate-100 overflow-hidden border-4 border-white shadow-inner">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                    <div className="lg:col-span-4">
+                        <div className="bg-zinc-50 p-10 border border-zinc-100 sticky top-32">
+                            <div className="relative w-40 h-40 mx-auto mb-8">
+                                <div className="w-full h-full bg-zinc-200 overflow-hidden border border-zinc-100">
                                     <img
                                         src={
                                             avatarPreview ||
                                             user?.avatar ||
-                                            `https://ui-avatars.com/api/?name=${user?.name}&background=0f172a&color=fff`
+                                            `https://ui-avatars.com/api/?name=${user?.name}&background=18181b&color=fff`
                                         }
                                         alt="Avatar"
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                                     />
                                 </div>
                                 <label
                                     htmlFor="avatar-upload"
-                                    className="absolute -bottom-2 -right-2 w-10 h-10 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg border-4 border-white hover:scale-110 transition-transform cursor-pointer"
+                                    className="absolute -bottom-3 -right-3 w-12 h-12 bg-zinc-900 text-white flex items-center justify-center hover:bg-zinc-800 transition-colors cursor-pointer shadow-lg"
                                 >
-                                    <Camera size={16} />
+                                    <Camera size={18} strokeWidth={1.5} />
                                 </label>
                                 <input
                                     id="avatar-upload"
@@ -116,149 +117,104 @@ const ProfilePage = () => {
                                     onChange={handleImageChange}
                                 />
                             </div>
-                            <h2 className="text-lg font-black text-slate-900 uppercase tracking-tight truncate">
-                                {user?.name || "Guest User"}
-                            </h2>
-                            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">
-                                Customer Level 01
-                            </p>
+                            <div className="text-center space-y-2">
+                                <h2 className="text-[12px] font-bold text-zinc-900 uppercase tracking-[0.2em] truncate">
+                                    {user?.name || "Unidentified User"}
+                                </h2>
+                                <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-[0.3em]">
+                                    Tier: Core Member
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="lg:col-span-2">
-                        <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 lg:p-10 shadow-xl shadow-slate-200/40">
-                            <form onSubmit={handleSubmit} className="space-y-8">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="lg:col-span-8">
+                        <form onSubmit={handleSubmit} className="space-y-12">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
+                                <ProfileInput
+                                    label="Legal Identity"
+                                    name="name"
+                                    icon={<User size={14} />}
+                                    value={userData?.name}
+                                    onChange={handleChange}
+                                />
+                                <ProfileInput
+                                    label="Digital Address"
+                                    name="email"
+                                    disabled
+                                    icon={<Mail size={14} />}
+                                    value={userData?.email}
+                                />
+                                <ProfileInput
+                                    label="Telecommunication"
+                                    name="phone"
+                                    icon={<Phone size={14} />}
+                                    value={userData?.phone}
+                                    onChange={handleChange}
+                                />
+                                <ProfileInput
+                                    label="Primary Logistics (Street)"
+                                    name="street"
+                                    icon={<MapPin size={14} />}
+                                    value={userData?.addresses?.[0]?.street || ""}
+                                    onChange={(e) => handleAddressChange("street", e.target.value)}
+                                />
+                                <ProfileInput
+                                    label="Unit / Suite"
+                                    name="addressLine2"
+                                    icon={<MapPin size={14} />}
+                                    value={userData?.addresses?.[0]?.addressLine2 || ""}
+                                    onChange={(e) => handleAddressChange("addressLine2", e.target.value)}
+                                />
+                                <ProfileInput
+                                    label="Municipality"
+                                    name="city"
+                                    icon={<MapPin size={14} />}
+                                    value={userData?.addresses?.[0]?.city || ""}
+                                    onChange={(e) => handleAddressChange("city", e.target.value)}
+                                />
+                                <ProfileInput
+                                    label="Province / Region"
+                                    name="state"
+                                    icon={<MapPin size={14} />}
+                                    value={userData?.addresses?.[0]?.state || ""}
+                                    onChange={(e) => handleAddressChange("state", e.target.value)}
+                                />
+                                <ProfileInput
+                                    label="Logistics Code"
+                                    name="postalCode"
+                                    icon={<MapPin size={14} />}
+                                    value={userData?.addresses?.[0]?.postalCode || ""}
+                                    onChange={(e) => handleAddressChange("postalCode", e.target.value)}
+                                />
+                                <div className="md:col-span-2">
                                     <ProfileInput
-                                        label="Full Name"
-                                        name="name"
-                                        icon={<User size={16} />}
-                                        value={userData?.name}
-                                        onChange={handleChange}
-                                    />
-                                    <ProfileInput
-                                        label="Email Address"
-                                        name="email"
-                                        disabled
-                                        icon={<Mail size={16} />}
-                                        value={userData?.email}
-                                    />
-                                    <ProfileInput
-                                        label="Phone Number"
-                                        name="phone"
-                                        icon={<Phone size={16} />}
-                                        value={userData?.phone}
-                                        onChange={handleChange}
-                                    />
-                                    <ProfileInput
-                                        label="Street Address"
-                                        name="street"
-                                        icon={<MapPin size={16} />}
-                                        value={
-                                            userData?.addresses?.[0]?.street ||
-                                            ""
-                                        }
-                                        onChange={(e) =>
-                                            handleAddressChange(
-                                                "street",
-                                                e.target.value,
-                                            )
-                                        }
-                                    />
-                                    <ProfileInput
-                                        label="Apartment / Suite"
-                                        name="addressLine2"
-                                        icon={<MapPin size={16} />}
-                                        value={
-                                            userData?.addresses?.[0]
-                                                ?.addressLine2 || ""
-                                        }
-                                        onChange={(e) =>
-                                            handleAddressChange(
-                                                "addressLine2",
-                                                e.target.value,
-                                            )
-                                        }
-                                    />
-                                    <ProfileInput
-                                        label="City"
-                                        name="city"
-                                        icon={<MapPin size={16} />}
-                                        value={
-                                            userData?.addresses?.[0]?.city || ""
-                                        }
-                                        onChange={(e) =>
-                                            handleAddressChange(
-                                                "city",
-                                                e.target.value,
-                                            )
-                                        }
-                                    />
-                                    <ProfileInput
-                                        label="State / Province"
-                                        name="state"
-                                        icon={<MapPin size={16} />}
-                                        value={
-                                            userData?.addresses?.[0]?.state ||
-                                            ""
-                                        }
-                                        onChange={(e) =>
-                                            handleAddressChange(
-                                                "state",
-                                                e.target.value,
-                                            )
-                                        }
-                                    />
-                                    <ProfileInput
-                                        label="Postal Code"
-                                        name="postalCode"
-                                        icon={<MapPin size={16} />}
-                                        value={
-                                            userData?.addresses?.[0]
-                                                ?.postalCode || ""
-                                        }
-                                        onChange={(e) =>
-                                            handleAddressChange(
-                                                "postalCode",
-                                                e.target.value,
-                                            )
-                                        }
-                                    />
-                                    <ProfileInput
-                                        label="Country"
+                                        label="Sovereign Territory (Country)"
                                         name="country"
-                                        icon={<MapPin size={16} />}
-                                        value={
-                                            userData?.addresses?.[0]?.country ||
-                                            ""
-                                        }
-                                        onChange={(e) =>
-                                            handleAddressChange(
-                                                "country",
-                                                e.target.value,
-                                            )
-                                        }
+                                        icon={<MapPin size={14} />}
+                                        value={userData?.addresses?.[0]?.country || ""}
+                                        onChange={(e) => handleAddressChange("country", e.target.value)}
                                     />
                                 </div>
+                            </div>
 
-                                <div className="pt-4 border-t border-slate-50">
-                                    <button
-                                        type="submit"
-                                        disabled={updateUserLoading}
-                                        className="w-full md:w-auto bg-slate-900 text-white px-10 h-14 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] flex items-center justify-center gap-3 hover:bg-primary transition-all active:scale-95 shadow-xl shadow-slate-900/10 disabled:opacity-50"
-                                    >
-                                        {updateUserLoading ? (
-                                            <Loader2
-                                                size={18}
-                                                className="animate-spin"
-                                            />
-                                        ) : (
-                                            "Update Profile"
-                                        )}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                            <div className="pt-10">
+                                <button
+                                    type="submit"
+                                    disabled={updateUserLoading}
+                                    className="w-full md:w-auto min-w-[240px] bg-zinc-900 text-white px-12 h-14 font-bold uppercase tracking-[0.3em] text-sm flex items-center justify-center gap-4 hover:bg-zinc-800 transition-all disabled:opacity-30 disabled:cursor-not-allowed group"
+                                >
+                                    {updateUserLoading ? (
+                                        <Loader2 size={16} className="animate-spin" />
+                                    ) : (
+                                        <>
+                                            Synchronize Profile
+                                            <span className="group-hover:translate-x-1 transition-transform">→</span>
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -275,13 +231,13 @@ const ProfileInput = ({
     icon,
     type = "text",
 }) => (
-    <div className="space-y-2">
-        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
+    <div className="space-y-3 group">
+        <label className="text-[9px] font-bold text-zinc-400 uppercase tracking-[0.25em] flex items-center gap-2">
             {label}
         </label>
         <div className="relative">
             <div
-                className={`absolute left-4 top-1/2 -translate-y-1/2 ${disabled ? "text-slate-300" : "text-slate-400"}`}
+                className={`absolute left-0 top-1/2 -translate-y-1/2 transition-colors ${disabled ? "text-zinc-300" : "text-zinc-400 group-focus-within:text-zinc-900"}`}
             >
                 {icon}
             </div>
@@ -291,10 +247,11 @@ const ProfileInput = ({
                 onChange={onChange}
                 disabled={disabled}
                 type={type}
-                className={`w-full border-none rounded-2xl pl-12 pr-4 py-4 text-sm font-bold outline-none transition-all ${disabled
-                        ? "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60"
-                        : "bg-slate-50 text-slate-900 focus:ring-2 focus:ring-primary/20"
+                className={`w-full border-b border-zinc-200 rounded-none pl-8 pr-0 py-3 text-[12px] font-medium tracking-widest outline-none transition-all ${disabled
+                    ? "bg-transparent text-zinc-400 cursor-not-allowed opacity-50 border-zinc-100"
+                    : "bg-transparent text-zinc-900 focus:border-zinc-900 placeholder:text-zinc-200"
                     }`}
+                placeholder="NOT SPECIFIED"
             />
         </div>
     </div>

@@ -21,14 +21,14 @@ import {
 } from "../../api/hooks/product.api.js";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useGetAllCategories } from "../../api/hooks/category.api.js";
+import { useGetAllCollections } from "../../api/hooks/collection.api.js";
 
 const INITAIL_STATE = {
     _id: "",
     name: "",
     price: "",
     description: "",
-    category: "",
+    collection: "",
     stock: "",
     lowStock: "",
     image: null,
@@ -42,7 +42,20 @@ const AddProduct = () => {
     const parseProductFromParams = () => {
         try {
             const raw = searchParams.get("product");
-            return raw ? JSON.parse(raw) : INITAIL_STATE;
+            if (!raw) return INITAIL_STATE;
+
+            const parsed = JSON.parse(raw);
+            const { collection, ...rest } = parsed || {};
+            const resolvedCollection =
+                typeof collection === "string"
+                    ? collection
+                    : collection?._id || collection?.id || "";
+
+            return {
+                ...INITAIL_STATE,
+                ...rest,
+                collection: resolvedCollection,
+            };
         } catch {
             return INITAIL_STATE;
         }
@@ -51,19 +64,19 @@ const AddProduct = () => {
     const [productData, setProductData] = useState(parseProductFromParams);
     const isEditing = Boolean(productData?._id);
 
-    const [categories, setCategories] = useState([]);
+    const [collections, setCollections] = useState([]);
     const [previewUrl, setPreviewUrl] = useState("");
 
     const { createProduct, loading: createProductLoading } =
         useCreateProuduct();
     const { updateProduct, loading: updateProductLoading } = useUpdateProduct();
-    const { getAllCategories } = useGetAllCategories();
+    const { getAllCollections } = useGetAllCollections();
 
     useEffect(() => {
         (async () => {
-            const response = await getAllCategories();
+            const response = await getAllCollections();
             if (response.success) {
-                setCategories(response.categories);
+                setCollections(response.collections);
             }
         })();
     }, []);
@@ -123,7 +136,7 @@ const AddProduct = () => {
                 id: productData._id,
             });
             if (response.success)
-                navigate("/admin-dashboard?tab=products-list");
+                navigate("/admin-dashboard/products");
         }
     };
 
@@ -230,24 +243,24 @@ const AddProduct = () => {
                             </div>
                         </div>
 
-                        {/* Category */}
+                        {/* Collection */}
                         <div>
                             <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                 <Layers size={14} className="text-blue-600" />
-                                Category
+                                Collection
                             </label>
                             <Select
-                                placeholder="Select category"
-                                id="category"
-                                value={productData?.category}
+                                placeholder="Select collection"
+                                id="collection"
+                                value={productData?.collection}
                                 onChange={(value) =>
                                     handleChange({
-                                        target: { id: "category", value },
+                                        target: { id: "collection", value },
                                     })
                                 }
-                                options={categories.map((cat) => ({
-                                    label: cat.name,
-                                    value: cat._id,
+                                options={collections.map((collection) => ({
+                                    label: collection.name,
+                                    value: collection._id,
                                 }))}
                                 className="w-full"
                             />

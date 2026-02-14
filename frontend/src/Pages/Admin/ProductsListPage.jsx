@@ -86,7 +86,7 @@ const ProductList = () => {
                                     Product
                                 </th>
                                 <th className="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 border-b border-gray-200">
-                                    Category
+                                    Collection
                                 </th>
                                 <th className="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 border-b border-gray-200">
                                     Price
@@ -136,9 +136,9 @@ const ProductList = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md">
-                                                {product.category
-                                                    ? product.category.name
-                                                    : "Uncategorized"}
+                                                {product.collection
+                                                    ? product.collection.name
+                                                    : "No Collection"}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">

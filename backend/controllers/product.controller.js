@@ -1,7 +1,9 @@
 import expressAsyncHandler from "express-async-handler";
+import mongoose from "mongoose";
 import {
     getLocalProductModel,
     getLocalPromotionModel,
+    getLocalCollectionModel,
 } from "../config/localDb.js";
 import { ErrorResponse } from "../utils/ErrorResponse.js";
 import { getEffectivePrice } from "../utils/promotionHelper.js";
@@ -12,11 +14,11 @@ export const createProduct = expressAsyncHandler(async (req, res, next) => {
     if (!ProductModel)
         return next(new ErrorResponse("Product model not found", 500));
 
-    const { name, price, description, category, stock, lowStock } = JSON.parse(
+    const { name, price, description, collection, stock, lowStock } = JSON.parse(
         req.body?.data,
     );
 
-    if (!name || !price || !description || !category || !stock || !lowStock)
+    if (!name || !price || !description || !collection || !stock || !lowStock)
         return next(new ErrorResponse("All fields are required", 400));
 
     const isProductExist = await ProductModel.findOne({ name });
@@ -33,7 +35,7 @@ export const createProduct = expressAsyncHandler(async (req, res, next) => {
         name,
         price,
         description,
-        category,
+        collection,
         stock,
         lowStock,
         image: req.image?.filePath || "",
@@ -53,7 +55,7 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("Product model not found", 500));
 
     const {
-        category,
+        collection,
         minPrice,
         maxPrice,
         search,
@@ -65,8 +67,24 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
 
     let query = {};
 
-    if (category) {
-        query.category = category;
+    if (collection) {
+        if (mongoose.isValidObjectId(collection)) {
+            query.collection = collection;
+        } else {
+            const CollectionModel = getLocalCollectionModel();
+            if (CollectionModel) {
+                const matchedCollection = await CollectionModel
+                    .findOne({ name: collection.toLowerCase() })
+                    .select("_id");
+                if (matchedCollection?._id) {
+                    query.collection = matchedCollection._id;
+                } else {
+                    query.collection = null;
+                }
+            } else {
+                query.collection = collection;
+            }
+        }
     }
 
     if (search) {
@@ -115,7 +133,7 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
     const skip = (Number(page) - 1) * Number(limit);
 
     const products = await ProductModel.find(query)
-        .populate("category", "name")
+        .populate("collection", "name")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(Number(limit));
@@ -153,7 +171,7 @@ export const getProductById = expressAsyncHandler(async (req, res, next) => {
 
     const { id } = req.params;
 
-    const product = await ProductModel.findById(id).populate("category");
+    const product = await ProductModel.findById(id).populate("collection");
     if (!product) return next(new ErrorResponse("Product not found", 404));
 
     const { price: effectivePrice, promotion } = await getEffectivePrice(

@@ -3,7 +3,6 @@ import { Clock, Tag, ChevronRight } from "lucide-react";
 import { useGetActiveDeals } from "../../api/hooks/promotion.api";
 import { Link } from "react-router-dom";
 
-// Compact Countdown Timer
 const CompactTimer = memo(({ endTime }) => {
     const [timeLeft, setTimeLeft] = useState("");
 
@@ -11,7 +10,7 @@ const CompactTimer = memo(({ endTime }) => {
         const update = () => {
             const distance = new Date(endTime).getTime() - Date.now();
             if (distance < 0) {
-                setTimeLeft("EXPIRED");
+                setTimeLeft("CLOSED");
                 return;
             }
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -19,8 +18,8 @@ const CompactTimer = memo(({ endTime }) => {
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            if (days > 0) setTimeLeft(`${days}d ${hours}h`);
-            else setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+            if (days > 0) setTimeLeft(`${days}D ${hours}H`);
+            else setTimeLeft(`${hours}H ${minutes}M ${seconds}S`);
         };
         update();
         const timer = setInterval(update, 1000);
@@ -28,9 +27,9 @@ const CompactTimer = memo(({ endTime }) => {
     }, [endTime]);
 
     return (
-        <div className="flex items-center gap-1 text-xs text-gray-600">
-            <Clock size={14} />
-            <span className="font-medium">{timeLeft}</span>
+        <div className="flex items-center gap-1.5 text-sm tracking-tighter text-zinc-900 font-medium">
+            <Clock size={12} strokeWidth={2} />
+            <span>{timeLeft}</span>
         </div>
     );
 });
@@ -50,61 +49,61 @@ const PromotionSection = () => {
     if (loading || deals.length === 0) return null;
 
     return (
-        <section className="container mx-auto px-4 py-6">
-            <div className="flex items-center justify-between mb-5 pb-3 border-b border-gray-200">
+        <section className="container mx-auto px-4 lg:px-12">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-900">
-                        Special Offers
+                    <h2 className="text-md uppercase tracking-[0.3em] font-semibold text-zinc-900">
+                        Special Curations
                     </h2>
-                    <p className="text-sm text-gray-500 mt-0.5">
-                        Limited time deals
+                    <p className="text-sm text-zinc-400 uppercase tracking-widest mt-2">
+                        Limited Access
                     </p>
                 </div>
                 <Link
                     to="/promotions"
-                    className="flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                    className="flex items-center gap-2 text-sm text-zinc-900 hover:text-zinc-500 font-semibold uppercase tracking-[0.2em] transition-colors pb-1 border-b border-zinc-900"
                 >
                     View All
-                    <ChevronRight size={16} />
+                    <ChevronRight size={14} />
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {deals.map((deal) => (
                     <Link
                         key={deal._id}
                         to="/promotions"
-                        className="group bg-white border border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow-md transition-all duration-200"
+                        className="group flex flex-col bg-white border border-zinc-100 p-8 transition-all duration-500 hover:border-zinc-300"
                     >
-                        <div className="flex items-start justify-between mb-3">
-                            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium ${deal.type === "FLASH_DEAL"
-                                ? "bg-red-50 text-red-700 border border-red-200"
-                                : "bg-green-50 text-green-700 border border-green-200"
-                                }`}>
-                                <Tag size={12} />
-                                {deal.type.replace("_", " ")}
-                            </span>
+                        <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center gap-2 text-sm uppercase tracking-widest text-zinc-400">
+                                <Tag size={12} strokeWidth={1.5} />
+                                <span>{deal.type.replace("_", " ")}</span>
+                            </div>
                             {deal.type === "FLASH_DEAL" && (
                                 <CompactTimer endTime={deal.endTime} />
                             )}
                         </div>
 
-                        <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                        <h3 className="text-2xl font-light text-zinc-900 mb-4 tracking-tight leading-snug group-hover:text-zinc-600 transition-colors">
                             {deal.title}
                         </h3>
 
-                        <p className="text-sm text-gray-600 mb-3">
-                            {deal.discountType === "PERCENTAGE"
-                                ? `${deal.discountValue}% discount`
-                                : `Save PKR ${deal.discountValue}`
-                            }
-                        </p>
+                        <div className="mb-8">
+                            <p className="text-md uppercase tracking-[0.15em] font-medium text-zinc-900">
+                                {deal.discountType === "PERCENTAGE"
+                                    ? `${deal.discountValue}% Reduction`
+                                    : `PKR ${deal.discountValue.toLocaleString()} Credit`}
+                            </p>
+                        </div>
 
-                        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                            <span className="text-xs text-gray-500">
-                                {deal.products.length} {deal.products.length === 1 ? 'product' : 'products'}
+                        <div className="mt-auto pt-6 border-t border-zinc-50 flex items-center justify-between">
+                            <span className="text-sm text-zinc-400 uppercase tracking-widest">
+                                {deal.products.length} Items
                             </span>
-                            <ChevronRight size={16} className="text-gray-400 group-hover:text-blue-600 transition-colors" />
+                            <div className="w-8 h-8 rounded-full border border-zinc-100 flex items-center justify-center group-hover:bg-zinc-900 group-hover:text-white transition-all duration-500">
+                                <ChevronRight size={14} />
+                            </div>
                         </div>
                     </Link>
                 ))}

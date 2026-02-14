@@ -15,14 +15,14 @@ This repository is a fullstack ecommerce sample app with a Node/Express backend 
 
 -   Reusable UI components: `ProductCard`, `Pagination`, `LoadingSpinner`, `DialogBox`, `Input`, `Select`, etc.
 -   Product listing and detail views with images and descriptions.
--   Category listing and hierarchical categories support.
+-   Collection listing and hierarchical collections support.
 -   Search and filtering (client-side components + product hooks).
 -   User authentication: register, login, logout, refresh access token via cookies.
 -   Profile management: view and update user info and addresses.
 -   Wishlist: add, remove, and fetch wishlist items per user (persisted server-side).
 -   Cart & Checkout flow: place orders and store order items, recipient, payment and grand total.
 -   Orders: users can fetch their orders; admins can fetch, update status, and delete orders.
--   Admin dashboard: products, categories, users, orders management, and dashboard stats (total sales, orders, products, users).
+-   Admin dashboard: products, collections, users, orders management, and dashboard stats (total sales, orders, products, users).
 -   Product image upload when creating/updating products (multer + server storage).
 -   Server-side validation and centralized error handling via `ErrorHandler` and `ErrorResponse` utilities.
 -   Dashboard statistics aggregation endpoint for admin insights.
@@ -55,12 +55,12 @@ Base path: `/api`
     -   `GET /get/:id` : Get product by id
     -   `DELETE /delete/:id` : Admin only — delete product (removes image file)
 
--   Categories (`/api/categories`)
+-   Collections (`/api/collections`)
 
-    -   `POST /create` : Admin only — create category
-    -   `GET /all` : Get all categories
-    -   `PATCH /update/:id` : Admin only — update category
-    -   `DELETE /delete/:id` : Admin only — delete category
+    -   `POST /create` : Admin only — create collection
+    -   `GET /all` : Get all collections
+    -   `PATCH /update/:id` : Admin only — update collection
+    -   `DELETE /delete/:id` : Admin only — delete collection
 
 -   Orders (`/api/orders`)
     -   `POST /place-order` : Place a new order — protected
@@ -79,7 +79,7 @@ Base path: `/api`
 -   Authentication middleware: `middlewares/auth.middleware.js` exposes `isAuth` (requires cookie token) and `authorize` (role-based guard).
 -   Error handling: `middlewares/ErrorHandler.js` centralizes error responses; `utils/ErrorResponse.js` generates consistent errors.
 -   File upload: `middlewares/multer.middleware.js` stores product images under `public/images/product-images` and controllers handle unlinking old files on update/delete.
--   Local DB: `config/localDb.js` wires models (User, Product, Category, Wishlist, Order) — models are in `models/`.
+-   Local DB: `config/localDb.js` wires models (User, Product, Collection, Wishlist, Order) — models are in `models/`.
 
 ---
 
@@ -98,7 +98,7 @@ Base path: `/api`
 -   Admin
 
     -   `AdminPage` — single-route admin container that toggles subviews via `tab` query param
-    -   Subviews in `Components/Admin/`: `DashboardHome`, `ProductList`, `AddProduct`, `CategoryList`, `AddCategory`, `OrdersList`, `OrdersDetails`, `UserComponents` (list/add)
+    -   Subviews in `Components/Admin/`: `DashboardHome`, `ProductList`, `AddProduct`, `CollectionList`, `AddCollection`, `OrdersList`, `OrdersDetails`, `UserComponents` (list/add)
     -   `AdminSidebar` — admin navigation (collapsible; responsive changes in progress)
 
 -   Shared UI
@@ -106,7 +106,7 @@ Base path: `/api`
     -   `Breadcrumb`, `Pagination`, `ProductCard`, `ProductListItem`, `LoadingSkeleton`, `DialogBox`, `Input`, `Select`, `Button`, `SearchInput`
 
 -   API hooks
-    -   `frontend/src/api/hooks/*` contains hooks for products, categories, orders, users, dashboard that call backend endpoints using `axios` via `apiClient.js`.
+    -   `frontend/src/api/hooks/*` contains hooks for products, collections, orders, users, dashboard that call backend endpoints using `axios` via `apiClient.js`.
 
 ---
 
@@ -147,8 +147,8 @@ Note: Tokens are stored as cookies named `accessToken` and `refreshToken`.
 ## Models (high level)
 
 -   User: name, email, password (hashed), phone, role, addresses, wishlist ref
--   Product: name, price, description, category ref, stock, image path
--   Category: name, optional parentId, isActive
+-   Product: name, price, description, collection ref, stock, image path
+-   Collection: name, optional parentId, isActive, image path
 -   Order: userId, items (product + qty), grandTotal, recipient, payment, status
 -   Wishlist: userId, items -> product refs
 
