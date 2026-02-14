@@ -23,7 +23,7 @@ import { format } from "date-fns";
 
 const PromotionManager = () => {
     const navigate = useNavigate();
-    const { getAllPromotions, loading: fetchLoading } = useGetAllPromotions();
+    const { getAllPromotions } = useGetAllPromotions();
     const { updatePromotion, loading: updateLoading } = useUpdatePromotion();
     const { deletePromotion, loading: deleteLoading } = useDeletePromotion();
 
@@ -124,7 +124,9 @@ const PromotionManager = () => {
 
                 <div className="flex items-center gap-2">
                     <button
-                        onClick={() => navigate("/admin-dashboard/promotions/create")}
+                        onClick={() =>
+                            navigate("/admin-dashboard/promotions/create")
+                        }
                         className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
                     >
                         <Plus size={16} />
@@ -157,10 +159,11 @@ const PromotionManager = () => {
                         {promotions.map((promo, index) => (
                             <div
                                 key={promo._id}
-                                className={`group relative bg-gray-50 border border-gray-200 rounded-lg p-4 flex flex-col md:flex-row items-start md:items-center gap-4 transition-all hover:border-blue-500 ${promo.status === "ACTIVE"
-                                    ? "opacity-100"
-                                    : "opacity-60"
-                                    }`}
+                                className={`group relative bg-gray-50 border border-gray-200 rounded-lg p-4 flex flex-col md:flex-row items-start md:items-center gap-4 transition-all hover:border-blue-500 ${
+                                    promo.status === "ACTIVE"
+                                        ? "opacity-100"
+                                        : "opacity-60"
+                                }`}
                             >
                                 {/* Drag Handles / Order */}
                                 <div className="flex flex-col gap-1 items-center justify-center mr-2">
@@ -204,12 +207,14 @@ const PromotionManager = () => {
                                             {promo.title}
                                         </h4>
                                         <span
-                                            className={`px-2 py-0.5 rounded text-xs font-medium border ${promo.status === "ACTIVE"
-                                                ? "bg-green-50 text-green-700 border-green-200"
-                                                : promo.status === "SCHEDULED"
-                                                    ? "bg-amber-50 text-amber-700 border-amber-200"
-                                                    : "bg-gray-100 text-gray-600 border-gray-200"
-                                                }`}
+                                            className={`px-2 py-0.5 rounded text-xs font-medium border ${
+                                                promo.status === "ACTIVE"
+                                                    ? "bg-green-50 text-green-700 border-green-200"
+                                                    : promo.status ===
+                                                        "SCHEDULED"
+                                                      ? "bg-amber-50 text-amber-700 border-amber-200"
+                                                      : "bg-gray-100 text-gray-600 border-gray-200"
+                                            }`}
                                         >
                                             {promo.status}
                                         </span>
@@ -257,10 +262,11 @@ const PromotionManager = () => {
                                             handleStatusToggle(promo)
                                         }
                                         disabled={updateLoading}
-                                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${promo.status === "ACTIVE"
-                                            ? "bg-white border-gray-200 text-gray-600 hover:border-gray-300"
-                                            : "bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
-                                            }`}
+                                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                                            promo.status === "ACTIVE"
+                                                ? "bg-white border-gray-200 text-gray-600 hover:border-gray-300"
+                                                : "bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
+                                        }`}
                                     >
                                         {promo.status === "ACTIVE" ? (
                                             <>
