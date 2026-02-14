@@ -13,19 +13,26 @@ import {
 } from "lucide-react";
 import Input from "../../UI/Input.jsx";
 import Select from "../../UI/Select.jsx";
-import { useGetAllProducts } from "../../api/hooks/product.api.js";
+import {
+    useGetAllProducts,
+    useUpdateProduct,
+} from "../../api/hooks/product.api.js";
+import { useGetAllCollections } from "../../api/hooks/collection.api.js";
 import { usePlaceOrder } from "../../api/hooks/orders.api.js";
 import { useGetAllUsers } from "../../api/hooks/user.api.js";
 import { useNavigate } from "react-router-dom";
 
 const AddOrderPage = () => {
     const { getAllProducts, loading: productsLoading } = useGetAllProducts();
+    const { getAllCollections } = useGetAllCollections();
+    const { updateProduct } = useUpdateProduct();
     const { placeOrder, loading: orderLoading } = usePlaceOrder();
     const { getAllUsers, loading: usersLoading } = useGetAllUsers();
     const navigate = useNavigate();
 
     const [products, setProducts] = useState([]);
     const [users, setUsers] = useState([]);
+    const [collections, setCollections] = useState([]);
     const [orderData, setOrderData] = useState({
         userId: "",
         items: [
@@ -93,13 +100,32 @@ const AddOrderPage = () => {
         if (field === "product") {
             const selectedProd = products.find((p) => p._id === value);
             item.product = value;
-            item.originalPrice = selectedProd?.price || 0;
-            if (selectedProd?.effectivePrice < selectedProd?.price) {
-                item.discount = selectedProd.price - selectedProd.effectivePrice;
-                item.price = selectedProd.effectivePrice;
+            const prodPrice = Number(selectedProd?.price || 0);
+            const effPrice = Number(
+                selectedProd?.effectivePrice ?? selectedProd?.price ?? 0,
+            );
+            item.originalPrice = prodPrice;
+            if (Number.isFinite(effPrice) && effPrice < prodPrice) {
+                item.discount = prodPrice - effPrice;
+                item.price = effPrice;
             } else {
                 item.discount = 0;
-                item.price = selectedProd?.price || 0;
+                item.price = prodPrice;
+            }
+            // If the product carries promotion metadata from the backend, include it
+            if (selectedProd?.promotion) {
+                const p = selectedProd.promotion;
+                // normalize id field
+                const promoId = String(p.id || p._id || "");
+                item.promotion = {
+                    id: promoId,
+                    title: p.title,
+                    type: p.type,
+                    discountType: p.discountType,
+                    discountValue: p.discountValue,
+                };
+            } else {
+                item.promotion = null;
             }
         } else if (field === "price") {
             item.price = value;
@@ -124,13 +150,42 @@ const AddOrderPage = () => {
             totalAmount:
                 (Number(item.price) || 0) * (Number(item.quantity) || 0),
         }));
+        // Basic client-side validation to match backend expectations
+        if (!finalItems || finalItems.length === 0) {
+            return alert("Order must contain at least one item");
+        }
+        for (const it of finalItems) {
+            if (!it.product)
+                return alert("Each item must have a product selected");
+            if (!Number.isFinite(Number(it.price)) || Number(it.price) <= 0)
+                return alert("Each item must have a valid positive price");
+            if (
+                !Number.isInteger(Number(it.quantity)) ||
+                Number(it.quantity) <= 0
+            )
+                return alert("Each item must have a valid quantity");
+        }
+
+        const r = orderData.recipient || {};
+        if (!r.name || r.name.trim().length < 2)
+            return alert("Recipient name must be at least 2 characters");
+        if (!r.street || r.street.trim().length < 5)
+            return alert("Recipient street must be at least 5 characters");
+        if (!r.city || r.city.trim().length < 2)
+            return alert("Recipient city must be at least 2 characters");
+        if (!r.postalCode || r.postalCode.trim().length < 2)
+            return alert("Recipient postal code must be valid");
+        if (!r.country || r.country.trim().length < 2)
+            return alert("Recipient country must be valid");
+        if (!r.phone || r.phone.trim().length < 10)
+            return alert("Recipient phone must be valid");
         const finalData = {
             ...orderData,
             items: finalItems,
             grandTotal,
         };
         const response = await placeOrder(finalData);
-        if (response.success) {
+        if (response?.success) {
             navigate("/admin-dashboard?tab=orders-list");
         }
     };
@@ -142,7 +197,38 @@ const AddOrderPage = () => {
         getAllUsers().then((res) => {
             setUsers(res.users || []);
         });
+        // load collections for quick-assign
+        getAllCollections().then((res) => {
+            setCollections(res?.collections || []);
+        });
     }, []);
+
+    const handleAssignCollection = async (productId) => {
+        if (!productId)
+            return alert("Select a product first to assign a collection");
+        if (!collections || collections.length === 0)
+            return alert("No collections available. Create one first.");
+
+        // build prompt listing collections
+        const list = collections
+            .map((c, i) => `${i}: ${c.name} (${c._id})`)
+            .join("\n");
+        const input = window.prompt(
+            `Choose collection index to assign:\n${list}`,
+        );
+        if (input === null) return;
+        const idx = Number(input);
+        if (!Number.isInteger(idx) || idx < 0 || idx >= collections.length)
+            return alert("Invalid selection");
+
+        const collectionId = collections[idx]._id;
+
+        // Use FormData to match updateProduct expectations
+        const fd = new FormData();
+        fd.append("collection", collectionId);
+
+        await updateProduct({ product: fd, id: productId });
+    };
 
     const handleUserSelect = (value) => {
         const selectedUser = users.find((u) => u._id === value);
@@ -159,8 +245,7 @@ const AddOrderPage = () => {
                 addressLine2:
                     selectedUser?.addresses?.[0]?.addressLine2 ||
                     prev.recipient.addressLine2,
-                city:
-                    selectedUser?.addresses?.[0]?.city || prev.recipient.city,
+                city: selectedUser?.addresses?.[0]?.city || prev.recipient.city,
                 state:
                     selectedUser?.addresses?.[0]?.state || prev.recipient.state,
                 postalCode:
@@ -220,18 +305,39 @@ const AddOrderPage = () => {
                                         <label className="text-xs font-medium text-gray-700">
                                             Product
                                         </label>
-                                        <Select
-                                            disabled={productsLoading}
-                                            options={products?.map((p) => ({
-                                                label: p.name,
-                                                value: p._id,
-                                            }))}
-                                            value={item.product}
-                                            placeholder="Select product"
-                                            onChange={(val) =>
-                                                updateItem(index, "product", val)
-                                            }
-                                        />
+                                        <div className="flex items-center gap-2">
+                                            <div className="flex-1">
+                                                <Select
+                                                    disabled={productsLoading}
+                                                    options={products?.map(
+                                                        (p) => ({
+                                                            label: p.name,
+                                                            value: p._id,
+                                                        }),
+                                                    )}
+                                                    value={item.product}
+                                                    placeholder="Select product"
+                                                    onChange={(val) =>
+                                                        updateItem(
+                                                            index,
+                                                            "product",
+                                                            val,
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    handleAssignCollection(
+                                                        item.product,
+                                                    )
+                                                }
+                                                className="text-sm px-3 py-2 bg-gray-50 border border-gray-200 rounded-md hover:bg-gray-100"
+                                            >
+                                                Add to collection
+                                            </button>
+                                        </div>
                                     </div>
                                     <div className="space-y-1.5">
                                         <label className="text-xs font-medium text-gray-700">
@@ -297,7 +403,10 @@ const AddOrderPage = () => {
                                             Subtotal
                                         </p>
                                         <p className="text-sm font-semibold text-gray-900 bg-gray-100 border border-gray-200 rounded-lg px-3 py-2">
-                                            Rs {(item.price * item.quantity).toFixed(2)}
+                                            Rs{" "}
+                                            {(
+                                                item.price * item.quantity
+                                            ).toFixed(2)}
                                         </p>
                                     </div>
                                     <div className="flex items-end">
@@ -473,13 +582,19 @@ const AddOrderPage = () => {
                         {/* Payment Section */}
                         <section className="space-y-3">
                             <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2 pb-3 border-b border-gray-200">
-                                <CreditCard size={16} className="text-blue-600" />
+                                <CreditCard
+                                    size={16}
+                                    className="text-blue-600"
+                                />
                                 Payment
                             </h3>
                             <Select
                                 options={[
                                     { label: "Cash on Delivery", value: "COD" },
-                                    { label: "Online Payment", value: "online" },
+                                    {
+                                        label: "Online Payment",
+                                        value: "online",
+                                    },
                                     { label: "Card Payment", value: "card" },
                                     { label: "Bank Transfer", value: "bank" },
                                     { label: "Mobile Wallet", value: "wallet" },
@@ -537,7 +652,9 @@ const AddOrderPage = () => {
                                         onChange={(e) =>
                                             setOrderData({
                                                 ...orderData,
-                                                taxAmount: Number(e.target.value),
+                                                taxAmount: Number(
+                                                    e.target.value,
+                                                ),
                                             })
                                         }
                                         className="w-full"
@@ -554,7 +671,9 @@ const AddOrderPage = () => {
                                         onChange={(e) =>
                                             setOrderData({
                                                 ...orderData,
-                                                shippingFee: Number(e.target.value),
+                                                shippingFee: Number(
+                                                    e.target.value,
+                                                ),
                                             })
                                         }
                                         className="w-full"
@@ -563,8 +682,14 @@ const AddOrderPage = () => {
                             </div>
                             <Select
                                 options={[
-                                    { label: "Standard Shipping", value: "standard" },
-                                    { label: "Express Shipping", value: "express" },
+                                    {
+                                        label: "Standard Shipping",
+                                        value: "standard",
+                                    },
+                                    {
+                                        label: "Express Shipping",
+                                        value: "express",
+                                    },
                                     { label: "Store Pickup", value: "pickup" },
                                 ]}
                                 value={orderData.shippingMethod}
@@ -581,15 +706,21 @@ const AddOrderPage = () => {
                             <div className="bg-gray-50 rounded-lg p-4 space-y-2 border border-gray-200">
                                 <div className="flex items-center justify-between text-sm text-gray-600">
                                     <span>Items Subtotal</span>
-                                    <span className="font-medium">Rs {itemsSubtotal.toFixed(2)}</span>
+                                    <span className="font-medium">
+                                        Rs {itemsSubtotal.toFixed(2)}
+                                    </span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm text-gray-600">
                                     <span>Tax</span>
-                                    <span className="font-medium">Rs {taxAmount.toFixed(2)}</span>
+                                    <span className="font-medium">
+                                        Rs {taxAmount.toFixed(2)}
+                                    </span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm text-gray-600">
                                     <span>Shipping</span>
-                                    <span className="font-medium">Rs {shippingFee.toFixed(2)}</span>
+                                    <span className="font-medium">
+                                        Rs {shippingFee.toFixed(2)}
+                                    </span>
                                 </div>
                                 <div className="flex items-center justify-between text-base font-bold text-gray-900 pt-2 border-t border-gray-200">
                                     <span>Grand Total</span>
@@ -606,7 +737,10 @@ const AddOrderPage = () => {
                         >
                             {orderLoading ? (
                                 <>
-                                    <Loader2 className="animate-spin" size={18} />
+                                    <Loader2
+                                        className="animate-spin"
+                                        size={18}
+                                    />
                                     Creating order...
                                 </>
                             ) : (

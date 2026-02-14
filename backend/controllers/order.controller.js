@@ -145,7 +145,8 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
 
     // SECURITY: Use MongoDB transaction for atomicity
     // Ensures stock and order updates both succeed or both fail
-    const session = await mongoose.startSession();
+    // Start session from the connection that created the model
+    const session = await OrderModel.db.startSession();
     session.startTransaction();
 
     try {

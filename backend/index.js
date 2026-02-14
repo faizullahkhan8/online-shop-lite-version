@@ -60,16 +60,6 @@ app.use((req, res, next) => {
 // Apply general rate limit to all API requests
 app.use("/api/", generalLimiter);
 
-// Middleware to ensure DB connection
-app.use(async (req, res, next) => {
-    try {
-        await connectToDB();
-        next();
-    } catch (error) {
-        return next(new ErrorResponse("Database connection failed", 500));
-    }
-});
-
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to the API" });
 });
@@ -85,11 +75,17 @@ app.use("/api/reviews", reviewRouter);
 
 app.use(errorHandler);
 
-// Initial connection attempt
-connectToDB().catch((err) =>
-    console.error("Initial DB connection failed:", err),
-);
-
-app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server is running on port ${process.env.PORT || 3000}`);
-});
+// Connect to DB once at startup, then start the server
+connectToDB()
+    .then(() => {
+        console.log("✅ Database connected successfully");
+        app.listen(process.env.PORT || 3000, () => {
+            console.log(
+                `Server is running on port ${process.env.PORT || 3000}`,
+            );
+        });
+    })
+    .catch((err) => {
+        console.error("❌ Initial DB connection failed:", err);
+        process.exit(1);
+    });

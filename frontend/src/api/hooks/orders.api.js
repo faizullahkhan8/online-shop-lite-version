@@ -130,6 +130,43 @@ export const useGetOrderById = () => {
     return { getOrderById, loading };
 };
 
+export const useGetOrderByTrackingToken = () => {
+    const [loading, setLoading] = useState();
+
+    const getOrderByTrackingToken = async (token) => {
+        try {
+            setLoading(true);
+            const response = await apiClient.get(
+                `${ORDER_ROUTES.TRACK}/${token}`,
+            );
+
+            if (response.data && response.data.order) {
+                const o = response.data.order;
+                response.data.order = {
+                    ...o,
+                    id: o._id,
+                    date: o.createdAt,
+                    totalAmount: o.grandTotal ?? o.totalAmount,
+                };
+                return response.data;
+            }
+        } catch (error) {
+            let errorMessage =
+                error.response?.data?.message ||
+                "Something went wronge. try again!";
+            toast.error(errorMessage);
+            console.log(
+                "Error in get order by tracking token: ",
+                error.message,
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { getOrderByTrackingToken, loading };
+};
+
 export const useUpdateOrderStatus = () => {
     const [loading, setLoading] = useState();
     const updateOrderStatus = async ({ orderId, status }) => {

@@ -1,14 +1,17 @@
 import { useState } from "react";
 import ProductQuickView from "./ProductQuickView";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ product, isLarge = false }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+    const navigate = useNavigate();
 
     return (
         <>
             <div
                 className={`flex flex-col group cursor-pointer snap-start ${isLarge ? "min-w-[85vw] md:min-w-[45vw] lg:min-w-[30%]" : "w-full"}`}
+                onClick={() => navigate(`/product/${product._id}`)}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
@@ -30,9 +33,15 @@ const ProductCard = ({ product, isLarge = false }) => {
                     {isHovered && (
                         <div
                             className="absolute inset-0 bg-black/5 flex items-end justify-center pb-8 animate-in fade-in duration-300"
-                            onClick={() => setIsQuickViewOpen(true)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsQuickViewOpen(true);
+                            }}
                         >
-                            <button className="bg-white/90 backdrop-blur-md text-black px-8 py-2.5 text-xs font-medium tracking-[0.2em] uppercase hover:bg-black hover:text-white transition-all duration-300 shadow-lg">
+                            <button
+                                onClick={(e) => e.stopPropagation()}
+                                className="bg-white/90 backdrop-blur-md text-black px-8 py-2.5 text-xs font-medium tracking-[0.2em] uppercase hover:bg-black hover:text-white transition-all duration-300 shadow-lg"
+                            >
                                 Quick view
                             </button>
                         </div>

@@ -1,11 +1,5 @@
-import {
-    Search,
-    User,
-    Menu,
-    ChevronDown,
-    X,
-    Loader2,
-} from "lucide-react";
+import { Search, User, Menu, ChevronDown, X, Loader2 } from "lucide-react";
+import MobileSideBar from "./MobileSideBar";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +15,12 @@ const Header = () => {
     const [collections, setCollections] = useState([]);
 
     const { isAuthenticated, user } = useSelector((state) => state.auth);
+    const cartItems = useSelector((state) => state.cart?.items || []);
+    const cartCount = cartItems.reduce(
+        (acc, it) => acc + (it.quantity || 1),
+        0,
+    );
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -53,18 +53,17 @@ const Header = () => {
             if (response.success) {
                 setCollections(response.collections);
             }
-        })()
-    }, [])
+        })();
+    }, []);
 
     if (loading) {
-        return <Loader2 size={24} />
+        return <Loader2 size={24} />;
     }
 
     return (
         <header className="bg-gray-100 z-50 border-b border-zinc-100 sticky top-0">
             <div className="container mx-auto px-4 lg:px-12">
                 <div className="flex items-center justify-between h-20">
-
                     <div className="hidden lg:flex items-center gap-12 flex-1">
                         <nav className="flex items-center gap-8">
                             <Link
@@ -84,7 +83,10 @@ const Header = () => {
                                     className={`flex items-center gap-2 text-md uppercase tracking-[0.2em] font-medium transition-colors ${isCollectionOpen ? "text-zinc-900" : "text-zinc-400"}`}
                                 >
                                     Collections
-                                    <ChevronDown size={10} className={`transition-transform duration-300 ${isCollectionOpen ? "rotate-180" : ""}`} />
+                                    <ChevronDown
+                                        size={10}
+                                        className={`transition-transform duration-300 ${isCollectionOpen ? "rotate-180" : ""}`}
+                                    />
                                 </button>
 
                                 {isCollectionOpen && (
@@ -94,13 +96,16 @@ const Header = () => {
                                                 <Link
                                                     to={link.path}
                                                     className="text-sm uppercase tracking-[0.15em] text-zinc-400 hover:text-zinc-900 transition-colors block"
-                                                    onClick={() => setIsCollectionOpen(false)}
+                                                    onClick={() =>
+                                                        setIsCollectionOpen(
+                                                            false,
+                                                        )
+                                                    }
                                                 >
                                                     {link.name}
                                                 </Link>
                                             </li>
                                         ))}
-
                                     </div>
                                 )}
                             </div>
@@ -114,7 +119,10 @@ const Header = () => {
                         </nav>
                     </div>
 
-                    <Link to="/" className="flex flex-col items-center flex-1 lg:flex-none">
+                    <Link
+                        to="/"
+                        className="flex flex-col items-center flex-1 lg:flex-none"
+                    >
                         <span className="text-xl font-semibold tracking-[0.3em] uppercase text-zinc-900 leading-none">
                             E-Shop
                         </span>
@@ -124,6 +132,13 @@ const Header = () => {
                     </Link>
 
                     <div className="flex items-center justify-end gap-5 lg:gap-8 flex-1">
+                        <button
+                            onClick={() => setIsMenuOpen(true)}
+                            className="md:hidden text-zinc-900 hover:text-zinc-500 transition-colors"
+                        >
+                            <Menu size={20} strokeWidth={1.5} />
+                        </button>
+
                         <button
                             onClick={() => setIsSearchOpen(true)}
                             className="text-zinc-900 hover:text-zinc-500 transition-colors"
@@ -135,18 +150,30 @@ const Header = () => {
                             <div className="relative">
                                 <button
                                     className="flex items-center gap-1 text-zinc-900"
-                                    onClick={() => setUserDropDownOpen(!userDropDownOpen)}
+                                    onClick={() =>
+                                        setUserDropDownOpen(!userDropDownOpen)
+                                    }
                                 >
                                     <User size={19} strokeWidth={1.5} />
-                                    <ChevronDown size={12} className={`transition-transform duration-300 ${userDropDownOpen ? "rotate-180" : ""}`} />
+                                    <ChevronDown
+                                        size={12}
+                                        className={`transition-transform duration-300 ${userDropDownOpen ? "rotate-180" : ""}`}
+                                    />
                                 </button>
 
                                 {userDropDownOpen && (
                                     <>
-                                        <div onClick={() => setUserDropDownOpen(false)} className="fixed inset-0 z-40"></div>
+                                        <div
+                                            onClick={() =>
+                                                setUserDropDownOpen(false)
+                                            }
+                                            className="fixed inset-0 z-40"
+                                        ></div>
                                         <div className="absolute top-full right-0 mt-4 w-48 bg-white shadow-2xl border border-zinc-100 p-2 z-50">
                                             <div className="px-3 py-3 border-b border-zinc-50 mb-1">
-                                                <p className="text-[9px] uppercase tracking-[0.15em] text-zinc-400 mb-1">Account</p>
+                                                <p className="text-[9px] uppercase tracking-[0.15em] text-zinc-400 mb-1">
+                                                    Account
+                                                </p>
                                                 <p className="text-md font-medium text-zinc-900 truncate uppercase tracking-widest">
                                                     {user?.name}
                                                 </p>
@@ -154,7 +181,9 @@ const Header = () => {
                                             <Link
                                                 to="/profile"
                                                 className="flex items-center px-3 py-2 text-sm uppercase tracking-[0.15em] text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition-all"
-                                                onClick={() => setUserDropDownOpen(false)}
+                                                onClick={() =>
+                                                    setUserDropDownOpen(false)
+                                                }
                                             >
                                                 Profile
                                             </Link>
@@ -162,7 +191,11 @@ const Header = () => {
                                                 <Link
                                                     to="/admin-dashboard"
                                                     className="flex items-center px-3 py-2 text-sm uppercase tracking-[0.15em] text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition-all"
-                                                    onClick={() => setUserDropDownOpen(false)}
+                                                    onClick={() =>
+                                                        setUserDropDownOpen(
+                                                            false,
+                                                        )
+                                                    }
                                                 >
                                                     Dashboard
                                                 </Link>
@@ -178,7 +211,10 @@ const Header = () => {
                                 )}
                             </div>
                         ) : (
-                            <Link to="/login" className="text-md uppercase tracking-[0.2em] font-medium text-zinc-900 border-b border-zinc-900 pb-0.5 hover:text-zinc-400 hover:border-zinc-400 transition-all">
+                            <Link
+                                to="/login"
+                                className="text-md uppercase tracking-[0.2em] font-medium text-zinc-900 border-b border-zinc-900 pb-0.5 hover:text-zinc-400 hover:border-zinc-400 transition-all"
+                            >
                                 Login
                             </Link>
                         )}
@@ -188,7 +224,10 @@ const Header = () => {
 
             {isSearchOpen && (
                 <div className="absolute inset-0 bg-white z-[60] flex items-center px-4 lg:px-12 animate-in fade-in slide-in-from-top duration-500">
-                    <form onSubmit={handleSearch} className="container mx-auto flex items-center gap-6">
+                    <form
+                        onSubmit={handleSearch}
+                        className="container mx-auto flex items-center gap-6"
+                    >
                         <Search size={20} className="text-zinc-400" />
                         <input
                             autoFocus
@@ -208,6 +247,12 @@ const Header = () => {
                     </form>
                 </div>
             )}
+            <MobileSideBar
+                isMenuOpen={isMenuOpen}
+                setIsMenuOpen={setIsMenuOpen}
+                isAuthenticated={isAuthenticated}
+                cartCount={cartCount}
+            />
         </header>
     );
 };

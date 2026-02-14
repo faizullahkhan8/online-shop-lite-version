@@ -32,8 +32,9 @@ const MobileSideBar = ({
             )}
 
             <div
-                className={`fixed top-0 right-0 h-full w-[85%] max-w-[320px] bg-white z-[70] md:hidden transform transition-transform duration-500 ease-out flex flex-col ${isMenuOpen ? "translate-x-0" : "translate-x-full"
-                    }`}
+                className={`fixed top-0 right-0 h-full w-[85%] max-w-[320px] bg-white z-[70] md:hidden transform transition-transform duration-500 ease-out flex flex-col ${
+                    isMenuOpen ? "translate-x-0" : "translate-x-full"
+                }`}
             >
                 <div className="flex items-center justify-between p-6 border-b border-zinc-50">
                     <div className="flex flex-col">
@@ -58,7 +59,11 @@ const MobileSideBar = ({
                             <div className="bg-zinc-900 p-6 shadow-sm">
                                 <div className="flex items-center gap-4 mb-6">
                                     <div className="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10">
-                                        <User size={18} strokeWidth={1.2} className="text-white" />
+                                        <User
+                                            size={18}
+                                            strokeWidth={1.2}
+                                            className="text-white"
+                                        />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-[9px] uppercase tracking-[0.2em] text-zinc-500">
@@ -104,7 +109,12 @@ const MobileSideBar = ({
                             <NavItem
                                 setIsMenuOpen={setIsMenuOpen}
                                 to="/admin-dashboard"
-                                icon={<LayoutDashboard size={18} strokeWidth={1.2} />}
+                                icon={
+                                    <LayoutDashboard
+                                        size={18}
+                                        strokeWidth={1.2}
+                                    />
+                                }
                                 label="Admin Dashboard"
                                 color="text-zinc-900"
                             />
@@ -122,12 +132,7 @@ const MobileSideBar = ({
                             icon={<List size={18} strokeWidth={1.2} />}
                             label="All Products"
                         />
-                        <NavItem
-                            setIsMenuOpen={setIsMenuOpen}
-                            to="/promotions"
-                            icon={<Zap size={18} strokeWidth={1.2} />}
-                            label="Promotions"
-                        />
+                        {/* Public promotions removed */}
                         <NavItem
                             setIsMenuOpen={setIsMenuOpen}
                             to="/about-us"

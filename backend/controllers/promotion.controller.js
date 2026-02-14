@@ -39,12 +39,8 @@ export const addPromotion = expressAsyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("End time must be in the future", 400));
     }
 
-    // Determine initial status
-    let status = "SCHEDULED";
-    const now = new Date();
-    if (now >= new Date(startTime) && now <= new Date(endTime)) {
-        status = "ACTIVE";
-    }
+    // New promotions are created deactivated by default; admin must activate explicitly.
+    let status = "INACTIVE";
 
     const promotion = await PromotionModel.create({
         title,
@@ -56,6 +52,8 @@ export const addPromotion = expressAsyncHandler(async (req, res, next) => {
         products,
         status,
     });
+
+    // Do NOT auto-activate or deactivate other promotions on create.
 
     res.status(201).json({
         success: true,
@@ -85,23 +83,21 @@ export const getActiveDeals = expressAsyncHandler(async (req, res, next) => {
     });
 });
 
-export const getAllPromotions = expressAsyncHandler(
-    async (req, res, next) => {
-        const PromotionModel = getLocalPromotionModel();
-        if (!PromotionModel)
-            return next(new ErrorResponse("Promotion model not found", 500));
+export const getAllPromotions = expressAsyncHandler(async (req, res, next) => {
+    const PromotionModel = getLocalPromotionModel();
+    if (!PromotionModel)
+        return next(new ErrorResponse("Promotion model not found", 500));
 
-        const promotions = await PromotionModel.find()
-            .sort({ order: 1 })
-            .populate("products");
+    const promotions = await PromotionModel.find()
+        .sort({ order: 1 })
+        .populate("products");
 
-        res.status(200).json({
-            success: true,
-            count: promotions.length,
-            promotions,
-        });
-    },
-);
+    res.status(200).json({
+        success: true,
+        count: promotions.length,
+        promotions,
+    });
+});
 
 export const getPromotionById = expressAsyncHandler(async (req, res, next) => {
     const PromotionModel = getLocalPromotionModel();
@@ -139,6 +135,24 @@ export const updatePromotion = expressAsyncHandler(async (req, res, next) => {
         new: true,
         runValidators: true,
     });
+
+    // If request attempted to set this promotion ACTIVE, ensure no other ACTIVE promotion exists.
+    // Require admin to manually deactivate the existing active promotion first.
+    const incomingStatus = req.body?.status;
+    if (incomingStatus === "ACTIVE") {
+        const otherActive = await PromotionModel.findOne({
+            status: "ACTIVE",
+            _id: { $ne: promotion._id },
+        });
+        if (otherActive) {
+            return next(
+                new ErrorResponse(
+                    `Another promotion (${otherActive._id}) is already ACTIVE. Deactivate it before activating this promotion.`,
+                    409,
+                ),
+            );
+        }
+    }
 
     res.status(200).json({
         success: true,

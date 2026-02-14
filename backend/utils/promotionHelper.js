@@ -11,12 +11,14 @@ export const getEffectivePrice = async (productId, basePrice) => {
     if (!PromotionModel) return { price: basePrice, promotion: null };
 
     const now = new Date();
-    // Find an active promotion that contains this product
+    // Find a deterministic active promotion that contains this product
+    // Respect promotion `status` and ordering to ensure a single selected promotion
     const activePromotion = await PromotionModel.findOne({
         products: productId,
         startTime: { $lte: now },
         endTime: { $gte: now },
-    });
+        status: "ACTIVE",
+    }).sort({ order: 1 });
 
     if (!activePromotion) {
         return { price: basePrice, promotion: null };
@@ -24,7 +26,8 @@ export const getEffectivePrice = async (productId, basePrice) => {
 
     let effectivePrice = basePrice;
     if (activePromotion.discountType === "PERCENTAGE") {
-        effectivePrice = basePrice - (basePrice * activePromotion.discountValue) / 100;
+        effectivePrice =
+            basePrice - (basePrice * activePromotion.discountValue) / 100;
     } else if (activePromotion.discountType === "FIXED_AMOUNT") {
         effectivePrice = basePrice - activePromotion.discountValue;
     }

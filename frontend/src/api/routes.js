@@ -28,6 +28,7 @@ export const ORDER_ROUTES = {
     GET_ALL: "/orders/get-all",
     MY_ORDERS: "/orders/my-orders",
     GET_BY_ID: "/orders", // GET /orders/:id
+    TRACK: "/orders/track", // GET /orders/track/:trackingToken
     UPDATE: "/orders/update", // PATCH /orders/update/:id
     DELETE: "/orders/delete", // DELETE /orders/delete/:id
     DASHBOARD_STATS: "/orders/dashboard-stats", // GET /orders/dashboard-stats

@@ -12,17 +12,17 @@ import CollectionsPage from "./Pages/CollectionsPage.jsx";
 const HomePage = lazy(() => import("./Pages/HomePage"));
 const ProductListPage = lazy(() => import("./Pages/ProductListPage"));
 const ProductDetailPage = lazy(() => import("./Pages/ProductDetailPage"));
-const CartPage = lazy(() => import("./Pages/CartPage"));
+// const CartPage = lazy(() => import("./Pages/CartPage"));
 const LoginPage = lazy(() => import("./Pages/LoginPage"));
-const RegisterPage = lazy(() => import("./Pages/RegisterPage"));
-const WishlistPage = lazy(() => import("./Pages/WishlistPage"));
+// const RegisterPage = lazy(() => import("./Pages/RegisterPage"));
+// const WishlistPage = lazy(() => import("./Pages/WishlistPage"));
 const CheckoutPage = lazy(() => import("./Pages/CheckoutPage"));
 const OrdersPage = lazy(() => import("./Pages/OrdersPage"));
 const OrderSuccessPage = lazy(() => import("./Pages/OrderSuccessPage"));
 const TrackOrderPage = lazy(() => import("./Pages/TrackOrderPage"));
 const ProfilePage = lazy(() => import("./Pages/ProfilePage"));
 const ProtectedRoute = lazy(() => import("./Components/Auth/ProtectedRoute"));
-const PromotionsPage = lazy(() => import("./Pages/PromotionsPage.jsx"));
+// Promotions public page removed per request
 
 // Admin Pages
 const DashboardPage = lazy(() => import("./Pages/Admin/DashboardPage"));
@@ -62,15 +62,21 @@ const App = () => {
                             element={<Navigate to="/about-us" replace />}
                         />
                         <Route path="about-us" element={<AboutPage />} />
-                        <Route path="collections" element={<CollectionsPage />} />
-                        <Route path="promotions" element={<PromotionsPage />} />
+                        <Route
+                            path="collections"
+                            element={<CollectionsPage />}
+                        />
+                        {/* Public promotions page removed */}
                         <Route
                             path="product/:id"
                             element={<ProductDetailPage />}
                         />
                         {/* <Route path="cart" element={<CartPage />} /> */}
                         <Route path="checkout" element={<CheckoutPage />} />
-                        <Route path="track-order" element={<TrackOrderPage />} />
+                        <Route
+                            path="track-order"
+                            element={<TrackOrderPage />}
+                        />
                         {/* <Route
                             path="wishlist"
                             element={
