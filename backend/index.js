@@ -1,6 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import helmet from "helmet";
+import {
+    checkoutLimiter,
+    trackingLimiter,
+    generalLimiter,
+} from "./middlewares/rateLimiters.js";
 import { connectToDB } from "./config/localDb.js";
 import userRouter from "./routers/user.router.js";
 import productRouter from "./routers/product.router.js";
@@ -20,6 +26,8 @@ const app = express();
 app.use("/public", express.static("public"));
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
+
+// CORS: Must be early, before route handlers and rate limiters
 app.use(
     cors({
         origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
@@ -27,6 +35,30 @@ app.use(
         credentials: true,
     }),
 );
+
+// Security: Helmet headers
+app.use(helmet());
+
+// Custom sanitization: Remove MongoDB operators from body/params (not query which is read-only)
+app.use((req, res, next) => {
+    const sanitize = (obj) => {
+        if (typeof obj !== "object" || obj === null) return;
+        for (const key in obj) {
+            if (key.includes("$") || key.includes(".")) {
+                delete obj[key];
+            } else if (typeof obj[key] === "object") {
+                sanitize(obj[key]);
+            }
+        }
+    };
+
+    if (req.body) sanitize(req.body);
+    if (req.params) sanitize(req.params);
+    next();
+});
+
+// Apply general rate limit to all API requests
+app.use("/api/", generalLimiter);
 
 // Middleware to ensure DB connection
 app.use(async (req, res, next) => {

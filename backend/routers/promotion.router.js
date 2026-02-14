@@ -1,4 +1,5 @@
 import express from "express";
+import { isAuth, authorize } from "../middlewares/auth.middleware.js";
 import {
     addPromotion,
     getActiveDeals,
@@ -10,11 +11,14 @@ import {
 
 const router = express.Router();
 
-router.post("/", addPromotion);
+// Public endpoint - guest can view active deals
 router.get("/active", getActiveDeals);
-router.get("/", getAllPromotions); // Admin
-router.get("/:id", getPromotionById); // Admin/Edit
-router.put("/:id", updatePromotion); // Admin
-router.delete("/:id", deletePromotion); // Admin
+
+// Admin-only endpoints
+router.post("/", isAuth, authorize("admin"), addPromotion);
+router.get("/", isAuth, authorize("admin"), getAllPromotions); // Admin
+router.get("/:id", isAuth, authorize("admin"), getPromotionById); // Admin/Edit
+router.put("/:id", isAuth, authorize("admin"), updatePromotion); // Admin
+router.delete("/:id", isAuth, authorize("admin"), deletePromotion); // Admin
 
 export default router;

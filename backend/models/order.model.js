@@ -137,6 +137,16 @@ const orderSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "User",
         },
+        trackingToken: {
+            type: String,
+            unique: true,
+            sparse: true,
+            required: false,
+        },
+        trackingTokenExpires: {
+            type: Date,
+            required: false,
+        },
     },
     {
         timestamps: true,

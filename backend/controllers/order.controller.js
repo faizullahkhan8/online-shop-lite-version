@@ -1,4 +1,6 @@
 import expressAsyncHandler from "express-async-handler";
+import crypto from "crypto";
+import mongoose from "mongoose";
 import {
     getLocalOrderModel,
     getLocalProductModel,
@@ -6,6 +8,7 @@ import {
 } from "../config/localDb.js";
 import { ErrorResponse } from "../utils/ErrorResponse.js";
 import { getEffectivePrice } from "../utils/promotionHelper.js";
+import { PlaceOrderSchema } from "../utils/validationSchemas.js";
 
 export const placeOrder = expressAsyncHandler(async (req, res, next) => {
     const OrderModel = getLocalOrderModel();
@@ -16,29 +19,33 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
         return next(new Error("Order model not found"));
     }
 
+    // SECURITY: Validate all input with Zod schema
+    let validatedData;
+    try {
+        validatedData = PlaceOrderSchema.parse(req.body);
+    } catch (error) {
+        const firstError = error.errors[0];
+        const fieldPath =
+            firstError.path.length > 0
+                ? firstError.path.join(".")
+                : "unknown field";
+        return next(
+            new ErrorResponse(
+                `Validation error in ${fieldPath}: ${firstError.message}`,
+                400,
+            ),
+        );
+    }
+
     const {
         items,
         recipient,
         payment,
-        // userId,
         taxAmount,
         shippingFee,
         shippingMethod,
         status,
-    } = req.body;
-
-    if (!Array.isArray(items) || items.length < 1 || !recipient || !payment) {
-        return next(new Error("All fields are required"));
-    }
-
-    if (
-        !recipient.name ||
-        !recipient.street ||
-        !recipient.city ||
-        !recipient.phone
-    ) {
-        return next(new ErrorResponse("Recipient fields are required", 400));
-    }
+    } = validatedData;
 
     if (!payment.method) {
         return next(new ErrorResponse("Payment method is required", 400));
@@ -136,46 +143,89 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
     //     orderUserId = userId;
     // }
 
-    // Process stock and sold count
-    for (const prod of normalizedItems) {
-        const tempProd = await ProductModel.findById(prod.product);
-        tempProd.stock -= prod.quantity;
-        tempProd.sold += prod.quantity;
-        await tempProd.save({ validateModifiedOnly: true });
-    }
+    // SECURITY: Use MongoDB transaction for atomicity
+    // Ensures stock and order updates both succeed or both fail
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-    const itemsTotal = normalizedItems.reduce(
-        (sum, item) => sum + item.totalAmount,
-        0,
-    );
-    const computedTax = Number(taxAmount) || 0;
-    const computedShipping = Number(shippingFee) || 0;
-    if (computedTax < 0 || computedShipping < 0) {
-        return next(
-            new ErrorResponse("Tax and shipping must be valid amounts", 400),
+    try {
+        // Process stock and sold count within transaction
+        for (const prod of normalizedItems) {
+            const result = await ProductModel.findByIdAndUpdate(
+                prod.product,
+                {
+                    $inc: { stock: -prod.quantity, sold: prod.quantity },
+                },
+                { session, new: true },
+            );
+
+            // Verify stock didn't go negative
+            if (result && result.stock < 0) {
+                throw new ErrorResponse(
+                    `Insufficient stock for product: ${result.name}. Available: ${result.stock + prod.quantity}`,
+                    400,
+                );
+            }
+        }
+
+        const itemsTotal = normalizedItems.reduce(
+            (sum, item) => sum + item.totalAmount,
+            0,
         );
+        const computedTax = Number(taxAmount) || 0;
+        const computedShipping = Number(shippingFee) || 0;
+        if (computedTax < 0 || computedShipping < 0) {
+            throw new ErrorResponse(
+                "Tax and shipping must be valid amounts",
+                400,
+            );
+        }
+        const computedGrandTotal = itemsTotal + computedTax + computedShipping;
+
+        // Generate tracking token for guest checkout (90 days validity)
+        const trackingToken = crypto.randomBytes(32).toString("hex");
+        const trackingTokenExpires = new Date(
+            Date.now() + 90 * 24 * 60 * 60 * 1000,
+        );
+
+        const order = new OrderModel({
+            items: normalizedItems,
+            taxAmount: computedTax,
+            shippingFee: computedShipping,
+            shippingMethod,
+            grandTotal: computedGrandTotal,
+            recipient,
+            payment,
+            status: status ?? "pending",
+            trackingToken,
+            trackingTokenExpires,
+        });
+
+        // Save order within transaction
+        await order.save({ session });
+
+        // Commit transaction
+        await session.commitTransaction();
+
+        return res.status(201).json({
+            success: true,
+            message: "Order placed successfully",
+            order,
+            trackingToken,
+            trackingUrl: `${process.env.FRONTEND_URL}/track/${trackingToken}`,
+        });
+    } catch (error) {
+        // Abort transaction on any error
+        await session.abortTransaction();
+
+        // Re-throw original error or new one
+        if (error instanceof ErrorResponse) {
+            throw error;
+        }
+        throw new ErrorResponse(error.message || "Failed to place order", 400);
+    } finally {
+        session.endSession();
     }
-    const computedGrandTotal = itemsTotal + computedTax + computedShipping;
-
-    const order = new OrderModel({
-        // userId: orderUserId,
-        items: normalizedItems,
-        taxAmount: computedTax,
-        shippingFee: computedShipping,
-        shippingMethod,
-        grandTotal: computedGrandTotal,
-        recipient,
-        payment,
-        status: status ?? "pending",
-    });
-
-    await order.save();
-
-    return res.status(201).json({
-        success: true,
-        message: "Order placed successfully",
-        order,
-    });
 });
 
 export const getAllOrder = expressAsyncHandler(async (req, res, next) => {
@@ -423,6 +473,43 @@ export const cancelOrderItem = expressAsyncHandler(async (req, res, next) => {
         order: populatedOrder,
     });
 });
+
+export const getOrderByTrackingToken = expressAsyncHandler(
+    async (req, res, next) => {
+        const OrderModel = getLocalOrderModel();
+        if (!OrderModel)
+            return next(new ErrorResponse("Model not found!", 400));
+
+        const { trackingToken } = req.params;
+
+        if (!trackingToken) {
+            return next(new ErrorResponse("Tracking token is required", 400));
+        }
+
+        const order = await OrderModel.findOne({
+            trackingToken,
+            isDeleted: false,
+        }).populate("items.product");
+
+        if (!order) {
+            return next(new ErrorResponse("Order not found", 404));
+        }
+
+        // CHECK: Token should not be expired
+        if (
+            order.trackingTokenExpires &&
+            new Date() > order.trackingTokenExpires
+        ) {
+            return next(new ErrorResponse("Tracking token has expired", 410));
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Order fetched successfully",
+            order,
+        });
+    },
+);
 
 export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
     const OrderModel = getLocalOrderModel();
