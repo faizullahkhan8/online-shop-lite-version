@@ -17,9 +17,7 @@ import {
 import { useParams } from "react-router-dom";
 import Breadcrumb from "../Components/Breadcrumb";
 import { useGetProductById } from "../api/hooks/product.api";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleWishlist } from "../store/slices/wishlistSlice";
-import { useAddToWishlist, useRemoveFromWishlist } from "../api/hooks/user.api";
+
 import StarRating from "../Components/UI/StarRating";
 import ProductReviews from "../Components/Product/ProductReviews";
 import { useNavigate } from "react-router-dom";
@@ -31,20 +29,6 @@ const ProductDetailPage = () => {
 
     const { getProductById, loading: productLoading } = useGetProductById();
     const navigate = useNavigate();
-
-    const dispatch = useDispatch();
-    const { addToWishlist } = useAddToWishlist();
-    const { removeFromWishlist } = useRemoveFromWishlist();
-    const wishlistItems = useSelector((state) => state.wishlist.items || []);
-
-    const matchId = (item, product) => {
-        if (!item || !product) return false;
-        const aval = item._id || item.id || item;
-        const bval = product._id || product.id || product;
-        return aval.toString() === bval.toString();
-    };
-
-    const isInWishlist = !!wishlistItems.find((item) => matchId(item, product));
 
     useEffect(() => {
         (async () => {
@@ -84,20 +68,6 @@ const ProductDetailPage = () => {
                 },
             },
         });
-    };
-
-    const handleWishlist = async () => {
-        if (!product) return;
-        dispatch(toggleWishlist(product));
-        try {
-            if (isInWishlist) {
-                await removeFromWishlist(product._id || product.id);
-            } else {
-                await addToWishlist(product._id || product.id);
-            }
-        } catch {
-            dispatch(toggleWishlist(product));
-        }
     };
 
     const breadcrumbItems = [
@@ -240,26 +210,6 @@ const ProductDetailPage = () => {
                                     Buy Now
                                 </button>
                             </div>
-
-                            <button
-                                onClick={handleWishlist}
-                                className={`w-full h-14 text-sm font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-3 border transition-all ${
-                                    isInWishlist
-                                        ? "bg-zinc-50 border-zinc-900 text-zinc-900"
-                                        : "bg-white border-zinc-200 text-zinc-400 hover:border-zinc-900 hover:text-zinc-900"
-                                }`}
-                            >
-                                <Heart
-                                    size={16}
-                                    strokeWidth={1.5}
-                                    fill={
-                                        isInWishlist ? "currentColor" : "none"
-                                    }
-                                />
-                                {isInWishlist
-                                    ? "Saved in Favorites"
-                                    : "Save to Favorites"}
-                            </button>
                         </div>
 
                         <div className="mt-12 grid grid-cols-2 gap-8 border-t border-zinc-100 pt-10">

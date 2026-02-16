@@ -73,3 +73,69 @@ export const authorize = (role = []) =>
         }
         return next();
     });
+
+export const optionalAuth = expressAsyncHandler(async (req, res, next) => {
+    const UserModel = getLocalUserModel();
+
+    if (!UserModel) {
+        req.user = null;
+        return next();
+    }
+
+    const accessToken = req.cookies?.accessToken;
+    const refreshToken = req.cookies?.refreshToken;
+
+    let accessDecode = null;
+    let refreshDecode = null;
+
+    if (accessToken) {
+        try {
+            accessDecode = verifyToken(
+                accessToken,
+                process.env.JWT_ACCESS_SECRET,
+            );
+        } catch (error) {
+            accessDecode = null;
+        }
+    }
+
+    if (refreshToken) {
+        try {
+            refreshDecode = verifyToken(
+                refreshToken,
+                process.env.JWT_REFRESH_SECRET,
+            );
+        } catch (error) {
+            refreshDecode = null;
+        }
+    }
+
+    const decode = accessDecode || refreshDecode;
+
+    if (!decode) {
+        req.user = null; // Guest
+        return next();
+    }
+
+    const user = await UserModel.findById(decode.id);
+
+    if (!user) {
+        req.user = null;
+        return next();
+    }
+
+    // Regenerate access token if expired but refresh valid
+    if (!accessDecode && refreshDecode) {
+        const newAccessToken = generateToken(
+            user,
+            "1d",
+            process.env.JWT_ACCESS_SECRET,
+        );
+
+        setCookie(res, newAccessToken, 1000 * 60 * 60 * 24, "accessToken");
+    }
+
+    req.user = user;
+
+    next();
+});

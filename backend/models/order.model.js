@@ -105,15 +105,11 @@ const orderSchema = new Schema(
             type: Number,
             default: 0,
         },
-        shippingMethod: {
-            type: String,
-            default: "standard",
-        },
         payment: {
             method: {
                 type: String,
                 required: true,
-                enum: ["COD", "online", "card", "bank", "wallet"],
+                enum: ["COD", "online"],
             },
             ispaid: {
                 type: Boolean,

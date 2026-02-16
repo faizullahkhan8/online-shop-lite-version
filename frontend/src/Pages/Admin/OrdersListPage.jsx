@@ -62,9 +62,6 @@ const OrdersList = () => {
                             <th className="px-4 py-3.5 text-left text-xs font-semibold text-gray-700 border-b border-gray-200 min-w-[200px]">
                                 Shipping Address
                             </th>
-                            <th className="px-4 py-3.5 text-left text-xs font-semibold text-gray-700 border-b border-gray-200 whitespace-nowrap">
-                                Shipping
-                            </th>
                             <th className="px-4 py-3.5 text-center text-xs font-semibold text-gray-700 border-b border-gray-200 whitespace-nowrap">
                                 Payment
                             </th>
@@ -118,20 +115,6 @@ const OrdersList = () => {
                                                 ? `, ${order.recipient?.postalCode}`
                                                 : ""}
                                         </p>
-                                    </td>
-                                    <td className="px-4 py-3.5">
-                                        <div className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-600">
-                                            <Truck
-                                                size={14}
-                                                className="text-blue-600"
-                                            />
-                                            {order.shippingMethod
-                                                ? order.shippingMethod
-                                                      .charAt(0)
-                                                      .toUpperCase() +
-                                                  order.shippingMethod.slice(1)
-                                                : "Standard"}
-                                        </div>
                                     </td>
                                     <td className="px-4 py-3.5 text-center">
                                         <div

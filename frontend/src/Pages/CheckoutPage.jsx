@@ -16,6 +16,7 @@ import {
     MapPin,
     ChevronRight,
 } from "lucide-react";
+import Select from "../UI/Select";
 
 const CheckoutPage = () => {
     const { items: allItems } = useSelector((state) => state.cart);
@@ -51,7 +52,6 @@ const CheckoutPage = () => {
         },
         taxAmount: 0,
         shippingFee: 0,
-        shippingMethod: "standard",
     });
     const [settingsLoaded, setSettingsLoaded] = useState(false);
 
@@ -90,15 +90,6 @@ const CheckoutPage = () => {
             }));
         }
     }, [user, isAuthenticated]);
-
-    useEffect(() => {
-        if (
-            formData.shippingMethod === "pickup" &&
-            formData.shippingFee !== 0
-        ) {
-            setFormData((prev) => ({ ...prev, shippingFee: 0 }));
-        }
-    }, [formData.shippingMethod, formData.shippingFee]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -143,7 +134,6 @@ const CheckoutPage = () => {
             items: formattedItems,
             taxAmount: Number(formData.taxAmount) || 0,
             shippingFee: Number(formData.shippingFee) || 0,
-            shippingMethod: formData.shippingMethod,
             grandTotal:
                 (totalAmount || 0) +
                 (Number(formData.taxAmount) || 0) +
@@ -300,7 +290,7 @@ const CheckoutPage = () => {
                             </section>
 
                             <section>
-                                <div className="flex items-center mb-8 border-b border-zinc-100 pb-4">
+                                <div className="flex gap-4 flex-col mb-8  pb-4">
                                     <h3 className="text-md uppercase tracking-[0.3em] font-bold text-zinc-900 flex items-center gap-3">
                                         <CreditCard
                                             size={16}
@@ -308,6 +298,29 @@ const CheckoutPage = () => {
                                         />
                                         Payment Method
                                     </h3>
+                                    <Select
+                                        options={[
+                                            {
+                                                label: "Cash on Delivery",
+                                                value: "COD",
+                                            },
+                                            {
+                                                label: "Online Payment",
+                                                value: "online",
+                                            },
+                                        ]}
+                                        value={formData.payment.method}
+                                        onChange={(val) =>
+                                            setFormData({
+                                                ...formData,
+                                                payment: {
+                                                    ...formData.payment,
+                                                    method: val,
+                                                },
+                                            })
+                                        }
+                                        className="w-full max-w-none"
+                                    />
                                 </div>
                             </section>
                         </form>

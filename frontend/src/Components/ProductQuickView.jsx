@@ -1,6 +1,7 @@
 import { X, ChevronRight, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import StarRating from "./UI/StarRating";
 
 const ProductQuickView = ({ product, onClose }) => {
     const [quantity, setQuantity] = useState(1);
@@ -82,6 +83,18 @@ const ProductQuickView = ({ product, onClose }) => {
                                     {Number(product?.price).toLocaleString()}
                                 </p>
                             )}
+                        </div>
+                    </div>
+                    <div className="space-y-6 flex-1">
+                        <div className="flex items-center gap-4 mb-8">
+                            <StarRating
+                                rating={product?.rating || 0}
+                                readonly
+                                size={14}
+                            />
+                            <span className="text-sm uppercase tracking-widest text-zinc-400 font-bold border-l border-zinc-200 pl-4">
+                                {product?.numReviews || 0} REVIEWS
+                            </span>
                         </div>
                     </div>
 

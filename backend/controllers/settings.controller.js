@@ -11,7 +11,6 @@ export const getSettings = expressAsyncHandler(async (req, res, next) => {
         settings = await SettingsModel.create({
             taxAmount: 0,
             shippingFee: 0,
-            shippingMethod: "standard",
         });
     }
 
@@ -26,19 +25,17 @@ export const updateSettings = expressAsyncHandler(async (req, res, next) => {
     const SettingsModel = getLocalSettingsModel();
     if (!SettingsModel) return next(new ErrorResponse("Model not found!", 400));
 
-    const { taxAmount, shippingFee, shippingMethod } = req.body;
+    const { taxAmount, shippingFee } = req.body;
 
     let settings = await SettingsModel.findOne();
     if (!settings) {
         settings = await SettingsModel.create({
             taxAmount: Number(taxAmount) || 0,
             shippingFee: Number(shippingFee) || 0,
-            shippingMethod: shippingMethod || "standard",
         });
     } else {
         settings.taxAmount = Number(taxAmount) || 0;
         settings.shippingFee = Number(shippingFee) || 0;
-        settings.shippingMethod = shippingMethod || settings.shippingMethod;
         await settings.save({ validateModifiedOnly: true });
     }
 

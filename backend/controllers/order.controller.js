@@ -9,6 +9,7 @@ import {
 import { ErrorResponse } from "../utils/ErrorResponse.js";
 import { getEffectivePrice } from "../utils/promotionHelper.js";
 import { PlaceOrderSchema } from "../utils/validationSchemas.js";
+import { ZodError } from "zod";
 
 export const placeOrder = expressAsyncHandler(async (req, res, next) => {
     const OrderModel = getLocalOrderModel();
@@ -19,33 +20,31 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
         return next(new Error("Order model not found"));
     }
 
-    // SECURITY: Validate all input with Zod schema
     let validatedData;
+    // SECURITY: Validate all input with Zod schema
     try {
         validatedData = PlaceOrderSchema.parse(req.body);
     } catch (error) {
-        const firstError = error.errors[0];
-        const fieldPath =
-            firstError.path.length > 0
-                ? firstError.path.join(".")
-                : "unknown field";
-        return next(
-            new ErrorResponse(
-                `Validation error in ${fieldPath}: ${firstError.message}`,
-                400,
-            ),
-        );
+        if (error instanceof ZodError) {
+            const firstError = error.errors[0];
+            const fieldPath =
+                firstError.path.length > 0
+                    ? firstError.path.join(".")
+                    : "unknown field";
+
+            return next(
+                new ErrorResponse(
+                    `Validation error in ${fieldPath}: ${firstError.message}`,
+                    400,
+                ),
+            );
+        }
+
+        return next(error); // rethrow unknown errors safely
     }
 
-    const {
-        items,
-        recipient,
-        payment,
-        taxAmount,
-        shippingFee,
-        shippingMethod,
-        status,
-    } = validatedData;
+    const { items, recipient, payment, taxAmount, shippingFee, status } =
+        validatedData;
 
     if (!payment.method) {
         return next(new ErrorResponse("Payment method is required", 400));
@@ -65,57 +64,64 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
                     );
                 }
 
-                // SECURITY: Re-calculate the price on server side
-                const { price: effectivePrice, promotion } =
+                const isAdmin = req?.user?.role === "admin";
+
+                let finalUnitPrice;
+                let promotion = null;
+
+                // Always get server price (needed for customers)
+                const { price: effectivePrice, promotion: serverPromotion } =
                     await getEffectivePrice(tempProd._id, tempProd.price);
 
-                if (quantity <= 0) {
-                    throw new ErrorResponse(
-                        "Item quantity must be greater than 0",
-                        400,
-                    );
-                }
-
-                // Integrity check (client vs server pricing/promotion)
-                // If the price/promotion changed since the item was added to cart,
-                // reject the order so the client can refresh totals.
                 const clientUnitPrice = Number(item.price);
-                const clientPromoId = item?.promotion?.id?.toString?.();
-                const serverPromoId = promotion?.id?.toString?.();
 
-                if (Number.isFinite(clientUnitPrice)) {
-                    const diff = Math.abs(clientUnitPrice - effectivePrice);
-                    if (diff > 0.01) {
-                        throw new ErrorResponse(
-                            "Pricing has changed. Please review your cart and try again.",
-                            409,
-                        );
-                    }
+                // ADMIN → use client price directly
+                if (isAdmin) {
+                    finalUnitPrice = Number.isFinite(clientUnitPrice)
+                        ? clientUnitPrice
+                        : tempProd.price;
+
+                    promotion = null; // manual pricing ignores promotion
                 }
+                // CUSTOMER → enforce pricing integrity
+                else {
+                    const clientPromoId = item?.promotion?.id?.toString?.();
+                    const serverPromoId = serverPromotion?.id?.toString?.();
 
-                if (clientPromoId || serverPromoId) {
+                    if (Number.isFinite(clientUnitPrice)) {
+                        const diff = Math.abs(clientUnitPrice - effectivePrice);
+                        if (diff > 0.01) {
+                            throw new ErrorResponse(
+                                "Pricing has changed. Please review your cart and try again.",
+                                409,
+                            );
+                        }
+                    }
+
                     if ((clientPromoId || "") !== (serverPromoId || "")) {
                         throw new ErrorResponse(
                             "Promotion has changed. Please review your cart and try again.",
                             409,
                         );
                     }
+
+                    finalUnitPrice = effectivePrice;
+                    promotion = serverPromotion;
                 }
 
                 const originalPrice = Number(tempProd.price) || 0;
                 const discountTotal = Math.max(
                     0,
-                    originalPrice - effectivePrice,
+                    originalPrice - finalUnitPrice,
                 );
-                const discountPerUnit = discountTotal / quantity;
 
                 return {
                     product: item.product,
                     quantity,
-                    price: effectivePrice,
+                    price: finalUnitPrice,
                     originalPrice,
                     discount: discountTotal,
-                    discountPerUnit,
+                    discountPerUnit: discountTotal / quantity,
                     discountTotal,
                     promotion: promotion
                         ? {
@@ -126,22 +132,13 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
                               discountValue: promotion.discountValue,
                           }
                         : null,
-                    totalAmount: effectivePrice * quantity,
+                    totalAmount: finalUnitPrice * quantity,
                 };
             }),
         );
     } catch (error) {
         return next(error);
     }
-
-    // let orderUserId = req.user?._id;
-    // if (req.user?.role === "admin" && userId) {
-    //     const userExists = await UserModel.findById(userId);
-    //     if (!userExists) {
-    //         return next(new ErrorResponse("User not found", 404));
-    //     }
-    //     orderUserId = userId;
-    // }
 
     // SECURITY: Use MongoDB transaction for atomicity
     // Ensures stock and order updates both succeed or both fail
@@ -193,7 +190,6 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
             items: normalizedItems,
             taxAmount: computedTax,
             shippingFee: computedShipping,
-            shippingMethod,
             grandTotal: computedGrandTotal,
             recipient,
             payment,
@@ -266,8 +262,14 @@ export const getOrderById = expressAsyncHandler(async (req, res, next) => {
 
     if (!OrderModel) return next(new ErrorResponse("Model not found!", 400));
 
+    const orderId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+        return next(new ErrorResponse("in-valid order id", 400));
+    }
+
     const order = await OrderModel.findOne({
-        _id: req.params.id,
+        _id: orderId,
         isDeleted: false,
     })
         .populate({

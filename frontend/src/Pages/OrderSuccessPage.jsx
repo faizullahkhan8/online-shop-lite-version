@@ -227,11 +227,8 @@ const OrderSuccessPage = () => {
 
                                 <div>
                                     <h3 className="text-sm font-semibold text-zinc-900 mb-2">
-                                        Shipping method
+                                        Shipping info
                                     </h3>
-                                    <p className="text-sm text-zinc-600 capitalize">
-                                        {order.shippingMethod || "Standard"}
-                                    </p>
                                     <p className="text-xs text-zinc-400 mt-1">
                                         {shippingFee === 0
                                             ? "Free Shipping"
@@ -381,7 +378,8 @@ const OrderSuccessPage = () => {
                                                     </p>
                                                     {item.discount > 0 && (
                                                         <p className="text-xs text-green-600 font-medium">
-                                                            {item.discount}% off
+                                                            Rs: {item.discount}{" "}
+                                                            off
                                                         </p>
                                                     )}
                                                 </div>

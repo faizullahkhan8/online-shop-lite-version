@@ -1,11 +1,21 @@
 import { useState, useEffect } from "react";
-import { useAddReview, useGetProductReviews } from "../../api/hooks/review.api.js";
+import {
+    useAddReview,
+    useGetProductReviews,
+} from "../../api/hooks/review.api.js";
 import StarRating from "../UI/StarRating.jsx";
 import { MessageSquare, User, Calendar, Loader2, PenLine } from "lucide-react";
 
 const ProductReviews = ({ productId }) => {
-    const { getReviews, reviews, loading: reviewsLoading } = useGetProductReviews();
+    const {
+        getReviews,
+        reviews,
+        loading: reviewsLoading,
+    } = useGetProductReviews();
     const { addReview, loading: addLoading } = useAddReview();
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
 
@@ -19,7 +29,14 @@ const ProductReviews = ({ productId }) => {
         e.preventDefault();
         if (rating === 0) return;
 
-        const res = await addReview({ productId, rating, comment });
+        const res = await addReview({
+            productId,
+            rating,
+            comment,
+            name,
+            email,
+        });
+
         if (res?.success) {
             setRating(0);
             setComment("");
@@ -35,7 +52,8 @@ const ProductReviews = ({ productId }) => {
                         Customer Reviews
                     </h3>
                     <p className="text-sm text-zinc-400 uppercase tracking-widest font-medium">
-                        {reviews.length} {reviews.length === 1 ? "entry" : "entries"} recorded
+                        {reviews.length}{" "}
+                        {reviews.length === 1 ? "entry" : "entries"} recorded
                     </p>
                 </div>
                 <div className="hidden lg:block h-[1px] flex-1 mx-12 bg-zinc-100"></div>
@@ -56,7 +74,39 @@ const ProductReviews = ({ productId }) => {
                                 <label className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
                                     Product Rating
                                 </label>
-                                <StarRating rating={rating} setRating={setRating} size={20} />
+                                <StarRating
+                                    rating={rating}
+                                    setRating={setRating}
+                                    size={20}
+                                />
+                            </div>
+
+                            <div className="space-y-3">
+                                <label className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
+                                    Your Name
+                                </label>
+                                <input
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder="Enter your name"
+                                    className="w-full border border-zinc-200 p-2 rounded text-sm"
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-3">
+                                <label className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="Enter your email"
+                                    className="w-full border border-zinc-200 p-2 rounded text-sm"
+                                    required
+                                />
                             </div>
 
                             <div className="space-y-3">
@@ -78,7 +128,10 @@ const ProductReviews = ({ productId }) => {
                                 className="w-full bg-zinc-900 text-white py-4 text-md font-bold uppercase tracking-[0.25em] hover:bg-zinc-700 transition-all flex items-center justify-center gap-3 disabled:opacity-20 disabled:cursor-not-allowed"
                             >
                                 {addLoading ? (
-                                    <Loader2 className="animate-spin" size={14} />
+                                    <Loader2
+                                        className="animate-spin"
+                                        size={14}
+                                    />
                                 ) : (
                                     "Post Review"
                                 )}
@@ -90,12 +143,21 @@ const ProductReviews = ({ productId }) => {
                 <div className="lg:col-span-8 space-y-6">
                     {reviewsLoading ? (
                         <div className="flex flex-col items-center justify-center py-20 bg-white border border-zinc-100">
-                            <Loader2 className="animate-spin text-zinc-200 mb-4" size={24} />
-                            <p className="text-sm uppercase tracking-widest text-zinc-400">Syncing Reviews...</p>
+                            <Loader2
+                                className="animate-spin text-zinc-200 mb-4"
+                                size={24}
+                            />
+                            <p className="text-sm uppercase tracking-widest text-zinc-400">
+                                Syncing Reviews...
+                            </p>
                         </div>
                     ) : reviews.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-20 bg-zinc-50 border border-dashed border-zinc-200">
-                            <MessageSquare className="text-zinc-200 mb-4" size={32} strokeWidth={1} />
+                            <MessageSquare
+                                className="text-zinc-200 mb-4"
+                                size={32}
+                                strokeWidth={1}
+                            />
                             <p className="text-sm uppercase tracking-widest text-zinc-400 text-center">
                                 No commentary available for this item.
                             </p>
@@ -118,15 +180,24 @@ const ProductReviews = ({ productId }) => {
                                                 </h5>
                                                 <div className="flex items-center gap-2 text-[9px] text-zinc-400 font-bold uppercase tracking-tighter">
                                                     <Calendar size={10} />
-                                                    {new Date(review.createdAt).toLocaleDateString('en-US', {
-                                                        year: 'numeric',
-                                                        month: 'short',
-                                                        day: 'numeric'
-                                                    })}
+                                                    {new Date(
+                                                        review.createdAt,
+                                                    ).toLocaleDateString(
+                                                        "en-US",
+                                                        {
+                                                            year: "numeric",
+                                                            month: "short",
+                                                            day: "numeric",
+                                                        },
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
-                                        <StarRating rating={review.rating} readonly size={12} />
+                                        <StarRating
+                                            rating={review.rating}
+                                            readonly
+                                            size={12}
+                                        />
                                     </div>
                                     <p className="text-[13px] text-zinc-500 leading-relaxed font-light pl-14 pr-4">
                                         {review.comment}

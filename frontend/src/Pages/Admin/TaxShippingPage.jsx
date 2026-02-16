@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { Truck, Receipt, Save, Loader2 } from "lucide-react";
 import Input from "../../UI/Input.jsx";
 import Select from "../../UI/Select.jsx";
-import { useGetSettings, useUpdateSettings } from "../../api/hooks/settings.api";
+import {
+    useGetSettings,
+    useUpdateSettings,
+} from "../../api/hooks/settings.api";
 
 const TaxShippingSettings = () => {
     const { getSettings, loading: settingsLoading } = useGetSettings();
@@ -11,7 +14,6 @@ const TaxShippingSettings = () => {
     const [form, setForm] = useState({
         taxAmount: 0,
         shippingFee: 0,
-        shippingMethod: "standard",
     });
 
     useEffect(() => {
@@ -20,7 +22,6 @@ const TaxShippingSettings = () => {
                 setForm({
                     taxAmount: Number(res.settings.taxAmount) || 0,
                     shippingFee: Number(res.settings.shippingFee) || 0,
-                    shippingMethod: res.settings.shippingMethod || "standard",
                 });
             }
         });
@@ -31,7 +32,6 @@ const TaxShippingSettings = () => {
         await updateSettings({
             taxAmount: Number(form.taxAmount) || 0,
             shippingFee: Number(form.shippingFee) || 0,
-            shippingMethod: form.shippingMethod,
         });
     };
 
@@ -102,31 +102,6 @@ const TaxShippingSettings = () => {
                                 placeholder="0.00"
                             />
                         </div>
-                    </div>
-                </section>
-
-                {/* Shipping Method Section */}
-                <section className="space-y-4">
-                    <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2 pb-3 border-b border-gray-100">
-                        <Truck size={16} className="text-blue-600" />
-                        Shipping Method
-                    </h3>
-                    <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-gray-700">
-                            Default Shipping Method
-                        </label>
-                        <Select
-                            options={[
-                                { label: "Standard Shipping", value: "standard" },
-                                { label: "Express Shipping", value: "express" },
-                                { label: "Store Pickup", value: "pickup" },
-                            ]}
-                            value={form.shippingMethod}
-                            onChange={(val) =>
-                                setForm((p) => ({ ...p, shippingMethod: val }))
-                            }
-                            className="w-full max-w-none"
-                        />
                     </div>
                 </section>
 

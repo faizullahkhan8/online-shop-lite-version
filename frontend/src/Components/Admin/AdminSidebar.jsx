@@ -120,7 +120,7 @@ const AdminSidebar = () => {
                             marginRight: "8px",
                         }),
                         subMenuContent: {
-                            marginLeft: "20px"
+                            marginLeft: "20px",
                         },
                     }}
                 >
@@ -133,8 +133,9 @@ const AdminSidebar = () => {
 
                     {/* Inventory Section */}
                     <div
-                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${collapsed ? "opacity-0" : "opacity-100"
-                            }`}
+                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${
+                            collapsed ? "opacity-0" : "opacity-100"
+                        }`}
                     >
                         Inventory
                     </div>
@@ -188,11 +189,11 @@ const AdminSidebar = () => {
                         </MenuItem>
                     </SubMenu>
 
-
                     {/* Logistics Section */}
                     <div
-                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${collapsed ? "opacity-0" : "opacity-100"
-                            }`}
+                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${
+                            collapsed ? "opacity-0" : "opacity-100"
+                        }`}
                     >
                         Logistics
                     </div>
@@ -218,31 +219,11 @@ const AdminSidebar = () => {
                         </MenuItem>
                     </SubMenu>
 
-                    <SubMenu
-                        label="Users"
-                        icon={<Users size={18} />}
-                        defaultOpen={location.pathname.includes("users")}
-                    >
-                        <MenuItem
-                            component={<NavLink to="/admin-dashboard/users" />}
-                            icon={<ListIcon size={16} />}
-                        >
-                            All Users
-                        </MenuItem>
-                        <MenuItem
-                            component={
-                                <NavLink to="/admin-dashboard/users/add" />
-                            }
-                            icon={<Plus size={16} />}
-                        >
-                            Add User
-                        </MenuItem>
-                    </SubMenu>
-
                     {/* Marketing Section */}
                     <div
-                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${collapsed ? "opacity-0" : "opacity-100"
-                            }`}
+                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${
+                            collapsed ? "opacity-0" : "opacity-100"
+                        }`}
                     >
                         Marketing
                     </div>
@@ -283,7 +264,9 @@ const AdminSidebar = () => {
                             }
                         >
                             {loading ? (
-                                <span className="text-red-500">Logging out...</span>
+                                <span className="text-red-500">
+                                    Logging out...
+                                </span>
                             ) : (
                                 "Logout"
                             )}

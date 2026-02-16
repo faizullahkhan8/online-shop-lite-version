@@ -220,11 +220,7 @@ const TrackOrderPage = () => {
                                             />
                                             <div>
                                                 <p className="text-xs text-gray-500 uppercase mb-1">
-                                                    Shipping Method
-                                                </p>
-                                                <p className="text-sm font-semibold capitalize">
-                                                    {order.shippingMethod ||
-                                                        "Standard"}
+                                                    Shipping Info
                                                 </p>
                                                 <p className="text-xs text-gray-500">
                                                     RS{" "}

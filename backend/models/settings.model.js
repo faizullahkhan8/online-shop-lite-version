@@ -10,10 +10,6 @@ const settingsSchema = new Schema(
             type: Number,
             default: 0,
         },
-        shippingMethod: {
-            type: String,
-            default: "standard",
-        },
     },
     {
         timestamps: true,

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ProductQuickView from "./ProductQuickView";
 import { useNavigate } from "react-router-dom";
+import StarRating from "./UI/StarRating";
 
 const ProductCard = ({ product, isLarge = false }) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -11,7 +12,6 @@ const ProductCard = ({ product, isLarge = false }) => {
         <>
             <div
                 className={`flex flex-col group cursor-pointer snap-start ${isLarge ? "min-w-[85vw] md:min-w-[45vw] lg:min-w-[30%]" : "w-full"}`}
-                onClick={() => navigate(`/product/${product._id}`)}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
@@ -33,14 +33,14 @@ const ProductCard = ({ product, isLarge = false }) => {
                     {isHovered && (
                         <div
                             className="absolute inset-0 bg-black/5 flex items-end justify-center pb-8 animate-in fade-in duration-300"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setIsQuickViewOpen(true);
-                            }}
+                            onClick={() => navigate(`/product/${product._id}`)}
                         >
                             <button
-                                onClick={(e) => e.stopPropagation()}
-                                className="bg-white/90 backdrop-blur-md text-black px-8 py-2.5 text-xs font-medium tracking-[0.2em] uppercase hover:bg-black hover:text-white transition-all duration-300 shadow-lg"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsQuickViewOpen(true);
+                                }}
+                                className="bg-white/90 backdrop-blur-md text-black px-8 py-2.5 text-xs font-medium tracking-[0.2em] uppercase hover:bg-black hover:text-white transition-all duration-300 shadow-lg cursor-pointer"
                             >
                                 Quick view
                             </button>
@@ -73,6 +73,16 @@ const ProductCard = ({ product, isLarge = false }) => {
                                     : product.price}
                             </p>
                         )}
+                    </div>
+                    <div className="flex items-center gap-4 mb-8">
+                        <StarRating
+                            rating={product?.rating || 0}
+                            readonly
+                            size={14}
+                        />
+                        <span className="text-sm uppercase tracking-widest text-zinc-400 font-bold border-l border-zinc-200 pl-4">
+                            {product?.numReviews || 0} REVIEWS
+                        </span>
                     </div>
                 </div>
             </div>

@@ -561,19 +561,6 @@ const OrderDetails = () => {
                         <div className="space-y-2">
                             <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 border border-gray-200">
                                 <span className="text-xs font-medium text-gray-600">
-                                    Shipping Method
-                                </span>
-                                <span className="text-xs font-semibold text-gray-900">
-                                    {order.shippingMethod
-                                        ? order.shippingMethod
-                                              .charAt(0)
-                                              .toUpperCase() +
-                                          order.shippingMethod.slice(1)
-                                        : "Standard"}
-                                </span>
-                            </div>
-                            <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 border border-gray-200">
-                                <span className="text-xs font-medium text-gray-600">
                                     Payment Method
                                 </span>
                                 <span className="text-xs font-semibold text-gray-900">

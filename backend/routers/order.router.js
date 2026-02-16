@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { authorize, isAuth } from "../middlewares/auth.middleware.js";
 import {
-    checkoutLimiter,
-    trackingLimiter,
-} from "../middlewares/rateLimiters.js";
+    authorize,
+    isAuth,
+    optionalAuth,
+} from "../middlewares/auth.middleware.js";
 import {
     getAllOrder,
     placeOrder,
@@ -20,7 +20,7 @@ import {
 
 const router = new Router();
 
-router.post("/place-order", placeOrder);
+router.post("/place-order", optionalAuth, placeOrder);
 router.get("/get-all", isAuth, authorize("admin"), getAllOrder);
 
 // Guest order tracking via token (PUBLIC - no auth required) with rate limiting

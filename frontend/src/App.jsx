@@ -35,8 +35,6 @@ const CollectionsListPage = lazy(
 const OrdersListPage = lazy(() => import("./Pages/Admin/OrdersListPage"));
 const OrderDetailsPage = lazy(() => import("./Pages/Admin/OrderDetailsPage"));
 const AddOrderPage = lazy(() => import("./Pages/Admin/AddOrderPage"));
-const UsersListPage = lazy(() => import("./Pages/Admin/UsersListPage"));
-const AddUserPage = lazy(() => import("./Pages/Admin/AddUserPage"));
 const AdminPromotionsPage = lazy(() => import("./Pages/Admin/PromotionsPage"));
 const PromotionBuilderPage = lazy(
     () => import("./Pages/Admin/PromotionBuilderPage"),
@@ -150,8 +148,6 @@ const App = () => {
                             element={<OrderDetailsPage />}
                         />
                         <Route path="orders/add" element={<AddOrderPage />} />
-                        <Route path="users" element={<UsersListPage />} />
-                        <Route path="users/add" element={<AddUserPage />} />
                         <Route
                             path="promotions"
                             element={<AdminPromotionsPage />}
