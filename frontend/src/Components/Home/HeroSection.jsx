@@ -24,7 +24,11 @@ const HeroSection = () => {
         return (
             <div className="container mx-auto px-4 lg:px-12 py-12">
                 <div className="h-[400px] md:h-[600px] bg-white border border-zinc-100 flex items-center justify-center">
-                    <Loader2 className="animate-spin text-zinc-900" size={24} strokeWidth={1} />
+                    <Loader2
+                        className="animate-spin text-zinc-900"
+                        size={24}
+                        strokeWidth={1}
+                    />
                 </div>
             </div>
         );
@@ -38,7 +42,6 @@ const HeroSection = () => {
         <div className="container mx-auto px-4 lg:px-12 py-12">
             <div className="relative overflow-hidden bg-gray-100 border border-zinc-100">
                 <div className="relative grid md:grid-cols-2 gap-12 items-center min-h-[500px] lg:h-[650px] px-8 md:px-16 py-12">
-
                     <div className="relative h-full flex flex-col justify-center order-2 md:order-1">
                         <div className="space-y-8 pb-16">
                             <p className="text-md font-semibold tracking-[0.4em] uppercase text-zinc-900">
@@ -54,12 +57,6 @@ const HeroSection = () => {
                                     {activeSlide.subtitle}
                                 </p>
                             )}
-
-                            <div className="pt-4">
-                                <Button variant="primary" size="lg">
-                                    Buy Now
-                                </Button>
-                            </div>
                         </div>
 
                         <div className="absolute bottom-0 flex gap-4">
@@ -69,9 +66,11 @@ const HeroSection = () => {
                                     onClick={() => setCurrentSlide(idx)}
                                     className="group py-4"
                                 >
-                                    <div className={`h-[1px] transition-all duration-700 ${currentSlide === idx
-                                        ? "w-12 bg-zinc-900"
-                                        : "w-6 bg-zinc-200 group-hover:bg-zinc-400"
+                                    <div
+                                        className={`h-[1px] transition-all duration-700 ${
+                                            currentSlide === idx
+                                                ? "w-12 bg-zinc-900"
+                                                : "w-6 bg-zinc-200 group-hover:bg-zinc-400"
                                         }`}
                                     />
                                 </button>
@@ -89,7 +88,6 @@ const HeroSection = () => {
                             />
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

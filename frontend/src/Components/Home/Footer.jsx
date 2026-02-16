@@ -12,25 +12,8 @@ import { Link } from "react-router-dom";
 const Footer = () => {
     const footerSections = [
         {
-            title: "About",
-            links: ["Our Story", "Ateliers", "Categories", "Editorial"],
-        },
-        {
-            title: "Partnership",
-            links: [
-                "Trade Assurance",
-                "Verification",
-                "Logistics",
-                "Production",
-            ],
-        },
-        {
-            title: "Support",
-            links: ["Help Center", "Returns", "Shipping", "Contact"],
-        },
-        {
-            title: "Account",
-            links: ["Login", "Register", "Settings", "Orders"],
+            title: "Links",
+            links: ["about-us", "products", "collections", "track-order"],
         },
     ];
 
@@ -49,7 +32,11 @@ const Footer = () => {
                     <div className="max-w-xs space-y-8">
                         <Link to="/" className="flex items-center gap-3 group">
                             <div className="w-10 h-10 bg-zinc-900 rounded-full flex items-center justify-center transition-transform duration-500 group-hover:rotate-180">
-                                <Globe className="text-white" size={20} strokeWidth={1} />
+                                <Globe
+                                    className="text-white"
+                                    size={20}
+                                    strokeWidth={1}
+                                />
                             </div>
                             <div>
                                 <p className="text-md font-semibold tracking-widest uppercase text-zinc-900">
@@ -62,15 +49,15 @@ const Footer = () => {
                         </Link>
 
                         <p className="text-zinc-500 text-sm leading-relaxed tracking-wide font-light">
-                            A global platform dedicated to the preservation of high-end artifacts and
-                            essential sourcing for the modern professional since 2026.
+                            A global platform dedicated to the preservation of
+                            high-end artifacts and essential sourcing for the
+                            modern professional since 2026.
                         </p>
 
                         <div className="flex gap-4">
                             {socialIcons.map((item, index) => (
                                 <a
                                     key={index}
-                                    href="#"
                                     aria-label={item.label}
                                     className="w-8 h-8 border border-zinc-100 text-zinc-400 rounded-full flex items-center justify-center transition-all hover:border-zinc-900 hover:text-zinc-900"
                                 >
@@ -90,7 +77,7 @@ const Footer = () => {
                                     {section.links.map((link, lIdx) => (
                                         <li key={lIdx}>
                                             <a
-                                                href="#"
+                                                href={link}
                                                 className="text-sm text-zinc-400 hover:text-zinc-900 transition-colors inline-block tracking-wide font-light"
                                             >
                                                 {link}
@@ -105,24 +92,10 @@ const Footer = () => {
             </div>
 
             <div className="bg-zinc-50 py-8 border-t border-zinc-100">
-                <div className="container mx-auto px-4 lg:px-12 flex flex-col sm:flex-row justify-between items-center gap-6">
-                    <p className="text-zinc-400 text-sm uppercase tracking-[0.1em] font-light">
+                <div className="container mx-auto px-4 lg:px-12 flex sm:flex-row justify-center items-center gap-6">
+                    <p className="text-zinc-400 text-sm uppercase tracking-widest font-light">
                         © 2026 E-Archive. All Rights Reserved.
                     </p>
-
-                    <div className="flex items-center gap-8">
-                        <div className="flex items-center gap-2 cursor-pointer group">
-                            <img
-                                src="https://flagcdn.com/us.svg"
-                                alt="US"
-                                className="w-4 h-3 object-cover grayscale group-hover:grayscale-0 transition-all"
-                            />
-                            <span className="text-sm text-zinc-500 group-hover:text-zinc-900 transition-colors uppercase tracking-widest font-medium">
-                                EN
-                            </span>
-                            <ChevronDown size={12} className="text-zinc-300 group-hover:text-zinc-900" />
-                        </div>
-                    </div>
                 </div>
             </div>
         </footer>
