@@ -56,10 +56,10 @@ const Header = () => {
                             className="flex flex-col items-center flex-1 lg:flex-none"
                         >
                             <span className="text-xl font-semibold tracking-[0.3em] uppercase text-zinc-900 leading-none">
-                                E-Shop
+                                Askar
                             </span>
-                            <span className="text-[9px] uppercase tracking-[0.25em] text-zinc-400 mt-1">
-                                Studio Edition
+                            <span className="text-[9px] uppercase text-center tracking-[0.25em] text-zinc-400 mt-1">
+                                Famous for <br /> Quaility
                             </span>
                         </Link>
                         <nav className="flex items-center gap-8">
@@ -116,10 +116,22 @@ const Header = () => {
                             >
                                 Track order
                             </Link>
+                            <Link
+                                to="/about-us"
+                                className={`text-xs uppercase tracking-[0.2em] font-medium transition-colors ${location.pathname === "/about-us" ? "text-zinc-900" : "text-zinc-400 hover:text-zinc-900"}`}
+                            >
+                                About Us
+                            </Link>
                         </nav>
                     </div>
 
                     <div className="flex items-center justify-end gap-5 lg:gap-8 flex-1">
+                        <button
+                            onClick={() => setIsSearchOpen(true)}
+                            className="text-zinc-900 hover:text-zinc-500 transition-colors"
+                        >
+                            <Search size={19} strokeWidth={1.5} />
+                        </button>
                         <button
                             onClick={() => setIsMenuOpen(true)}
                             className="md:hidden text-zinc-900 hover:text-zinc-500 transition-colors"
@@ -127,12 +139,6 @@ const Header = () => {
                             <Menu size={20} strokeWidth={1.5} />
                         </button>
 
-                        <button
-                            onClick={() => setIsSearchOpen(true)}
-                            className="text-zinc-900 hover:text-zinc-500 transition-colors"
-                        >
-                            <Search size={19} strokeWidth={1.5} />
-                        </button>
                     </div>
                 </div>
             </div>

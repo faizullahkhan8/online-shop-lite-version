@@ -2,10 +2,6 @@ import { Schema, SchemaTypes } from "mongoose";
 
 const reviewSchema = new Schema(
     {
-        user: {
-            type: SchemaTypes.ObjectId,
-            ref: "User",
-        },
         product: {
             type: SchemaTypes.ObjectId,
             ref: "Product",
@@ -35,7 +31,6 @@ const reviewSchema = new Schema(
     },
 );
 
-// Prevent multiple reviews from the same user for the same product
 reviewSchema.index({ name: 1, email: 1 }, { unique: true });
 
 export default reviewSchema;

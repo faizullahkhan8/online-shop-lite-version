@@ -6,31 +6,21 @@ import {
 import { ErrorResponse } from "../utils/ErrorResponse.js";
 
 export const addReview = expressAsyncHandler(async (req, res, next) => {
-    console.log("point : 01");
     const { rating, comment, productId, name, email } = req.body;
 
-    console.log(req.body);
-    console.log("point : 02");
-
     const Product = getLocalProductModel();
-    console.log("point : 03");
     const Review = getLocalReviewModel();
-    console.log("point : 04");
 
     if (!Product || !Review) {
         return next(new ErrorResponse("Database models not found", 500));
     }
-    console.log("point : 05");
 
     const product = await Product.findById(productId);
-    console.log("point : 06");
     if (!product) {
         return next(new ErrorResponse("Product not found", 404));
     }
-    console.log("point : 07");
 
     let filter = { product: productId };
-    console.log("point : 08");
 
     // Guest user must provide name & email
     if (!name || !email) {
@@ -41,21 +31,17 @@ export const addReview = expressAsyncHandler(async (req, res, next) => {
             ),
         );
     }
-    console.log("point : 09");
 
     filter.email = email.toLowerCase();
     filter.name = name; // lowercase for uniqueness
-    console.log("point : 10");
 
     // Check if review already exists
     const alreadyReviewed = await Review.findOne(filter);
-    console.log("point : 11");
     if (alreadyReviewed) {
         return next(
             new ErrorResponse("You have already reviewed this product", 400),
         );
     }
-    console.log("point : 12");
     // Create review
     const reviewData = {
         rating: Number(rating),
@@ -65,21 +51,20 @@ export const addReview = expressAsyncHandler(async (req, res, next) => {
         email: email.toLowerCase(),
         isGuest: true,
     };
-    console.log("point : 13");
-    console.log(reviewData);
-    const review = await Review.create(reviewData);
-    console.log("point : 14");
+
+    const review = await Review.create({ ...reviewData });
 
     // Recalculate product rating
-    const reviews = await Review.find({ product: productId });
-    console.log("point : 15");
-    product.numReviews = reviews.length;
-    console.log("point : 16");
-    product.rating =
-        reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length;
-    console.log("point : 17");
-    await product.save({ validateModifiedOnly: true });
-    console.log("point : 18");
+    try {
+        const reviews = await Review.find({ product: productId });
+        product.numReviews = reviews.length;
+        product.rating =
+            reviews.reduce((acc, item) => item.rating + acc, 0) /
+            reviews.length;
+        await product.save({ validateModifiedOnly: true });
+    } catch (error) {
+        return next(new ErrorResponse("You can give one review per product"));
+    }
 
     res.status(201).json({
         success: true,

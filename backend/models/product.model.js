@@ -9,7 +9,6 @@ const productSchema = new Schema(
         collection: {
             type: SchemaTypes.ObjectId,
             ref: "Collection",
-            required: true,
         },
         stock: { type: Number, required: true },
         lowStock: { type: Number, required: true },

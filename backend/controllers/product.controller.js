@@ -14,11 +14,11 @@ export const createProduct = expressAsyncHandler(async (req, res, next) => {
     if (!ProductModel)
         return next(new ErrorResponse("Product model not found", 500));
 
-    const { name, price, description, collection, stock, lowStock } = JSON.parse(
+    const { name, price, description, stock, lowStock } = JSON.parse(
         req.body?.data,
     );
 
-    if (!name || !price || !description || !collection || !stock || !lowStock)
+    if (!name || !price || !description || !stock || !lowStock)
         return next(new ErrorResponse("All fields are required", 400));
 
     const isProductExist = await ProductModel.findOne({ name });
@@ -35,7 +35,6 @@ export const createProduct = expressAsyncHandler(async (req, res, next) => {
         name,
         price,
         description,
-        collection,
         stock,
         lowStock,
         image: req.image?.filePath || "",
@@ -73,9 +72,9 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
         } else {
             const CollectionModel = getLocalCollectionModel();
             if (CollectionModel) {
-                const matchedCollection = await CollectionModel
-                    .findOne({ name: collection.toLowerCase() })
-                    .select("_id");
+                const matchedCollection = await CollectionModel.findOne({
+                    name: collection.toLowerCase(),
+                }).select("_id");
                 if (matchedCollection?._id) {
                     query.collection = matchedCollection._id;
                 } else {

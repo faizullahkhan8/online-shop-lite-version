@@ -28,30 +28,21 @@ const Footer = () => {
     return (
         <footer className="w-full bg-white pt-24 border-t border-zinc-100">
             <div className="container mx-auto px-4 lg:px-12 pb-20">
-                <div className="flex flex-col lg:flex-row justify-between gap-16 lg:gap-24">
+                <div className="flex flex-col lg:flex-row justify-between gap-16 lg:gap-24 pb-10">
                     <div className="max-w-xs space-y-8">
                         <Link to="/" className="flex items-center gap-3 group">
-                            <div className="w-10 h-10 bg-zinc-900 rounded-full flex items-center justify-center transition-transform duration-500 group-hover:rotate-180">
-                                <Globe
-                                    className="text-white"
-                                    size={20}
-                                    strokeWidth={1}
-                                />
-                            </div>
                             <div>
                                 <p className="text-md font-semibold tracking-widest uppercase text-zinc-900">
-                                    Archive
+                                    Askar
                                 </p>
                                 <p className="text-sm tracking-[0.2em] uppercase text-zinc-400">
-                                    Curated by Khan
+                                    Famous for Quaility
                                 </p>
                             </div>
                         </Link>
 
                         <p className="text-zinc-500 text-sm leading-relaxed tracking-wide font-light">
-                            A global platform dedicated to the preservation of
-                            high-end artifacts and essential sourcing for the
-                            modern professional since 2026.
+                            At Askar.pk, we believe that good health should be simple, natural, and trustworthy.
                         </p>
 
                         <div className="flex gap-4">

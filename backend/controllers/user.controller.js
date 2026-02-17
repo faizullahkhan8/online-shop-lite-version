@@ -21,10 +21,10 @@ export const registerUser = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("All fields are required", 400));
     }
 
-    const isEmailExists = await UserModel.findOne({ email });
+    const isAdminAlreadyExists = await UserModel.findOne();
 
-    if (isEmailExists) {
-        return next(new ErrorResponse("Email already exists", 400));
+    if (isAdminAlreadyExists) {
+        return next(new ErrorResponse("Admin already exists", 400));
     }
 
     let user;
@@ -34,7 +34,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
             name,
             email,
             password,
-            phone: "0331234567",
+            role: "admin",
         });
     } catch (error) {
         console.error("CREATE USER ERROR:", error);
@@ -193,7 +193,10 @@ export const updateUser = asyncHandler(async (req, res, next) => {
             try {
                 await deleteImageKitFile(user.avatarFileId);
             } catch (err) {
-                console.error("Failed to delete old avatar from ImageKit:", err);
+                console.error(
+                    "Failed to delete old avatar from ImageKit:",
+                    err,
+                );
             }
         }
         user.avatar = req.image.url;
