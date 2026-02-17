@@ -111,7 +111,8 @@ const ProductDetailPage = () => {
                             </p>
                             {product?.stock > 0 ? (
                                 <span className="flex items-center gap-1.5 text-emerald-600 text-sm font-bold uppercase tracking-widest">
-                                    <CheckCircle2 size={12} /> Available
+                                    <CheckCircle2 size={12} />
+                                    {product.stock} Available
                                 </span>
                             ) : (
                                 <span className="text-red-500 text-sm font-bold uppercase tracking-widest">
@@ -209,31 +210,6 @@ const ProductDetailPage = () => {
                                     <ArrowRight size={16} strokeWidth={1.5} />
                                     Buy Now
                                 </button>
-                            </div>
-                        </div>
-
-                        <div className="mt-12 grid grid-cols-2 gap-8 border-t border-zinc-100 pt-10">
-                            <div className="flex flex-col gap-2">
-                                <div className="flex items-center gap-3 text-zinc-900">
-                                    <Truck size={18} strokeWidth={1.2} />
-                                    <span className="text-sm font-bold uppercase tracking-widest">
-                                        Global Shipping
-                                    </span>
-                                </div>
-                                <p className="text-sm text-zinc-400 leading-relaxed uppercase tracking-tighter">
-                                    Delivery within 3-5 business days
-                                </p>
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <div className="flex items-center gap-3 text-zinc-900">
-                                    <ShieldCheck size={18} strokeWidth={1.2} />
-                                    <span className="text-sm font-bold uppercase tracking-widest">
-                                        Studio Warranty
-                                    </span>
-                                </div>
-                                <p className="text-sm text-zinc-400 leading-relaxed uppercase tracking-tighter">
-                                    12-Month authenticity guarantee
-                                </p>
                             </div>
                         </div>
                     </div>

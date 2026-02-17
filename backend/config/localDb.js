@@ -31,7 +31,7 @@ export const connectToDB = async () => {
 
             localDbConnection = await mongoose
                 .createConnection(process.env.MONGO_URI_ONLINE, {
-                    dbName: "online_shop_for_ssi_client",
+                    dbName: "online-shop-lite-version",
                 })
                 .asPromise();
 

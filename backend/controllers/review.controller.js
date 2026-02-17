@@ -6,73 +6,80 @@ import {
 import { ErrorResponse } from "../utils/ErrorResponse.js";
 
 export const addReview = expressAsyncHandler(async (req, res, next) => {
+    console.log("point : 01");
     const { rating, comment, productId, name, email } = req.body;
 
+    console.log(req.body);
+    console.log("point : 02");
+
     const Product = getLocalProductModel();
+    console.log("point : 03");
     const Review = getLocalReviewModel();
+    console.log("point : 04");
 
     if (!Product || !Review) {
         return next(new ErrorResponse("Database models not found", 500));
     }
+    console.log("point : 05");
 
     const product = await Product.findById(productId);
+    console.log("point : 06");
     if (!product) {
         return next(new ErrorResponse("Product not found", 404));
     }
+    console.log("point : 07");
 
     let filter = { product: productId };
+    console.log("point : 08");
 
-    // Authenticated user
-    if (req.user) {
-        filter.user = req.user._id;
-    } else {
-        // Guest user must provide name & email
-        if (!name || !email) {
-            return next(
-                new ErrorResponse(
-                    "Name and email are required for guest reviews",
-                    400,
-                ),
-            );
-        }
-        filter.email = email.toLowerCase(); // lowercase for uniqueness
+    // Guest user must provide name & email
+    if (!name || !email) {
+        return next(
+            new ErrorResponse(
+                "Name and email are required for guest reviews",
+                400,
+            ),
+        );
     }
+    console.log("point : 09");
+
+    filter.email = email.toLowerCase();
+    filter.name = name; // lowercase for uniqueness
+    console.log("point : 10");
 
     // Check if review already exists
     const alreadyReviewed = await Review.findOne(filter);
+    console.log("point : 11");
     if (alreadyReviewed) {
         return next(
             new ErrorResponse("You have already reviewed this product", 400),
         );
     }
-
+    console.log("point : 12");
     // Create review
     const reviewData = {
         rating: Number(rating),
         comment,
         product: productId,
+        name: name,
+        email: email.toLowerCase(),
+        isGuest: true,
     };
-
-    if (req.user) {
-        reviewData.user = req.user._id;
-        reviewData.name = req.user.name;
-        reviewData.email = req.user.email;
-        reviewData.isGuest = false;
-    } else {
-        reviewData.name = name;
-        reviewData.email = email.toLowerCase();
-        reviewData.isGuest = true;
-    }
-
+    console.log("point : 13");
+    console.log(reviewData);
     const review = await Review.create(reviewData);
+    console.log("point : 14");
 
     // Recalculate product rating
     const reviews = await Review.find({ product: productId });
+    console.log("point : 15");
     product.numReviews = reviews.length;
+    console.log("point : 16");
     product.rating =
         reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length;
-
-    await product.save();
+    console.log("point : 17");
+    await product.save({ validateModifiedOnly: true });
+    console.log("point : 18");
 
     res.status(201).json({
         success: true,
