@@ -61,7 +61,7 @@ const ProductReviews = ({ productId }) => {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
                 <div className="lg:col-span-4">
-                    <div className="bg-zinc-50 p-8 rounded-sm border border-zinc-100 sticky top-32">
+                    <div className="bg-zinc-50 p-8 rounded-2xl border border-zinc-100 sticky top-32">
                         <div className="flex items-center gap-3 mb-8">
                             <PenLine size={16} className="text-zinc-900" />
                             <h4 className="text-md font-bold text-zinc-900 uppercase tracking-[0.2em]">
@@ -71,7 +71,7 @@ const ProductReviews = ({ productId }) => {
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="space-y-3">
-                                <label className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
+                                <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">
                                     Product Rating
                                 </label>
                                 <StarRating
@@ -82,7 +82,7 @@ const ProductReviews = ({ productId }) => {
                             </div>
 
                             <div className="space-y-3">
-                                <label className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
+                                <label className="text-xs font-bold text-zinc-400 tracking-widest">
                                     Your Name
                                 </label>
                                 <input
@@ -90,13 +90,13 @@ const ProductReviews = ({ productId }) => {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="Enter your name"
-                                    className="w-full border border-zinc-200 p-2 rounded text-sm"
+                                    className="w-full border border-zinc-200 px-4 py-2 rounded-2xl text-sm"
                                     required
                                 />
                             </div>
 
                             <div className="space-y-3">
-                                <label className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
+                                <label className="text-xs font-bold text-zinc-400 tracking-widest">
                                     Email
                                 </label>
                                 <input
@@ -104,20 +104,20 @@ const ProductReviews = ({ productId }) => {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="Enter your email"
-                                    className="w-full border border-zinc-200 p-2 rounded text-sm"
+                                    className="w-full border border-zinc-200 px-4 py-2 rounded-2xl text-sm"
                                     required
                                 />
                             </div>
 
                             <div className="space-y-3">
-                                <label className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
+                                <label className="text-xs font-bold text-zinc-400 tracking-widest">
                                     Your Commentary
                                 </label>
                                 <textarea
                                     value={comment}
                                     onChange={(e) => setComment(e.target.value)}
-                                    placeholder="DESCRIBE YOUR EXPERIENCE..."
-                                    className="w-full bg-white border border-zinc-200 rounded-none p-4 text-md uppercase tracking-widest focus:border-zinc-900 outline-none transition-all placeholder:text-zinc-300 min-h-[150px] resize-none"
+                                    placeholder="Describe your experience..."
+                                    className="w-full border border-zinc-200 rounded-2xl p-4 text-md uppercase tracking-widest focus:border-zinc-900 outline-none transition-all placeholder:text-zinc-300 min-h-[150px] resize-none"
                                     required
                                 />
                             </div>
@@ -125,7 +125,7 @@ const ProductReviews = ({ productId }) => {
                             <button
                                 type="submit"
                                 disabled={addLoading || rating === 0}
-                                className="w-full bg-zinc-900 text-white py-4 text-md font-bold uppercase tracking-[0.25em] hover:bg-zinc-700 transition-all flex items-center justify-center gap-3 disabled:opacity-20 disabled:cursor-not-allowed"
+                                className="w-full bg-zinc-900 text-white py-4 text-md font-bold uppercase tracking-[0.25em] hover:bg-zinc-700 transition-all flex items-center justify-center gap-3 disabled:opacity-20 disabled:cursor-not-allowed rounded-2xl"
                             >
                                 {addLoading ? (
                                     <Loader2
@@ -171,14 +171,17 @@ const ProductReviews = ({ productId }) => {
                                 >
                                     <div className="flex justify-between items-start mb-4">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-zinc-900 text-white flex items-center justify-center text-sm font-bold uppercase">
+                                            <div className="w-10 h-10 bg-zinc-900 text-white flex items-center justify-center text-sm font-bold uppercase rounded-2xl">
                                                 {review.name.substring(0, 2)}
                                             </div>
                                             <div>
-                                                <h5 className="text-md font-bold text-zinc-900 uppercase tracking-widest mb-1">
+                                                <h5 className="text-md font-bold text-zinc-900 tracking-widest mb-1">
                                                     {review.name}
                                                 </h5>
-                                                <div className="flex items-center gap-2 text-[9px] text-zinc-400 font-bold uppercase tracking-tighter">
+                                                <p className="text-xs text-zinc-400">
+                                                    {review.email}
+                                                </p>
+                                                <div className="flex items-center gap-2 text-xs text-zinc-400 font-bold tracking-tighter">
                                                     <Calendar size={10} />
                                                     {new Date(
                                                         review.createdAt,

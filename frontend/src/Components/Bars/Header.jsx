@@ -58,7 +58,7 @@ const Header = () => {
                             <span className="text-xl font-semibold tracking-[0.3em] uppercase text-zinc-900 leading-none">
                                 Askar
                             </span>
-                            <span className="text-[9px] uppercase text-center tracking-[0.25em] text-zinc-400 mt-1">
+                            <span className="text-xs uppercase text-center tracking-[0.25em] text-zinc-400 mt-1">
                                 Famous for <br /> Quaility
                             </span>
                         </Link>
@@ -77,7 +77,7 @@ const Header = () => {
                             >
                                 <button
                                     onClick={() => navigate("/collections")}
-                                    className={`flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-medium transition-colors ${isCollectionOpen ? "text-zinc-900" : "text-zinc-400"}`}
+                                    className={`flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-medium transition-colors cursor-pointer ${isCollectionOpen ? "text-zinc-900" : "text-zinc-400"}`}
                                 >
                                     Collections
                                     <ChevronDown
@@ -87,7 +87,7 @@ const Header = () => {
                                 </button>
 
                                 {isCollectionOpen && (
-                                    <div className="absolute top-full left-0 w-150 bg-white border border-zinc-100 shadow-2xl p-8 z-100 grid grid-cols-3 gap-8 animate-in fade-in slide-in-from-top-2 duration-300">
+                                    <div className="absolute top-full left-0 w-150 bg-white border border-zinc-100 rounded-2xl shadow-2xl p-8 z-100 grid grid-cols-3 gap-8 animate-in fade-in slide-in-from-top-2 duration-300">
                                         {collections?.map((link) => (
                                             <Link
                                                 key={link.name}

@@ -55,7 +55,7 @@ const DashboardCharts = ({ stats }) => {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {/* Revenue Area Chart */}
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+            <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                 <h3 className="text-sm font-semibold text-gray-900 mb-6">
                     Revenue Trends (Last 30 Days)
                 </h3>
@@ -142,7 +142,7 @@ const DashboardCharts = ({ stats }) => {
             </div>
 
             {/* Collection Performance Bar Chart */}
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+            <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                 <h3 className="text-sm font-semibold text-gray-900 mb-6">
                     Collection Performance
                 </h3>
@@ -201,7 +201,7 @@ const DashboardCharts = ({ stats }) => {
             </div>
 
             {/* Order Status Pie Chart */}
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+            <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                 <h3 className="text-sm font-semibold text-gray-900 mb-6">
                     Order Status Breakdown
                 </h3>
@@ -266,7 +266,7 @@ const DashboardCharts = ({ stats }) => {
 
             {/* Quick Stats Grid */}
             <div className="grid grid-cols-2 gap-5">
-                <div className="bg-gray-900 p-6 rounded-lg flex flex-col justify-center">
+                <div className="bg-gray-900 p-6 rounded-2xl flex flex-col justify-center">
                     <span className="text-xs font-medium text-gray-400 mb-2">
                         Avg Order Value
                     </span>
@@ -279,7 +279,7 @@ const DashboardCharts = ({ stats }) => {
                             : 0}
                     </h4>
                 </div>
-                <div className="bg-blue-600 p-6 rounded-lg flex flex-col justify-center shadow-sm">
+                <div className="bg-blue-600 p-6 rounded-2xl flex flex-col justify-center shadow-sm">
                     <span className="text-xs font-medium text-blue-100 mb-2">
                         Total Inventory
                     </span>

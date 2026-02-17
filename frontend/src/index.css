@@ -8,6 +8,12 @@
     --color-ui-gray: #8b96a5;
     --color-ui-light: #dee2e7;
     --font-sans: "Inter", system-ui, sans-serif;
+
+    --radius-sm: 1rem;
+    --radius-md: 1rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1rem;
 }
 
 body {

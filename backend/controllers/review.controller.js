@@ -32,8 +32,8 @@ export const addReview = expressAsyncHandler(async (req, res, next) => {
         );
     }
 
-    filter.email = email.toLowerCase();
-    filter.name = name; // lowercase for uniqueness
+    filter.email = email;
+    filter.name = name;
 
     // Check if review already exists
     const alreadyReviewed = await Review.findOne(filter);
@@ -48,7 +48,7 @@ export const addReview = expressAsyncHandler(async (req, res, next) => {
         comment,
         product: productId,
         name: name,
-        email: email.toLowerCase(),
+        email: email,
         isGuest: true,
     };
 

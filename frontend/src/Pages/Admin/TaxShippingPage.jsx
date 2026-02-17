@@ -39,7 +39,7 @@ const TaxShippingSettings = () => {
         <div className="space-y-6">
             {/* Header */}
             <header className="flex items-center gap-3 pb-6 border-b border-gray-200">
-                <div className="p-2.5 bg-blue-600 rounded-lg text-white shadow-sm">
+                <div className="p-2.5 bg-blue-600 rounded-2xl text-white shadow-sm">
                     <Receipt size={20} />
                 </div>
                 <div>
@@ -55,7 +55,7 @@ const TaxShippingSettings = () => {
             {/* Form */}
             <form
                 onSubmit={handleSubmit}
-                className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 space-y-6"
+                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 space-y-6"
             >
                 {/* Charges Section */}
                 <section className="space-y-4">
@@ -110,7 +110,7 @@ const TaxShippingSettings = () => {
                     <button
                         type="submit"
                         disabled={updateLoading || settingsLoading}
-                        className="w-full bg-blue-600 text-white rounded-lg py-3 font-medium text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-blue-600 text-white rounded-2xl py-3 font-medium text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {updateLoading ? (
                             <>

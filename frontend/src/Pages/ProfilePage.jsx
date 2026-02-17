@@ -11,6 +11,7 @@ import {
     ShieldCheck,
     Loader2,
 } from "lucide-react";
+import Breadcrumb from "../Components/Breadcrumb.jsx";
 
 const ProfilePage = () => {
     const { user } = useSelector((state) => state.auth);
@@ -20,6 +21,11 @@ const ProfilePage = () => {
     const dispatch = useDispatch();
 
     const { updateUser, loading: updateUserLoading } = useUpdateUser();
+
+    const breadcrumbItems = [
+        { label: "Home", path: "/" },
+        { label: "Profile" },
+    ];
 
     useEffect(() => {
         if (user) {
@@ -68,8 +74,9 @@ const ProfilePage = () => {
     };
 
     return (
-        <div className="bg-white min-h-screen py-20">
+        <div className="bg-white min-h-screen py-12">
             <div className="container mx-auto px-6 max-w-5xl">
+                <Breadcrumb items={breadcrumbItems} />
                 <header className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-100 pb-10">
                     <div>
                         <h1 className="text-sm font-bold text-zinc-900 uppercase tracking-[0.4em] mb-3">
@@ -80,9 +87,9 @@ const ProfilePage = () => {
                             Ensure all data points are current for optimal service.
                         </p>
                     </div>
-                    <div className="flex items-center gap-3 px-4 py-2 bg-zinc-900 rounded-none shadow-sm">
+                    <div className="flex items-center gap-3 px-4 py-2 bg-zinc-900 rounded-2xl shadow-sm">
                         <ShieldCheck size={14} className="text-white" />
-                        <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-white">
+                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-white">
                             Status: Verified
                         </span>
                     </div>
@@ -121,7 +128,7 @@ const ProfilePage = () => {
                                 <h2 className="text-[12px] font-bold text-zinc-900 uppercase tracking-[0.2em] truncate">
                                     {user?.name || "Unidentified User"}
                                 </h2>
-                                <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-[0.3em]">
+                                <p className="text-xs text-zinc-400 font-bold uppercase tracking-[0.3em]">
                                     Tier: Core Member
                                 </p>
                             </div>
@@ -232,7 +239,7 @@ const ProfileInput = ({
     type = "text",
 }) => (
     <div className="space-y-3 group">
-        <label className="text-[9px] font-bold text-zinc-400 uppercase tracking-[0.25em] flex items-center gap-2">
+        <label className="text-xs font-bold text-zinc-400 uppercase tracking-[0.25em] flex items-center gap-2">
             {label}
         </label>
         <div className="relative">
@@ -247,7 +254,7 @@ const ProfileInput = ({
                 onChange={onChange}
                 disabled={disabled}
                 type={type}
-                className={`w-full border-b border-zinc-200 rounded-none pl-8 pr-0 py-3 text-[12px] font-medium tracking-widest outline-none transition-all ${disabled
+                className={`w-full border-b border-zinc-200 rounded-2xl pl-8 pr-0 py-3 text-[12px] font-medium tracking-widest outline-none transition-all ${disabled
                     ? "bg-transparent text-zinc-400 cursor-not-allowed opacity-50 border-zinc-100"
                     : "bg-transparent text-zinc-900 focus:border-zinc-900 placeholder:text-zinc-200"
                     }`}

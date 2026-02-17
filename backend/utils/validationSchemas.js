@@ -39,11 +39,7 @@ export const RecipientSchema = z.object({
         .trim()
         .optional()
         .default(""),
-    postalCode: z
-        .string()
-        .min(2, "Postal code must be at least 2 characters")
-        .max(20, "Postal code must be less than 20 characters")
-        .trim(),
+    postalCode: z.string().optional(),
     country: z
         .string()
         .min(2, "Country must be at least 2 characters")

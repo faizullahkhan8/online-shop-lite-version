@@ -156,7 +156,7 @@ const AddProduct = () => {
                 </div>
                 <button
                     onClick={() => navigate(-1)}
-                    className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+                    className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-2xl hover:bg-gray-100"
                 >
                     <X size={20} />
                 </button>
@@ -169,7 +169,7 @@ const AddProduct = () => {
             >
                 {/* Left Column - Product Details */}
                 <div className="lg:col-span-7 space-y-6">
-                    <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm space-y-5">
+                    <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-5">
                         {/* Product Name */}
                         <div>
                             <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
@@ -288,7 +288,7 @@ const AddProduct = () => {
                 {/* Right Column - Image Upload & Actions */}
                 <div className="lg:col-span-5 space-y-6">
                     {/* Image Upload */}
-                    <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                    <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                         <div className="flex items-center justify-between mb-3">
                             <label className="text-sm font-medium text-gray-700">
                                 Product Image
@@ -312,7 +312,7 @@ const AddProduct = () => {
                         </div>
                         <label
                             htmlFor="image"
-                            className="group relative flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-gray-50 transition-all cursor-pointer overflow-hidden"
+                            className="group relative flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-gray-300 rounded-2xl hover:border-blue-500 hover:bg-gray-50 transition-all cursor-pointer overflow-hidden"
                         >
                             {previewUrl ? (
                                 <div className="absolute inset-0">
@@ -329,7 +329,7 @@ const AddProduct = () => {
                                 </div>
                             ) : (
                                 <div className="text-center p-6">
-                                    <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-50 transition-colors">
+                                    <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-50 transition-colors">
                                         <ImageIcon
                                             size={24}
                                             className="text-gray-400 group-hover:text-blue-600 transition-colors"
@@ -360,7 +360,7 @@ const AddProduct = () => {
                             disabled={
                                 createProductLoading || updateProductLoading
                             }
-                            className="w-full py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full py-3 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {createProductLoading || updateProductLoading ? (
                                 <>

@@ -19,7 +19,7 @@ const DeleteDialog = ({
             />
 
             {/* Dialog Content */}
-            <div className="relative bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all animate-in fade-in zoom-in duration-100">
+            <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all animate-in fade-in zoom-in duration-100">
                 <div className="p-6">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
@@ -51,7 +51,7 @@ const DeleteDialog = ({
                         type="button"
                         onClick={onClose}
                         disabled={loading}
-                        className="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                        className="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-2xl hover:bg-gray-50 transition-colors disabled:opacity-50"
                     >
                         Cancel
                     </button>
@@ -59,7 +59,7 @@ const DeleteDialog = ({
                         type="button"
                         onClick={onConfirm}
                         disabled={loading}
-                        className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center min-w-[100px] disabled:bg-red-400"
+                        className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-2xl hover:bg-red-700 transition-colors flex items-center justify-center min-w-[100px] disabled:bg-red-400"
                     >
                         {loading ? (
                             <Loader2 className="animate-spin" size={18} />

@@ -10,6 +10,7 @@ import ProductCard from "../Components/ProductCard.jsx";
 import { useGetAllProducts } from "../api/hooks/product.api";
 import ProductCarousel from "../Components/Home/ProductCarousel.jsx";
 import Button from "../UI/Button.jsx";
+import Breadcrumb from "../Components/Breadcrumb.jsx";
 
 const ProductListPage = () => {
     const [searchParams] = useSearchParams();
@@ -17,6 +18,11 @@ const ProductListPage = () => {
     const { getAllProducts, loading: productLoading } = useGetAllProducts();
     const searchQuery = searchParams.get("search");
     const collectionQuery = searchParams.get("collection");
+
+    const breadcrumbItems = [
+        { label: "Home", path: "/" },
+        { label: "Products" },
+    ];
 
     useEffect(() => {
         (async () => {
@@ -34,7 +40,8 @@ const ProductListPage = () => {
 
     return (
         <div className="bg-white min-h-screen">
-            <div className="container px-4 lg:px-12 py-12 lg:py-20">
+            <div className="container px-4 lg:px-12 py-12">
+                <Breadcrumb items={breadcrumbItems} />
 
 
                 <div className="flex flex-col gap-12">
@@ -60,7 +67,7 @@ const ProductListPage = () => {
                                     />
                                 </div>
                                 <h3 className="text-md uppercase tracking-[0.2em] font-medium text-zinc-900 mb-2">
-                                    No Artifacts Found
+                                    No Products Found
                                 </h3>
                                 <p className="text-sm text-zinc-400 tracking-wide max-w-xs text-center">
                                     Your search criteria did not match any items in our current collection.
@@ -69,18 +76,7 @@ const ProductListPage = () => {
                         ) : (
                             <div className="space-y-32">
                                 <section>
-                                    <div className="flex justify-between items-end mb-12 border-b border-zinc-100 pb-6">
-                                        <div>
-                                            <Button variant="outline" className="text-md font-semibold tracking-[0.3em] uppercase text-zinc-900">
-                                                Filters
-                                            </Button>
-                                        </div>
 
-                                        <button className="flex items-center gap-2 text-xs tracking-widest uppercase font-medium hover:text-zinc-500 transition-colors py-2">
-                                            <SlidersHorizontal size={14} strokeWidth={1.5} />
-                                            Refine
-                                        </button>
-                                    </div>
 
                                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-6 lg:gap-y-6">
                                         {displayProducts.map((product) => (

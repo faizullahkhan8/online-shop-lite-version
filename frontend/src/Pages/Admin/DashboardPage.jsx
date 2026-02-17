@@ -112,7 +112,7 @@ const DashboardHome = () => {
                 {/* Date Range Selector */}
                 <div className="flex flex-col gap-3 w-max">
                     <div className="flex items-center gap-3 w-full">
-                        <div className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-lg border border-gray-200 w-[350px]">
+                        <div className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-2xl border border-gray-200 w-[350px]">
                             <Calendar size={16} className="text-gray-500" />
                             <span className="text-xs font-medium text-gray-600">
                                 {formatDateRange(
@@ -132,7 +132,7 @@ const DashboardHome = () => {
 
                     {/* Custom Date Picker */}
                     {showCustomPicker && (
-                        <div className="flex gap-2 items-center bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+                        <div className="flex gap-2 items-center bg-white p-3 rounded-2xl border border-gray-200 shadow-sm">
                             <Input
                                 type="date"
                                 value={customDates.start}
@@ -209,10 +209,10 @@ const DashboardHome = () => {
 };
 
 const StatCard = ({ label, value, icon, trend, color }) => (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
         <div className="flex justify-between items-start mb-5">
             <div
-                className={`p-2.5 rounded-lg ${
+                className={`p-2.5 rounded-2xl ${
                     color === "primary"
                         ? "bg-blue-600 text-white"
                         : "bg-gray-100 text-gray-600"
@@ -220,7 +220,7 @@ const StatCard = ({ label, value, icon, trend, color }) => (
             >
                 {icon}
             </div>
-            <div className="flex items-center gap-1 text-green-600 bg-green-50 px-2.5 py-1 rounded-md border border-green-200">
+            <div className="flex items-center gap-1 text-green-600 bg-green-50 px-2.5 py-1 rounded-2xl border border-green-200">
                 <span className="text-xs font-semibold">{trend}</span>
                 <ArrowUpRight size={12} />
             </div>

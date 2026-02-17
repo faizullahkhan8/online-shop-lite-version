@@ -42,7 +42,7 @@ const Select = ({
                 className={clsx(
                     "flex items-center justify-between w-full",
                     "px-4 py-2",
-                    "bg-white border border-gray-300 rounded-md",
+                    "bg-white border border-gray-300 rounded-2xl",
                     "text-sm outline-none",
                     "hover:bg-gray-50 transition-colors",
                     "disabled:bg-gray-100 disabled:cursor-not-allowed"
@@ -67,7 +67,7 @@ const Select = ({
                     className={clsx(
                         "absolute z-50 mt-1 inset-x-0",
                         "max-h-64",
-                        "bg-white border border-gray-200 rounded-md",
+                        "bg-white border border-gray-200 rounded-2xl",
                         "shadow-lg py-1 overflow-y-auto"
                     )}
                 >

@@ -69,7 +69,7 @@ const AdminSidebar = () => {
                         to={"/"}
                         className="flex items-center gap-3 animate-in fade-in duration-300"
                     >
-                        <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                        <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
                             <Globe className="text-white" size={20} />
                         </div>
                         <div>
@@ -84,7 +84,7 @@ const AdminSidebar = () => {
                 )}
 
                 <button
-                    className="absolute right-6 top-6 bg-white border border-gray-200 rounded-lg p-1.5 text-gray-400 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm z-50"
+                    className="absolute right-6 top-6 bg-white border border-gray-200 rounded-2xl p-1.5 text-gray-400 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm z-50"
                     onClick={() => setCollapsed(!collapsed)}
                 >
                     {collapsed ? (
@@ -106,7 +106,7 @@ const AdminSidebar = () => {
                             backgroundColor: active
                                 ? colors.activeBg
                                 : "transparent",
-                            borderRadius: "8px",
+                            borderRadius: "1rem",
                             margin: "2px 8px",
                             padding: "10px 12px",
                             transition: "all 0.2s ease",
@@ -133,9 +133,8 @@ const AdminSidebar = () => {
 
                     {/* Inventory Section */}
                     <div
-                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${
-                            collapsed ? "opacity-0" : "opacity-100"
-                        }`}
+                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${collapsed ? "opacity-0" : "opacity-100"
+                            }`}
                     >
                         Inventory
                     </div>
@@ -191,9 +190,8 @@ const AdminSidebar = () => {
 
                     {/* Logistics Section */}
                     <div
-                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${
-                            collapsed ? "opacity-0" : "opacity-100"
-                        }`}
+                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${collapsed ? "opacity-0" : "opacity-100"
+                            }`}
                     >
                         Logistics
                     </div>
@@ -221,9 +219,8 @@ const AdminSidebar = () => {
 
                     {/* Marketing Section */}
                     <div
-                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${
-                            collapsed ? "opacity-0" : "opacity-100"
-                        }`}
+                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${collapsed ? "opacity-0" : "opacity-100"
+                            }`}
                     >
                         Marketing
                     </div>

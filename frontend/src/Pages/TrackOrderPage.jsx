@@ -18,6 +18,7 @@ import {
     Phone,
     Truck,
 } from "lucide-react";
+import Breadcrumb from "../Components/Breadcrumb.jsx";
 
 const TrackOrderPage = () => {
     const [orderId, setOrderId] = useState("");
@@ -29,6 +30,11 @@ const TrackOrderPage = () => {
     const { getOrderById, loading: loadingById } = useGetOrderById();
     const { getOrderByTrackingToken, loading: loadingByToken } =
         useGetOrderByTrackingToken();
+
+    const breadcrumbItems = [
+        { label: "Home", path: "/" },
+        { label: "Track Order" },
+    ];
 
     const loading = loadingById || loadingByToken;
 
@@ -107,7 +113,8 @@ const TrackOrderPage = () => {
 
     return (
         <div className="min-h-screen">
-            <div className="container mx-auto px-4 lg:px-12 py-16 max-w-7xl">
+            <div className="container mx-auto px-4 lg:px-12 py-12 max-w-7xl">
+                <Breadcrumb items={breadcrumbItems} />
                 {/* HEADER */}
                 <div className="mb-12">
                     <h1 className="text-3xl font-bold uppercase tracking-wider mb-2">
@@ -347,7 +354,7 @@ const TrackOrderPage = () => {
                                             const productId =
                                                 typeof item.product === "object"
                                                     ? item.product?._id ||
-                                                      item.product?.id
+                                                    item.product?.id
                                                     : item.product;
 
                                             return (
@@ -389,12 +396,11 @@ const TrackOrderPage = () => {
                                                                 </p>
                                                             </div>
                                                             <span
-                                                                className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
-                                                                    item.status ===
-                                                                    "cancelled"
+                                                                className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${item.status ===
+                                                                        "cancelled"
                                                                         ? "bg-red-100 text-red-800"
                                                                         : "bg-green-100 text-green-800"
-                                                                }`}
+                                                                    }`}
                                                             >
                                                                 {item.status ||
                                                                     "Active"}
@@ -410,41 +416,41 @@ const TrackOrderPage = () => {
                                                                     RS{" "}
                                                                     {Number(
                                                                         item.price ||
-                                                                            0,
+                                                                        0,
                                                                     ).toLocaleString()}
                                                                 </p>
                                                             </div>
 
                                                             {item.discount >
                                                                 0 && (
-                                                                <div>
-                                                                    <p className="text-gray-500">
-                                                                        Discount
-                                                                    </p>
-                                                                    <p className="font-semibold text-green-600">
-                                                                        -Rs:
-                                                                        {
-                                                                            item.discount
-                                                                        }
-                                                                    </p>
-                                                                </div>
-                                                            )}
+                                                                    <div>
+                                                                        <p className="text-gray-500">
+                                                                            Discount
+                                                                        </p>
+                                                                        <p className="font-semibold text-green-600">
+                                                                            -Rs:
+                                                                            {
+                                                                                item.discount
+                                                                            }
+                                                                        </p>
+                                                                    </div>
+                                                                )}
 
                                                             {item.promotion
                                                                 ?.title && (
-                                                                <div className="md:col-span-2">
-                                                                    <p className="text-gray-500">
-                                                                        Promotion
-                                                                    </p>
-                                                                    <p className="font-semibold text-blue-600">
-                                                                        {
-                                                                            item
-                                                                                .promotion
-                                                                                .title
-                                                                        }
-                                                                    </p>
-                                                                </div>
-                                                            )}
+                                                                    <div className="md:col-span-2">
+                                                                        <p className="text-gray-500">
+                                                                            Promotion
+                                                                        </p>
+                                                                        <p className="font-semibold text-blue-600">
+                                                                            {
+                                                                                item
+                                                                                    .promotion
+                                                                                    .title
+                                                                            }
+                                                                        </p>
+                                                                    </div>
+                                                                )}
 
                                                             <div>
                                                                 <p className="text-gray-500">
@@ -454,7 +460,7 @@ const TrackOrderPage = () => {
                                                                     RS{" "}
                                                                     {Number(
                                                                         item.totalAmount ||
-                                                                            0,
+                                                                        0,
                                                                     ).toLocaleString()}
                                                                 </p>
                                                             </div>
@@ -570,11 +576,10 @@ const TrackOrderPage = () => {
                                             onClick={() =>
                                                 handleSavedOrderClick(id)
                                             }
-                                            className={`w-full flex items-center justify-between p-3  border transition-all ${
-                                                selectedOrderId === id
+                                            className={`w-full flex items-center justify-between p-3  border transition-all ${selectedOrderId === id
                                                     ? "bg-black text-white border-black"
                                                     : "bg-white hover:bg-gray-50 border-gray-200"
-                                            }`}
+                                                }`}
                                         >
                                             <div className="flex items-center gap-3">
                                                 <CheckCircle2 size={16} />

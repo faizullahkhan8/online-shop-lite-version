@@ -30,7 +30,7 @@ const ProductQuickView = ({ product, onClose }) => {
                 onClick={onClose}
             />
 
-            <div className="relative bg-white w-full max-w-5xl max-h-[90vh] overflow-y-auto flex flex-col md:flex-row shadow-2xl animate-in zoom-in-95 duration-300">
+            <div className="relative bg-white w-full max-w-5xl rounded-2xl max-h-[90vh] overflow-y-auto flex flex-col md:flex-row shadow-2xl animate-in zoom-in-95 duration-300">
                 <button
                     onClick={onClose}
                     className="absolute top-4 right-4 z-10 p-2 hover:rotate-90 transition-transform duration-300 text-zinc-400 hover:text-zinc-900"
@@ -104,13 +104,13 @@ const ProductQuickView = ({ product, onClose }) => {
                                 Description
                             </h4>
                             <p className="text-sm text-zinc-500 leading-relaxed font-light">
-                                {product?.description ||
+                                {product?.description.slice(0, 250) + "..." ||
                                     "Premium healthcare solution designed for professional and home use."}
                             </p>
                         </div>
 
                         <div className="flex items-center gap-6 pt-4">
-                            <div className="flex items-center border border-zinc-200">
+                            <div className="flex items-center border border-zinc-200 rounded-2xl">
                                 <button
                                     onClick={() =>
                                         setQuantity(Math.max(1, quantity - 1))
@@ -132,7 +132,7 @@ const ProductQuickView = ({ product, onClose }) => {
 
                             <button
                                 onClick={handleBuyNow}
-                                className="flex-1 bg-zinc-900 text-white py-4 text-md font-bold uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all flex items-center justify-center gap-3"
+                                className="flex-1 bg-zinc-900 text-white py-4 text-md font-bold uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all flex items-center justify-center gap-3 rounded-2xl"
                             >
                                 Buy Now
                                 <ChevronRight size={14} />

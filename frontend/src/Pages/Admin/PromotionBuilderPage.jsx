@@ -176,9 +176,9 @@ const PromotionBuilder = () => {
     return (
         <div className="space-y-6">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-gray-200 rounded-lg p-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-gray-200 rounded-2xl p-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                    <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white">
                         <Zap size={24} />
                     </div>
                     <div>
@@ -194,7 +194,7 @@ const PromotionBuilder = () => {
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => navigate("/admin-dashboard/promotions")}
-                        className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:bg-gray-50"
+                        className="px-4 py-2 rounded-2xl text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:bg-gray-50"
                     >
                         Cancel
                     </button>
@@ -202,7 +202,7 @@ const PromotionBuilder = () => {
                         form="promotion-form"
                         type="submit"
                         disabled={loading || selectedProducts.length === 0}
-                        className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-2xl font-medium text-sm hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {loading ? (
                             <Loader2 className="animate-spin" size={16} />
@@ -221,7 +221,7 @@ const PromotionBuilder = () => {
             >
                 {/* Configuration Panel */}
                 <div className="lg:col-span-5 space-y-4">
-                    <section className="bg-white border border-gray-200 rounded-lg p-5">
+                    <section className="bg-white border border-gray-200 rounded-2xl p-5">
                         <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <Settings size={16} className="text-blue-600" />
                             Configuration
@@ -266,7 +266,7 @@ const PromotionBuilder = () => {
                                 />
                             </div>
 
-                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200">
                                 <label className="text-sm font-medium text-gray-700 mb-2 block">
                                     Discount Value
                                 </label>
@@ -280,9 +280,9 @@ const PromotionBuilder = () => {
                                                 Number(e.target.value),
                                             )
                                         }
-                                        className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 text-lg font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="flex-1 bg-white border border-gray-200 rounded-2xl px-3 py-2 text-lg font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     />
-                                    <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white">
+                                    <div className="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center text-white">
                                         {promotionData.discountType === "PERCENTAGE" ? (
                                             <Percent size={18} />
                                         ) : (
@@ -299,7 +299,7 @@ const PromotionBuilder = () => {
                         </div>
                     </section>
 
-                    <section className="bg-gray-900 rounded-lg p-5 text-white">
+                    <section className="bg-gray-900 rounded-2xl p-5 text-white">
                         <h3 className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
                             <Calendar size={16} className="text-blue-400" />
                             Timeline
@@ -316,7 +316,7 @@ const PromotionBuilder = () => {
                                     onChange={(e) =>
                                         handleDataChange("startTime", e.target.value)
                                     }
-                                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full bg-gray-800 border border-gray-700 rounded-2xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                                 {errors.startTime && (
                                     <p className="text-xs text-red-400">{errors.startTime}</p>
@@ -333,7 +333,7 @@ const PromotionBuilder = () => {
                                     onChange={(e) =>
                                         handleDataChange("endTime", e.target.value)
                                     }
-                                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full bg-gray-800 border border-gray-700 rounded-2xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                                 {errors.endTime && (
                                     <p className="text-xs text-red-400">{errors.endTime}</p>
@@ -345,7 +345,7 @@ const PromotionBuilder = () => {
 
                 {/* Product Selection */}
                 <div className="lg:col-span-7 space-y-4">
-                    <section className="bg-white border border-gray-200 rounded-lg flex flex-col min-h-[400px]">
+                    <section className="bg-white border border-gray-200 rounded-2xl flex flex-col min-h-[400px]">
                         <div className="p-5 border-b border-gray-200">
                             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
                                 <Package size={16} className="text-blue-600" />
@@ -360,7 +360,7 @@ const PromotionBuilder = () => {
                                     onChange={(e) =>
                                         setProductSearch(e.target.value)
                                     }
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-10 pr-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                                 <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                     {isSearching ? (
@@ -395,12 +395,12 @@ const PromotionBuilder = () => {
                                                 key={p._id}
                                                 type="button"
                                                 onClick={() => toggleProduct(p)}
-                                                className={`relative p-3 rounded-lg border transition-all flex flex-col items-center text-center gap-2 ${isSelected
+                                                className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center text-center gap-2 ${isSelected
                                                     ? "bg-blue-50 border-blue-500"
                                                     : "bg-white border-gray-200 hover:border-gray-300"
                                                     }`}
                                             >
-                                                <div className="w-full aspect-square bg-gray-50 rounded-lg overflow-hidden border border-gray-100 p-2">
+                                                <div className="w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 p-2">
                                                     <img
                                                         src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${p.image}`}
                                                         className="w-full h-full object-contain"
@@ -434,7 +434,7 @@ const PromotionBuilder = () => {
                                     type="button"
                                     disabled={page === 1}
                                     onClick={() => setPage((prev) => Math.max(1, prev - 1))}
-                                    className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:bg-gray-50 disabled:opacity-30"
+                                    className="px-3 py-1.5 rounded-2xl text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:bg-gray-50 disabled:opacity-30"
                                 >
                                     Previous
                                 </button>
@@ -445,7 +445,7 @@ const PromotionBuilder = () => {
                                     type="button"
                                     disabled={page === totalPages}
                                     onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
-                                    className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:bg-gray-50 disabled:opacity-30"
+                                    className="px-3 py-1.5 rounded-2xl text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:bg-gray-50 disabled:opacity-30"
                                 >
                                     Next
                                 </button>
@@ -456,7 +456,7 @@ const PromotionBuilder = () => {
 
                 {/* Selected Products */}
                 <div className="lg:col-span-12">
-                    <section className="bg-white border border-gray-200 rounded-lg p-5">
+                    <section className="bg-white border border-gray-200 rounded-2xl p-5">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                                 <Plus size={16} className="text-blue-600" />
@@ -479,10 +479,10 @@ const PromotionBuilder = () => {
                                 {selectedProducts.map((p) => (
                                     <div
                                         key={p._id}
-                                        className="bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center justify-between group"
+                                        className="bg-gray-50 border border-gray-200 rounded-2xl p-3 flex items-center justify-between group"
                                     >
                                         <div className="flex items-center gap-2 overflow-hidden min-w-0">
-                                            <div className="w-10 h-10 shrink-0 bg-white rounded-lg p-1 border border-gray-200">
+                                            <div className="w-10 h-10 shrink-0 bg-white rounded-2xl p-1 border border-gray-200">
                                                 <img
                                                     src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${p.image}`}
                                                     className="w-full h-full object-contain"

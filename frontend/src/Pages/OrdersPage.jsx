@@ -11,10 +11,16 @@ import {
 } from "lucide-react";
 import CancellationModal from "../Components/CancellationModal.jsx";
 import { useCancelOrder } from "../api/hooks/orders.api.js";
+import Breadcrumb from "../Components/Breadcrumb.jsx";
 
 const OrdersPage = () => {
     const [orders, setOrders] = useState([]);
     const { getUserOrders, loading } = useGetUserOrders();
+
+    const breadcrumbItems = [
+        { label: "Home", path: "/" },
+        { label: "Orders" },
+    ];
 
     useEffect(() => {
         (async () => {
@@ -67,7 +73,8 @@ const OrdersPage = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 lg:px-8 py-8 min-h-[70vh]">
+        <div className="container mx-auto px-4 lg:px-12 py-12 min-h-[70vh]">
+            <Breadcrumb items={breadcrumbItems} />
             <CancellationModal
                 isOpen={cancelModal.isOpen}
                 onClose={handleCloseCancelModal}
@@ -92,7 +99,7 @@ const OrdersPage = () => {
             </div>
 
             {loading ? (
-                <div className="flex flex-col items-center justify-center py-24 bg-white border border-gray-200 rounded-lg">
+                <div className="flex flex-col items-center justify-center py-24 bg-white border border-gray-200 rounded-2xl">
                     <Loader2
                         className="animate-spin text-blue-600 mb-3"
                         size={32}
@@ -102,8 +109,8 @@ const OrdersPage = () => {
                     </p>
                 </div>
             ) : orders.length === 0 ? (
-                <div className="bg-white border border-gray-200 rounded-lg py-16 px-6 flex flex-col items-center justify-center">
-                    <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                <div className="bg-white border border-gray-200 rounded-2xl py-16 px-6 flex flex-col items-center justify-center">
+                    <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mb-4">
                         <ShoppingBag size={32} className="text-gray-300" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -115,7 +122,7 @@ const OrdersPage = () => {
                     </p>
                     <Link
                         to="/products"
-                        className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                        className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-2xl text-sm font-medium hover:bg-blue-700 transition-colors"
                     >
                         Start Shopping
                         <ChevronRight size={16} />
@@ -126,7 +133,7 @@ const OrdersPage = () => {
                     {orders.map((order) => (
                         <div
                             key={order._id}
-                            className="bg-white border border-gray-200 rounded-lg p-5 lg:p-6 hover:border-blue-500 hover:shadow-md transition-all"
+                            className="bg-white border border-gray-200 rounded-2xl p-5 lg:p-6 hover:border-blue-500 hover:shadow-md transition-all"
                         >
                             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-gray-100 pb-4 mb-4">
                                 <div className="flex flex-wrap gap-6">
@@ -159,7 +166,7 @@ const OrdersPage = () => {
                                         {order.status === 'pending' && (
                                             <button
                                                 onClick={() => handleOpenCancelModal(order._id)}
-                                                className="px-3 py-1 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
+                                                className="px-3 py-1 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-2xl transition-colors"
                                             >
                                                 Cancel Order
                                             </button>
@@ -183,9 +190,9 @@ const OrdersPage = () => {
                                 {order.items.map((item, idx) => (
                                     <div
                                         key={idx}
-                                        className="flex gap-3 items-center bg-gray-50 p-3 rounded-lg border border-gray-100 hover:border-gray-200 transition-all"
+                                        className="flex gap-3 items-center bg-gray-50 p-3 rounded-2xl border border-gray-100 hover:border-gray-200 transition-all"
                                     >
-                                        <div className="w-14 h-14 bg-white border border-gray-200 rounded-lg flex items-center justify-center overflow-hidden shrink-0">
+                                        <div className="w-14 h-14 bg-white border border-gray-200 rounded-2xl flex items-center justify-center overflow-hidden shrink-0">
                                             <img
                                                 src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.product?.image}`}
                                                 className="w-full h-full object-contain p-1.5"

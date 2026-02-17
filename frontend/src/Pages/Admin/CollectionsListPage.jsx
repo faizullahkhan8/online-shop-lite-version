@@ -207,7 +207,7 @@ const CollectionsListPage = () => {
             </header>
 
             {/* Table */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
                 <div className="overflow-x-auto">
                     <table className="w-full border-collapse">
                         <thead>
@@ -252,7 +252,7 @@ const CollectionsListPage = () => {
                                         className="group hover:bg-gray-50 transition-colors"
                                     >
                                         <td className="px-6 py-4">
-                                            <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                                            <div className="w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200">
                                                 {cat.image ? (
                                                     <img
                                                         src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${cat.image}`}
@@ -283,7 +283,7 @@ const CollectionsListPage = () => {
                                         </td>
                                         {/* <td className="px-6 py-4">
                                             <span
-                                                className={`text-xs font-medium px-2.5 py-1 rounded-md ${cat.parentId
+                                                className={`text-xs font-medium px-2.5 py-1 rounded-2xl ${cat.parentId
                                                     ? "bg-gray-100 text-gray-600"
                                                     : "bg-blue-50 text-blue-700 border border-blue-200"
                                                     }`}
@@ -413,7 +413,7 @@ const CollectionsListPage = () => {
             {/* Add/Edit Collection Modal */}
             {collectionModal.isOpen && (
                 <div className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full">
                         {/* Modal Header */}
                         <div className="flex items-center justify-between p-6 border-b border-gray-200">
                             <div>
@@ -430,7 +430,7 @@ const CollectionsListPage = () => {
                             </div>
                             <button
                                 onClick={handleCloseModal}
-                                className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+                                className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-2xl hover:bg-gray-100"
                             >
                                 <X size={20} />
                             </button>
@@ -477,7 +477,7 @@ const CollectionsListPage = () => {
                                 </label>
                                 <label
                                     htmlFor="collection-image"
-                                    className="group relative flex flex-col items-center justify-center w-full aspect-[3/2] border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-gray-50 transition-all cursor-pointer overflow-hidden"
+                                    className="group relative flex flex-col items-center justify-center w-full aspect-[3/2] border-2 border-dashed border-gray-300 rounded-2xl hover:border-blue-500 hover:bg-gray-50 transition-all cursor-pointer overflow-hidden"
                                 >
                                     {previewUrl ? (
                                         <div className="absolute inset-0">
@@ -494,7 +494,7 @@ const CollectionsListPage = () => {
                                         </div>
                                     ) : (
                                         <div className="text-center p-6">
-                                            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-50 transition-colors">
+                                            <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-50 transition-colors">
                                                 <ImageIcon
                                                     size={22}
                                                     className="text-gray-400 group-hover:text-blue-600 transition-colors"
@@ -519,7 +519,7 @@ const CollectionsListPage = () => {
                             </div>
 
                             {/* Active Toggle */}
-                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-200">
                                 <div>
                                     <span className="text-sm font-medium text-gray-900">
                                         Active Status
@@ -600,7 +600,7 @@ const CollectionsListPage = () => {
             {/* Add Products To Collection Modal */}
             {addProductsModal.isOpen && (
                 <div className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full p-6">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-3xl w-full p-6">
                         <div className="flex items-center justify-between mb-4">
                             <div>
                                 <h3 className="text-lg font-semibold text-gray-900">
@@ -620,13 +620,13 @@ const CollectionsListPage = () => {
                                         collectionName: "",
                                     })
                                 }
-                                className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+                                className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-2xl hover:bg-gray-100"
                             >
                                 <X size={20} />
                             </button>
                         </div>
 
-                        <div className="max-h-[60vh] overflow-auto border border-gray-100 rounded-md">
+                        <div className="max-h-[60vh] overflow-auto border border-gray-100 rounded-2xl">
                             {unassignedProducts.length === 0 ? (
                                 <div className="p-6 text-center text-sm text-gray-500">
                                     No unassigned products available.

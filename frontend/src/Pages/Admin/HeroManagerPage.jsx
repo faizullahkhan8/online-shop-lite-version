@@ -135,7 +135,7 @@ const HeroManager = () => {
 
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors"
+                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-2xl font-medium text-sm hover:bg-blue-700 transition-colors"
                 >
                     <Plus size={16} />
                     Add Slide
@@ -143,7 +143,7 @@ const HeroManager = () => {
             </header>
 
             {loading ? (
-                <div className="flex flex-col items-center justify-center py-24 bg-white border border-gray-200 rounded-lg">
+                <div className="flex flex-col items-center justify-center py-24 bg-white border border-gray-200 rounded-2xl">
                     <Loader2 className="animate-spin text-blue-600 mb-3" size={32} />
                     <p className="text-sm text-gray-500">Loading slides...</p>
                 </div>
@@ -152,7 +152,7 @@ const HeroManager = () => {
                     {slides.map((slide) => (
                         <div
                             key={slide._id}
-                            className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-blue-500 hover:shadow-md transition-all"
+                            className="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-blue-500 hover:shadow-md transition-all"
                         >
                             <div className={`h-40 relative overflow-hidden ${slide.bg}`}>
                                 <img
@@ -161,10 +161,10 @@ const HeroManager = () => {
                                     className="w-full h-full object-contain"
                                 />
                                 <div className="absolute top-3 right-3 flex gap-2">
-                                    <div className="p-1.5 rounded-lg bg-white/90 border border-gray-200 text-gray-700">
+                                    <div className="p-1.5 rounded-2xl bg-white/90 border border-gray-200 text-gray-700">
                                         {slide.isActive ? <Eye size={14} /> : <EyeOff size={14} />}
                                     </div>
-                                    <div className="px-2 py-1 rounded-lg bg-white/90 border border-gray-200 text-gray-700 text-xs font-medium">
+                                    <div className="px-2 py-1 rounded-2xl bg-white/90 border border-gray-200 text-gray-700 text-xs font-medium">
                                         #{slide.order}
                                     </div>
                                 </div>
@@ -186,14 +186,14 @@ const HeroManager = () => {
                                 <div className="flex items-center gap-2 pt-2">
                                     <button
                                         onClick={() => handleEdit(slide)}
-                                        className="flex-1 flex items-center justify-center gap-1.5 bg-gray-50 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-900 hover:text-white transition-all"
+                                        className="flex-1 flex items-center justify-center gap-1.5 bg-gray-50 text-gray-700 py-2 rounded-2xl text-sm font-medium hover:bg-gray-900 hover:text-white transition-all"
                                     >
                                         <Edit3 size={14} />
                                         Edit
                                     </button>
                                     <button
                                         onClick={() => handleDelete(slide._id)}
-                                        className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all"
+                                        className="p-2 bg-red-50 text-red-600 rounded-2xl hover:bg-red-600 hover:text-white transition-all"
                                     >
                                         <Trash2 size={16} />
                                     </button>
@@ -206,10 +206,10 @@ const HeroManager = () => {
 
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-lg w-full max-w-2xl overflow-hidden shadow-xl relative">
+                    <div className="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-xl relative">
                         <button
                             onClick={handleClose}
-                            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all z-10"
+                            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-2xl transition-all z-10"
                         >
                             <X size={20} />
                         </button>
@@ -229,7 +229,7 @@ const HeroManager = () => {
                                             </label>
                                             <div
                                                 onClick={() => document.getElementById("hero-image").click()}
-                                                className="aspect-video bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center p-4 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all overflow-hidden"
+                                                className="aspect-video bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center p-4 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all overflow-hidden"
                                             >
                                                 {previewUrl ? (
                                                     <img src={previewUrl} className="w-full h-full object-contain" alt="Preview" />
@@ -256,7 +256,7 @@ const HeroManager = () => {
                                                 Settings
                                             </label>
                                             <div className="flex flex-col gap-2">
-                                                <label className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg cursor-pointer">
+                                                <label className="flex items-center gap-2 p-3 bg-gray-50 rounded-2xl cursor-pointer">
                                                     <input
                                                         type="checkbox"
                                                         checked={formData.isActive}
@@ -267,7 +267,7 @@ const HeroManager = () => {
                                                         Active
                                                     </span>
                                                 </label>
-                                                <label className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg cursor-pointer">
+                                                <label className="flex items-center gap-2 p-3 bg-gray-50 rounded-2xl cursor-pointer">
                                                     <input
                                                         type="checkbox"
                                                         checked={formData.isRemoveBg}
@@ -343,7 +343,7 @@ const HeroManager = () => {
                                                 key={preset.name}
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, bg: preset.class, accent: preset.accent })}
-                                                className={`p-2 rounded-lg border-2 transition-all flex flex-col items-center gap-1.5 ${formData.bg === preset.class
+                                                className={`p-2 rounded-2xl border-2 transition-all flex flex-col items-center gap-1.5 ${formData.bg === preset.class
                                                     ? "border-blue-600 bg-blue-50"
                                                     : "border-gray-200 hover:border-gray-300"
                                                     }`}
@@ -360,7 +360,7 @@ const HeroManager = () => {
                                 <button
                                     type="submit"
                                     disabled={addLoading || updateLoading}
-                                    className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full bg-blue-600 text-white py-2.5 rounded-2xl font-medium text-sm hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {(addLoading || updateLoading) ? (
                                         <>

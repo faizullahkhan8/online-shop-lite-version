@@ -15,10 +15,10 @@ const ProductCard = ({ product, isLarge = false }) => {
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                <div className="relative overflow-hidden aspect-[3/4] bg-[#f5f5f5]">
+                <div className="relative overflow-hidden rounded-2xl aspect-[3/4]">
                     {product.tag && (
                         <div className="absolute top-4 left-4 z-10">
-                            <span className="bg-white/90 backdrop-blur-sm text-[9px] tracking-[0.2em] uppercase px-2 py-1 font-medium text-zinc-900">
+                            <span className="bg-white/90 backdrop-blur-sm text-xs tracking-[0.2em] uppercase px-2 py-1 font-medium text-zinc-900 rounded-2xl">
                                 {product.tag}
                             </span>
                         </div>
@@ -27,7 +27,7 @@ const ProductCard = ({ product, isLarge = false }) => {
                     <img
                         src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product?.image}`}
                         alt={product?.name}
-                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                        className="w-full h-full object-cover rounded-2xl transition-transform duration-1000 group-hover:scale-105"
                     />
 
                     {isHovered && (
@@ -40,7 +40,7 @@ const ProductCard = ({ product, isLarge = false }) => {
                                     e.stopPropagation();
                                     setIsQuickViewOpen(true);
                                 }}
-                                className="bg-white/90 backdrop-blur-md text-black px-8 py-2.5 text-xs font-medium tracking-[0.2em] uppercase hover:bg-black hover:text-white transition-all duration-300 shadow-lg cursor-pointer"
+                                className="bg-white/90 backdrop-blur-md text-black px-8 py-2.5 text-xs font-medium tracking-[0.2em] uppercase rounded-2xl hover:bg-black hover:text-white transition-all duration-300 shadow-lg cursor-pointer"
                             >
                                 Quick view
                             </button>

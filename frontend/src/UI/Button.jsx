@@ -30,7 +30,7 @@ const Button = ({
             disabled={disabled || loading}
             onClick={onClick}
             className={clsx(
-                "inline-flex items-center justify-center transition-all duration-500 uppercase font-medium",
+                "inline-flex items-center justify-center transition-all rounded-2xl duration-500 uppercase font-medium",
                 VARIANTS[variant],
                 SIZES[size],
                 (disabled || loading) && "opacity-60 cursor-not-allowed",

@@ -77,7 +77,7 @@ const ProductList = () => {
             </header>
 
             {/* Table */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
                 <div className="overflow-x-auto">
                     <table className="w-full border-collapse">
                         <thead>
@@ -122,7 +122,7 @@ const ProductList = () => {
                                     >
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                                                <div className="relative w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
                                                     <img
                                                         src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product.image}`}
                                                         className="w-full h-full object-cover"
@@ -135,7 +135,7 @@ const ProductList = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md">
+                                            <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-2xl">
                                                 {product.collection
                                                     ? product.collection.name
                                                     : "No Collection"}

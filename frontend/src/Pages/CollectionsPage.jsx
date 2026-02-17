@@ -2,8 +2,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useGetAllCollections } from "../api/hooks/collection.api.js";
 import { ImageIcon } from "lucide-react";
+import Breadcrumb from "../Components/Breadcrumb.jsx";
 
 const CollectionsPage = () => {
+    const breadcrumbItems = [
+        { label: "Home", path: "/" },
+        { label: "Collections" },
+    ];
     const [collections, setCollections] = useState([]);
     const { getAllCollections, loading } = useGetAllCollections();
 
@@ -22,7 +27,8 @@ const CollectionsPage = () => {
 
     return (
         <div className="bg-white min-h-screen pb-20">
-            <div className="container mx-auto px-4 lg:px-12">
+            <div className="container mx-auto px-4 lg:px-12 pt-12">
+                <Breadcrumb items={breadcrumbItems} />
                 <header className="py-10 text-center">
                     <h1 className="text-2xl tracking-[0.4em] uppercase text-zinc-900 font-light">
                         Collections
@@ -47,7 +53,7 @@ const CollectionsPage = () => {
                                         ? `/products?collection=${collection._id}`
                                         : "/products"
                                 }
-                                className="group relative aspect-3/4 overflow-hidden bg-zinc-100"
+                                className="group relative aspect-3/4 overflow-hidden rounded-2xl bg-zinc-100"
                             >
                                 {collection.image ? (
                                     <img

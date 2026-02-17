@@ -40,7 +40,7 @@ const HeroSection = () => {
 
     return (
         <div className="container mx-auto px-4 lg:px-12 py-12">
-            <div className="relative overflow-hidden bg-gray-100 border border-zinc-100">
+            <div className="relative overflow-hidden bg-gray-100 border border-zinc-100 rounded-2xl">
                 <div className="relative grid md:grid-cols-2 gap-12 items-center min-h-[500px] lg:h-[650px] px-8 md:px-16 py-12">
                     <div className="relative h-full flex flex-col justify-center order-2 md:order-1">
                         <div className="space-y-8 pb-16">
@@ -67,11 +67,10 @@ const HeroSection = () => {
                                     className="group py-4"
                                 >
                                     <div
-                                        className={`h-[1px] transition-all duration-700 ${
-                                            currentSlide === idx
-                                                ? "w-12 bg-zinc-900"
-                                                : "w-6 bg-zinc-200 group-hover:bg-zinc-400"
-                                        }`}
+                                        className={`h-[1px] rounded-2xl transition-all duration-700 ${currentSlide === idx
+                                            ? "w-12 bg-zinc-900"
+                                            : "w-6 bg-zinc-200 group-hover:bg-zinc-400"
+                                            }`}
                                     />
                                 </button>
                             ))}

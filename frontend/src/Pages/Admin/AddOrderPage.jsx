@@ -182,7 +182,7 @@ const AddOrderPage = () => {
             <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-6 border-b border-gray-200">
                 <div className="space-y-1">
                     <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-                        <div className="p-2.5 bg-blue-600 rounded-lg text-white">
+                        <div className="p-2.5 bg-blue-600 rounded-2xl text-white">
                             <ShoppingBag size={20} />
                         </div>
                         Create Manual Order
@@ -192,7 +192,7 @@ const AddOrderPage = () => {
                     </p>
                 </div>
 
-                <div className="bg-blue-600 rounded-lg p-4 min-w-[240px] shadow-sm">
+                <div className="bg-blue-600 rounded-2xl p-4 min-w-[240px] shadow-sm">
                     <p className="text-xs font-medium text-blue-100 mb-1">
                         Grand Total
                     </p>
@@ -205,7 +205,7 @@ const AddOrderPage = () => {
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
                 {/* Left Column - Order Items */}
                 <div className="xl:col-span-8 space-y-6">
-                    <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
                         <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
                             <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                                 <Hash size={16} className="text-blue-600" />
@@ -217,7 +217,7 @@ const AddOrderPage = () => {
                             {orderData.items.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="grid grid-cols-3 gap-4 items-end bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
+                                    className="grid grid-cols-3 gap-4 items-end bg-gray-50 p-4 rounded-2xl border border-gray-200 hover:border-gray-300 transition-colors"
                                 >
                                     <div className="col-span-3 space-y-1.5">
                                         <label className="text-xs font-medium text-gray-700">
@@ -250,7 +250,7 @@ const AddOrderPage = () => {
                                         <label className="text-xs font-medium text-gray-700">
                                             Original Price
                                         </label>
-                                        <div className="w-full bg-gray-100 border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium text-gray-500">
+                                        <div className="w-full bg-gray-100 border border-gray-200 rounded-2xl px-3 py-2 text-sm font-medium text-gray-500">
                                             Rs {item.originalPrice}
                                         </div>
                                     </div>
@@ -309,7 +309,7 @@ const AddOrderPage = () => {
                                         <p className="text-xs font-medium text-gray-700">
                                             Subtotal
                                         </p>
-                                        <p className="text-sm font-semibold text-gray-900 bg-gray-100 border border-gray-200 rounded-lg px-3 py-2">
+                                        <p className="text-sm font-semibold text-gray-900 bg-gray-100 border border-gray-200 rounded-2xl px-3 py-2">
                                             Rs{" "}
                                             {(
                                                 item.price * item.quantity
@@ -320,7 +320,7 @@ const AddOrderPage = () => {
                                         <button
                                             type="button"
                                             onClick={() => removeItem(index)}
-                                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                            className="p-2 text-red-500 hover:bg-red-50 rounded-2xl transition-colors"
                                         >
                                             <Trash2 size={18} />
                                         </button>
@@ -332,7 +332,7 @@ const AddOrderPage = () => {
                         <button
                             type="button"
                             onClick={addItem}
-                            className="w-full mt-4 py-3 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all flex items-center justify-center gap-2"
+                            className="w-full mt-4 py-3 border-2 border-dashed border-gray-300 rounded-2xl text-sm font-medium text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all flex items-center justify-center gap-2"
                         >
                             <Plus size={18} />
                             Add Item
@@ -342,7 +342,7 @@ const AddOrderPage = () => {
 
                 {/* Right Column - Customer & Details */}
                 <div className="xl:col-span-4 space-y-6">
-                    <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 space-y-6">
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 space-y-6">
                         {/* Shipping Address Section */}
                         <section className="space-y-3">
                             <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2 pb-3 border-b border-gray-200">
@@ -444,7 +444,6 @@ const AddOrderPage = () => {
                                 <Input
                                     placeholder="Postal code"
                                     value={orderData.recipient.postalCode}
-                                    required
                                     onChange={(e) =>
                                         setOrderData({
                                             ...orderData,
@@ -504,7 +503,7 @@ const AddOrderPage = () => {
                                 className="w-full max-w-none"
                             />
                             {orderData.payment.method !== "COD" && (
-                                <label className="flex items-center gap-2.5 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
+                                <label className="flex items-center gap-2.5 p-3 bg-gray-50 rounded-2xl cursor-pointer hover:bg-gray-100 transition-colors">
                                     <input
                                         type="checkbox"
                                         checked={orderData.payment.ispaid}
@@ -530,7 +529,7 @@ const AddOrderPage = () => {
                         <button
                             type="submit"
                             disabled={orderLoading}
-                            className="w-full bg-blue-600 text-white rounded-lg py-3 font-medium text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full bg-blue-600 text-white rounded-2xl py-3 font-medium text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {orderLoading ? (
                                 <>

@@ -54,7 +54,7 @@ const MobileSideBar = ({
 
                 <div className="flex-1 overflow-y-auto overflow-x-hidden">
                     <div className="mt-2 space-y-1">
-                        <p className="px-8 text-[9px] uppercase tracking-[0.3em] text-zinc-400 mb-4">
+                        <p className="px-8 text-xs uppercase tracking-[0.3em] text-zinc-400 mb-4">
                             Collections
                         </p>
 
@@ -124,7 +124,7 @@ const NavItem = ({
             {label}
         </span>
         {badge > 0 ? (
-            <span className="bg-zinc-900 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
+            <span className="bg-zinc-900 text-white text-xs font-bold px-2 py-0.5 rounded-full">
                 {badge}
             </span>
         ) : (

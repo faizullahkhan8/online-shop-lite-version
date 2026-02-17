@@ -1,9 +1,14 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
+import Breadcrumb from "../Components/Breadcrumb.jsx";
 import TestAvatar from "../assets/images/avatar.jpg";
 
 const AboutUs = () => {
+    const breadcrumbItems = [
+        { label: "Home", path: "/" },
+        { label: "About Us" },
+    ];
     const businessEmail = "faizullahofficial0@gmail.com";
 
     const [formData, setFormData] = useState({
@@ -32,7 +37,8 @@ const AboutUs = () => {
 
     return (
         <div className="min-h-screen bg-white">
-            <div className="container mx-auto px-4 lg:px-12 py-16">
+            <div className="container mx-auto px-4 lg:px-12 py-12">
+                <Breadcrumb items={breadcrumbItems} />
                 <div className="max-w-4xl">
                     <h1 className="text-sm uppercase tracking-[0.3em] text-zinc-500 mb-4">
                         Our Story

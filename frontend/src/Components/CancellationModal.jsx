@@ -33,7 +33,7 @@ const CancellationModal = ({
     return (
         <div className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/40">
             <div
-                className="w-full max-w-md bg-white rounded-lg border border-gray-200"
+                className="w-full max-w-md bg-white rounded-2xl border border-gray-200"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -52,7 +52,7 @@ const CancellationModal = ({
 
                     <button
                         onClick={onClose}
-                        className="p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition"
+                        className="p-1.5 rounded-2xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition"
                     >
                         <X size={18} />
                     </button>
@@ -71,7 +71,7 @@ const CancellationModal = ({
                                 setError("");
                             }}
                             placeholder="Briefly explain why you want to cancel"
-                            className="w-full h-24 px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 resize-none"
+                            className="w-full h-24 px-3 py-2.5 text-sm border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 resize-none"
                         />
                         {error && (
                             <p className="text-xs text-red-600">{error}</p>

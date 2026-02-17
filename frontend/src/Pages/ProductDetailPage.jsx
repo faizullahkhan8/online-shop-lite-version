@@ -89,14 +89,14 @@ const ProductDetailPage = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
                     <div className="lg:col-span-7">
-                        <div className="aspect-[4/5] bg-zinc-50 flex items-center justify-center p-12 relative group border border-zinc-100">
+                        <div className="bg-zinc-50 flex items-center justify-center rounded-2xl relative group border border-zinc-100 overflow-hidden">
                             <img
                                 src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product?.image}`}
                                 alt={product?.name}
                                 className="max-h-full w-full object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
                             />
                             {product?.stock <= 5 && product?.stock > 0 && (
-                                <div className="absolute top-6 left-6 bg-zinc-900 text-white text-[9px] font-bold uppercase tracking-widest px-3 py-1">
+                                <div className="absolute top-6 left-6 bg-zinc-900 text-white text-xs font-bold uppercase tracking-widest px-3 py-1">
                                     Limited Stock
                                 </div>
                             )}
@@ -150,7 +150,7 @@ const ProductDetailPage = () => {
                         </p>
 
                         <div className="mb-10 py-8 border-y border-zinc-100">
-                            <p className="text-[9px] uppercase tracking-[0.2em] text-zinc-400 font-bold mb-3">
+                            <p className="text-xs uppercase tracking-[0.2em] text-zinc-400 font-bold mb-3">
                                 Unit Price
                             </p>
                             <div className="flex items-baseline gap-4">
@@ -164,7 +164,7 @@ const ProductDetailPage = () => {
                                             RS{" "}
                                             {product?.price?.toLocaleString()}
                                         </span>
-                                        <span className="text-sm bg-emerald-50 text-emerald-600 px-3 py-1 rounded-sm font-bold uppercase tracking-wider">
+                                        <span className="text-sm bg-emerald-50 text-emerald-600 px-3 py-1 rounded-2xl font-bold uppercase tracking-wider">
                                             {product.promotion.title}
                                         </span>
                                     </>
@@ -178,7 +178,7 @@ const ProductDetailPage = () => {
 
                         <div className="space-y-6">
                             <div className="flex items-center gap-6">
-                                <div className="flex items-center border border-zinc-200 h-14 bg-white">
+                                <div className="flex items-center border border-zinc-200 h-14 bg-white rounded-2xl">
                                     <button
                                         onClick={() =>
                                             setQuantity(
@@ -205,7 +205,7 @@ const ProductDetailPage = () => {
                                 <button
                                     onClick={handleBuyNow}
                                     disabled={product?.stock <= 0}
-                                    className="flex-1 bg-zinc-900 text-white h-14 text-md font-bold uppercase tracking-[0.25em] flex items-center justify-center gap-3 hover:bg-zinc-700 transition-all disabled:opacity-20"
+                                    className="flex-1 bg-zinc-900 text-white h-14 text-md font-bold uppercase tracking-[0.25em] flex items-center justify-center gap-3 hover:bg-zinc-700 transition-all disabled:opacity-20 rounded-2xl"
                                 >
                                     <ArrowRight size={16} strokeWidth={1.5} />
                                     Buy Now

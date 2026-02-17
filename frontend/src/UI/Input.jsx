@@ -20,7 +20,7 @@ const Input = ({
             placeholder={placeholder}
             disabled={disabled}
             className={clsx(
-                "w-87.5 h-10 px-3 rounded-md border border-gray-300",
+                "w-87.5 h-10 px-3 rounded-2xl border border-gray-300",
                 "text-sm outline-none transition-all duration-100",
                 "focus:border-blue-700 focus:ring-2 focus:ring-[#1447e6]",
                 "disabled:bg-gray-100 disabled:cursor-not-allowed",

@@ -17,6 +17,7 @@ import {
     ChevronRight,
 } from "lucide-react";
 import Select from "../UI/Select";
+import Breadcrumb from "../Components/Breadcrumb.jsx";
 
 const CheckoutPage = () => {
     const { items: allItems } = useSelector((state) => state.cart);
@@ -54,6 +55,11 @@ const CheckoutPage = () => {
         shippingFee: 0,
     });
     const [settingsLoaded, setSettingsLoaded] = useState(false);
+
+    const breadcrumbItems = [
+        { label: "Home", path: "/" },
+        { label: "Checkout" },
+    ];
 
     useEffect(() => {
         if (!settingsLoaded) {
@@ -192,6 +198,7 @@ const CheckoutPage = () => {
     return (
         <div className="bg-white min-h-screen py-12">
             <div className="container mx-auto px-4 max-w-7xl">
+                <Breadcrumb items={breadcrumbItems} />
                 <Link
                     to={buyNowProduct ? "/products" : "/cart"}
                     className="inline-flex items-center gap-2 text-zinc-400 hover:text-zinc-900 mb-12 transition-colors group"
@@ -221,7 +228,7 @@ const CheckoutPage = () => {
                                     {!isAuthenticated && (
                                         <Link
                                             to="/login"
-                                            className="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-zinc-900"
+                                            className="text-xs uppercase tracking-widest text-zinc-400 hover:text-zinc-900"
                                         >
                                             Already a member? Sign In
                                         </Link>
@@ -342,7 +349,7 @@ const CheckoutPage = () => {
                                             <p className="text-md uppercase tracking-wider font-medium text-zinc-900 leading-tight">
                                                 {item.name}
                                             </p>
-                                            <p className="text-[9px] tracking-widest text-zinc-400 mt-1 uppercase">
+                                            <p className="text-xs tracking-widest text-zinc-400 mt-1 uppercase">
                                                 Quantity: {item.quantity}
                                             </p>
                                         </div>
@@ -427,7 +434,7 @@ const CheckoutInput = ({
     required = true,
 }) => (
     <div className="space-y-3">
-        <label className="text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-500">
+        <label className="text-xs uppercase tracking-[0.2em] font-bold text-zinc-500">
             {label}
         </label>
         <div className="relative group">
@@ -450,11 +457,10 @@ const CheckoutInput = ({
 const PaymentCard = ({ active, onClick, title, description, icon }) => (
     <div
         onClick={onClick}
-        className={`p-6 border transition-all cursor-pointer relative overflow-hidden ${
-            active
-                ? "border-zinc-900 bg-zinc-900 text-white"
-                : "border-zinc-100 bg-white text-zinc-400 hover:border-zinc-300"
-        }`}
+        className={`p-6 border transition-all cursor-pointer relative overflow-hidden ${active
+            ? "border-zinc-900 bg-zinc-900 text-white"
+            : "border-zinc-100 bg-white text-zinc-400 hover:border-zinc-300"
+            }`}
     >
         <div className="flex justify-between items-start mb-4">
             <div className={active ? "text-white" : "text-zinc-900"}>
@@ -470,7 +476,7 @@ const PaymentCard = ({ active, onClick, title, description, icon }) => (
             {title}
         </p>
         <p
-            className={`text-[9px] uppercase tracking-widest ${active ? "text-zinc-400" : "text-zinc-400"}`}
+            className={`text-xs uppercase tracking-widest ${active ? "text-zinc-400" : "text-zinc-400"}`}
         >
             {description}
         </p>

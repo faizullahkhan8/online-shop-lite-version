@@ -46,7 +46,7 @@ const OrdersList = () => {
             </header>
 
             {/* Table */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead className="bg-gray-50 sticky top-0 z-10">
                         <tr>
@@ -118,7 +118,7 @@ const OrdersList = () => {
                                     </td>
                                     <td className="px-4 py-3.5 text-center">
                                         <div
-                                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-xs font-semibold ${
+                                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-2xl border text-xs font-semibold ${
                                                 order.payment?.ispaid
                                                     ? "bg-green-50 text-green-700 border-green-200"
                                                     : "bg-red-50 text-red-700 border-red-200"
@@ -147,7 +147,7 @@ const OrdersList = () => {
                                     </td>
                                     <td className="px-4 py-3.5 text-center">
                                         <span
-                                            className={`inline-block px-2.5 py-1 text-xs font-semibold rounded-md border ${getStatusStyles(order.status)}`}
+                                            className={`inline-block px-2.5 py-1 text-xs font-semibold rounded-2xl border ${getStatusStyles(order.status)}`}
                                         >
                                             {order.status
                                                 .charAt(0)
