@@ -1,8 +1,5 @@
-import { useState, useEffect } from "react";
-import {
-    useAddReview,
-    useGetProductReviews,
-} from "../../api/hooks/review.api.js";
+import { useEffect } from "react";
+import { useGetProductReviews } from "../../api/hooks/review.api.js";
 import StarRating from "../UI/StarRating.jsx";
 import { MessageSquare, User, Calendar, Loader2, PenLine } from "lucide-react";
 
@@ -12,38 +9,12 @@ const ProductReviews = ({ productId }) => {
         reviews,
         loading: reviewsLoading,
     } = useGetProductReviews();
-    const { addReview, loading: addLoading } = useAddReview();
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-
-    const [rating, setRating] = useState(0);
-    const [comment, setComment] = useState("");
 
     useEffect(() => {
         if (productId) {
             getReviews(productId);
         }
     }, [productId, getReviews]);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (rating === 0) return;
-
-        const res = await addReview({
-            productId,
-            rating,
-            comment,
-            name,
-            email,
-        });
-
-        if (res?.success) {
-            setRating(0);
-            setComment("");
-            getReviews(productId);
-        }
-    };
-
     return (
         <div className="space-y-12 py-12 border-t border-zinc-100">
             <header className="flex items-center justify-between">
