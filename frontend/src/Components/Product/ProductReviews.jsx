@@ -60,6 +60,7 @@ const ProductReviews = ({ productId }) => {
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                {/* 
                 <div className="lg:col-span-4">
                     <div className="bg-zinc-50 p-8 rounded-2xl border border-zinc-100 sticky top-32">
                         <div className="flex items-center gap-3 mb-8">
@@ -139,6 +140,7 @@ const ProductReviews = ({ productId }) => {
                         </form>
                     </div>
                 </div>
+                     */}
 
                 <div className="lg:col-span-8 space-y-6">
                     {reviewsLoading ? (
