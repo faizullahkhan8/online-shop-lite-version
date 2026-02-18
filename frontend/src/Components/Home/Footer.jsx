@@ -17,13 +17,13 @@ const Footer = () => {
         },
     ];
 
-    const socialIcons = [
-        { icon: <Facebook size={14} />, label: "Facebook" },
-        { icon: <Twitter size={14} />, label: "Twitter" },
-        { icon: <Linkedin size={14} />, label: "LinkedIn" },
-        { icon: <Instagram size={14} />, label: "Instagram" },
-        { icon: <Youtube size={14} />, label: "YouTube" },
-    ];
+    // const socialIcons = [
+    //     { icon: <Facebook size={14} />, label: "Facebook" },
+    //     { icon: <Twitter size={14} />, label: "Twitter" },
+    //     { icon: <Linkedin size={14} />, label: "LinkedIn" },
+    //     { icon: <Instagram size={14} />, label: "Instagram" },
+    //     { icon: <Youtube size={14} />, label: "YouTube" },
+    // ];
 
     return (
         <footer className="w-full bg-white pt-24 border-t border-zinc-100">
@@ -45,7 +45,7 @@ const Footer = () => {
                             At Askar.pk, we believe that good health should be simple, natural, and trustworthy.
                         </p>
 
-                        <div className="flex gap-4">
+                        {/* <div className="flex gap-4">
                             {socialIcons.map((item, index) => (
                                 <a
                                     key={index}
@@ -55,7 +55,7 @@ const Footer = () => {
                                     {item.icon}
                                 </a>
                             ))}
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-12 grow">

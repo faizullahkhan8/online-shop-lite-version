@@ -180,18 +180,6 @@
 
 // export default Header;
 
-
-
-
-
-
-
-
-
-
-
-
-
 import { Search, User, Menu, ChevronDown, X, Loader2 } from "lucide-react";
 import MobileSideBar from "./MobileSideBar";
 import { useEffect, useState } from "react";
@@ -258,10 +246,12 @@ const Header = () => {
         <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-zinc-100">
             {/* Main header row */}
             <div className="flex items-center justify-between px-4 sm:px-6 lg:px-10 h-20 sm:h-20 lg:h-20 max-w-screen-2xl mx-auto">
-
                 {/* Left: Hamburger (mobile only) */}
                 <button
-                    onClick={() => { setIsMenuOpen(true); console.log("The button is clicked. ") }}
+                    onClick={() => {
+                        setIsMenuOpen(true);
+                        console.log("The button is clicked. ");
+                    }}
                     className="md:hidden z-50 text-zinc-900 hover:text-zinc-500 transition-colors p-1 -ml-1 flex-shrink-0"
                     aria-label="Open menu"
                 >
@@ -294,24 +284,30 @@ const Header = () => {
                     >
                         <button
                             onClick={() => navigate("/collections")}
-                            className={`flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] font-medium transition-colors cursor-pointer whitespace-nowrap ${isCollectionOpen ? "text-zinc-900" : "text-zinc-400"
-                                }`}
+                            className={`flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                                isCollectionOpen
+                                    ? "text-zinc-900"
+                                    : "text-zinc-400"
+                            }`}
                         >
                             Collections
                             <ChevronDown
-                                className={`w-3 h-3 transition-transform duration-200 ${isCollectionOpen ? "rotate-180" : ""
-                                    }`}
+                                className={`w-3 h-3 transition-transform duration-200 ${
+                                    isCollectionOpen ? "rotate-180" : ""
+                                }`}
                             />
                         </button>
 
                         {isCollectionOpen && (
-                            <div className="absolute top-full left-0 mt-2 w-48 lg:w-56 bg-white shadow-lg border border-zinc-100 rounded-sm z-50 py-1">
+                            <div className="absolute top-full left-0 w-48 lg:w-56 bg-white shadow-lg border border-zinc-100 rounded-sm z-50 py-1">
                                 {collections?.map((link) => (
                                     <Link
                                         key={link._id || link.name}
                                         to={`/collections/${link._id}`}
                                         className="block px-4 py-2.5 text-xs uppercase tracking-[0.15em] text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition-colors"
-                                        onClick={() => setIsCollectionOpen(false)}
+                                        onClick={() =>
+                                            setIsCollectionOpen(false)
+                                        }
                                     >
                                         {link.name}
                                     </Link>

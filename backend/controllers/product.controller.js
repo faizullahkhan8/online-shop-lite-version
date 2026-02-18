@@ -58,8 +58,8 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
         minPrice,
         maxPrice,
         search,
-        page = 1,
-        limit = 9,
+        page,
+        limit,
         excludeActivePromotions,
         currentPromotionId,
     } = req.query;

@@ -1,15 +1,9 @@
 import { useState, useEffect } from "react";
-import {
-    X,
-    SlidersHorizontal,
-    PackageSearch,
-    Loader2,
-} from "lucide-react";
+import { X, SlidersHorizontal, PackageSearch, Loader2 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import ProductCard from "../Components/ProductCard.jsx";
 import { useGetAllProducts } from "../api/hooks/product.api";
-import ProductCarousel from "../Components/Home/ProductCarousel.jsx";
-import Button from "../UI/Button.jsx";
+import Pagination from "../Components/Pagination.jsx";
 import Breadcrumb from "../Components/Breadcrumb.jsx";
 
 const ProductListPage = () => {
@@ -18,6 +12,9 @@ const ProductListPage = () => {
     const { getAllProducts, loading: productLoading } = useGetAllProducts();
     const searchQuery = searchParams.get("search");
     const collectionQuery = searchParams.get("collection");
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [totalPages, setTotalPages] = useState(1);
 
     const breadcrumbItems = [
         { label: "Home", path: "/" },
@@ -29,12 +26,15 @@ const ProductListPage = () => {
             const response = await getAllProducts({
                 search: searchQuery,
                 collection: collectionQuery,
+                page: page || 1,
+                limit: limit,
             });
             if (response?.success) {
                 setProducts(response.products);
+                setTotalPages(response.totalPages)
             }
         })();
-    }, [searchQuery, collectionQuery, getAllProducts]);
+    }, [searchQuery, page, collectionQuery, limit, getAllProducts]);
 
     const displayProducts = products;
 
@@ -42,7 +42,6 @@ const ProductListPage = () => {
         <div className="bg-white min-h-screen">
             <div className="container px-4 lg:px-12 py-12">
                 <Breadcrumb items={breadcrumbItems} />
-
 
                 <div className="flex flex-col gap-12">
                     <main className="w-full">
@@ -70,24 +69,30 @@ const ProductListPage = () => {
                                     No Products Found
                                 </h3>
                                 <p className="text-sm text-zinc-400 tracking-wide max-w-xs text-center">
-                                    Your search criteria did not match any items in our current collection.
+                                    Your search criteria did not match any items
+                                    in our current collection.
                                 </p>
                             </div>
                         ) : (
                             <div className="space-y-32">
                                 <section>
-
-
                                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-6 lg:gap-y-6">
                                         {displayProducts.map((product) => (
-                                            <ProductCard key={product._id} product={product} />
+                                            <ProductCard
+                                                key={product._id}
+                                                product={product}
+                                            />
                                         ))}
                                     </div>
 
                                     <div className="mt-32 flex justify-center">
-                                        <Button variant="studio" size="lg">
-                                            View More
-                                        </Button>
+                                        <Pagination
+                                            currentPage={page}
+                                            totalPages={totalPages}
+                                            onPageChange={setPage}
+                                            limit={limit}
+                                            setLimit={setLimit}
+                                        />
                                     </div>
                                 </section>
                             </div>
