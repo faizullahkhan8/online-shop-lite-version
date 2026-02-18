@@ -301,7 +301,7 @@ const Header = () => {
                                 {collections?.map((link) => (
                                     <Link
                                         key={link._id || link.name}
-                                        to={`/collections/${link._id}`}
+                                        to={`/products?collection=${link?._id}`}
                                         className="block px-4 py-2.5 text-xs uppercase tracking-[0.15em] text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 transition-colors"
                                         onClick={() =>
                                             setIsCollectionOpen(false)
