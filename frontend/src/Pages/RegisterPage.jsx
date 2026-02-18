@@ -45,7 +45,7 @@ const RegisterPage = () => {
                                 <h2 className="text-md uppercase tracking-[0.4em] font-semibold text-zinc-900">
                                     Registration
                                 </h2>
-                                <p className="text-sm uppercase tracking-widest text-zinc-400 mt-2">
+                                <p className="text-sm uppercase tracking-widest text-zinc-500 mt-2">
                                     Create your account
                                 </p>
                             </div>
@@ -58,7 +58,7 @@ const RegisterPage = () => {
                                     </label>
                                     <div className="relative">
                                         <User
-                                            className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-400"
+                                            className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500"
                                             size={16}
                                         />
                                         <input
@@ -78,7 +78,7 @@ const RegisterPage = () => {
                                     </label>
                                     <div className="relative">
                                         <Mail
-                                            className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-400"
+                                            className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500"
                                             size={16}
                                         />
                                         <input
@@ -98,7 +98,7 @@ const RegisterPage = () => {
                                     </label>
                                     <div className="relative">
                                         <Lock
-                                            className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-400"
+                                            className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500"
                                             size={16}
                                         />
                                         <input
@@ -130,11 +130,11 @@ const RegisterPage = () => {
 
                             {/* Footer - Aligned with Login page link style */}
                             <div className="mt-8 text-center">
-                                <p className="text-[11px] uppercase tracking-widest text-zinc-500">
+                                <p className="text-[11px] uppercase tracking-widest text-zinc-700">
                                     Already have an account?{" "}
                                     <Link
                                         to="/login"
-                                        className="text-zinc-900 font-bold border-b border-zinc-900 ml-1 hover:text-zinc-400 hover:border-zinc-400 transition-colors"
+                                        className="text-zinc-900 font-bold border-b border-zinc-900 ml-1 hover:text-zinc-500 hover:border-zinc-400 transition-colors"
                                     >
                                         Sign in
                                     </Link>

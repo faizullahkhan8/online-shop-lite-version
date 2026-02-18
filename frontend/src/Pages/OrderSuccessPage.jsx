@@ -48,7 +48,7 @@ const OrderSuccessPage = () => {
                     size={30}
                     strokeWidth={1}
                 />
-                <p className="text-sm uppercase tracking-[0.2em] text-zinc-400">
+                <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">
                     Verifying transaction
                 </p>
             </div>
@@ -91,7 +91,7 @@ const OrderSuccessPage = () => {
                                 <Check size={28} strokeWidth={1.5} />
                             </div>
                             <div>
-                                <p className="text-zinc-400 text-md tracking-tight">
+                                <p className="text-zinc-500 text-md tracking-tight">
                                     Confirmation #
                                     {(order.id || order._id)
                                         ?.toString()
@@ -101,7 +101,7 @@ const OrderSuccessPage = () => {
                                     Thank you,{" "}
                                     {order.recipient?.name?.split(" ")[0]}!
                                 </h1>
-                                <p className="text-sm text-zinc-500 mt-2">
+                                <p className="text-sm text-zinc-700 mt-2">
                                     Order Status:{" "}
                                     <span className="font-semibold capitalize">
                                         {order.status}
@@ -149,7 +149,7 @@ const OrderSuccessPage = () => {
                                     </h3>
                                     <div className="flex items-center gap-2">
                                         <div className="px-2 py-0.5 border border-zinc-200 rounded bg-zinc-50 flex items-center gap-1">
-                                            <span className="text-sm font-bold text-zinc-400">
+                                            <span className="text-sm font-bold text-zinc-500">
                                                 {order.payment?.method === "COD"
                                                     ? "$"
                                                     : "💳"}
@@ -163,7 +163,7 @@ const OrderSuccessPage = () => {
                                                 · Rs{" "}
                                                 {grandTotal.toLocaleString()}
                                             </p>
-                                            <p className="text-xs text-zinc-400">
+                                            <p className="text-xs text-zinc-500">
                                                 {order.payment?.ispaid
                                                     ? "✓ Paid"
                                                     : "Payment pending"}
@@ -236,7 +236,7 @@ const OrderSuccessPage = () => {
                                     <h3 className="text-sm font-semibold text-zinc-900 mb-2">
                                         Shipping info
                                     </h3>
-                                    <p className="text-xs text-zinc-400 mt-1">
+                                    <p className="text-xs text-zinc-500 mt-1">
                                         {shippingFee === 0
                                             ? "Free Shipping"
                                             : `Rs ${shippingFee.toLocaleString()}`}
@@ -305,7 +305,7 @@ const OrderSuccessPage = () => {
                                 <Link
                                     key={link}
                                     to="#"
-                                    className="text-xs text-zinc-500 border-b border-zinc-400 pb-0.5 hover:text-zinc-900 transition-colors"
+                                    className="text-xs text-zinc-700 border-b border-zinc-400 pb-0.5 hover:text-zinc-900 transition-colors"
                                 >
                                     {link}
                                 </Link>
@@ -365,14 +365,14 @@ const OrderSuccessPage = () => {
                                                         {productName ||
                                                             "Product Item"}
                                                     </p>
-                                                    <p className="text-xs text-zinc-400 uppercase mt-1">
+                                                    <p className="text-xs text-zinc-500 uppercase mt-1">
                                                         {productCollection ||
                                                             "Apparel"}
                                                     </p>
                                                     {item.originalPrice &&
                                                         item.originalPrice >
                                                         item.price && (
-                                                            <p className="text-xs text-zinc-400 line-through mt-1">
+                                                            <p className="text-xs text-zinc-500 line-through mt-1">
                                                                 Rs{" "}
                                                                 {item.originalPrice.toLocaleString()}
                                                             </p>
@@ -441,7 +441,7 @@ const OrderSuccessPage = () => {
                             <div className="flex justify-between text-sm text-zinc-600 items-center">
                                 <div className="flex items-center gap-1">
                                     <span>Shipping</span>
-                                    <div className="w-3.5 h-3.5 rounded-full border border-zinc-400 flex items-center justify-center text-[8px] text-zinc-400">
+                                    <div className="w-3.5 h-3.5 rounded-full border border-zinc-400 flex items-center justify-center text-[8px] text-zinc-500">
                                         ?
                                     </div>
                                 </div>
@@ -457,7 +457,7 @@ const OrderSuccessPage = () => {
                                     Total
                                 </span>
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-xs text-zinc-400">
+                                    <span className="text-xs text-zinc-500">
                                         PKR
                                     </span>
                                     <span className="text-xl font-semibold">

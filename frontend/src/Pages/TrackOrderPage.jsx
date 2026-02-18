@@ -17,8 +17,10 @@ import {
     User,
     Phone,
     Truck,
+    Star,
 } from "lucide-react";
 import Breadcrumb from "../Components/Breadcrumb.jsx";
+import ReviewModal from "../Components/ReviewModal.jsx";
 
 const TrackOrderPage = () => {
     const [orderId, setOrderId] = useState("");
@@ -26,6 +28,9 @@ const TrackOrderPage = () => {
     const [order, setOrder] = useState(null);
     const [error, setError] = useState("");
     const [savedOrders, setSavedOrders] = useState([]);
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [reviewedProductIds, setReviewedProductIds] = useState([]);
 
     const { getOrderById, loading: loadingById } = useGetOrderById();
     const { getOrderByTrackingToken, loading: loadingByToken } =
@@ -130,21 +135,21 @@ const TrackOrderPage = () => {
                     <form onSubmit={handleSubmit} className="flex gap-4">
                         <div className="relative flex-1">
                             <Search
-                                className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"
+                                className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"
                                 size={20}
                             />
                             <input
                                 value={orderId}
                                 onChange={(e) => setOrderId(e.target.value)}
                                 placeholder="ENTER YOUR ORDER ID..."
-                                className="w-full border border-gray-300  px-12 py-4 uppercase tracking-widest outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                                className="w-full border border-gray-300 rounded-2xl px-12 py-4 uppercase tracking-widest outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                             />
                         </div>
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="bg-black text-white px-8 py-4  uppercase tracking-widest disabled:opacity-50 hover:bg-gray-800 transition-colors"
+                            className="bg-black text-white px-8 py-4 rounded-2xl uppercase tracking-widest disabled:opacity-50 hover:bg-gray-800 transition-colors"
                         >
                             {loading ? (
                                 <Loader2
@@ -158,7 +163,7 @@ const TrackOrderPage = () => {
                     </form>
 
                     {error && (
-                        <div className="mt-4 p-4 bg-red-50 border border-red-200 ">
+                        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-2xl">
                             <p className="text-sm text-red-600 uppercase tracking-widest">
                                 {error}
                             </p>
@@ -170,7 +175,7 @@ const TrackOrderPage = () => {
                     {/* LEFT: ORDER DETAILS */}
                     <div className="lg:col-span-8">
                         {loading && (
-                            <div className="bg-white border border-gray-200  p-16 flex items-center justify-center">
+                            <div className="bg-white border border-gray-200 rounded-2xl p-16 flex items-center justify-center">
                                 <Loader2
                                     className="animate-spin text-gray-400"
                                     size={40}
@@ -181,7 +186,7 @@ const TrackOrderPage = () => {
                         {!loading && order && (
                             <div className="space-y-6">
                                 {/* Order Summary Card */}
-                                <div className="bg-white border border-gray-200  p-6">
+                                <div className="bg-white border border-gray-200 rounded-2xl p-6">
                                     <div className="flex items-start justify-between mb-6">
                                         <div>
                                             <h2 className="text-xl font-bold uppercase tracking-wider mb-1">
@@ -262,7 +267,7 @@ const TrackOrderPage = () => {
                                 </div>
 
                                 {/* Delivery Information */}
-                                <div className="bg-white border border-gray-200  p-6">
+                                <div className="bg-white border border-gray-200 rounded-2xl p-6">
                                     <div className="flex items-center gap-2 mb-4">
                                         <MapPin size={20} />
                                         <h3 className="text-lg font-bold uppercase tracking-wider">
@@ -336,7 +341,7 @@ const TrackOrderPage = () => {
                                 </div>
 
                                 {/* Order Items */}
-                                <div className="bg-white border border-gray-200  p-6">
+                                <div className="bg-white border border-gray-200 rounded-2xl p-6">
                                     <div className="flex items-center gap-2 mb-6">
                                         <Package size={20} />
                                         <h3 className="text-lg font-bold uppercase tracking-wider">
@@ -360,7 +365,7 @@ const TrackOrderPage = () => {
                                             return (
                                                 <div
                                                     key={index}
-                                                    className="flex items-start justify-between p-4 bg-gray-50 "
+                                                    className="flex items-start justify-between p-4 bg-gray-50 rounded-2xl"
                                                 >
                                                     <div className="flex-1">
                                                         <div className="flex items-start justify-between mb-2">
@@ -397,15 +402,31 @@ const TrackOrderPage = () => {
                                                             </div>
                                                             <span
                                                                 className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${item.status ===
-                                                                        "cancelled"
-                                                                        ? "bg-red-100 text-red-800"
-                                                                        : "bg-green-100 text-green-800"
+                                                                    "cancelled"
+                                                                    ? "bg-red-100 text-red-800"
+                                                                    : "bg-green-100 text-green-800"
                                                                     }`}
                                                             >
                                                                 {item.status ||
                                                                     "Active"}
                                                             </span>
                                                         </div>
+
+                                                        {order.status === "delivered" && item.status !== "cancelled" && !reviewedProductIds.includes(productId) && (
+                                                            <button
+                                                                onClick={() => {
+                                                                    setSelectedProduct({
+                                                                        _id: productId,
+                                                                        name: productName || "Product"
+                                                                    });
+                                                                    setIsReviewModalOpen(true);
+                                                                }}
+                                                                className="mb-4 text-xs font-bold uppercase tracking-widest text-emerald-600 hover:text-emerald-700 transition-colors flex items-center gap-2 border border-emerald-100 bg-emerald-50 px-3 py-1.5 rounded-xl w-fit"
+                                                            >
+                                                                <Star size={12} className="fill-emerald-600" />
+                                                                Give Review
+                                                            </button>
+                                                        )}
 
                                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                                                             <div>
@@ -522,7 +543,7 @@ const TrackOrderPage = () => {
                                 {/* Cancellation Info */}
                                 {order.status === "cancelled" &&
                                     order.cancellationReason && (
-                                        <div className="bg-red-50 border border-red-200  p-6">
+                                        <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
                                             <h3 className="text-lg font-bold text-red-800 mb-2">
                                                 Order Cancelled
                                             </h3>
@@ -536,7 +557,7 @@ const TrackOrderPage = () => {
                         )}
 
                         {!loading && !order && !error && (
-                            <div className="bg-white border border-gray-200  p-16 text-center">
+                            <div className="bg-white border border-gray-200 rounded-2xl p-16 text-center">
                                 <Package
                                     className="mx-auto text-gray-300 mb-4"
                                     size={64}
@@ -550,7 +571,7 @@ const TrackOrderPage = () => {
 
                     {/* RIGHT: SAVED ORDERS */}
                     <div className="lg:col-span-4">
-                        <div className="bg-white border border-gray-200  p-6 sticky top-4">
+                        <div className="bg-white border border-gray-200 rounded-2xl p-6 sticky top-4">
                             <div className="flex items-center gap-3 mb-6">
                                 <Receipt size={20} />
                                 <h2 className="text-sm font-bold uppercase tracking-widest">
@@ -576,9 +597,9 @@ const TrackOrderPage = () => {
                                             onClick={() =>
                                                 handleSavedOrderClick(id)
                                             }
-                                            className={`w-full flex items-center justify-between p-3  border transition-all ${selectedOrderId === id
-                                                    ? "bg-black text-white border-black"
-                                                    : "bg-white hover:bg-gray-50 border-gray-200"
+                                            className={`w-full flex items-center justify-between p-3 border rounded-2xl transition-all ${selectedOrderId === id
+                                                ? "bg-black text-white border-black"
+                                                : "bg-white hover:bg-gray-50 border-gray-200"
                                                 }`}
                                         >
                                             <div className="flex items-center gap-3">
@@ -596,6 +617,16 @@ const TrackOrderPage = () => {
                     </div>
                 </div>
             </div>
+
+            {selectedProduct && (
+                <ReviewModal
+                    isOpen={isReviewModalOpen}
+                    onClose={() => setIsReviewModalOpen(false)}
+                    product={selectedProduct}
+                    orderRecipient={order?.recipient}
+                    onSuccess={(id) => setReviewedProductIds(prev => [...prev, id])}
+                />
+            )}
         </div>
     );
 };

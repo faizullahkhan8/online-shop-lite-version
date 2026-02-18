@@ -23,7 +23,7 @@ const ProductCarousel = ({ products, title, isViewAll }) => {
                 {isViewAll && (
                     <Link
                         to="/products"
-                        className="text-xs tracking-[0.2em] uppercase text-zinc-400 border-b border-zinc-200 pb-0.5 hover:text-zinc-800 hover:border-zinc-800 transition-all"
+                        className="text-xs tracking-[0.2em] uppercase text-zinc-500 border-b border-zinc-200 pb-0.5 hover:text-zinc-800 hover:border-zinc-800 transition-all"
                     >
                         View All
                     </Link>

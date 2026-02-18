@@ -41,12 +41,12 @@ const MobileSideBar = ({
                         <span className="text-lg font-semibold tracking-[0.2em] uppercase text-zinc-900 leading-none">
                             Askar
                         </span>
-                        <span className="text-[8px] uppercase tracking-[0.2em] text-zinc-400 mt-1">
+                        <span className="text-[8px] uppercase tracking-[0.2em] text-zinc-500 mt-1">
                             Famous for <br /> Quaility
                         </span>
                     </div>
                     <button
-                        onClick={() =>{ setIsMenuOpen(false); console.log(isMenuOpen, "The button is clicked of")}}
+                        onClick={() => { setIsMenuOpen(false); console.log(isMenuOpen, "The button is clicked of") }}
                         className="p-2 text-zinc-900 hover:rotate-90 transition-transform duration-500"
                     >
                         <X size={20} strokeWidth={1.2} />
@@ -55,7 +55,7 @@ const MobileSideBar = ({
 
                 <div className="flex-1 overflow-y-auto overflow-x-hidden">
                     <div className="mt-2 space-y-1">
-                        <p className="px-8 text-xs uppercase tracking-[0.3em] text-zinc-400 mb-4">
+                        <p className="px-8 text-xs uppercase tracking-[0.3em] text-zinc-500 mb-4">
                             Collections
                         </p>
 
@@ -110,7 +110,7 @@ const NavItem = ({
     icon,
     label,
     badge,
-    color = "text-zinc-400",
+    color = "text-zinc-500",
     setIsMenuOpen,
 }) => (
     <Link

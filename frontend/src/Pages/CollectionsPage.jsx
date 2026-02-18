@@ -36,11 +36,11 @@ const CollectionsPage = () => {
                 </header>
 
                 {loading ? (
-                    <div className="py-20 text-center text-sm uppercase tracking-[0.3em] text-zinc-400">
+                    <div className="py-20 text-center text-sm uppercase tracking-[0.3em] text-zinc-500">
                         Loading collections...
                     </div>
                 ) : displayCollections.length === 0 ? (
-                    <div className="py-20 text-center text-sm uppercase tracking-[0.3em] text-zinc-400">
+                    <div className="py-20 text-center text-sm uppercase tracking-[0.3em] text-zinc-500">
                         No collections available
                     </div>
                 ) : (

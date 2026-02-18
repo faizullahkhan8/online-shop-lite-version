@@ -60,14 +60,14 @@ const ProductCard = ({ product, isLarge = false }) => {
                                         ? `Rs. ${product.effectivePrice.toLocaleString()}`
                                         : "Price"}
                                 </p>
-                                <p className="text-xs tracking-wider text-zinc-400 line-through font-light">
+                                <p className="text-xs tracking-wider text-zinc-500 line-through font-light">
                                     {typeof product.price === "number"
                                         ? `Rs. ${product.price.toLocaleString()}`
                                         : product.price}
                                 </p>
                             </>
                         ) : (
-                            <p className="text-sm tracking-wider text-zinc-500 font-light">
+                            <p className="text-sm tracking-wider text-zinc-700 font-light">
                                 {typeof product.price === "number"
                                     ? `Rs. ${product.price.toLocaleString()}`
                                     : product.price}
@@ -80,7 +80,7 @@ const ProductCard = ({ product, isLarge = false }) => {
                             readonly
                             size={14}
                         />
-                        <span className="text-sm uppercase tracking-widest text-zinc-400 font-bold border-l border-zinc-200 pl-4">
+                        <span className="text-sm uppercase tracking-widest text-zinc-500 font-bold border-l border-zinc-200 pl-4">
                             {product?.numReviews || 0} REVIEWS
                         </span>
                     </div>

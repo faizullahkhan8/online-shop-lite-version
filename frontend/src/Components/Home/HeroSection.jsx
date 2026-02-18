@@ -53,7 +53,7 @@ const HeroSection = () => {
                             </h2>
 
                             {activeSlide.subtitle && (
-                                <p className="text-sm uppercase tracking-widest text-zinc-400 leading-loose max-w-sm">
+                                <p className="text-sm uppercase tracking-widest text-zinc-500 leading-loose max-w-sm">
                                     {activeSlide.subtitle}
                                 </p>
                             )}

@@ -52,7 +52,7 @@ const ProductListPage = () => {
                                     size={24}
                                     strokeWidth={1}
                                 />
-                                <p className="text-sm uppercase tracking-[0.3em] text-zinc-400">
+                                <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">
                                     Synchronizing...
                                 </p>
                             </div>
@@ -68,7 +68,7 @@ const ProductListPage = () => {
                                 <h3 className="text-md uppercase tracking-[0.2em] font-medium text-zinc-900 mb-2">
                                     No Products Found
                                 </h3>
-                                <p className="text-sm text-zinc-400 tracking-wide max-w-xs text-center">
+                                <p className="text-sm text-zinc-500 tracking-wide max-w-xs text-center">
                                     Your search criteria did not match any items
                                     in our current collection.
                                 </p>

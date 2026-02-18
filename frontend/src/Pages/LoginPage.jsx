@@ -61,7 +61,7 @@ const LoginPage = () => {
                                 <h2 className="text-md uppercase tracking-[0.4em] font-semibold text-zinc-900">
                                     Authentication
                                 </h2>
-                                <p className="text-sm uppercase tracking-widest text-zinc-400 mt-2">
+                                <p className="text-sm uppercase tracking-widest text-zinc-500 mt-2">
                                     Access your account
                                 </p>
                             </div>
@@ -73,7 +73,7 @@ const LoginPage = () => {
                                     </label>
                                     <div className="relative">
                                         <Mail
-                                            className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-400"
+                                            className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500"
                                             size={16}
                                         />
                                         <input
@@ -95,7 +95,7 @@ const LoginPage = () => {
                                     </div>
                                     <div className="relative">
                                         <Lock
-                                            className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-400"
+                                            className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500"
                                             size={16}
                                         />
                                         <input

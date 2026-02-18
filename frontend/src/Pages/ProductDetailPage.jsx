@@ -47,7 +47,7 @@ const ProductDetailPage = () => {
                     size={32}
                     strokeWidth={1.5}
                 />
-                <p className="text-sm uppercase tracking-[0.3em] font-bold text-zinc-400">
+                <p className="text-sm uppercase tracking-[0.3em] font-bold text-zinc-500">
                     Loading Collection...
                 </p>
             </div>
@@ -72,7 +72,7 @@ const ProductDetailPage = () => {
 
     const breadcrumbItems = [
         { label: "Home", path: "/" },
-        { label: "Catalog", path: "/products" },
+        { label: "Collections", path: "/collections" },
         {
             label: product?.collection?.name || "Collection",
             path: `/products?collection=${product?.collection?._id || product?.collection?.name || ""}`,
@@ -105,14 +105,14 @@ const ProductDetailPage = () => {
 
                     <div className="lg:col-span-5 flex flex-col">
                         <div className="mb-6 flex items-center justify-between">
-                            <p className="text-sm uppercase tracking-[0.3em] text-zinc-400 font-bold">
+                            <p className="text-sm uppercase tracking-[0.3em] text-zinc-500 font-bold">
                                 {product?.collection?.name ||
                                     "Premium Collection"}
                             </p>
                             {product?.stock > 0 ? (
                                 <span className="flex items-center gap-1.5 text-emerald-600 text-sm font-bold uppercase tracking-widest">
                                     <CheckCircle2 size={12} />
-                                    {product.stock} Available
+                                    Available
                                 </span>
                             ) : (
                                 <span className="text-red-500 text-sm font-bold uppercase tracking-widest">
@@ -133,24 +133,23 @@ const ProductDetailPage = () => {
                             )}
                         </h1>
 
+                        <div className={`flex items-center gap-4 mb-8 ${product?.stock === 0 ? "text-red-500" : "text-green-500"}`}>
+                            Availible Stock : {product?.stock}
+                        </div>
                         <div className="flex items-center gap-4 mb-8">
                             <StarRating
                                 rating={product?.rating || 0}
                                 readonly
                                 size={14}
                             />
-                            <span className="text-sm uppercase tracking-widest text-zinc-400 font-bold border-l border-zinc-200 pl-4">
+                            <span className="text-sm uppercase tracking-widest text-zinc-500 font-bold border-l border-zinc-200 pl-4">
                                 {product?.numReviews || 0} REVIEWS
                             </span>
                         </div>
 
-                        <p className="text-zinc-500 text-sm leading-relaxed font-light mb-10 lg:pr-10">
-                            {product?.description ||
-                                "A masterclass in modern design and functional elegance, part of our exclusive Studio Edition series."}
-                        </p>
 
                         <div className="mb-10 py-8 border-y border-zinc-100">
-                            <p className="text-xs uppercase tracking-[0.2em] text-zinc-400 font-bold mb-3">
+                            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500 font-bold mb-3">
                                 Unit Price
                             </p>
                             <div className="flex items-baseline gap-4">
@@ -160,7 +159,7 @@ const ProductDetailPage = () => {
                                             RS{" "}
                                             {product?.effectivePrice?.toLocaleString()}
                                         </span>
-                                        <span className="text-lg text-zinc-400 line-through font-light">
+                                        <span className="text-lg text-zinc-500 line-through font-light">
                                             RS{" "}
                                             {product?.price?.toLocaleString()}
                                         </span>
@@ -185,7 +184,7 @@ const ProductDetailPage = () => {
                                                 Math.max(1, quantity - 1),
                                             )
                                         }
-                                        className="w-12 h-full flex items-center justify-center text-zinc-400 hover:text-zinc-900 transition-colors"
+                                        className="w-12 h-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 transition-colors"
                                     >
                                         <Minus size={14} />
                                     </button>
@@ -196,7 +195,7 @@ const ProductDetailPage = () => {
                                         onClick={() =>
                                             setQuantity(quantity + 1)
                                         }
-                                        className="w-12 h-full flex items-center justify-center text-zinc-400 hover:text-zinc-900 transition-colors"
+                                        className="w-12 h-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 transition-colors"
                                     >
                                         <Plus size={14} />
                                     </button>
@@ -214,14 +213,15 @@ const ProductDetailPage = () => {
                         </div>
                     </div>
                 </div>
+                <div className="mt-10 flex flex-col gap-4">
+                    <h1 className="text-xl font-light uppercase tracking-[0.3em] text-zinc-900">Description</h1>
+                    <p className="text-zinc-700 text-md leading-relaxed font-light mb-10 lg:pr-10">
+                        {product?.description ||
+                            "A masterclass in modern design and functional elegance, part of our exclusive Studio Edition series."}
+                    </p>
 
-                <div className="mt-24 pt-16 border-t border-zinc-100">
-                    <div className="mb-12">
-                        <h2 className="text-xl font-light uppercase tracking-[0.3em] text-zinc-900">
-                            Customer{" "}
-                            <span className="font-semibold">Feedback</span>
-                        </h2>
-                    </div>
+                </div>
+                <div className="mt-10 border-zinc-100">
                     {product && (
                         <ProductReviews productId={product._id || product.id} />
                     )}

@@ -33,7 +33,7 @@ const ProductQuickView = ({ product, onClose }) => {
             <div className="relative bg-white w-full max-w-5xl rounded-2xl max-h-[90vh] overflow-y-auto flex flex-col md:flex-row shadow-2xl animate-in zoom-in-95 duration-300">
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-10 p-2 hover:rotate-90 transition-transform duration-300 text-zinc-400 hover:text-zinc-900"
+                    className="absolute top-4 right-4 z-10 p-2 hover:rotate-90 transition-transform duration-300 text-zinc-500 hover:text-zinc-900"
                 >
                     <X size={20} strokeWidth={1} />
                 </button>
@@ -52,7 +52,7 @@ const ProductQuickView = ({ product, onClose }) => {
 
                 <div className="w-full md:w-1/2 p-8 lg:p-12 flex flex-col">
                     <div className="mb-8">
-                        <p className="text-sm uppercase tracking-[0.3em] text-zinc-400 mb-2">
+                        <p className="text-sm uppercase tracking-[0.3em] text-zinc-500 mb-2">
                             {typeof product?.collection === "string"
                                 ? product.collection
                                 : product?.collection?.name || "Studio Edition"}
@@ -70,7 +70,7 @@ const ProductQuickView = ({ product, onClose }) => {
                                             product?.effectivePrice,
                                         ).toLocaleString()}
                                     </p>
-                                    <p className="text-sm text-zinc-400 line-through">
+                                    <p className="text-sm text-zinc-500 line-through">
                                         Rs.{" "}
                                         {Number(
                                             product?.price,
@@ -86,13 +86,18 @@ const ProductQuickView = ({ product, onClose }) => {
                         </div>
                     </div>
                     <div className="space-y-6 flex-1">
+                        <div className={`flex items-center gap-4 mb-8 ${product.stock === 0 ? "text-red-500" : "text-green-500"}`}>
+                            Availible Quantity : {product.stock}
+                        </div>
+                    </div>
+                    <div className="space-y-6 flex-1">
                         <div className="flex items-center gap-4 mb-8">
                             <StarRating
                                 rating={product?.rating || 0}
                                 readonly
                                 size={14}
                             />
-                            <span className="text-sm uppercase tracking-widest text-zinc-400 font-bold border-l border-zinc-200 pl-4">
+                            <span className="text-sm uppercase tracking-widest text-zinc-500 font-bold border-l border-zinc-200 pl-4">
                                 {product?.numReviews || 0} REVIEWS
                             </span>
                         </div>
@@ -103,7 +108,7 @@ const ProductQuickView = ({ product, onClose }) => {
                             <h4 className="text-sm uppercase tracking-[0.2em] font-bold text-zinc-900 mb-3">
                                 Description
                             </h4>
-                            <p className="text-sm text-zinc-500 leading-relaxed font-light">
+                            <p className="text-sm text-zinc-700 leading-relaxed font-light">
                                 {product?.description.slice(0, 250) + "..." ||
                                     "Premium healthcare solution designed for professional and home use."}
                             </p>
@@ -143,7 +148,7 @@ const ProductQuickView = ({ product, onClose }) => {
                     <div className="mt-12 pt-6 border-t border-zinc-100">
                         <button
                             onClick={() => navigate(`/product/${product?._id}`)}
-                            className="text-sm uppercase tracking-[0.2em] text-zinc-400 hover:text-zinc-900 transition-colors underline underline-offset-4"
+                            className="text-sm uppercase tracking-[0.2em] text-zinc-500 hover:text-zinc-900 transition-colors underline underline-offset-4"
                         >
                             View Full Product Details
                         </button>

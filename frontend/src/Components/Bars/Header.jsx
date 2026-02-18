@@ -58,14 +58,14 @@
 //                             <span className="text-xl font-semibold tracking-[0.3em] uppercase text-zinc-900 leading-none">
 //                                 Askar
 //                             </span>
-//                             <span className="text-xs uppercase text-center tracking-[0.25em] text-zinc-400 mt-1">
+//                             <span className="text-xs uppercase text-center tracking-[0.25em] text-zinc-500 mt-1">
 //                                 Famous for <br /> Quaility
 //                             </span>
 //                         </Link>
 //                         <nav className="flex items-center gap-8">
 //                             <Link
 //                                 to="/"
-//                                 className={`text-xs uppercase tracking-[0.2em] font-medium transition-colors ${location.pathname === "/" ? "text-zinc-900" : "text-zinc-400 hover:text-zinc-900"}`}
+//                                 className={`text-xs uppercase tracking-[0.2em] font-medium transition-colors ${location.pathname === "/" ? "text-zinc-900" : "text-zinc-500 hover:text-zinc-900"}`}
 //                             >
 //                                 Home
 //                             </Link>
@@ -77,7 +77,7 @@
 //                             >
 //                                 <button
 //                                     onClick={() => navigate("/collections")}
-//                                     className={`flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-medium transition-colors cursor-pointer ${isCollectionOpen ? "text-zinc-900" : "text-zinc-400"}`}
+//                                     className={`flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-medium transition-colors cursor-pointer ${isCollectionOpen ? "text-zinc-900" : "text-zinc-500"}`}
 //                                 >
 //                                     Collections
 //                                     <ChevronDown
@@ -92,7 +92,7 @@
 //                                             <Link
 //                                                 key={link.name}
 //                                                 to={`/products?collection=${link._id}`}
-//                                                 className="text-xs uppercase tracking-[0.15em] text-zinc-400 hover:text-zinc-900 transition-colors block"
+//                                                 className="text-xs uppercase tracking-[0.15em] text-zinc-500 hover:text-zinc-900 transition-colors block"
 //                                                 onClick={() =>
 //                                                     setIsCollectionOpen(false)
 //                                                 }
@@ -105,20 +105,20 @@
 //                             </div>
 //                             <Link
 //                                 to="/products"
-//                                 className={`text-xs uppercase tracking-[0.2em] font-medium transition-colors ${location.pathname === "/track-order" ? "text-zinc-900" : "text-zinc-400 hover:text-zinc-900"}`}
+//                                 className={`text-xs uppercase tracking-[0.2em] font-medium transition-colors ${location.pathname === "/track-order" ? "text-zinc-900" : "text-zinc-500 hover:text-zinc-900"}`}
 //                             >
 //                                 All Products
 //                             </Link>
 
 //                             <Link
 //                                 to="/track-order"
-//                                 className={`text-xs uppercase tracking-[0.2em] font-medium transition-colors ${location.pathname === "/track-order" ? "text-zinc-900" : "text-zinc-400 hover:text-zinc-900"}`}
+//                                 className={`text-xs uppercase tracking-[0.2em] font-medium transition-colors ${location.pathname === "/track-order" ? "text-zinc-900" : "text-zinc-500 hover:text-zinc-900"}`}
 //                             >
 //                                 Track order
 //                             </Link>
 //                             <Link
 //                                 to="/about-us"
-//                                 className={`text-xs uppercase tracking-[0.2em] font-medium transition-colors ${location.pathname === "/about-us" ? "text-zinc-900" : "text-zinc-400 hover:text-zinc-900"}`}
+//                                 className={`text-xs uppercase tracking-[0.2em] font-medium transition-colors ${location.pathname === "/about-us" ? "text-zinc-900" : "text-zinc-500 hover:text-zinc-900"}`}
 //                             >
 //                                 About Us
 //                             </Link>
@@ -128,13 +128,13 @@
 //                     <div className="flex items-center justify-end gap-5 lg:gap-8 flex-1">
 //                         <button
 //                             onClick={() => setIsSearchOpen(true)}
-//                             className="text-zinc-900 hover:text-zinc-500 transition-colors"
+//                             className="text-zinc-900 hover:text-zinc-700 transition-colors"
 //                         >
 //                             <Search size={19} strokeWidth={1.5} />
 //                         </button>
 //                         <button
 //                             onClick={() => setIsMenuOpen(true)}
-//                             className="md:hidden text-zinc-900 hover:text-zinc-500 transition-colors"
+//                             className="md:hidden text-zinc-900 hover:text-zinc-700 transition-colors"
 //                         >
 //                             <Menu size={20} strokeWidth={1.5} />
 //                         </button>
@@ -149,7 +149,7 @@
 //                         onSubmit={handleSearch}
 //                         className="container mx-auto flex items-center gap-6"
 //                     >
-//                         <Search size={20} className="text-zinc-400" />
+//                         <Search size={20} className="text-zinc-500" />
 //                         <input
 //                             autoFocus
 //                             type="text"
@@ -237,13 +237,13 @@ const Header = () => {
     if (loading) {
         return (
             <div className="fixed top-0 left-0 right-0 z-50 h-16 sm:h-20 bg-white flex items-center justify-center border-b border-zinc-100">
-                <Loader2 className="animate-spin text-zinc-400 w-5 h-5" />
+                <Loader2 className="animate-spin text-zinc-500 w-5 h-5" />
             </div>
         );
     }
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-zinc-100">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-[#fafafa] border-b border-zinc-100">
             {/* Main header row */}
             <div className="flex items-center justify-between px-4 sm:px-6 lg:px-10 h-20 sm:h-20 lg:h-20 max-w-screen-2xl mx-auto">
                 {/* Left: Hamburger (mobile only) */}
@@ -252,7 +252,7 @@ const Header = () => {
                         setIsMenuOpen(true);
                         console.log("The button is clicked. ");
                     }}
-                    className="md:hidden z-50 text-zinc-900 hover:text-zinc-500 transition-colors p-1 -ml-1 flex-shrink-0"
+                    className="md:hidden z-50 text-zinc-900 hover:text-zinc-700 transition-colors p-1 -ml-1 flex-shrink-0"
                     aria-label="Open menu"
                 >
                     <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -268,7 +268,7 @@ const Header = () => {
                         <span className="block text-sm sm:text-sm font-bold tracking-widest uppercase text-zinc-900 whitespace-nowrap">
                             Askar
                         </span>
-                        <span className="block text-[8px] sm:text-[9px] tracking-[0.15em] uppercase text-zinc-400 whitespace-nowrap">
+                        <span className="block text-[8px] sm:text-[9px] tracking-[0.15em] uppercase text-zinc-500 whitespace-nowrap">
                             Famous for Quality
                         </span>
                     </Link>
@@ -284,17 +284,15 @@ const Header = () => {
                     >
                         <button
                             onClick={() => navigate("/collections")}
-                            className={`flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] font-medium transition-colors cursor-pointer whitespace-nowrap ${
-                                isCollectionOpen
-                                    ? "text-zinc-900"
-                                    : "text-zinc-400"
-                            }`}
+                            className={`flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] font-medium transition-colors cursor-pointer whitespace-nowrap ${isCollectionOpen
+                                ? "text-zinc-900"
+                                : "text-zinc-500"
+                                }`}
                         >
                             Collections
                             <ChevronDown
-                                className={`w-3 h-3 transition-transform duration-200 ${
-                                    isCollectionOpen ? "rotate-180" : ""
-                                }`}
+                                className={`w-3 h-3 transition-transform duration-200 ${isCollectionOpen ? "rotate-180" : ""
+                                    }`}
                             />
                         </button>
 
@@ -304,7 +302,7 @@ const Header = () => {
                                     <Link
                                         key={link._id || link.name}
                                         to={`/collections/${link._id}`}
-                                        className="block px-4 py-2.5 text-xs uppercase tracking-[0.15em] text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition-colors"
+                                        className="block px-4 py-2.5 text-xs uppercase tracking-[0.15em] text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 transition-colors"
                                         onClick={() =>
                                             setIsCollectionOpen(false)
                                         }
@@ -318,19 +316,19 @@ const Header = () => {
 
                     <Link
                         to="/products"
-                        className="text-xs uppercase tracking-[0.2em] font-medium text-zinc-400 hover:text-zinc-900 transition-colors whitespace-nowrap"
+                        className="text-xs uppercase tracking-[0.2em] font-medium text-zinc-500 hover:text-zinc-900 transition-colors whitespace-nowrap"
                     >
                         All Products
                     </Link>
                     <Link
                         to="/track-order"
-                        className="text-xs uppercase tracking-[0.2em] font-medium text-zinc-400 hover:text-zinc-900 transition-colors whitespace-nowrap"
+                        className="text-xs uppercase tracking-[0.2em] font-medium text-zinc-500 hover:text-zinc-900 transition-colors whitespace-nowrap"
                     >
                         Track order
                     </Link>
                     <Link
                         to="/about-us"
-                        className="text-xs uppercase tracking-[0.2em] font-medium text-zinc-400 hover:text-zinc-900 transition-colors whitespace-nowrap"
+                        className="text-xs uppercase tracking-[0.2em] font-medium text-zinc-500 hover:text-zinc-900 transition-colors whitespace-nowrap"
                     >
                         About Us
                     </Link>
@@ -341,7 +339,7 @@ const Header = () => {
                     {/* Search icon */}
                     <button
                         onClick={() => setIsSearchOpen(true)}
-                        className="text-zinc-900 hover:text-zinc-500 transition-colors p-1"
+                        className="text-zinc-900 hover:text-zinc-700 transition-colors p-1"
                         aria-label="Search"
                     >
                         <Search className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -351,7 +349,7 @@ const Header = () => {
                     {/* User icon — desktop only or always visible */}
                     {/* <Link
                         to={isAuthenticated ? "/account" : "/login"}
-                        className="text-zinc-900 hover:text-zinc-500 transition-colors p-1 hidden sm:block"
+                        className="text-zinc-900 hover:text-zinc-700 transition-colors p-1 hidden sm:block"
                         aria-label="Account"
                     >
                         <User className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -362,7 +360,7 @@ const Header = () => {
             {/* Full-width Search overlay */}
             {isSearchOpen && (
                 <div className="absolute top-0 left-0 right-0 h-14 sm:h-16 lg:h-20 bg-white flex items-center px-4 sm:px-6 lg:px-10 gap-3 border-b border-zinc-100 z-50">
-                    <Search className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 flex-shrink-0" />
+                    <Search className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-500 flex-shrink-0" />
                     <form onSubmit={handleSearch} className="flex-1">
                         <input
                             autoFocus
@@ -375,7 +373,7 @@ const Header = () => {
                     </form>
                     <button
                         onClick={() => setIsSearchOpen(false)}
-                        className="p-1.5 hover:rotate-90 transition-transform duration-500 text-zinc-500 hover:text-zinc-900 flex-shrink-0"
+                        className="p-1.5 hover:rotate-90 transition-transform duration-500 text-zinc-700 hover:text-zinc-900 flex-shrink-0"
                         aria-label="Close search"
                     >
                         <X className="w-4 h-4 sm:w-5 sm:h-5" />

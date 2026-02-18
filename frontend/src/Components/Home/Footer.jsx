@@ -26,8 +26,8 @@ const Footer = () => {
     // ];
 
     return (
-        <footer className="w-full bg-white pt-24 border-t border-zinc-100">
-            <div className="container mx-auto px-4 lg:px-12 pb-20">
+        <footer className="w-full pt-14 border-t border-zinc-100 bg-[#fafafa]">
+            <div className="container mx-auto px-4 lg:px-12 pb-20]">
                 <div className="flex flex-col lg:flex-row justify-between gap-16 lg:gap-24 pb-10">
                     <div className="max-w-xs space-y-8">
                         <Link to="/" className="flex items-center gap-3 group">
@@ -35,13 +35,13 @@ const Footer = () => {
                                 <p className="text-md font-semibold tracking-widest uppercase text-zinc-900">
                                     Askar
                                 </p>
-                                <p className="text-sm tracking-[0.2em] uppercase text-zinc-400">
+                                <p className="text-sm tracking-[0.2em] uppercase text-zinc-500">
                                     Famous for Quaility
                                 </p>
                             </div>
                         </Link>
 
-                        <p className="text-zinc-500 text-sm leading-relaxed tracking-wide font-light">
+                        <p className="text-zinc-700 text-sm leading-relaxed tracking-wide font-light">
                             At Askar.pk, we believe that good health should be simple, natural, and trustworthy.
                         </p>
 
@@ -50,7 +50,7 @@ const Footer = () => {
                                 <a
                                     key={index}
                                     aria-label={item.label}
-                                    className="w-8 h-8 border border-zinc-100 text-zinc-400 rounded-full flex items-center justify-center transition-all hover:border-zinc-900 hover:text-zinc-900"
+                                    className="w-8 h-8 border border-zinc-100 text-zinc-500 rounded-full flex items-center justify-center transition-all hover:border-zinc-900 hover:text-zinc-900"
                                 >
                                     {item.icon}
                                 </a>
@@ -69,7 +69,7 @@ const Footer = () => {
                                         <li key={lIdx}>
                                             <a
                                                 href={link}
-                                                className="text-sm text-zinc-400 hover:text-zinc-900 transition-colors inline-block tracking-wide font-light"
+                                                className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors inline-block tracking-wide font-light"
                                             >
                                                 {link}
                                             </a>
@@ -84,7 +84,7 @@ const Footer = () => {
 
             <div className="bg-zinc-50 py-8 border-t border-zinc-100">
                 <div className="container mx-auto px-4 lg:px-12 flex sm:flex-row justify-center items-center gap-6">
-                    <p className="text-zinc-400 text-sm uppercase tracking-widest font-light">
+                    <p className="text-zinc-500 text-sm uppercase tracking-widest font-light">
                         © 2026 E-Archive. All Rights Reserved.
                     </p>
                 </div>

@@ -82,7 +82,7 @@ const ProfilePage = () => {
                         <h1 className="text-sm font-bold text-zinc-900 uppercase tracking-[0.4em] mb-3">
                             Account Profile
                         </h1>
-                        <p className="text-md text-zinc-400 uppercase tracking-widest leading-relaxed max-w-md">
+                        <p className="text-md text-zinc-500 uppercase tracking-widest leading-relaxed max-w-md">
                             Identity verification and logistics configuration.
                             Ensure all data points are current for optimal service.
                         </p>
@@ -128,7 +128,7 @@ const ProfilePage = () => {
                                 <h2 className="text-[12px] font-bold text-zinc-900 uppercase tracking-[0.2em] truncate">
                                     {user?.name || "Unidentified User"}
                                 </h2>
-                                <p className="text-xs text-zinc-400 font-bold uppercase tracking-[0.3em]">
+                                <p className="text-xs text-zinc-500 font-bold uppercase tracking-[0.3em]">
                                     Tier: Core Member
                                 </p>
                             </div>
@@ -239,12 +239,12 @@ const ProfileInput = ({
     type = "text",
 }) => (
     <div className="space-y-3 group">
-        <label className="text-xs font-bold text-zinc-400 uppercase tracking-[0.25em] flex items-center gap-2">
+        <label className="text-xs font-bold text-zinc-500 uppercase tracking-[0.25em] flex items-center gap-2">
             {label}
         </label>
         <div className="relative">
             <div
-                className={`absolute left-0 top-1/2 -translate-y-1/2 transition-colors ${disabled ? "text-zinc-300" : "text-zinc-400 group-focus-within:text-zinc-900"}`}
+                className={`absolute left-0 top-1/2 -translate-y-1/2 transition-colors ${disabled ? "text-zinc-300" : "text-zinc-500 group-focus-within:text-zinc-900"}`}
             >
                 {icon}
             </div>
@@ -255,7 +255,7 @@ const ProfileInput = ({
                 disabled={disabled}
                 type={type}
                 className={`w-full border-b border-zinc-200 rounded-2xl pl-8 pr-0 py-3 text-[12px] font-medium tracking-widest outline-none transition-all ${disabled
-                    ? "bg-transparent text-zinc-400 cursor-not-allowed opacity-50 border-zinc-100"
+                    ? "bg-transparent text-zinc-500 cursor-not-allowed opacity-50 border-zinc-100"
                     : "bg-transparent text-zinc-900 focus:border-zinc-900 placeholder:text-zinc-200"
                     }`}
                 placeholder="NOT SPECIFIED"

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { usePlaceOrder } from "../api/hooks/orders.api";
 import { useGetSettings } from "../api/hooks/settings.api";
-import { removeSelectedItems } from "../store/slices/cartSlice";
+import { removeSelectedItems, updateQuantity } from "../store/slices/cartSlice";
 import { addGuestOrder } from "../utils/guestOrders";
 import {
     Truck,
@@ -15,6 +15,8 @@ import {
     Phone,
     MapPin,
     ChevronRight,
+    Minus,
+    Plus,
 } from "lucide-react";
 import Select from "../UI/Select";
 import Breadcrumb from "../Components/Breadcrumb.jsx";
@@ -28,9 +30,25 @@ const CheckoutPage = () => {
 
     // Check if this is a Buy Now flow
     const buyNowProduct = location.state?.buyNowProduct;
-    const items = buyNowProduct
-        ? [buyNowProduct]
+    const [localBuyNowProduct, setLocalBuyNowProduct] = useState(buyNowProduct);
+
+    const items = localBuyNowProduct
+        ? [localBuyNowProduct]
         : allItems.filter((item) => item.selected);
+
+    const handleQtyChange = (item, newQuantity) => {
+        const qty = Math.max(1, Math.min(newQuantity, item.stock || Infinity));
+        if (localBuyNowProduct) {
+            setLocalBuyNowProduct({
+                ...localBuyNowProduct,
+                quantity: qty,
+                totalPrice: localBuyNowProduct.price * qty,
+            });
+        } else {
+            dispatch(updateQuantity({ _id: item._id, quantity: qty }));
+        }
+    };
+
     const totalAmount = items.reduce((sum, item) => sum + item.totalPrice, 0);
 
     const { placeOrder, isLoading } = usePlaceOrder();
@@ -77,25 +95,6 @@ const CheckoutPage = () => {
             });
         }
     }, [settingsLoaded, getSettings]);
-
-    useEffect(() => {
-        if (isAuthenticated && user) {
-            setFormData((prev) => ({
-                ...prev,
-                recipient: {
-                    ...prev.recipient,
-                    name: "",
-                    phone: "",
-                    street: "",
-                    addressLine2: "",
-                    city: "",
-                    state: "",
-                    postalCode: "",
-                    country: "",
-                },
-            }));
-        }
-    }, [user, isAuthenticated]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -175,7 +174,7 @@ const CheckoutPage = () => {
     if (items.length === 0 && !buyNowProduct) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-white p-6">
-                <div className="w-16 h-16 bg-zinc-50 border border-zinc-100 flex items-center justify-center mb-6">
+                <div className="w-16 h-16 bg-zinc-50 border border-zinc-100 flex items-center justify-center mb-6 rounded-2xl">
                     <Wallet
                         className="text-zinc-300"
                         size={24}
@@ -187,7 +186,7 @@ const CheckoutPage = () => {
                 </h2>
                 <Link
                     to="/products"
-                    className="border border-zinc-900 px-10 py-3 text-sm uppercase tracking-[0.2em] font-bold hover:bg-zinc-900 hover:text-white transition-all duration-500"
+                    className="border border-zinc-900 px-10 py-3 text-sm uppercase tracking-[0.2em] font-bold hover:bg-zinc-900 hover:text-white transition-all duration-500 rounded-2xl"
                 >
                     Continue Shopping
                 </Link>
@@ -201,7 +200,7 @@ const CheckoutPage = () => {
                 <Breadcrumb items={breadcrumbItems} />
                 <Link
                     to={buyNowProduct ? "/products" : "/cart"}
-                    className="inline-flex items-center gap-2 text-zinc-400 hover:text-zinc-900 mb-12 transition-colors group"
+                    className="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-900 mb-12 transition-colors group"
                 >
                     <ArrowLeft
                         size={14}
@@ -228,7 +227,7 @@ const CheckoutPage = () => {
                                     {!isAuthenticated && (
                                         <Link
                                             to="/login"
-                                            className="text-xs uppercase tracking-widest text-zinc-400 hover:text-zinc-900"
+                                            className="text-xs uppercase tracking-widest text-zinc-500 hover:text-zinc-900"
                                         >
                                             Already a member? Sign In
                                         </Link>
@@ -334,7 +333,7 @@ const CheckoutPage = () => {
                     </div>
 
                     <div className="lg:col-span-5">
-                        <div className="bg-zinc-50 p-8 sticky top-12 border border-zinc-100">
+                        <div className="bg-zinc-50 p-8 sticky top-12 border border-zinc-100 rounded-2xl">
                             <h3 className="text-sm uppercase tracking-[0.25em] font-bold text-zinc-900 mb-8 pb-4 border-b border-zinc-200">
                                 Order Summary
                             </h3>
@@ -346,12 +345,28 @@ const CheckoutPage = () => {
                                         className="flex justify-between items-start gap-4"
                                     >
                                         <div className="flex-1">
-                                            <p className="text-md uppercase tracking-wider font-medium text-zinc-900 leading-tight">
+                                            <p className="text-md uppercase tracking-wider font-medium text-zinc-900 leading-tight mb-2">
                                                 {item.name}
                                             </p>
-                                            <p className="text-xs tracking-widest text-zinc-400 mt-1 uppercase">
-                                                Quantity: {item.quantity}
-                                            </p>
+                                            <div className="flex items-center border border-zinc-200 h-10 w-fit bg-white rounded-2xl">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleQtyChange(item, item.quantity - 1)}
+                                                    className="w-10 h-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 transition-colors"
+                                                >
+                                                    <Minus size={12} />
+                                                </button>
+                                                <span className="w-8 text-center text-xs font-bold text-zinc-900">
+                                                    {item.quantity}
+                                                </span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleQtyChange(item, item.quantity + 1)}
+                                                    className="w-10 h-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 transition-colors"
+                                                >
+                                                    <Plus size={12} />
+                                                </button>
+                                            </div>
                                         </div>
                                         <span className="text-md font-bold text-zinc-900">
                                             Rs {item.totalPrice.toFixed(0)}
@@ -361,17 +376,17 @@ const CheckoutPage = () => {
                             </div>
 
                             <div className="space-y-4 pt-6 border-t border-zinc-200 mb-8">
-                                <div className="flex justify-between text-sm uppercase tracking-widest text-zinc-500">
+                                <div className="flex justify-between text-sm uppercase tracking-widest text-zinc-700">
                                     <span>Subtotal</span>
                                     <span>Rs {totalAmount.toFixed(0)}</span>
                                 </div>
-                                <div className="flex justify-between text-sm uppercase tracking-widest text-zinc-500">
+                                <div className="flex justify-between text-sm uppercase tracking-widest text-zinc-700">
                                     <span>Tax</span>
                                     <span>
                                         Rs {formData.taxAmount.toFixed(0)}
                                     </span>
                                 </div>
-                                <div className="flex justify-between text-sm uppercase tracking-widest text-zinc-500">
+                                <div className="flex justify-between text-sm uppercase tracking-widest text-zinc-700">
                                     <span>Shipping</span>
                                     <span>
                                         {formData.shippingFee === 0
@@ -398,7 +413,7 @@ const CheckoutPage = () => {
                                 type="submit"
                                 form="checkout-form"
                                 disabled={Boolean(isLoading)}
-                                className="w-full bg-zinc-900 text-white py-4 text-md uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all disabled:opacity-50 flex items-center justify-center gap-3 group"
+                                className="w-full bg-zinc-900 text-white py-4 text-md uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all disabled:opacity-50 flex items-center justify-center gap-3 group rounded-2xl"
                             >
                                 {isLoading ? (
                                     <Loader2
@@ -434,11 +449,11 @@ const CheckoutInput = ({
     required = true,
 }) => (
     <div className="space-y-3">
-        <label className="text-xs uppercase tracking-[0.2em] font-bold text-zinc-500">
+        <label className="text-xs uppercase tracking-[0.2em] font-bold text-zinc-700">
             {label}
         </label>
         <div className="relative group">
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-zinc-900 transition-colors">
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-zinc-900 transition-colors">
                 {icon}
             </div>
             <input
@@ -457,9 +472,9 @@ const CheckoutInput = ({
 const PaymentCard = ({ active, onClick, title, description, icon }) => (
     <div
         onClick={onClick}
-        className={`p-6 border transition-all cursor-pointer relative overflow-hidden ${active
+        className={`p-6 border transition-all cursor-pointer relative overflow-hidden rounded-2xl ${active
             ? "border-zinc-900 bg-zinc-900 text-white"
-            : "border-zinc-100 bg-white text-zinc-400 hover:border-zinc-300"
+            : "border-zinc-100 bg-white text-zinc-500 hover:border-zinc-300"
             }`}
     >
         <div className="flex justify-between items-start mb-4">
@@ -476,7 +491,7 @@ const PaymentCard = ({ active, onClick, title, description, icon }) => (
             {title}
         </p>
         <p
-            className={`text-xs uppercase tracking-widest ${active ? "text-zinc-400" : "text-zinc-400"}`}
+            className={`text-xs uppercase tracking-widest ${active ? "text-zinc-500" : "text-zinc-500"}`}
         >
             {description}
         </p>
