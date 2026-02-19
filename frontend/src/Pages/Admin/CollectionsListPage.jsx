@@ -3,7 +3,7 @@ import {
     useDeleteCollection,
     useCreateCollection,
     useUpdateCollection,
-} from "../../api/hooks/collection.api.js";
+} from "../../features/collections/collection.mutations.js";
 
 import { useCollections } from "../../features/collections/collection.queries";
 
@@ -45,10 +45,10 @@ const CollectionsListPage = () => {
     const [previewUrl, setPreviewUrl] = useState("");
 
     const { data: collectionsData, isLoading } = useCollections();
-    const { deleteCollection, loading: deleteCollectionLoading } =
+    const { mutateAsync: deleteCollection, isPending: deleteCollectionLoading } =
         useDeleteCollection();
-    const { createCollection, loading: creating } = useCreateCollection();
-    const { updateCollection, loading: updating } = useUpdateCollection();
+    const { mutateAsync: createCollection, isPending: creating } = useCreateCollection();
+    const { mutateAsync: updateCollection, isPending: updating } = useUpdateCollection();
     const { mutateAsync: updateProduct, isPending: updatingProduct } = useUpdateProduct();
 
     const [addProductsModal, setAddProductsModal] = useState({
@@ -91,13 +91,12 @@ const CollectionsListPage = () => {
 
     const handleDelete = async () => {
         const { collectionId } = deleteModal;
-        const response = await deleteCollection(collectionId);
-        if (response?.success) {
-            setCollections((prev) =>
-                prev.filter((c) => c._id !== collectionId),
-            );
-            setDeleteModal({ isOpen: false, collectionId: null });
-        }
+        await deleteCollection(collectionId, {
+            onSuccess: () => {
+                setDeleteModal({ isOpen: false, collectionId: null });
+            }
+        });
+
     };
 
     const handleOpenAddModal = () => {
@@ -155,34 +154,23 @@ const CollectionsListPage = () => {
             formData.append("image", image);
         }
 
-        let response;
         if (collectionModal.isEditing) {
-            response = await updateCollection({
+            await updateCollection({
                 id: collectionModal.data._id,
                 collectionData: formData,
+            }, {
+                onSuccess: () => {
+                    handleCloseModal();
+                }
             });
-
-            if (response.success) {
-                setCollections((pre) => {
-                    let temp = pre;
-                    const index = pre.findIndex(
-                        (item) => item._id === response.collection._id,
-                    );
-
-                    temp[index] = response.collection;
-
-                    return temp;
-                });
-                handleCloseModal();
-            }
         } else {
-            response = await createCollection(formData);
-            if (response.success) {
-                setCollections((pre) => [...pre, response.collection]);
-                handleCloseModal();
-            }
+            await createCollection(formData, {
+                onSuccess: () => {
+                    handleCloseModal();
+                }
+            });
         }
-    };
+    }
 
     return (
         <div className="space-y-6">

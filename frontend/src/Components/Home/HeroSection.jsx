@@ -1,26 +1,21 @@
 import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { useGetHeroSlides } from "../../api/hooks/hero.api.js";
-import Button from "../../UI/Button.jsx";
+import { useHeroSlides } from "../../features/heros/hero.queries.js";
 
 const HeroSection = () => {
-    const { getSlides, slides, loading } = useGetHeroSlides();
+    const { data, isPending } = useHeroSlides();
     const [currentSlide, setCurrentSlide] = useState(0);
 
     useEffect(() => {
-        getSlides();
-    }, [getSlides]);
-
-    useEffect(() => {
-        if (slides.length > 0) {
+        if (data?.slides?.length > 0) {
             const timer = setInterval(() => {
-                setCurrentSlide((prev) => (prev + 1) % slides.length);
+                setCurrentSlide((prev) => (prev + 1) % data?.slides?.length);
             }, 5000);
             return () => clearInterval(timer);
         }
-    }, [slides.length]);
+    }, [data?.slides?.length]);
 
-    if (loading && slides.length === 0) {
+    if (isPending && data?.slides?.length === 0) {
         return (
             <div className="container mx-auto px-4 lg:px-12 py-12">
                 <div className="h-[400px] md:h-[600px] bg-white border border-zinc-100 flex items-center justify-center">
@@ -34,9 +29,9 @@ const HeroSection = () => {
         );
     }
 
-    if (slides.length === 0) return null;
+    if (data?.slides?.length === 0) return null;
 
-    const activeSlide = slides[currentSlide];
+    const activeSlide = data?.slides?.[currentSlide];
 
     return (
         <div className="container mx-auto px-4 lg:px-12 py-12">
@@ -45,22 +40,22 @@ const HeroSection = () => {
                     <div className="relative h-full flex flex-col justify-center order-2 md:order-1">
                         <div className="space-y-8 pb-16">
                             <p className="text-md font-semibold tracking-[0.4em] uppercase text-zinc-900">
-                                {activeSlide.title}
+                                {activeSlide?.title}
                             </p>
 
                             <h2 className="text-5xl lg:text-7xl font-light text-zinc-900 leading-[1.1] tracking-tighter">
-                                {activeSlide.headline}
+                                {activeSlide?.headline}
                             </h2>
 
-                            {activeSlide.subtitle && (
+                            {activeSlide?.subtitle && (
                                 <p className="text-sm uppercase tracking-widest text-zinc-500 leading-loose max-w-sm">
-                                    {activeSlide.subtitle}
+                                    {activeSlide?.subtitle}
                                 </p>
                             )}
                         </div>
 
                         <div className="absolute bottom-0 flex gap-4">
-                            {slides.map((_, idx) => (
+                            {data?.slides?.map((_, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => setCurrentSlide(idx)}
@@ -81,7 +76,7 @@ const HeroSection = () => {
                         <div className="relative w-full h-full flex items-center justify-center">
                             <div className="absolute inset-0 bg-zinc-50 rounded-full scale-75 opacity-50 blur-3xl" />
                             <img
-                                src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${activeSlide.image}`}
+                                src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${activeSlide?.image}`}
                                 alt="Hero"
                                 className="relative w-full h-full object-contain grayscale-[0.2] hover:grayscale-0 transition-all duration-1000 ease-out hover:scale-105"
                             />

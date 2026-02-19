@@ -11,18 +11,20 @@ import {
     EyeOff,
 } from "lucide-react";
 import {
-    useGetHeroSlides,
     useAddHeroSlide,
     useUpdateHeroSlide,
     useDeleteHeroSlide,
-} from "../../api/hooks/hero.api.js";
+} from "../../features/heros/hero.mutations.js";
+
+import { useHeroSlides } from "../../features/heros/hero.queries.js";
+
 import Input from "../../UI/Input.jsx";
 
 const HeroManager = () => {
-    const { getSlides, slides, loading } = useGetHeroSlides();
-    const { addSlide, loading: addLoading } = useAddHeroSlide();
-    const { updateSlide, loading: updateLoading } = useUpdateHeroSlide();
-    const { deleteSlide } = useDeleteHeroSlide();
+    const { data: heroData, isPending } = useHeroSlides();
+    const { mutateAsync: addSlide, isPending: addLoading } = useAddHeroSlide();
+    const { mutateAsync: updateSlide, isPending: updateLoading } = useUpdateHeroSlide();
+    const { mutateAsync: deleteSlide } = useDeleteHeroSlide();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingSlide, setEditingSlide] = useState(null);
@@ -38,10 +40,6 @@ const HeroManager = () => {
     });
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
-
-    useEffect(() => {
-        getSlides();
-    }, [getSlides]);
 
     const handleEdit = (slide) => {
         setEditingSlide(slide);
@@ -92,25 +90,28 @@ const HeroManager = () => {
             data.append("image", selectedFile);
         }
 
-        let res;
         if (editingSlide) {
-            res = await updateSlide(editingSlide._id, data);
+            await updateSlide({ id: editingSlide._id, formData: data }, {
+                onSuccess: () => {
+                    handleClose();
+                }
+            });
         } else {
-            res = await addSlide(data);
-        }
-
-        if (res?.success) {
-            handleClose();
-            getSlides();
+            await addSlide(data, {
+                onSuccess: () => {
+                    handleClose();
+                }
+            });
         }
     };
 
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this slide?")) {
-            const res = await deleteSlide(id);
-            if (res?.success) {
-                getSlides();
-            }
+            await deleteSlide(id, {
+                onSuccess: () => {
+                    handleClose();
+                }
+            });
         }
     };
 
@@ -142,14 +143,14 @@ const HeroManager = () => {
                 </button>
             </header>
 
-            {loading ? (
+            {isPending ? (
                 <div className="flex flex-col items-center justify-center py-24 bg-white border border-gray-200 rounded-2xl">
                     <Loader2 className="animate-spin text-blue-600 mb-3" size={32} />
                     <p className="text-sm text-gray-500">Loading slides...</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {slides.map((slide) => (
+                    {heroData?.slides.map((slide) => (
                         <div
                             key={slide._id}
                             className="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-blue-500 hover:shadow-md transition-all"

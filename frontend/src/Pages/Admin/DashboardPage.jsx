@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { useDashboardStats } from "../../api/hooks/dashboard.api";
+import { useDashboardStats } from "../../features/dashboard.all.js";
 import {
     DollarSign,
     ShoppingCart,
     Package,
     Users,
-    TrendingUp,
     ArrowUpRight,
     Loader2,
     AlertCircle,
@@ -35,8 +34,9 @@ const DATE_PRESETS = [
 
 const DashboardHome = () => {
     const [datePreset, setDatePreset] = useState("today");
+
     const [dateRange, setDateRange] = useState(() =>
-        getDateRangeFromPreset("last30days"),
+        getDateRangeFromPreset("today"),
     );
     const [showCustomPicker, setShowCustomPicker] = useState(false);
     const [customDates, setCustomDates] = useState({
@@ -44,7 +44,7 @@ const DashboardHome = () => {
         end: formatDateForInput(new Date()),
     });
 
-    const { stats, loading, error } = useDashboardStats({
+    const { data, isPending, error } = useDashboardStats({
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
     });
@@ -71,7 +71,7 @@ const DashboardHome = () => {
         setDateRange({ startDate, endDate });
     };
 
-    if (loading) {
+    if (isPending) {
         return (
             <div className="h-[60vh] flex flex-col items-center justify-center text-gray-400">
                 <Loader2
@@ -171,28 +171,28 @@ const DashboardHome = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 <StatCard
                     label="Total Revenue"
-                    value={`Rs ${stats?.totalSales?.toLocaleString() ?? 0}`}
+                    value={`Rs ${data?.stats?.totalSales?.toLocaleString() ?? 0}`}
                     icon={<DollarSign size={20} />}
                     trend="+12.5%"
                     color="primary"
                 />
                 <StatCard
                     label="Orders"
-                    value={stats?.totalOrders ?? 0}
+                    value={data?.stats?.totalOrders ?? 0}
                     icon={<ShoppingCart size={20} />}
                     trend="+5.2%"
                     color="gray"
                 />
                 <StatCard
                     label="Inventory"
-                    value={stats?.totalProducts ?? 0}
+                    value={data?.stats?.totalProducts ?? 0}
                     icon={<Package size={20} />}
                     trend="Stable"
                     color="gray"
                 />
                 <StatCard
                     label="Active Users"
-                    value={stats?.totalUsers ?? 0}
+                    value={data?.stats?.totalUsers ?? 0}
                     icon={<Users size={20} />}
                     trend="+2.1%"
                     color="gray"
@@ -200,10 +200,10 @@ const DashboardHome = () => {
             </div>
 
             {/* Inventory Alerts */}
-            <InventoryAlerts inventory={stats?.inventory} />
+            <InventoryAlerts inventory={data?.stats?.inventory} />
 
             {/* Charts */}
-            <DashboardCharts stats={stats} />
+            <DashboardCharts stats={data?.stats} />
         </div>
     );
 };
@@ -212,11 +212,10 @@ const StatCard = ({ label, value, icon, trend, color }) => (
     <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
         <div className="flex justify-between items-start mb-5">
             <div
-                className={`p-2.5 rounded-2xl ${
-                    color === "primary"
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 text-gray-600"
-                }`}
+                className={`p-2.5 rounded-2xl ${color === "primary"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-600"
+                    }`}
             >
                 {icon}
             </div>

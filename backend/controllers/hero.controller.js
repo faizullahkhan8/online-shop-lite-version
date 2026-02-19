@@ -31,7 +31,11 @@ export const createHeroSlide = expressAsyncHandler(async (req, res, next) => {
         order,
     });
 
-    res.status(201).json({ success: true, slide, message: "Slide created successfully" });
+    res.status(201).json({
+        success: true,
+        slide,
+        message: "Slide created successfully",
+    });
 });
 
 export const updateHeroSlide = expressAsyncHandler(async (req, res, next) => {
@@ -61,7 +65,11 @@ export const updateHeroSlide = expressAsyncHandler(async (req, res, next) => {
 
     await slide.save();
 
-    res.status(200).json({ success: true, slide, message: "Slide updated successfully" });
+    res.status(200).json({
+        success: true,
+        slide,
+        message: "Slide updated successfully",
+    });
 });
 
 export const deleteHeroSlide = expressAsyncHandler(async (req, res, next) => {
@@ -76,5 +84,8 @@ export const deleteHeroSlide = expressAsyncHandler(async (req, res, next) => {
 
     await slide.deleteOne();
 
-    res.status(200).json({ success: true, message: "Slide deleted successfully" });
+    res.status(200).json({
+        success: true,
+        message: "Slide deleted successfully",
+    });
 });
