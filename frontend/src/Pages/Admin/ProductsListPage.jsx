@@ -1,54 +1,30 @@
-import {
-    useDeleteProduct,
-    useGetAllProducts,
-} from "../../api/hooks/product.api.js";
 import { useState, useEffect } from "react";
-import { Edit, MoreVertical, PackageOpen, Trash } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Edit, PackageOpen, Trash } from "lucide-react";
+import { Link } from "react-router-dom";
 import DeleteDialog from "../../UI/DialogBox.jsx";
 import Pagination from "../../Components/Pagination.jsx";
 
+import { useDeleteProduct } from "../../features/products/product.mutations.js";
+import { useProducts } from "../../features/products/product.queries.js";
+
 const ProductList = () => {
-    const [products, setProducts] = useState([]);
-    const [totalPages, setTotalPages] = useState(1);
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [collection, setCollection] = useState("")
+    const [searchQuery, setSearchQuery] = useState("");
+    const [limit, setLimit] = useState(10);
+    const [page, setPage] = useState(1);
 
-    const page = parseInt(searchParams.get("page") || "1");
-
-    const { getAllProducts, loading: getAllProductsLoading } =
-        useGetAllProducts();
-    const { deleteProduct, loading: deleteProductLoading } = useDeleteProduct();
+    const { data, isPending: getAllProductsLoading } =
+        useProducts({ page, limit, searchQuery, collection });
+    const { mutateAsync: deleteProduct, isPending: deleteProductLoading } = useDeleteProduct();
 
     const [productState, setProductState] = useState({
         type: "",
         data: null,
     });
 
-    useEffect(() => {
-        (async () => {
-            const response = await getAllProducts({ page, limit: 10 });
-            if (response?.success) {
-                setProducts(response.products);
-                setTotalPages(response.totalPages || 1);
-            }
-        })();
-    }, [page]);
-
-    const handlePageChange = (newPage) => {
-        setSearchParams((prev) => {
-            prev.set("page", newPage);
-            return prev;
-        });
-    };
-
     const handleDelete = async () => {
         const response = await deleteProduct(productState.data._id);
         if (response?.success) {
-            setProducts(
-                products.filter(
-                    (product) => product._id !== productState.data._id,
-                ),
-            );
             setProductState({ type: "", data: null });
         }
     };
@@ -71,7 +47,7 @@ const ProductList = () => {
                         Products
                     </h2>
                     <p className="text-sm text-gray-500 mt-1">
-                        Manage your product inventory ({products.length} items)
+                        Manage your product inventory ({data?.totalProducts || 0} items)
                     </p>
                 </div>
             </header>
@@ -100,7 +76,7 @@ const ProductList = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {getAllProductsLoading && products.length === 0 ? (
+                            {getAllProductsLoading && data?.products.length === 0 ? (
                                 <tr>
                                     <td
                                         colSpan={5}
@@ -114,8 +90,8 @@ const ProductList = () => {
                                         </div>
                                     </td>
                                 </tr>
-                            ) : products.length > 0 ? (
-                                products.map((product) => (
+                            ) : data?.products.length > 0 ? (
+                                data?.products.map((product) => (
                                     <tr
                                         key={product._id}
                                         className="group hover:bg-gray-50 transition-colors"
@@ -214,15 +190,16 @@ const ProductList = () => {
             </div>
 
             {/* Pagination */}
-            {totalPages > 1 && (
-                <div className="flex justify-center">
-                    <Pagination
-                        currentPage={page}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                    />
-                </div>
-            )}
+            <div className="mt-32 flex justify-center">
+                <Pagination
+                    currentPage={data?.currentPage || 1}
+                    totalPages={data?.totalPages || 1}
+                    onPageChange={setPage}
+                    limit={limit}
+                    setLimit={setLimit}
+                />
+            </div>
+
         </div>
     );
 };

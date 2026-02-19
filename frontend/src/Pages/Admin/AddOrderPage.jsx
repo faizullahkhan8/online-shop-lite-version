@@ -8,21 +8,18 @@ import {
     Truck,
     CreditCard,
     Hash,
-    User,
-    Receipt,
 } from "lucide-react";
 import Input from "../../UI/Input.jsx";
 import Select from "../../UI/Select.jsx";
-import { useGetAllProducts } from "../../api/hooks/product.api.js";
+import { useProducts } from "../../features/products/product.queries.js";
 import { usePlaceOrder } from "../../api/hooks/orders.api.js";
 import { useNavigate } from "react-router-dom";
 
 const AddOrderPage = () => {
-    const { getAllProducts, loading: productsLoading } = useGetAllProducts();
+    const { data, isPending: productsLoading } = useProducts();
     const { placeOrder, loading: orderLoading } = usePlaceOrder();
     const navigate = useNavigate();
 
-    const [products, setProducts] = useState([]);
     const [orderData, setOrderData] = useState({
         userId: "",
         items: [
@@ -87,7 +84,7 @@ const AddOrderPage = () => {
         const item = { ...newItems[index] };
 
         if (field === "product") {
-            const selectedProd = products.find((p) => p._id === value);
+            const selectedProd = data?.products.find((p) => p._id === value);
 
             item.product = value;
 
@@ -170,12 +167,6 @@ const AddOrderPage = () => {
         }
     };
 
-    useEffect(() => {
-        getAllProducts().then((res) => {
-            setProducts(res.products);
-        });
-    }, []);
-
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             {/* Header */}
@@ -227,7 +218,7 @@ const AddOrderPage = () => {
                                             <div className="flex-1">
                                                 <Select
                                                     disabled={productsLoading}
-                                                    options={products?.map(
+                                                    options={data?.products?.map(
                                                         (p) => ({
                                                             label: p.name,
                                                             value: p._id,

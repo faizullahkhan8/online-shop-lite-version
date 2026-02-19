@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useGetAllCollections } from "../api/hooks/collection.api.js";
+import { useCollections } from "../features/collections/collection.queries";
 import { ImageIcon } from "lucide-react";
 import Breadcrumb from "../Components/Breadcrumb.jsx";
 
@@ -9,19 +9,11 @@ const CollectionsPage = () => {
         { label: "Home", path: "/" },
         { label: "Collections" },
     ];
-    const [collections, setCollections] = useState([]);
-    const { getAllCollections, loading } = useGetAllCollections();
 
-    useEffect(() => {
-        (async () => {
-            const response = await getAllCollections();
-            if (response?.success) {
-                setCollections(response.collections || []);
-            }
-        })();
-    }, []);
+    const { data, isLoading } = useCollections();
 
-    const displayCollections = collections.filter(
+
+    const displayCollections = data?.collections?.filter(
         (collection) => collection.isActive !== false,
     );
 
@@ -35,7 +27,7 @@ const CollectionsPage = () => {
                     </h1>
                 </header>
 
-                {loading ? (
+                {isLoading ? (
                     <div className="py-20 text-center text-sm uppercase tracking-[0.3em] text-zinc-500">
                         Loading collections...
                     </div>

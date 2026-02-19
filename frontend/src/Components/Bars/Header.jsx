@@ -185,7 +185,7 @@ import MobileSideBar from "./MobileSideBar";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useGetAllCollections } from "../../api/hooks/collection.api";
+import { useCollections } from "../../features/collections/collection.queries";
 
 const Header = () => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -201,7 +201,8 @@ const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    const { getAllCollections, loading } = useGetAllCollections();
+
+    const { data, isLoading } = useCollections();
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -210,15 +211,6 @@ const Header = () => {
             setIsSearchOpen(false);
         }
     };
-
-    useEffect(() => {
-        (async () => {
-            const response = await getAllCollections();
-            if (response.success) {
-                setCollections(response.collections);
-            }
-        })();
-    }, []);
 
     // Close search on route change
     useEffect(() => {
@@ -234,7 +226,7 @@ const Header = () => {
         return () => document.removeEventListener("click", handleClickOutside);
     }, [isCollectionOpen]);
 
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="fixed top-0 left-0 right-0 z-50 h-16 sm:h-20 bg-white flex items-center justify-center border-b border-zinc-100">
                 <Loader2 className="animate-spin text-zinc-500 w-5 h-5" />
@@ -298,16 +290,16 @@ const Header = () => {
 
                         {isCollectionOpen && (
                             <div className="absolute top-full left-0 w-48 lg:w-56 bg-white shadow-lg border border-zinc-100 rounded-sm z-50 py-1">
-                                {collections?.map((link) => (
+                                {data?.collections?.map((collection) => (
                                     <Link
-                                        key={link._id || link.name}
-                                        to={`/products?collection=${link?._id}`}
+                                        key={collection._id || collection.name}
+                                        to={`/products?collection=${collection?._id}`}
                                         className="block px-4 py-2.5 text-xs uppercase tracking-[0.15em] text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 transition-colors"
                                         onClick={() =>
                                             setIsCollectionOpen(false)
                                         }
                                     >
-                                        {link.name}
+                                        {collection.name}
                                     </Link>
                                 ))}
                             </div>

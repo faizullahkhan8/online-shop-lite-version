@@ -15,13 +15,12 @@ import {
     Box,
     Boxes,
 } from "lucide-react";
-import {
-    useCreateProuduct,
-    useUpdateProduct,
-} from "../../api/hooks/product.api.js";
+
+import { useCreateProduct, useUpdateProduct } from "../../features/products/product.mutations.js"
+import { useCollections } from "../../features/collections/collection.queries.js"
+
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useGetAllCollections } from "../../api/hooks/collection.api.js";
 
 const INITAIL_STATE = {
     _id: "",
@@ -64,41 +63,15 @@ const AddProduct = () => {
     const [productData, setProductData] = useState(parseProductFromParams);
     const isEditing = Boolean(productData?._id);
 
-    const [collections, setCollections] = useState([]);
     const [previewUrl, setPreviewUrl] = useState("");
 
-    const { createProduct, loading: createProductLoading } =
-        useCreateProuduct();
-    const { updateProduct, loading: updateProductLoading } = useUpdateProduct();
-    const { getAllCollections } = useGetAllCollections();
+    const { mutateAsync: createProduct, isPending: createLoading } =
+        useCreateProduct();
 
-    useEffect(() => {
-        (async () => {
-            const response = await getAllCollections();
-            if (response.success) {
-                setCollections(response.collections);
-            }
-        })();
-    }, []);
+    const { mutateAsync: updateProduct, isPending: updateLoading } =
+        useUpdateProduct();
 
-    useEffect(() => {
-        if (!productData.image) {
-            setPreviewUrl("");
-            return;
-        }
-
-        if (productData.image instanceof File) {
-            const url = URL.createObjectURL(productData.image);
-            setPreviewUrl(url);
-            return () => URL.revokeObjectURL(url);
-        }
-
-        if (typeof productData.image === "string") {
-            setPreviewUrl(
-                `${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${productData.image}`,
-            );
-        }
-    }, [productData.image]);
+    const { data: collectionData, isLoading: collectionLoading } = useCollections();
 
     const handleChange = (e) => {
         const { id, value, files, type } = e.target;
@@ -111,18 +84,30 @@ const AddProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         const formData = new FormData();
 
         if (!isEditing) {
-            if (!productData.image)
-                return toast.error("Please select an image");
+            if (!productData.image) {
+                toast.error("Please select an image");
+                return;
+            }
 
             formData.append("image", productData.image);
+
             const { image, ...textData } = productData;
             formData.append("data", JSON.stringify(textData));
 
-            const response = await createProduct(formData);
-            if (response.success) navigate("/admin-dashboard/products");
+            await createProduct(formData, {
+                onSuccess: () => {
+                    toast.success("Product created successfully");
+                    navigate("/admin-dashboard/products");
+                },
+                onError: () => {
+                    toast.error("Failed to create product");
+                },
+            });
+
         } else {
             if (productData.image instanceof File) {
                 formData.append("image", productData.image);
@@ -131,14 +116,42 @@ const AddProduct = () => {
             const { image, ...textData } = productData;
             formData.append("data", JSON.stringify(textData));
 
-            const response = await updateProduct({
+            await updateProduct({
+                id: productData?._id,
                 product: formData,
-                id: productData._id,
+            }, {
+                onSuccess: () => {
+                    toast.success("Product updated successfully");
+                    navigate("/admin-dashboard/products");
+                },
+                onError: () => {
+                    toast.error("Failed to update product");
+                },
             });
-            if (response.success)
-                navigate("/admin-dashboard/products");
         }
     };
+
+    useEffect(() => {
+        if (!productData.image) {
+            setPreviewUrl("");
+            return;
+        }
+
+        if (productData.image instanceof File) {
+            const url = URL.createObjectURL(productData.image);
+            setPreviewUrl(url);
+
+            return () => URL.revokeObjectURL(url);
+        }
+
+        if (typeof productData.image === "string") {
+            setPreviewUrl(
+                `${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${productData.image}`
+            );
+        }
+    }, [productData.image]);
+
+    const isSubmitting = createLoading || updateLoading;
 
     return (
         <div className="space-y-6">
@@ -258,7 +271,7 @@ const AddProduct = () => {
                                         target: { id: "collection", value },
                                     })
                                 }
-                                options={collections.map((collection) => ({
+                                options={collectionData?.collections?.map((collection) => ({
                                     label: collection.name,
                                     value: collection._id,
                                 }))}
@@ -358,11 +371,11 @@ const AddProduct = () => {
                         <Button
                             type="submit"
                             disabled={
-                                createProductLoading || updateProductLoading
+                                isSubmitting
                             }
                             className="w-full py-3 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {createProductLoading || updateProductLoading ? (
+                            {isSubmitting ? (
                                 <>
                                     <Loader
                                         className="animate-spin"

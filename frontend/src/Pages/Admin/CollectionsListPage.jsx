@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import {
-    useGetAllCollections,
     useDeleteCollection,
     useCreateCollection,
     useUpdateCollection,
 } from "../../api/hooks/collection.api.js";
-import {
-    useGetAllProducts,
-    useUpdateProduct,
-} from "../../api/hooks/product.api.js";
+
+import { useCollections } from "../../features/collections/collection.queries";
+
+import { useProducts } from "../../features/products/product.queries";
+import { useUpdateProduct } from "../../features/products/product.mutations.js";
 import {
     Edit,
     Trash2,
@@ -33,7 +33,6 @@ const INITIAL_STATE = {
 };
 
 const CollectionsListPage = () => {
-    const [collections, setCollections] = useState([]);
     const [deleteModal, setDeleteModal] = useState({
         isOpen: false,
         collectionId: null,
@@ -45,30 +44,30 @@ const CollectionsListPage = () => {
     });
     const [previewUrl, setPreviewUrl] = useState("");
 
-    const { getAllCollections, loading: getAllCollectionsLoading } =
-        useGetAllCollections();
+    const { data: collectionsData, isLoading } = useCollections();
     const { deleteCollection, loading: deleteCollectionLoading } =
         useDeleteCollection();
     const { createCollection, loading: creating } = useCreateCollection();
     const { updateCollection, loading: updating } = useUpdateCollection();
-    const { getAllProducts } = useGetAllProducts();
-    const { updateProduct } = useUpdateProduct();
+    const { mutateAsync: updateProduct, isPending: updatingProduct } = useUpdateProduct();
 
     const [addProductsModal, setAddProductsModal] = useState({
         isOpen: false,
         collectionId: null,
         collectionName: "",
     });
-    const [unassignedProducts, setUnassignedProducts] = useState([]);
+
     const [selectedProductIds, setSelectedProductIds] = useState([]);
     const [assigning, setAssigning] = useState(false);
 
-    useEffect(() => {
-        (async () => {
-            const response = await getAllCollections();
-            if (response?.success) setCollections(response.collections);
-        })();
-    }, []);
+    const { data: unassignedProductsData } = useProducts({
+        excludeAssignedToCollection: true
+    });
+
+    console.log(collectionModal.data._id)
+
+    const unassignedProducts = unassignedProductsData?.products || [];
+
 
     useEffect(() => {
         const image = collectionModal.data.image;
@@ -194,7 +193,7 @@ const CollectionsListPage = () => {
                         Collections
                     </h2>
                     <p className="text-sm text-gray-500 mt-1">
-                        Manage product collections ({collections.length} total)
+                        Manage product collections ({collectionsData?.collections?.length} total)
                     </p>
                 </div>
                 <Button
@@ -218,9 +217,6 @@ const CollectionsListPage = () => {
                                 <th className="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 border-b border-gray-200">
                                     Collection Name
                                 </th>
-                                {/* <th className="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 border-b border-gray-200">
-                                    Parent Collection
-                                </th> */}
                                 <th className="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 border-b border-gray-200">
                                     Status
                                 </th>
@@ -230,8 +226,7 @@ const CollectionsListPage = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {getAllCollectionsLoading &&
-                            collections.length === 0 ? (
+                            {isLoading && collectionsData?.collections?.length === 0 ? (
                                 <tr>
                                     <td
                                         colSpan={4}
@@ -245,18 +240,18 @@ const CollectionsListPage = () => {
                                         </div>
                                     </td>
                                 </tr>
-                            ) : collections.length > 0 ? (
-                                collections.map((cat) => (
+                            ) : collectionsData?.collections?.length > 0 ? (
+                                collectionsData?.collections?.map((collection) => (
                                     <tr
-                                        key={cat._id}
+                                        key={collection._id}
                                         className="group hover:bg-gray-50 transition-colors"
                                     >
                                         <td className="px-6 py-4">
                                             <div className="w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200">
-                                                {cat.image ? (
+                                                {collection.image ? (
                                                     <img
-                                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${cat.image}`}
-                                                        alt={cat.name}
+                                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${collection.image}`}
+                                                        alt={collection.name}
                                                         className="w-full h-full object-cover"
                                                     />
                                                 ) : (
@@ -268,32 +263,22 @@ const CollectionsListPage = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
-                                                {cat.parentId && (
+                                                {collection.parentId && (
                                                     <ChevronRight
                                                         size={16}
                                                         className="text-gray-400"
                                                     />
                                                 )}
                                                 <span
-                                                    className={`text-sm font-medium ${cat.parentId ? "text-gray-600 ml-2" : "text-gray-900 font-semibold"}`}
+                                                    className={`text-sm font-medium ${collection.parentId ? "text-gray-600 ml-2" : "text-gray-900 font-semibold"}`}
                                                 >
-                                                    {cat.name}
+                                                    {collection.name}
                                                 </span>
                                             </div>
                                         </td>
-                                        {/* <td className="px-6 py-4">
-                                            <span
-                                                className={`text-xs font-medium px-2.5 py-1 rounded-2xl ${cat.parentId
-                                                    ? "bg-gray-100 text-gray-600"
-                                                    : "bg-blue-50 text-blue-700 border border-blue-200"
-                                                    }`}
-                                            >
-                                                {cat.parentId?.name || "Root"}
-                                            </span>
-                                        </td> */}
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
-                                                {cat.isActive ? (
+                                                {collection.isActive ? (
                                                     <>
                                                         <div className="w-2 h-2 rounded-full bg-green-500" />
                                                         <span className="text-sm font-medium text-gray-700">
@@ -313,7 +298,7 @@ const CollectionsListPage = () => {
                                         <td className="px-6 py-4 text-right flex gap-2 justify-end">
                                             <button
                                                 onClick={() =>
-                                                    handleOpenEditModal(cat)
+                                                    handleOpenEditModal(collection)
                                                 }
                                                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                                             >
@@ -327,9 +312,9 @@ const CollectionsListPage = () => {
                                                     // open modal and load unassigned products
                                                     setAddProductsModal({
                                                         isOpen: true,
-                                                        collectionId: cat._id,
+                                                        collectionId: collection._id,
                                                         collectionName:
-                                                            cat.name,
+                                                            collection.name,
                                                     });
                                                     setSelectedProductIds([]);
                                                     const resp =
@@ -358,7 +343,7 @@ const CollectionsListPage = () => {
                                                 onClick={() => {
                                                     setDeleteModal({
                                                         isOpen: true,
-                                                        collectionId: cat._id,
+                                                        collectionId: collection._id,
                                                     });
                                                 }}
                                                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
@@ -543,18 +528,16 @@ const CollectionsListPage = () => {
                                             },
                                         })
                                     }
-                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                                        collectionModal.data.isActive
-                                            ? "bg-blue-600"
-                                            : "bg-gray-300"
-                                    }`}
+                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${collectionModal.data.isActive
+                                        ? "bg-blue-600"
+                                        : "bg-gray-300"
+                                        }`}
                                 >
                                     <span
-                                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                                            collectionModal.data.isActive
-                                                ? "translate-x-6"
-                                                : "translate-x-1"
-                                        }`}
+                                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${collectionModal.data.isActive
+                                            ? "translate-x-6"
+                                            : "translate-x-1"
+                                            }`}
                                     />
                                 </button>
                             </div>

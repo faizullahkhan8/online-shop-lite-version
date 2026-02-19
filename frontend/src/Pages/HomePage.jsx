@@ -1,21 +1,19 @@
 import { useEffect, useState } from "react";
 import HeroSection from "../Components/Home/HeroSection";
-import { useGetAllProducts } from "../api/hooks/product.api";
-import { Link } from "react-router-dom";
+import { useProducts } from "../features/products/product.queries";
 import ProductCarousel from "../Components/Home/ProductCarousel";
 
 const HomePage = () => {
-    const { getAllProducts } = useGetAllProducts();
+    const { data, isLoading } = useProducts();
     const [products, setProducts] = useState([]);
 
+    console.log(data)
+
     useEffect(() => {
-        (async () => {
-            const response = await getAllProducts({ limit: 12 });
-            if (response?.success) {
-                setProducts(response.products);
-            }
-        })();
-    }, [getAllProducts]);
+        if (data?.success) {
+            setProducts(data.products);
+        }
+    }, [data]);
 
     return (
         <div className="min-h-screen bg-white pb-32 flex flex-col gap-18">

@@ -1,40 +1,48 @@
 import { useState, useEffect } from "react";
-import { X, SlidersHorizontal, PackageSearch, Loader2 } from "lucide-react";
+import { X, PackageSearch, Loader2 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import ProductCard from "../Components/ProductCard.jsx";
-import { useGetAllProducts } from "../api/hooks/product.api";
+import { useProducts } from "../features/products/product.queries";
 import Pagination from "../Components/Pagination.jsx";
 import Breadcrumb from "../Components/Breadcrumb.jsx";
 
 const ProductListPage = () => {
     const [searchParams] = useSearchParams();
-    const [products, setProducts] = useState([]);
-    const { getAllProducts, loading: productLoading } = useGetAllProducts();
     const searchQuery = searchParams.get("search");
     const collectionQuery = searchParams.get("collection");
+
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
-    const [totalPages, setTotalPages] = useState(1);
+
+    const { data, isLoading } = useProducts({
+        search: searchQuery,
+        collection: collectionQuery,
+        page,
+        limit,
+    });
+
+    const products = data?.products || [];
+    const totalPages = data?.totalPages || 1;
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center py-40">
+                <Loader2
+                    className="animate-spin text-zinc-900 mb-4"
+                    size={24}
+                    strokeWidth={1}
+                />
+                <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">
+                    Synchronizing...
+                </p>
+            </div>
+        );
+    }
 
     const breadcrumbItems = [
         { label: "Home", path: "/" },
         { label: "Products" },
     ];
-
-    useEffect(() => {
-        (async () => {
-            const response = await getAllProducts({
-                search: searchQuery,
-                collection: collectionQuery,
-                page: page || 1,
-                limit: limit,
-            });
-            if (response?.success) {
-                setProducts(response.products);
-                setTotalPages(response.totalPages)
-            }
-        })();
-    }, [searchQuery, page, collectionQuery, limit, getAllProducts]);
 
     const displayProducts = products;
 
@@ -45,18 +53,7 @@ const ProductListPage = () => {
 
                 <div className="flex flex-col gap-12">
                     <main className="w-full">
-                        {productLoading ? (
-                            <div className="flex flex-col items-center justify-center py-40">
-                                <Loader2
-                                    className="animate-spin text-zinc-900 mb-4"
-                                    size={24}
-                                    strokeWidth={1}
-                                />
-                                <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">
-                                    Synchronizing...
-                                </p>
-                            </div>
-                        ) : products?.length === 0 ? (
+                        {products?.length === 0 ? (
                             <div className="py-32 px-6 flex flex-col items-center justify-center border border-dashed border-zinc-200">
                                 <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mb-6">
                                     <PackageSearch
@@ -77,7 +74,7 @@ const ProductListPage = () => {
                             <div className="space-y-32">
                                 <section>
                                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-6 lg:gap-y-6">
-                                        {displayProducts.map((product) => (
+                                        {products.map((product) => (
                                             <ProductCard
                                                 key={product._id}
                                                 product={product}

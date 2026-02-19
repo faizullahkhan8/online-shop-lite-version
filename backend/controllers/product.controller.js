@@ -62,6 +62,7 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
         limit,
         excludeActivePromotions,
         currentPromotionId,
+        excludeAssignedToCollection,
     } = req.query;
 
     let query = {};
@@ -125,6 +126,27 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
                 } else {
                     query._id = { $nin: usedProductIds };
                 }
+            }
+        }
+    }
+
+    if (excludeAssignedToCollection === "true") {
+        // Find all products already assigned to any collection
+        const assignedProducts = await ProductModel.find({
+            collection: { $exists: true, $ne: null },
+        }).select("_id");
+
+        const assignedProductIds = assignedProducts.map((p) => p._id);
+
+        if (assignedProductIds.length > 0) {
+            // Merge with existing _id query if exists
+            if (query._id) {
+                query._id.$nin = [
+                    ...(query._id.$nin || []),
+                    ...assignedProductIds,
+                ];
+            } else {
+                query._id = { $nin: assignedProductIds };
             }
         }
     }
