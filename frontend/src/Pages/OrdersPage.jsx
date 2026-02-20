@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useGetUserOrders } from "../api/hooks/orders.api";
+import { useUserOrders } from "../features/orders/orders.queries.js";
 import {
     Package,
     Calendar,
@@ -14,17 +14,10 @@ import { useCancelOrder } from "../features/orders/orders.mutations.js";
 import Breadcrumb from "../Components/Breadcrumb.jsx";
 
 const OrdersPage = () => {
-    const [orders, setOrders] = useState([]);
-    const { getUserOrders, loading } = useGetUserOrders();
+    const { data, isPending: loading } = useUserOrders();
+    const [orders, setOrders] = useState([...(data.orders || [])]);
 
     const breadcrumbItems = [{ label: "Home", path: "/" }, { label: "Orders" }];
-
-    useEffect(() => {
-        (async () => {
-            const resp = await getUserOrders();
-            if (resp?.orders) setOrders(resp.orders);
-        })();
-    }, []);
 
     const getStatusStyles = (status) => {
         switch (status?.toLowerCase()) {

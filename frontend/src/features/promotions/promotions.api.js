@@ -1,40 +1,33 @@
 // frontend/src/features/promotions/promotions.api.js
 
 import apiClient from "../apiClient";
-import { PROMOTION_ROUTES } from "../../api/routes";
 
 export const getActiveDeals = async () => {
-    const { data } = await apiClient.get(PROMOTION_ROUTES.GET_ACTIVE);
+    const { data } = await apiClient.get("/promotions/active");
     return data;
 };
 
 export const getAllPromotions = async () => {
-    const { data } = await apiClient.get(PROMOTION_ROUTES.GET_ALL);
+    const { data } = await apiClient.get("/promotions/");
     return data;
 };
 
 export const getPromotionById = async (id) => {
-    const { data } = await apiClient.get(`${PROMOTION_ROUTES.GET_ALL}/${id}`);
+    const { data } = await apiClient.get(`/promotions/${id}`);
     return data;
 };
 
 export const addPromotion = async (promotionData) => {
-    const { data } = await apiClient.post(
-        PROMOTION_ROUTES.CREATE,
-        promotionData,
-    );
+    const { data } = await apiClient.post("/promotions/", promotionData);
     return data;
 };
 
 export const updatePromotion = async ({ id, data: body }) => {
-    const { data } = await apiClient.put(
-        `${PROMOTION_ROUTES.UPDATE}/${id}`,
-        body,
-    );
+    const { data } = await apiClient.put(`/promotions/${id}`, body);
     return data;
 };
 
 export const deletePromotion = async (id) => {
-    const { data } = await apiClient.delete(`${PROMOTION_ROUTES.DELETE}/${id}`);
+    const { data } = await apiClient.delete(`/promotions/${id}`);
     return data;
 };
