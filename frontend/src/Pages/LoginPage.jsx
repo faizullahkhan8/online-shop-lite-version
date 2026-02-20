@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useLoginUser } from "../api/hooks/user.api";
+import { useLoginUser } from "../features/users.all.js";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../store/slices/authSlice";
 import { Loader2, Mail, Lock, ShieldCheck } from "lucide-react";
@@ -12,15 +12,12 @@ const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const breadcrumbItems = [
-        { label: "Home", path: "/" },
-        { label: "Login" },
-    ];
+    const breadcrumbItems = [{ label: "Home", path: "/" }, { label: "Login" }];
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { loginUser, loading: loginLoading } = useLoginUser();
+    const loginMutation = useLoginUser();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,7 +32,7 @@ const LoginPage = () => {
             return;
         }
 
-        const response = await loginUser({ email, password });
+        const response = await loginMutation.mutateAsync({ email, password });
 
         if (response?.success) {
             dispatch(loginSuccess(response.user));
@@ -56,7 +53,11 @@ const LoginPage = () => {
                         <div className="bg-white p-10 border border-zinc-100 shadow-sm">
                             <div className="flex flex-col items-center mb-12">
                                 <div className="w-16 h-16 bg-zinc-900 flex items-center justify-center mb-6">
-                                    <ShieldCheck className="text-white" size={28} strokeWidth={1} />
+                                    <ShieldCheck
+                                        className="text-white"
+                                        size={28}
+                                        strokeWidth={1}
+                                    />
                                 </div>
                                 <h2 className="text-md uppercase tracking-[0.4em] font-semibold text-zinc-900">
                                     Authentication
@@ -81,7 +82,9 @@ const LoginPage = () => {
                                             placeholder="your@email.com"
                                             className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
                                             value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            onChange={(e) =>
+                                                setEmail(e.target.value)
+                                            }
                                             required
                                         />
                                     </div>
@@ -103,7 +106,9 @@ const LoginPage = () => {
                                             placeholder="••••••••"
                                             className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
                                             value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
+                                            onChange={(e) =>
+                                                setPassword(e.target.value)
+                                            }
                                             required
                                         />
                                     </div>
@@ -111,12 +116,16 @@ const LoginPage = () => {
 
                                 <button
                                     type="submit"
-                                    disabled={loginLoading}
+                                    disabled={loginMutation.isPending}
                                     className="w-full h-14 bg-zinc-900 text-white text-sm uppercase tracking-[0.3em] font-semibold hover:bg-zinc-700 transition-all duration-500 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed mt-10"
                                 >
-                                    {loginLoading ? (
+                                    {loginMutation.isPending ? (
                                         <>
-                                            <Loader2 className="animate-spin" size={16} strokeWidth={1.5} />
+                                            <Loader2
+                                                className="animate-spin"
+                                                size={16}
+                                                strokeWidth={1.5}
+                                            />
                                             Verifying...
                                         </>
                                     ) : (

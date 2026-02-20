@@ -1,4 +1,4 @@
-import apiClient from "../../api/apiClient";
+import apiClient from "../apiClient";
 
 export const getHeroSlides = async () => {
     const { data } = await apiClient.get("/hero");

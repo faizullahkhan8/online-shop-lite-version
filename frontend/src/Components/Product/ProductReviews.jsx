@@ -1,24 +1,13 @@
-import { useEffect } from "react";
-import { useGetProductReviews } from "../../api/hooks/review.api.js";
+import { useProductReviews } from "../../features/review.all.js";
 import StarRating from "../UI/StarRating.jsx";
 import { MessageSquare, Calendar, Loader2 } from "lucide-react";
 
 const ProductReviews = ({ productId }) => {
-    const {
-        getReviews,
-        reviews,
-        loading: reviewsLoading,
-    } = useGetProductReviews();
-
-    useEffect(() => {
-        if (productId) {
-            getReviews(productId);
-        }
-    }, [productId, getReviews]);
+    const { data: reviews = [], isLoading: reviewsLoading } =
+        useProductReviews(productId);
 
     return (
         <div className="space-y-8 sm:space-y-10 lg:space-y-12 py-8 sm:py-10 lg:py-12 border-t border-zinc-100">
-
             {/* Header */}
             <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
@@ -26,8 +15,8 @@ const ProductReviews = ({ productId }) => {
                         Customer Reviews
                     </h3>
                     <p className="text-xs sm:text-sm text-zinc-500 uppercase tracking-widest font-medium">
-                        {reviews.length}{" "}
-                        {reviews.length === 1 ? "entry" : "entries"} recorded
+                        {reviews?.length}{" "}
+                        {reviews?.length === 1 ? "entry" : "entries"} recorded
                     </p>
                 </div>
                 <div className="hidden lg:block h-[1px] flex-1 mx-12 bg-zinc-100"></div>
@@ -36,7 +25,6 @@ const ProductReviews = ({ productId }) => {
             {/* Grid */}
             <div className="w-full">
                 <div className="w-full space-y-6">
-
                     {/* Loading */}
                     {reviewsLoading ? (
                         <div className="flex flex-col items-center justify-center py-16 sm:py-20 bg-white border border-zinc-100 rounded-xl">
@@ -48,8 +36,7 @@ const ProductReviews = ({ productId }) => {
                                 Syncing Reviews...
                             </p>
                         </div>
-                    ) : reviews.length === 0 ? (
-
+                    ) : reviews?.length === 0 ? (
                         /* Empty */
                         <div className="flex flex-col items-center justify-center py-16 sm:py-20 bg-zinc-50 border border-dashed border-zinc-200 rounded-xl">
                             <MessageSquare
@@ -61,18 +48,15 @@ const ProductReviews = ({ productId }) => {
                                 No commentary available for this item.
                             </p>
                         </div>
-
                     ) : (
-
                         /* Reviews */
                         <div className="divide-y divide-zinc-100">
-                            {reviews.map((review) => (
+                            {reviews?.map((review) => (
                                 <div
                                     key={review._id}
                                     className="py-6 sm:py-8 first:pt-0"
                                 >
                                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4">
-
                                         {/* Left Section */}
                                         <div className="flex gap-4">
                                             <div className="w-9 h-9 sm:w-10 sm:h-10 bg-zinc-900 text-white flex items-center justify-center text-xs sm:text-sm font-bold uppercase rounded-xl shrink-0">

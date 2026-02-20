@@ -1,4 +1,4 @@
-import apiClient from "../../api/apiClient";
+import apiClient from "../apiClient";
 
 export const createProduct = async (product) => {
     const response = await apiClient.post("/products/create", product, {

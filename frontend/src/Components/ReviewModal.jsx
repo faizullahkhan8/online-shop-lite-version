@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { X, Loader2, Star } from "lucide-react";
-import { useAddReview } from "../api/hooks/review.api";
+import { useAddReview } from "../features/review.all.js";
 
-const ReviewModal = ({ isOpen, onClose, product, orderRecipient, onSuccess }) => {
-    const { addReview, loading } = useAddReview();
+const ReviewModal = ({
+    isOpen,
+    onClose,
+    product,
+    orderRecipient,
+    onSuccess,
+}) => {
+    const addReviewMutation = useAddReview();
     const [rating, setRating] = useState(5);
     const [formData, setFormData] = useState({
         name: orderRecipient?.name || "",
@@ -21,10 +27,16 @@ const ReviewModal = ({ isOpen, onClose, product, orderRecipient, onSuccess }) =>
             ...formData,
         };
 
-        const result = await addReview(reviewData);
-        if (result) {
-            if (onSuccess) onSuccess(product._id || product.id);
+        try {
+            await addReviewMutation.mutateAsync(reviewData);
+
+            if (onSuccess) {
+                onSuccess(product._id || product.id);
+            }
+
             onClose();
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -85,7 +97,10 @@ const ReviewModal = ({ isOpen, onClose, product, orderRecipient, onSuccess }) =>
                                 type="text"
                                 value={formData.name}
                                 onChange={(e) =>
-                                    setFormData({ ...formData, name: e.target.value })
+                                    setFormData({
+                                        ...formData,
+                                        name: e.target.value,
+                                    })
                                 }
                                 placeholder="Your name..."
                                 className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl px-6 py-4 text-sm tracking-widest focus:outline-none focus:border-zinc-900 transition-all"
@@ -102,7 +117,10 @@ const ReviewModal = ({ isOpen, onClose, product, orderRecipient, onSuccess }) =>
                                 type="email"
                                 value={formData.email}
                                 onChange={(e) =>
-                                    setFormData({ ...formData, email: e.target.value })
+                                    setFormData({
+                                        ...formData,
+                                        email: e.target.value,
+                                    })
                                 }
                                 placeholder="Your email..."
                                 className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl px-6 py-4 text-sm tracking-widest focus:outline-none focus:border-zinc-900 transition-all"
@@ -118,7 +136,10 @@ const ReviewModal = ({ isOpen, onClose, product, orderRecipient, onSuccess }) =>
                                 required
                                 value={formData.comment}
                                 onChange={(e) =>
-                                    setFormData({ ...formData, comment: e.target.value })
+                                    setFormData({
+                                        ...formData,
+                                        comment: e.target.value,
+                                    })
                                 }
                                 placeholder="Describe your exprerience..."
                                 className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl p-6 text-sm tracking-widest focus:border-zinc-900 outline-none transition-all min-h-[120px] resize-none"
@@ -127,10 +148,10 @@ const ReviewModal = ({ isOpen, onClose, product, orderRecipient, onSuccess }) =>
 
                         <button
                             type="submit"
-                            disabled={loading}
+                            disabled={addReviewMutation.isPending}
                             className="w-full bg-zinc-900 text-white py-5 text-sm font-bold uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all disabled:opacity-50 rounded-2xl flex items-center justify-center gap-3"
                         >
-                            {loading ? (
+                            {addReviewMutation.isPending ? (
                                 <Loader2 className="animate-spin" size={18} />
                             ) : (
                                 "Submit Review"

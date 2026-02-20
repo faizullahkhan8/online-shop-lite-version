@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { usePlaceOrder } from "../api/hooks/orders.api";
-import { useGetSettings } from "../api/hooks/settings.api";
+import { usePlaceOrder } from "../features/orders/orders.mutations.js";
+import { useSettings } from "../features/settings.all.js";
 import { removeSelectedItems, updateQuantity } from "../store/slices/cartSlice";
 import { addGuestOrder } from "../utils/guestOrders";
 import {
@@ -51,8 +51,8 @@ const CheckoutPage = () => {
 
     const totalAmount = items.reduce((sum, item) => sum + item.totalPrice, 0);
 
-    const { placeOrder, isLoading } = usePlaceOrder();
-    const { getSettings } = useGetSettings();
+    const { mutateAsync: placeOrder, isLoading } = usePlaceOrder();
+    const { data: settingsData, isSuccess } = useSettings();
 
     const [formData, setFormData] = useState({
         recipient: {
@@ -72,29 +72,24 @@ const CheckoutPage = () => {
         taxAmount: 0,
         shippingFee: 0,
     });
-    const [settingsLoaded, setSettingsLoaded] = useState(false);
+
+    useEffect(() => {
+        if (isSuccess && settingsData?.settings && !formData.taxAmount) {
+            const s = settingsData.settings;
+
+            setFormData((prev) => ({
+                ...prev,
+                taxAmount: Number(s.taxAmount) || 0,
+                shippingFee: Number(s.shippingFee) || 0,
+                shippingMethod: s.shippingMethod || "standard",
+            }));
+        }
+    }, [formData.taxAmount, isSuccess, settingsData]);
 
     const breadcrumbItems = [
         { label: "Home", path: "/" },
         { label: "Checkout" },
     ];
-
-    useEffect(() => {
-        if (!settingsLoaded) {
-            getSettings().then((res) => {
-                if (res?.settings) {
-                    setFormData((prev) => ({
-                        ...prev,
-                        taxAmount: Number(res.settings.taxAmount) || 0,
-                        shippingFee: Number(res.settings.shippingFee) || 0,
-                        shippingMethod:
-                            res.settings.shippingMethod || "standard",
-                    }));
-                }
-                setSettingsLoaded(true);
-            });
-        }
-    }, [settingsLoaded, getSettings]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -147,9 +142,8 @@ const CheckoutPage = () => {
             status: "pending",
         };
 
-        try {
-            const response = await placeOrder(orderData);
-            if (response?.success && response?.order?._id) {
+        await placeOrder(orderData, {
+            onSuccess: (response) => {
                 addGuestOrder(response.order);
                 // Only remove from cart if this is not a Buy Now flow
                 if (!buyNowProduct) {
@@ -165,10 +159,8 @@ const CheckoutPage = () => {
                 navigate(`/orders/success?id=${response.order._id}`, {
                     state: { orderId: response.order._id },
                 });
-            }
-        } catch (error) {
-            console.error("Order failed:", error);
-        }
+            },
+        });
     };
 
     if (items.length === 0 && !buyNowProduct) {
@@ -338,7 +330,7 @@ const CheckoutPage = () => {
                                 Order Summary
                             </h3>
 
-                            <div className="space-y-6 mb-8 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                            <div className="space-y-6 mb-8 max-h-100 overflow-y-auto pr-2 custom-scrollbar">
                                 {items.map((item) => (
                                     <div
                                         key={item._id}
@@ -351,7 +343,12 @@ const CheckoutPage = () => {
                                             <div className="flex items-center border border-zinc-200 h-10 w-fit bg-white rounded-2xl">
                                                 <button
                                                     type="button"
-                                                    onClick={() => handleQtyChange(item, item.quantity - 1)}
+                                                    onClick={() =>
+                                                        handleQtyChange(
+                                                            item,
+                                                            item.quantity - 1,
+                                                        )
+                                                    }
                                                     className="w-10 h-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 transition-colors"
                                                 >
                                                     <Minus size={12} />
@@ -361,7 +358,12 @@ const CheckoutPage = () => {
                                                 </span>
                                                 <button
                                                     type="button"
-                                                    onClick={() => handleQtyChange(item, item.quantity + 1)}
+                                                    onClick={() =>
+                                                        handleQtyChange(
+                                                            item,
+                                                            item.quantity + 1,
+                                                        )
+                                                    }
                                                     className="w-10 h-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 transition-colors"
                                                 >
                                                     <Plus size={12} />
@@ -472,10 +474,11 @@ const CheckoutInput = ({
 const PaymentCard = ({ active, onClick, title, description, icon }) => (
     <div
         onClick={onClick}
-        className={`p-6 border transition-all cursor-pointer relative overflow-hidden rounded-2xl ${active
-            ? "border-zinc-900 bg-zinc-900 text-white"
-            : "border-zinc-100 bg-white text-zinc-500 hover:border-zinc-300"
-            }`}
+        className={`p-6 border transition-all cursor-pointer relative overflow-hidden rounded-2xl ${
+            active
+                ? "border-zinc-900 bg-zinc-900 text-white"
+                : "border-zinc-100 bg-white text-zinc-500 hover:border-zinc-300"
+        }`}
     >
         <div className="flex justify-between items-start mb-4">
             <div className={active ? "text-white" : "text-zinc-900"}>

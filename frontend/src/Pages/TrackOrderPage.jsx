@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-    useGetOrderById,
-    useGetOrderByTrackingToken,
-} from "../api/hooks/orders.api";
+import { useOrderById } from "../features/orders/orders.queries.js";
 import { readGuestOrders } from "../utils/guestOrders";
 import {
     Loader2,
@@ -25,72 +22,41 @@ import ReviewModal from "../Components/ReviewModal.jsx";
 const TrackOrderPage = () => {
     const [orderId, setOrderId] = useState("");
     const [selectedOrderId, setSelectedOrderId] = useState(null);
-    const [order, setOrder] = useState(null);
-    const [error, setError] = useState("");
     const [savedOrders, setSavedOrders] = useState([]);
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [reviewedProductIds, setReviewedProductIds] = useState([]);
 
-    const { getOrderById, loading: loadingById } = useGetOrderById();
-    const { getOrderByTrackingToken, loading: loadingByToken } =
-        useGetOrderByTrackingToken();
+    const {
+        data,
+        isLoading: loading,
+        error,
+    } = useOrderById(selectedOrderId, {
+        enabled: !!selectedOrderId,
+    });
 
-    const breadcrumbItems = [
-        { label: "Home", path: "/" },
-        { label: "Track Order" },
-    ];
+    const order = data?.order || null;
 
-    const loading = loadingById || loadingByToken;
-
-    /* ---------------- Load localStorage once ---------------- */
+    /* Load localStorage once */
     useEffect(() => {
         const ids = readGuestOrders();
         setSavedOrders(ids || []);
     }, []);
 
-    /* ---------------- Fetch when selectedOrderId changes ---------------- */
-    useEffect(() => {
-        if (!selectedOrderId) return;
-
-        const fetchOrder = async () => {
-            setError("");
-            setOrder(null);
-
-            let resp = await getOrderById(selectedOrderId).catch(() => null);
-
-            if (!resp) {
-                resp = await getOrderByTrackingToken(selectedOrderId).catch(
-                    () => null,
-                );
-            }
-
-            const resolvedOrder = resp?.order || resp;
-
-            if (resolvedOrder && (resolvedOrder._id || resolvedOrder.id)) {
-                setOrder(resolvedOrder);
-            } else {
-                setError("ORDER NOT FOUND.");
-            }
-        };
-
-        fetchOrder();
-    }, [selectedOrderId]);
-
-    /* ---------------- Manual search ---------------- */
+    /* Manual search */
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!orderId.trim()) return;
         setSelectedOrderId(orderId.trim());
     };
 
-    /* ---------------- Click saved order ---------------- */
+    /* Click saved order */
     const handleSavedOrderClick = (id) => {
+        setOrderId(id);
         setSelectedOrderId(id);
-        setOrderId(id); // Also update the search input
     };
 
-    /* ---------------- Format date ---------------- */
+    /* Format date */
     const formatDate = (date) => {
         if (!date) return "N/A";
         return new Date(date).toLocaleDateString("en-US", {
@@ -100,7 +66,7 @@ const TrackOrderPage = () => {
         });
     };
 
-    /* ---------------- Status badge color ---------------- */
+    /* Status badge color */
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
             case "delivered":
@@ -115,6 +81,11 @@ const TrackOrderPage = () => {
                 return "bg-gray-100 text-gray-800";
         }
     };
+
+    const breadcrumbItems = [
+        { label: "Home", path: "/" },
+        { label: "Track Order" },
+    ];
 
     return (
         <div className="min-h-screen">
@@ -141,8 +112,8 @@ const TrackOrderPage = () => {
                             <input
                                 value={orderId}
                                 onChange={(e) => setOrderId(e.target.value)}
-                                placeholder="ENTER YOUR ORDER ID..."
-                                className="w-full border border-gray-300 rounded-2xl px-12 py-4 uppercase tracking-widest outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                                placeholder="Enter your order ID..."
+                                className="w-full border border-gray-300 rounded-2xl px-12 py-4 tracking-widest outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                             />
                         </div>
 
@@ -165,7 +136,7 @@ const TrackOrderPage = () => {
                     {error && (
                         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-2xl">
                             <p className="text-sm text-red-600 uppercase tracking-widest">
-                                {error}
+                                Order fetching failed!
                             </p>
                         </div>
                     )}
@@ -359,7 +330,7 @@ const TrackOrderPage = () => {
                                             const productId =
                                                 typeof item.product === "object"
                                                     ? item.product?._id ||
-                                                    item.product?.id
+                                                      item.product?.id
                                                     : item.product;
 
                                             return (
@@ -401,32 +372,50 @@ const TrackOrderPage = () => {
                                                                 </p>
                                                             </div>
                                                             <span
-                                                                className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${item.status ===
+                                                                className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
+                                                                    item.status ===
                                                                     "cancelled"
-                                                                    ? "bg-red-100 text-red-800"
-                                                                    : "bg-green-100 text-green-800"
-                                                                    }`}
+                                                                        ? "bg-red-100 text-red-800"
+                                                                        : "bg-green-100 text-green-800"
+                                                                }`}
                                                             >
                                                                 {item.status ||
                                                                     "Active"}
                                                             </span>
                                                         </div>
 
-                                                        {order.status === "delivered" && item.status !== "cancelled" && !reviewedProductIds.includes(productId) && (
-                                                            <button
-                                                                onClick={() => {
-                                                                    setSelectedProduct({
-                                                                        _id: productId,
-                                                                        name: productName || "Product"
-                                                                    });
-                                                                    setIsReviewModalOpen(true);
-                                                                }}
-                                                                className="mb-4 text-xs font-bold uppercase tracking-widest text-emerald-600 hover:text-emerald-700 transition-colors flex items-center gap-2 border border-emerald-100 bg-emerald-50 px-3 py-1.5 rounded-xl w-fit"
-                                                            >
-                                                                <Star size={12} className="fill-emerald-600" />
-                                                                Give Review
-                                                            </button>
-                                                        )}
+                                                        {order.status ===
+                                                            "delivered" &&
+                                                            item.status !==
+                                                                "cancelled" &&
+                                                            !reviewedProductIds.includes(
+                                                                productId,
+                                                            ) && (
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setSelectedProduct(
+                                                                            {
+                                                                                _id: productId,
+                                                                                name:
+                                                                                    productName ||
+                                                                                    "Product",
+                                                                            },
+                                                                        );
+                                                                        setIsReviewModalOpen(
+                                                                            true,
+                                                                        );
+                                                                    }}
+                                                                    className="mb-4 text-xs font-bold uppercase tracking-widest text-emerald-600 hover:text-emerald-700 transition-colors flex items-center gap-2 border border-emerald-100 bg-emerald-50 px-3 py-1.5 rounded-xl w-fit"
+                                                                >
+                                                                    <Star
+                                                                        size={
+                                                                            12
+                                                                        }
+                                                                        className="fill-emerald-600"
+                                                                    />
+                                                                    Give Review
+                                                                </button>
+                                                            )}
 
                                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                                                             <div>
@@ -437,41 +426,41 @@ const TrackOrderPage = () => {
                                                                     RS{" "}
                                                                     {Number(
                                                                         item.price ||
-                                                                        0,
+                                                                            0,
                                                                     ).toLocaleString()}
                                                                 </p>
                                                             </div>
 
                                                             {item.discount >
                                                                 0 && (
-                                                                    <div>
-                                                                        <p className="text-gray-500">
-                                                                            Discount
-                                                                        </p>
-                                                                        <p className="font-semibold text-green-600">
-                                                                            -Rs:
-                                                                            {
-                                                                                item.discount
-                                                                            }
-                                                                        </p>
-                                                                    </div>
-                                                                )}
+                                                                <div>
+                                                                    <p className="text-gray-500">
+                                                                        Discount
+                                                                    </p>
+                                                                    <p className="font-semibold text-green-600">
+                                                                        -Rs:
+                                                                        {
+                                                                            item.discount
+                                                                        }
+                                                                    </p>
+                                                                </div>
+                                                            )}
 
                                                             {item.promotion
                                                                 ?.title && (
-                                                                    <div className="md:col-span-2">
-                                                                        <p className="text-gray-500">
-                                                                            Promotion
-                                                                        </p>
-                                                                        <p className="font-semibold text-blue-600">
-                                                                            {
-                                                                                item
-                                                                                    .promotion
-                                                                                    .title
-                                                                            }
-                                                                        </p>
-                                                                    </div>
-                                                                )}
+                                                                <div className="md:col-span-2">
+                                                                    <p className="text-gray-500">
+                                                                        Promotion
+                                                                    </p>
+                                                                    <p className="font-semibold text-blue-600">
+                                                                        {
+                                                                            item
+                                                                                .promotion
+                                                                                .title
+                                                                        }
+                                                                    </p>
+                                                                </div>
+                                                            )}
 
                                                             <div>
                                                                 <p className="text-gray-500">
@@ -481,7 +470,7 @@ const TrackOrderPage = () => {
                                                                     RS{" "}
                                                                     {Number(
                                                                         item.totalAmount ||
-                                                                        0,
+                                                                            0,
                                                                     ).toLocaleString()}
                                                                 </p>
                                                             </div>
@@ -597,10 +586,11 @@ const TrackOrderPage = () => {
                                             onClick={() =>
                                                 handleSavedOrderClick(id)
                                             }
-                                            className={`w-full flex items-center justify-between p-3 border rounded-2xl transition-all ${selectedOrderId === id
-                                                ? "bg-black text-white border-black"
-                                                : "bg-white hover:bg-gray-50 border-gray-200"
-                                                }`}
+                                            className={`w-full flex items-center justify-between p-3 border rounded-2xl transition-all ${
+                                                selectedOrderId === id
+                                                    ? "bg-black text-white border-black"
+                                                    : "bg-white hover:bg-gray-50 border-gray-200"
+                                            }`}
                                         >
                                             <div className="flex items-center gap-3">
                                                 <CheckCircle2 size={16} />
@@ -624,7 +614,9 @@ const TrackOrderPage = () => {
                     onClose={() => setIsReviewModalOpen(false)}
                     product={selectedProduct}
                     orderRecipient={order?.recipient}
-                    onSuccess={(id) => setReviewedProductIds(prev => [...prev, id])}
+                    onSuccess={(id) =>
+                        setReviewedProductIds((prev) => [...prev, id])
+                    }
                 />
             )}
         </div>

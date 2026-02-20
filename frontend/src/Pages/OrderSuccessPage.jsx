@@ -1,20 +1,12 @@
-import { useEffect, useState } from "react";
-import {
-    useLocation,
-    useNavigate,
-    Link,
-    useSearchParams,
-} from "react-router-dom";
-import { useGetOrderById } from "../api/hooks/orders.api";
+import { useLocation, Link, useSearchParams } from "react-router-dom";
+import { useOrderById } from "../features/orders/orders.queries.js";
 import { getLastGuestOrder } from "../utils/guestOrders";
 import { Check, Loader2, Mail, Tag } from "lucide-react";
 import Breadcrumb from "../Components/Breadcrumb.jsx";
 
 const OrderSuccessPage = () => {
     const location = useLocation();
-    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const { getOrderById, loading } = useGetOrderById();
 
     const orderId =
         location.state?.orderId ||
@@ -22,23 +14,14 @@ const OrderSuccessPage = () => {
         getLastGuestOrder()?._id ||
         getLastGuestOrder()?.id;
 
-    const [order, setOrder] = useState(null);
+    const { data, loading } = useOrderById(orderId);
+
+    let order = data?.order;
 
     const breadcrumbItems = [
         { label: "Home", path: "/" },
         { label: "Order Success" },
     ];
-
-    useEffect(() => {
-        if (!orderId) {
-            navigate("/track-order", { replace: true });
-            return;
-        }
-        (async () => {
-            const resp = await getOrderById(orderId);
-            if (resp?.order) setOrder(resp.order);
-        })();
-    }, [orderId, navigate]);
 
     if (loading || !order) {
         return (
@@ -118,10 +101,10 @@ const OrderSuccessPage = () => {
                                 {order.status === "pending"
                                     ? "We will be in touch with you shortly to finalize your order. Please note that your purchase is not complete until a member of our team confirms your order."
                                     : order.status === "shipped"
-                                        ? "Your order has been shipped and is on its way to you."
-                                        : order.status === "delivered"
-                                            ? "Your order has been successfully delivered."
-                                            : "Your order has been received and is being processed."}
+                                      ? "Your order has been shipped and is on its way to you."
+                                      : order.status === "delivered"
+                                        ? "Your order has been successfully delivered."
+                                        : "Your order has been received and is being processed."}
                             </p>
                         </section>
 
@@ -328,7 +311,7 @@ const OrderSuccessPage = () => {
                                 const productCollection =
                                     typeof item.product === "object"
                                         ? typeof item.product.collection ===
-                                            "string"
+                                          "string"
                                             ? item.product.collection
                                             : item.product.collection?.name
                                         : null;
@@ -352,12 +335,12 @@ const OrderSuccessPage = () => {
                                                 </span>
                                                 {item.status ===
                                                     "cancelled" && (
-                                                        <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center">
-                                                            <span className="text-xs font-bold text-red-600">
-                                                                CANCELLED
-                                                            </span>
-                                                        </div>
-                                                    )}
+                                                    <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center">
+                                                        <span className="text-xs font-bold text-red-600">
+                                                            CANCELLED
+                                                        </span>
+                                                    </div>
+                                                )}
                                             </div>
                                             <div className="flex-1 flex justify-between items-start">
                                                 <div className="pr-4">
@@ -371,7 +354,7 @@ const OrderSuccessPage = () => {
                                                     </p>
                                                     {item.originalPrice &&
                                                         item.originalPrice >
-                                                        item.price && (
+                                                            item.price && (
                                                             <p className="text-xs text-zinc-500 line-through mt-1">
                                                                 Rs{" "}
                                                                 {item.originalPrice.toLocaleString()}

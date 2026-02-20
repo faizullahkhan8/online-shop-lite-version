@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-    useGetOrderById,
     useUpdateOrderStatus,
     useUpdatePaymentStatus,
     useDeleteOrder,
     useCancelOrderItem,
     useCancelOrder,
-} from "../../api/hooks/orders.api.js";
+} from "../../features/orders/orders.mutations.js";
+import { useOrderById } from "../../features/orders/orders.queries.js";
 import {
     ArrowLeft,
     Package,
@@ -27,14 +27,16 @@ const OrderDetails = () => {
     const orderId = id;
     const navigate = useNavigate();
 
-    const [order, setOrder] = useState(null);
-    const { getOrderById, loading } = useGetOrderById();
-    const { cancelOrder, loading: cancelOrderLoading } = useCancelOrder();
-    const { updateOrderStatus } = useUpdateOrderStatus();
-    const { updatePaymentStatus, loading: paymentLoading } =
+    const { mutateAsync: cancelOrder, loading: cancelOrderLoading } =
+        useCancelOrder();
+    const { mutateAsync: updateOrderStatus, isPending: statusPending } =
+        useUpdateOrderStatus();
+    const { mutateAsync: updatePaymentStatus, isPending: paymentLoading } =
         useUpdatePaymentStatus();
-    const { deleteOrder } = useDeleteOrder();
-    const { cancelOrderItem, loading: cancelLoading } = useCancelOrderItem();
+    const { mutateAsync: deleteOrder, isPending: deletePending } =
+        useDeleteOrder();
+    const { mutateAsync: cancelOrderItem, isPending: cancelLoading } =
+        useCancelOrderItem();
 
     const [orderCancelModal, setOrderCancelModal] = useState(false);
 
@@ -43,29 +45,28 @@ const OrderDetails = () => {
         itemId: null,
     });
 
-    useEffect(() => {
-        if (orderId) {
-            getOrderById(orderId).then((res) => {
-                if (res?.success) setOrder(res.order);
-            });
-        }
-    }, [orderId]);
+    const { data, isLoading: loading, isError } = useOrderById(orderId);
+
+    let order = null;
+
+    if (!loading && !isError) order = data?.order || null;
 
     const handleStatusUpdate = async (newStatus) => {
         if (!orderId) return;
-        const res = await updateOrderStatus({ orderId, status: newStatus });
-        if (res?.order) setOrder(res.order);
+        await updateOrderStatus({ orderId, status: newStatus });
     };
 
     const handlePaymentVerify = async () => {
         if (!orderId) return;
-        const res = await updatePaymentStatus({ orderId, ispaid: true });
-        if (res?.order) setOrder(res.order);
+        await updatePaymentStatus({ orderId, ispaid: true });
     };
 
     const handleDelete = async () => {
-        const res = await deleteOrder(orderId);
-        if (res?.success) navigate(-1);
+        await deleteOrder(orderId, {
+            onSuccess: (data) => {
+                if (data?.success) navigate(-1);
+            },
+        });
     };
 
     // cancel item
@@ -82,15 +83,20 @@ const OrderDetails = () => {
     const handleConfirmItemCancel = async (reason) => {
         if (!cancelModal.itemId || !orderId) return;
 
-        const res = await cancelOrderItem({
-            orderId,
-            itemId: cancelModal.itemId,
-            reason,
-        });
-        if (res?.success) {
-            if (res.order) setOrder(res.order);
-            handleCloseItemCancelModal();
-        }
+        const res = await cancelOrderItem(
+            {
+                orderId,
+                itemId: cancelModal.itemId,
+                reason,
+            },
+            {
+                onSuccess: () => {
+                    if (res?.success) {
+                        handleCloseItemCancelModal();
+                    }
+                },
+            },
+        );
     };
 
     // cancel order itself
@@ -107,15 +113,19 @@ const OrderDetails = () => {
     const handleConfirmOrderCancel = async (reason) => {
         if (!orderId) return;
 
-        const res = await cancelOrder({
-            orderId,
-            reason,
-        });
-
-        if (res?.success && res.order) {
-            setOrder(res.order);
-            handleCloseOrderCancelModal();
-        }
+        await cancelOrder(
+            {
+                orderId,
+                reason,
+            },
+            {
+                onSuccess: (data) => {
+                    if (data?.success && data.order) {
+                        handleCloseOrderCancelModal();
+                    }
+                },
+            },
+        );
     };
 
     if (!order || loading) {
@@ -241,10 +251,16 @@ const OrderDetails = () => {
                     )}
                     <button
                         onClick={handleDelete}
-                        className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-2xl text-sm font-medium hover:bg-red-100 transition-colors border border-red-200"
+                        className="px-4 py-2 bg-red-50 text-red-600 rounded-2xl text-sm font-medium hover:bg-red-100 transition-colors border border-red-200"
                     >
-                        <Trash2 size={16} />
-                        Delete
+                        {deletePending ? (
+                            <Loader2 size={24} className="animate-spin" />
+                        ) : (
+                            <span className="flex items-center gap-2 ">
+                                <Trash2 size={16} />
+                                Delete
+                            </span>
+                        )}
                     </button>
                 </div>
             </header>
@@ -303,11 +319,12 @@ const OrderDetails = () => {
                                                 <div className="flex items-start gap-3">
                                                     <img
                                                         src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.product?.image}`}
-                                                        className={`w-12 h-12 object-cover rounded-2xl border border-gray-200 ${item.status ===
+                                                        className={`w-12 h-12 object-cover rounded-2xl border border-gray-200 ${
+                                                            item.status ===
                                                             "cancelled"
-                                                            ? "grayscale opacity-50"
-                                                            : ""
-                                                            }`}
+                                                                ? "grayscale opacity-50"
+                                                                : ""
+                                                        }`}
                                                         alt={item.product?.name}
                                                     />
 
@@ -315,11 +332,12 @@ const OrderDetails = () => {
                                                         {/* Product name + status */}
                                                         <div className="flex items-center gap-2">
                                                             <p
-                                                                className={`text-sm font-medium ${item.status ===
+                                                                className={`text-sm font-medium ${
+                                                                    item.status ===
                                                                     "cancelled"
-                                                                    ? "line-through text-gray-400"
-                                                                    : "text-gray-900"
-                                                                    }`}
+                                                                        ? "line-through text-gray-400"
+                                                                        : "text-gray-900"
+                                                                }`}
                                                             >
                                                                 {
                                                                     item.product
@@ -329,49 +347,49 @@ const OrderDetails = () => {
 
                                                             {item.status ===
                                                                 "cancelled" && (
-                                                                    <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600">
-                                                                        <XCircle
-                                                                            size={
-                                                                                12
-                                                                            }
-                                                                        />
-                                                                        Cancelled
-                                                                    </span>
-                                                                )}
+                                                                <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600">
+                                                                    <XCircle
+                                                                        size={
+                                                                            12
+                                                                        }
+                                                                    />
+                                                                    Cancelled
+                                                                </span>
+                                                            )}
                                                         </div>
 
                                                         {/* Cancellation meta */}
                                                         {item.status ===
                                                             "cancelled" && (
-                                                                <div className="mt-1 space-y-0.5">
-                                                                    {item.cancellationReason && (
-                                                                        <p className="text-xs text-gray-500">
-                                                                            <span className="font-medium text-gray-600">
-                                                                                Reason:
-                                                                            </span>{" "}
-                                                                            {
-                                                                                item.cancellationReason
-                                                                            }
-                                                                        </p>
-                                                                    )}
+                                                            <div className="mt-1 space-y-0.5">
+                                                                {item.cancellationReason && (
+                                                                    <p className="text-xs text-gray-500">
+                                                                        <span className="font-medium text-gray-600">
+                                                                            Reason:
+                                                                        </span>{" "}
+                                                                        {
+                                                                            item.cancellationReason
+                                                                        }
+                                                                    </p>
+                                                                )}
 
-                                                                    {item
-                                                                        .cancelledBy
-                                                                        ?.name && (
-                                                                            <p className="text-xs text-gray-500">
-                                                                                <span className="font-medium text-gray-600">
-                                                                                    Cancelled
-                                                                                    by:
-                                                                                </span>{" "}
-                                                                                {
-                                                                                    item
-                                                                                        .cancelledBy
-                                                                                        .name
-                                                                                }
-                                                                            </p>
-                                                                        )}
-                                                                </div>
-                                                            )}
+                                                                {item
+                                                                    .cancelledBy
+                                                                    ?.name && (
+                                                                    <p className="text-xs text-gray-500">
+                                                                        <span className="font-medium text-gray-600">
+                                                                            Cancelled
+                                                                            by:
+                                                                        </span>{" "}
+                                                                        {
+                                                                            item
+                                                                                .cancelledBy
+                                                                                .name
+                                                                        }
+                                                                    </p>
+                                                                )}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </td>
@@ -382,8 +400,16 @@ const OrderDetails = () => {
                                                     {item.quantity}
                                                 </span>
                                             </td>
-                                            <td className="px-5 py-4 text-right text-sm text-gray-600"> Rs {item.originalPrice.toLocaleString()}</td>
-                                            <td className="px-5 py-4 text-right text-sm text-gray-600"> Rs {item.discount.toLocaleString()}</td>
+                                            <td className="px-5 py-4 text-right text-sm text-gray-600">
+                                                {" "}
+                                                Rs{" "}
+                                                {item.originalPrice.toLocaleString()}
+                                            </td>
+                                            <td className="px-5 py-4 text-right text-sm text-gray-600">
+                                                {" "}
+                                                Rs{" "}
+                                                {item.discount.toLocaleString()}
+                                            </td>
                                             <td className="px-5 py-4 text-right text-sm text-gray-600">
                                                 Rs {item.price.toLocaleString()}
                                             </td>
@@ -401,7 +427,7 @@ const OrderDetails = () => {
                                             <td className="px-5 py-4 text-right">
                                                 {item.status !== "cancelled" &&
                                                     order.status ===
-                                                    "pending" && (
+                                                        "pending" && (
                                                         <button
                                                             onClick={() =>
                                                                 handleOpenItemCancelModal(
@@ -437,21 +463,30 @@ const OrderDetails = () => {
                                             <button
                                                 disabled={Boolean(
                                                     order.status ===
-                                                    "cancelled",
+                                                        "cancelled" ||
+                                                    statusPending,
                                                 )}
                                                 key={status}
                                                 onClick={() =>
                                                     handleStatusUpdate(status)
                                                 }
-                                                className={`px-3 py-1.5 rounded-2xl text-xs font-medium transition-colors ${order.status === status
-                                                    ? "bg-blue-600 text-white"
-                                                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                                                    }`}
+                                                className={`px-3 py-1.5 rounded-2xl text-xs font-medium transition-colors ${
+                                                    order.status === status
+                                                        ? "bg-blue-600 text-white"
+                                                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                                                }`}
                                             >
-                                                {status
-                                                    .charAt(0)
-                                                    .toUpperCase() +
-                                                    status.slice(1)}
+                                                {statusPending ? (
+                                                    <Loader2
+                                                        size={24}
+                                                        className="animate-spin"
+                                                    />
+                                                ) : (
+                                                    status
+                                                        .charAt(0)
+                                                        .toUpperCase() +
+                                                    status.slice(1)
+                                                )}
                                             </button>
                                         ))}
                                     </div>

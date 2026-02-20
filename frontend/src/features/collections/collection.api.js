@@ -1,4 +1,4 @@
-import apiClient from "../../api/apiClient";
+import apiClient from "../apiClient";
 
 export const createCollection = async (collectionData) => {
     const isFormData = collectionData instanceof FormData;

@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useState, useEffect } from "react";
 import {
     Zap,
     Settings,
@@ -13,7 +14,12 @@ import {
 } from "lucide-react";
 
 import { useProducts } from "../../features/products/product.queries";
-import { useAddPromotion, useUpdatePromotion, useGetPromotionById } from "../../api/hooks/promotion.api";
+import {
+    useAddPromotion,
+    useUpdatePromotion,
+} from "../../features/promotions/promotions.mutations";
+
+import { usePromotion } from "../../features/promotions/promotions.query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import Input from "../../UI/Input";
@@ -25,11 +31,16 @@ const PromotionBuilder = () => {
     const [searchParams] = useSearchParams();
     const editId = searchParams.get("id");
 
-    const { addPromotion, loading: addLoading } = useAddPromotion();
-    const { updatePromotion, loading: updateLoading } = useUpdatePromotion();
-    const { getPromotionById, loading: fetchLoading } = useGetPromotionById();
+    const addMutation = useAddPromotion();
+    const updateMutation = useUpdatePromotion();
 
-    const loading = addLoading || updateLoading || (editId && fetchLoading);
+    const { data: promotionResponse, isLoading: fetchLoading } =
+        usePromotion(editId);
+
+    const loading =
+        addMutation.isPending ||
+        updateMutation.isPending ||
+        (editId && fetchLoading);
 
     const [promotionData, setPromotionData] = useState({
         title: "",
@@ -59,26 +70,21 @@ const PromotionBuilder = () => {
 
     // Fetch existing promotion if editing
     useEffect(() => {
-        if (editId) {
-            const loadPromotion = async () => {
-                const data = await getPromotionById(editId);
-                if (data && data.promotion) {
-                    const p = data.promotion;
-                    setPromotionData({
-                        title: p.title,
-                        type: p.type,
-                        discountType: p.discountType,
-                        discountValue: p.discountValue,
-                        startTime: new Date(p.startTime).toISOString().slice(0, 16),
-                        endTime: new Date(p.endTime).toISOString().slice(0, 16),
-                    });
-                    setSelectedProducts(p.products);
-                }
-            };
-            loadPromotion();
-        }
-    }, [editId, getPromotionById]);
+        if (promotionResponse?.promotion) {
+            const p = promotionResponse.promotion;
 
+            setPromotionData({
+                title: p.title,
+                type: p.type,
+                discountType: p.discountType,
+                discountValue: p.discountValue,
+                startTime: new Date(p.startTime).toISOString().slice(0, 16),
+                endTime: new Date(p.endTime).toISOString().slice(0, 16),
+            });
+
+            setSelectedProducts(p.products);
+        }
+    }, [promotionResponse]);
 
     const handleDataChange = (name, value) => {
         setPromotionData((prev) => ({ ...prev, [name]: value }));
@@ -133,15 +139,19 @@ const PromotionBuilder = () => {
             products: selectedProducts.map((p) => p._id),
         };
 
-        let result;
-        if (editId) {
-            result = await updatePromotion(editId, data);
-        } else {
-            result = await addPromotion(data);
-        }
+        try {
+            if (editId) {
+                await updateMutation.mutateAsync({
+                    id: editId,
+                    data,
+                });
+            } else {
+                await addMutation.mutateAsync(data);
+            }
 
-        if (result?.success) {
             navigate("/admin-dashboard/promotions");
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -158,7 +168,9 @@ const PromotionBuilder = () => {
                             {editId ? "Edit Promotion" : "Create Promotion"}
                         </h1>
                         <span className="text-sm text-gray-500">
-                            {editId ? "Update campaign details" : "Build a new campaign"}
+                            {editId
+                                ? "Update campaign details"
+                                : "Build a new campaign"}
                         </span>
                     </div>
                 </div>
@@ -220,7 +232,10 @@ const PromotionBuilder = () => {
                                     }
                                     className="w-full!"
                                     options={[
-                                        { value: "FLASH_DEAL", label: "Flash Deal" },
+                                        {
+                                            value: "FLASH_DEAL",
+                                            label: "Flash Deal",
+                                        },
                                         { value: "OFFER", label: "Offer" },
                                     ]}
                                 />
@@ -232,8 +247,14 @@ const PromotionBuilder = () => {
                                     }
                                     className="w-full!"
                                     options={[
-                                        { value: "PERCENTAGE", label: "Percentage" },
-                                        { value: "FIXED_AMOUNT", label: "Fixed Amount" },
+                                        {
+                                            value: "PERCENTAGE",
+                                            label: "Percentage",
+                                        },
+                                        {
+                                            value: "FIXED_AMOUNT",
+                                            label: "Fixed Amount",
+                                        },
                                     ]}
                                 />
                             </div>
@@ -255,10 +276,13 @@ const PromotionBuilder = () => {
                                         className="flex-1 bg-white border border-gray-200 rounded-2xl px-3 py-2 text-lg font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     />
                                     <div className="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center text-white">
-                                        {promotionData.discountType === "PERCENTAGE" ? (
+                                        {promotionData.discountType ===
+                                        "PERCENTAGE" ? (
                                             <Percent size={18} />
                                         ) : (
-                                            <span className="font-semibold text-sm">PKR</span>
+                                            <span className="font-semibold text-sm">
+                                                PKR
+                                            </span>
                                         )}
                                     </div>
                                 </div>
@@ -286,12 +310,17 @@ const PromotionBuilder = () => {
                                     type="datetime-local"
                                     value={promotionData.startTime}
                                     onChange={(e) =>
-                                        handleDataChange("startTime", e.target.value)
+                                        handleDataChange(
+                                            "startTime",
+                                            e.target.value,
+                                        )
                                     }
                                     className="w-full bg-gray-800 border border-gray-700 rounded-2xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                                 {errors.startTime && (
-                                    <p className="text-xs text-red-400">{errors.startTime}</p>
+                                    <p className="text-xs text-red-400">
+                                        {errors.startTime}
+                                    </p>
                                 )}
                             </div>
 
@@ -303,12 +332,17 @@ const PromotionBuilder = () => {
                                     type="datetime-local"
                                     value={promotionData.endTime}
                                     onChange={(e) =>
-                                        handleDataChange("endTime", e.target.value)
+                                        handleDataChange(
+                                            "endTime",
+                                            e.target.value,
+                                        )
                                     }
                                     className="w-full bg-gray-800 border border-gray-700 rounded-2xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                                 {errors.endTime && (
-                                    <p className="text-xs text-red-400">{errors.endTime}</p>
+                                    <p className="text-xs text-red-400">
+                                        {errors.endTime}
+                                    </p>
                                 )}
                             </div>
                         </div>
@@ -343,30 +377,39 @@ const PromotionBuilder = () => {
                         <div className="flex-1 p-5 overflow-y-auto">
                             {availableProducts?.length === 0 ? (
                                 <div className="h-full flex items-center justify-center">
-                                    <Loader2 className="animate-spin text-blue-600" size={32} />
+                                    <Loader2
+                                        className="animate-spin text-blue-600"
+                                        size={32}
+                                    />
                                 </div>
                             ) : noProductFound ? (
                                 <div className="h-full flex flex-col items-center justify-center text-center p-8">
-                                    <Search size={32} className="text-gray-300 mb-2" />
+                                    <Search
+                                        size={32}
+                                        className="text-gray-300 mb-2"
+                                    />
                                     <p className="text-sm text-gray-500">
-                                        No products found or all products are already in active promotions
+                                        No products found or all products are
+                                        already in active promotions
                                     </p>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
                                     {availableProducts.map((p) => {
-                                        const isSelected = selectedProducts.some(
-                                            (sp) => sp._id === p._id,
-                                        );
+                                        const isSelected =
+                                            selectedProducts.some(
+                                                (sp) => sp._id === p._id,
+                                            );
                                         return (
                                             <button
                                                 key={p._id}
                                                 type="button"
                                                 onClick={() => toggleProduct(p)}
-                                                className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center text-center gap-2 ${isSelected
-                                                    ? "bg-blue-50 border-blue-500"
-                                                    : "bg-white border-gray-200 hover:border-gray-300"
-                                                    }`}
+                                                className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center text-center gap-2 ${
+                                                    isSelected
+                                                        ? "bg-blue-50 border-blue-500"
+                                                        : "bg-white border-gray-200 hover:border-gray-300"
+                                                }`}
                                             >
                                                 <div className="w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 p-2">
                                                     <img
@@ -380,12 +423,16 @@ const PromotionBuilder = () => {
                                                         {p.name}
                                                     </p>
                                                     <p className="text-xs text-gray-500 mt-0.5">
-                                                        PKR {p.price.toLocaleString()}
+                                                        PKR{" "}
+                                                        {p.price.toLocaleString()}
                                                     </p>
                                                 </div>
                                                 {isSelected && (
                                                     <div className="absolute top-2 right-2 w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center">
-                                                        <Plus size={12} className="rotate-45" />
+                                                        <Plus
+                                                            size={12}
+                                                            className="rotate-45"
+                                                        />
                                                     </div>
                                                 )}
                                             </button>
@@ -406,7 +453,6 @@ const PromotionBuilder = () => {
                                 setLimit={setLimit}
                             />
                         </div>
-
                     </section>
                 </div>
 
@@ -425,7 +471,10 @@ const PromotionBuilder = () => {
 
                         {selectedProducts.length === 0 ? (
                             <div className="py-12 flex flex-col items-center justify-center">
-                                <Package size={40} className="text-gray-300 mb-3" />
+                                <Package
+                                    size={40}
+                                    className="text-gray-300 mb-3"
+                                />
                                 <p className="text-sm text-gray-500">
                                     No products selected
                                 </p>
@@ -451,9 +500,14 @@ const PromotionBuilder = () => {
                                                 </p>
                                                 <p className="text-xs text-blue-600 mt-0.5">
                                                     Rs{" "}
-                                                    {(promotionData.discountType === "PERCENTAGE"
-                                                        ? p.price - (p.price * promotionData.discountValue) / 100
-                                                        : p.price - promotionData.discountValue
+                                                    {(promotionData.discountType ===
+                                                    "PERCENTAGE"
+                                                        ? p.price -
+                                                          (p.price *
+                                                              promotionData.discountValue) /
+                                                              100
+                                                        : p.price -
+                                                          promotionData.discountValue
                                                     ).toLocaleString()}
                                                 </p>
                                             </div>

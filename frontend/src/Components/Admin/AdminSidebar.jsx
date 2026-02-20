@@ -20,7 +20,7 @@ import {
 
 import { useState } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
-import { useLogoutUser } from "../../api/hooks/user.api";
+import { useLogoutUser } from "../../features/users.all";
 import { useDispatch } from "react-redux";
 import { logout } from "../../store/slices/authSlice";
 
@@ -28,12 +28,12 @@ const AdminSidebar = () => {
     const [collapsed, setCollapsed] = useState(false);
     const location = useLocation();
 
-    const { logoutUser, loading } = useLogoutUser({});
+    const logoutMutation = useLogoutUser({});
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleSignOut = async () => {
-        const response = await logoutUser();
+        const response = await logoutMutation.mutateAsync();
         if (response.success) {
             dispatch(logout());
             navigate("/");
@@ -133,8 +133,9 @@ const AdminSidebar = () => {
 
                     {/* Inventory Section */}
                     <div
-                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${collapsed ? "opacity-0" : "opacity-100"
-                            }`}
+                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${
+                            collapsed ? "opacity-0" : "opacity-100"
+                        }`}
                     >
                         Inventory
                     </div>
@@ -190,8 +191,9 @@ const AdminSidebar = () => {
 
                     {/* Logistics Section */}
                     <div
-                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${collapsed ? "opacity-0" : "opacity-100"
-                            }`}
+                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${
+                            collapsed ? "opacity-0" : "opacity-100"
+                        }`}
                     >
                         Logistics
                     </div>
@@ -219,8 +221,9 @@ const AdminSidebar = () => {
 
                     {/* Marketing Section */}
                     <div
-                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${collapsed ? "opacity-0" : "opacity-100"
-                            }`}
+                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${
+                            collapsed ? "opacity-0" : "opacity-100"
+                        }`}
                     >
                         Marketing
                     </div>
@@ -250,7 +253,7 @@ const AdminSidebar = () => {
                         <MenuItem
                             onClick={handleSignOut}
                             icon={
-                                loading ? (
+                                logoutMutation.isPending ? (
                                     <Loader2
                                         size={16}
                                         className="animate-spin text-red-500"
@@ -260,7 +263,7 @@ const AdminSidebar = () => {
                                 )
                             }
                         >
-                            {loading ? (
+                            {logoutMutation.isPending ? (
                                 <span className="text-red-500">
                                     Logging out...
                                 </span>

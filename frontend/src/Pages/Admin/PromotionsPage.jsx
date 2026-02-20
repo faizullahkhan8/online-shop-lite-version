@@ -1,4 +1,3 @@
-import { useState, useEffect, useCallback } from "react";
 import {
     Zap,
     Calendar,
@@ -13,56 +12,37 @@ import {
     AlertCircle,
     FilePenLine,
 } from "lucide-react";
+import { usePromotions } from "../../features/promotions/promotions.query";
+
 import {
-    useGetAllPromotions,
     useUpdatePromotion,
     useDeletePromotion,
-} from "../../api/hooks/promotion.api";
+} from "../../features/promotions/promotions.mutations";
+
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { toast } from "react-toastify";
 
 const PromotionManager = () => {
     const navigate = useNavigate();
-    const { getAllPromotions } = useGetAllPromotions();
-    const { updatePromotion, loading: updateLoading } = useUpdatePromotion();
-    const { deletePromotion, loading: deleteLoading } = useDeletePromotion();
+    const { data, isLoading } = usePromotions();
 
-    const [promotions, setPromotions] = useState([]);
-    const [localLoading, setLocalLoading] = useState(true);
+    const updateMutation = useUpdatePromotion();
+    const deleteMutation = useDeletePromotion();
 
-    const fetchPromotions = useCallback(async () => {
-        setLocalLoading(true);
-        const data = await getAllPromotions();
-        if (data && data.promotions) {
-            setPromotions(data.promotions);
-        }
-        setLocalLoading(false);
-    }, [getAllPromotions]);
-
-    useEffect(() => {
-        fetchPromotions();
-    }, [fetchPromotions]);
+    const promotions = data?.promotions || [];
 
     const handleStatusToggle = async (promotion) => {
         const newStatus = promotion.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
-        const result = await updatePromotion(promotion._id, {
-            status: newStatus,
+        await updateMutation.mutateAsync({
+            id: promotion._id,
+            data: { status: newStatus },
         });
-        if (result) {
-            setPromotions((prev) =>
-                prev.map((p) =>
-                    p._id === promotion._id ? { ...p, status: newStatus } : p,
-                ),
-            );
-        }
     };
 
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this promotion?")) {
-            const result = await deletePromotion(id);
-            if (result) {
-                setPromotions((prev) => prev.filter((p) => p._id !== id));
-            }
+            await deleteMutation.mutateAsync(id);
         }
     };
 
@@ -80,7 +60,6 @@ const PromotionManager = () => {
 
         // Update orders locally
         newPromotions.forEach((p, i) => (p.order = i));
-        setPromotions(newPromotions);
 
         // Ideally, sending a bulk update or updating the two swapped items
         // For simplicity, updating both items with their new order
@@ -88,12 +67,18 @@ const PromotionManager = () => {
         const p2 = newPromotions[targetIndex];
 
         await Promise.all([
-            updatePromotion(p1._id, { order: p1.order }),
-            updatePromotion(p2._id, { order: p2.order }),
+            updateMutation.mutateAsync({
+                id: p1._id,
+                data: { order: p1.order },
+            }),
+            updateMutation.mutateAsync({
+                id: p2._id,
+                data: { order: p2.order },
+            }),
         ]);
     };
 
-    if (localLoading && promotions.length === 0) {
+    if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[400px]">
                 <Loader2 className="animate-spin text-blue-600" size={32} />
@@ -102,6 +87,10 @@ const PromotionManager = () => {
                 </p>
             </div>
         );
+    }
+
+    if (updateMutation.isError && !updateMutation.isPending) {
+        toast.error("something went wronge!");
     }
 
     return (
@@ -168,7 +157,10 @@ const PromotionManager = () => {
                                 {/* Drag Handles / Order */}
                                 <div className="flex flex-col gap-1 items-center justify-center mr-2">
                                     <button
-                                        disabled={index === 0 || updateLoading}
+                                        disabled={
+                                            index === 0 ||
+                                            updateMutation.isPending
+                                        }
                                         onClick={() => handleMove(index, "up")}
                                         className="w-6 h-6 rounded bg-white border border-gray-300 flex items-center justify-center text-gray-400 hover:text-blue-600 hover:border-blue-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                     >
@@ -180,7 +172,7 @@ const PromotionManager = () => {
                                     <button
                                         disabled={
                                             index === promotions.length - 1 ||
-                                            updateLoading
+                                            updateMutation.isPending
                                         }
                                         onClick={() =>
                                             handleMove(index, "down")
@@ -261,14 +253,19 @@ const PromotionManager = () => {
                                         onClick={() =>
                                             handleStatusToggle(promo)
                                         }
-                                        disabled={updateLoading}
+                                        disabled={updateMutation.isPending}
                                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-medium border transition-colors ${
                                             promo.status === "ACTIVE"
                                                 ? "bg-white border-gray-200 text-gray-600 hover:border-gray-300"
                                                 : "bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
                                         }`}
                                     >
-                                        {promo.status === "ACTIVE" ? (
+                                        {updateMutation.isPending ? (
+                                            <Loader2
+                                                size={24}
+                                                className="animate-spin"
+                                            />
+                                        ) : promo.status === "ACTIVE" ? (
                                             <>
                                                 <ToggleRight size={14} />
                                                 Deactivate
@@ -283,10 +280,10 @@ const PromotionManager = () => {
 
                                     <button
                                         onClick={() => handleDelete(promo._id)}
-                                        disabled={deleteLoading}
+                                        disabled={deleteMutation.isPending}
                                         className="w-8 h-8 rounded-2xl bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-colors"
                                     >
-                                        {deleteLoading ? (
+                                        {deleteMutation.isPending ? (
                                             <Loader2
                                                 size={14}
                                                 className="animate-spin"

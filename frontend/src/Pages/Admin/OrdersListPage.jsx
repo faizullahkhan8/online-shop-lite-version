@@ -1,20 +1,9 @@
-import { useState, useEffect } from "react";
-import { useGetAllOrder } from "../../api/hooks/orders.api.js";
+import { useOrders } from "../../features/orders/orders.queries";
 import { Eye, Package, Loader2, CreditCard, Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const OrdersList = () => {
-    const [orders, setOrders] = useState([]);
-    const { getAllOrder, loading } = useGetAllOrder();
-
-    useEffect(() => {
-        (async () => {
-            const response = await getAllOrder();
-            if (response?.orders) {
-                setOrders(response.orders);
-            }
-        })();
-    }, []);
+    const { data, isPending } = useOrders();
 
     const getStatusStyles = (status) => {
         switch (status?.toLowerCase()) {
@@ -40,7 +29,8 @@ const OrdersList = () => {
                 <div>
                     <h2 className="text-2xl font-bold text-gray-900">Orders</h2>
                     <p className="text-sm text-gray-500 mt-1">
-                        Manage all customer orders ({orders.length} total)
+                        Manage all customer orders ({data?.orders?.length}{" "}
+                        total)
                     </p>
                     <p className="text-sm text-gray-500 mt-1">
                         All Orders is in decsending order
@@ -80,10 +70,10 @@ const OrdersList = () => {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
-                        {loading ? (
+                        {isPending ? (
                             <TableLoadingState />
-                        ) : orders?.length > 0 ? (
-                            orders.map((order) => (
+                        ) : data?.orders?.length > 0 ? (
+                            data?.orders?.map((order) => (
                                 <tr
                                     key={order._id}
                                     className="hover:bg-gray-50 transition-colors group"
@@ -121,16 +111,18 @@ const OrdersList = () => {
                                     </td>
                                     <td className="px-4 py-3.5 text-center">
                                         <div
-                                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-2xl border text-xs font-semibold ${order.payment?.ispaid
-                                                ? "bg-green-50 text-green-700 border-green-200"
-                                                : "bg-red-50 text-red-700 border-red-200"
-                                                }`}
+                                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-2xl border text-xs font-semibold ${
+                                                order.payment?.ispaid
+                                                    ? "bg-green-50 text-green-700 border-green-200"
+                                                    : "bg-red-50 text-red-700 border-red-200"
+                                            }`}
                                         >
                                             <div
-                                                className={`w-1.5 h-1.5 rounded-full ${order.payment?.ispaid
-                                                    ? "bg-green-500"
-                                                    : "bg-red-500"
-                                                    }`}
+                                                className={`w-1.5 h-1.5 rounded-full ${
+                                                    order.payment?.ispaid
+                                                        ? "bg-green-500"
+                                                        : "bg-red-500"
+                                                }`}
                                             />
                                             {order.payment?.ispaid
                                                 ? "Paid"

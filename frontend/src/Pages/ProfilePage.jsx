@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loginSuccess } from "../store/slices/authSlice";
-import { useUpdateUser } from "../api/hooks/user.api";
+import { useUpdateUser } from "../features/users.all.js";
 import {
     User,
     Mail,
@@ -15,23 +15,17 @@ import Breadcrumb from "../Components/Breadcrumb.jsx";
 
 const ProfilePage = () => {
     const { user } = useSelector((state) => state.auth);
-    const [userData, setUserData] = useState(null);
+    const [userData, setUserData] = useState(user || null);
     const [avatarPreview, setAvatarPreview] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const dispatch = useDispatch();
 
-    const { updateUser, loading: updateUserLoading } = useUpdateUser();
+    const updateUserMutation = useUpdateUser();
 
     const breadcrumbItems = [
         { label: "Home", path: "/" },
         { label: "Profile" },
     ];
-
-    useEffect(() => {
-        if (user) {
-            setUserData(user);
-        }
-    }, [user]);
 
     const handleChange = (e) => {
         setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -65,7 +59,10 @@ const ProfilePage = () => {
             formData.append("avatar", selectedFile);
         }
 
-        const response = await updateUser({ userId: user._id, user: formData });
+        const response = await updateUserMutation.mutateAsync({
+            userId: user._id,
+            user: formData,
+        });
 
         if (response && response.user) {
             dispatch(loginSuccess(response.user));
@@ -84,7 +81,8 @@ const ProfilePage = () => {
                         </h1>
                         <p className="text-md text-zinc-500 uppercase tracking-widest leading-relaxed max-w-md">
                             Identity verification and logistics configuration.
-                            Ensure all data points are current for optimal service.
+                            Ensure all data points are current for optimal
+                            service.
                         </p>
                     </div>
                     <div className="flex items-center gap-3 px-4 py-2 bg-zinc-900 rounded-2xl shadow-sm">
@@ -163,44 +161,87 @@ const ProfilePage = () => {
                                     label="Primary Logistics (Street)"
                                     name="street"
                                     icon={<MapPin size={14} />}
-                                    value={userData?.addresses?.[0]?.street || ""}
-                                    onChange={(e) => handleAddressChange("street", e.target.value)}
+                                    value={
+                                        userData?.addresses?.[0]?.street || ""
+                                    }
+                                    onChange={(e) =>
+                                        handleAddressChange(
+                                            "street",
+                                            e.target.value,
+                                        )
+                                    }
                                 />
                                 <ProfileInput
                                     label="Unit / Suite"
                                     name="addressLine2"
                                     icon={<MapPin size={14} />}
-                                    value={userData?.addresses?.[0]?.addressLine2 || ""}
-                                    onChange={(e) => handleAddressChange("addressLine2", e.target.value)}
+                                    value={
+                                        userData?.addresses?.[0]
+                                            ?.addressLine2 || ""
+                                    }
+                                    onChange={(e) =>
+                                        handleAddressChange(
+                                            "addressLine2",
+                                            e.target.value,
+                                        )
+                                    }
                                 />
                                 <ProfileInput
                                     label="Municipality"
                                     name="city"
                                     icon={<MapPin size={14} />}
                                     value={userData?.addresses?.[0]?.city || ""}
-                                    onChange={(e) => handleAddressChange("city", e.target.value)}
+                                    onChange={(e) =>
+                                        handleAddressChange(
+                                            "city",
+                                            e.target.value,
+                                        )
+                                    }
                                 />
                                 <ProfileInput
                                     label="Province / Region"
                                     name="state"
                                     icon={<MapPin size={14} />}
-                                    value={userData?.addresses?.[0]?.state || ""}
-                                    onChange={(e) => handleAddressChange("state", e.target.value)}
+                                    value={
+                                        userData?.addresses?.[0]?.state || ""
+                                    }
+                                    onChange={(e) =>
+                                        handleAddressChange(
+                                            "state",
+                                            e.target.value,
+                                        )
+                                    }
                                 />
                                 <ProfileInput
                                     label="Logistics Code"
                                     name="postalCode"
                                     icon={<MapPin size={14} />}
-                                    value={userData?.addresses?.[0]?.postalCode || ""}
-                                    onChange={(e) => handleAddressChange("postalCode", e.target.value)}
+                                    value={
+                                        userData?.addresses?.[0]?.postalCode ||
+                                        ""
+                                    }
+                                    onChange={(e) =>
+                                        handleAddressChange(
+                                            "postalCode",
+                                            e.target.value,
+                                        )
+                                    }
                                 />
                                 <div className="md:col-span-2">
                                     <ProfileInput
                                         label="Sovereign Territory (Country)"
                                         name="country"
                                         icon={<MapPin size={14} />}
-                                        value={userData?.addresses?.[0]?.country || ""}
-                                        onChange={(e) => handleAddressChange("country", e.target.value)}
+                                        value={
+                                            userData?.addresses?.[0]?.country ||
+                                            ""
+                                        }
+                                        onChange={(e) =>
+                                            handleAddressChange(
+                                                "country",
+                                                e.target.value,
+                                            )
+                                        }
                                     />
                                 </div>
                             </div>
@@ -208,15 +249,20 @@ const ProfilePage = () => {
                             <div className="pt-10">
                                 <button
                                     type="submit"
-                                    disabled={updateUserLoading}
+                                    disabled={updateUserMutation.mutateAsync}
                                     className="w-full md:w-auto min-w-[240px] bg-zinc-900 text-white px-12 h-14 font-bold uppercase tracking-[0.3em] text-sm flex items-center justify-center gap-4 hover:bg-zinc-800 transition-all disabled:opacity-30 disabled:cursor-not-allowed group"
                                 >
-                                    {updateUserLoading ? (
-                                        <Loader2 size={16} className="animate-spin" />
+                                    {updateUserMutation.mutateAsync ? (
+                                        <Loader2
+                                            size={16}
+                                            className="animate-spin"
+                                        />
                                     ) : (
                                         <>
                                             Synchronize Profile
-                                            <span className="group-hover:translate-x-1 transition-transform">→</span>
+                                            <span className="group-hover:translate-x-1 transition-transform">
+                                                →
+                                            </span>
                                         </>
                                     )}
                                 </button>
@@ -254,10 +300,11 @@ const ProfileInput = ({
                 onChange={onChange}
                 disabled={disabled}
                 type={type}
-                className={`w-full border-b border-zinc-200 rounded-2xl pl-8 pr-0 py-3 text-[12px] font-medium tracking-widest outline-none transition-all ${disabled
-                    ? "bg-transparent text-zinc-500 cursor-not-allowed opacity-50 border-zinc-100"
-                    : "bg-transparent text-zinc-900 focus:border-zinc-900 placeholder:text-zinc-200"
-                    }`}
+                className={`w-full border-b border-zinc-200 rounded-2xl pl-8 pr-0 py-3 text-[12px] font-medium tracking-widest outline-none transition-all ${
+                    disabled
+                        ? "bg-transparent text-zinc-500 cursor-not-allowed opacity-50 border-zinc-100"
+                        : "bg-transparent text-zinc-900 focus:border-zinc-900 placeholder:text-zinc-200"
+                }`}
                 placeholder="NOT SPECIFIED"
             />
         </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
     Plus,
     Trash2,
@@ -12,12 +12,12 @@ import {
 import Input from "../../UI/Input.jsx";
 import Select from "../../UI/Select.jsx";
 import { useProducts } from "../../features/products/product.queries.js";
-import { usePlaceOrder } from "../../api/hooks/orders.api.js";
+import { usePlaceOrder } from "../../features/orders/orders.mutations.js";
 import { useNavigate } from "react-router-dom";
 
 const AddOrderPage = () => {
     const { data, isPending: productsLoading } = useProducts();
-    const { placeOrder, loading: orderLoading } = usePlaceOrder();
+    const { mutateAsync: placeOrder, loading: orderLoading } = usePlaceOrder();
     const navigate = useNavigate();
 
     const [orderData, setOrderData] = useState({
@@ -161,10 +161,14 @@ const AddOrderPage = () => {
             items: finalItems,
             grandTotal,
         };
-        const response = await placeOrder(finalData);
-        if (response?.success) {
-            navigate("/admin-dashboard/orders");
-        }
+
+        await placeOrder(finalData, {
+            onSuccess: (response) => {
+                if (response?.success) {
+                    navigate("/admin-dashboard/orders");
+                }
+            },
+        });
     };
 
     return (

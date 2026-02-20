@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useRegisterUser } from "../api/hooks/user.api";
+import { useRegisterUser } from "../features/users.all.js";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../store/slices/authSlice.js";
 import { Loader2, User, Mail, Lock, ShieldCheck } from "lucide-react";
@@ -18,11 +18,15 @@ const RegisterPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const { registerUser, loading: registerUserLoading } = useRegisterUser();
+    const registerMutation = useRegisterUser();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await registerUser({ name, email, password });
+        const response = await registerMutation.mutateAsync({
+            name,
+            email,
+            password,
+        });
 
         if (response?.success) {
             dispatch(loginSuccess(response.user));
@@ -40,7 +44,11 @@ const RegisterPage = () => {
                             {/* Header - Matches Login Design */}
                             <div className="flex flex-col items-center mb-12">
                                 <div className="w-16 h-16 bg-zinc-900 flex items-center justify-center mb-6">
-                                    <ShieldCheck className="text-white" size={28} strokeWidth={1} />
+                                    <ShieldCheck
+                                        className="text-white"
+                                        size={28}
+                                        strokeWidth={1}
+                                    />
                                 </div>
                                 <h2 className="text-md uppercase tracking-[0.4em] font-semibold text-zinc-900">
                                     Registration
@@ -67,7 +75,9 @@ const RegisterPage = () => {
                                             required
                                             className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
                                             value={name}
-                                            onChange={(e) => setName(e.target.value)}
+                                            onChange={(e) =>
+                                                setName(e.target.value)
+                                            }
                                         />
                                     </div>
                                 </div>
@@ -87,7 +97,9 @@ const RegisterPage = () => {
                                             required
                                             className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
                                             value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            onChange={(e) =>
+                                                setEmail(e.target.value)
+                                            }
                                         />
                                     </div>
                                 </div>
@@ -107,19 +119,25 @@ const RegisterPage = () => {
                                             required
                                             className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
                                             value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
+                                            onChange={(e) =>
+                                                setPassword(e.target.value)
+                                            }
                                         />
                                     </div>
                                 </div>
 
                                 <button
                                     type="submit"
-                                    disabled={registerUserLoading}
+                                    disabled={registerMutation.isPending}
                                     className="w-full h-14 bg-zinc-900 text-white text-sm uppercase tracking-[0.3em] font-semibold hover:bg-zinc-700 transition-all duration-500 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed mt-10"
                                 >
-                                    {registerUserLoading ? (
+                                    {registerMutation.isPending ? (
                                         <>
-                                            <Loader2 className="animate-spin" size={16} strokeWidth={1.5} />
+                                            <Loader2
+                                                className="animate-spin"
+                                                size={16}
+                                                strokeWidth={1.5}
+                                            />
                                             Creating...
                                         </>
                                     ) : (

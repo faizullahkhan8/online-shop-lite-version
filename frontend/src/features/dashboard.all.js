@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import apiClient from "../api/apiClient";
+import apiClient from "./apiClient";
 
 export const useDashboardStats = ({ startDate, endDate } = {}) => {
     return useQuery({
