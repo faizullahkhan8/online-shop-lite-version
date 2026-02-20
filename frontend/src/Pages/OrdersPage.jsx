@@ -10,17 +10,14 @@ import {
     Loader2,
 } from "lucide-react";
 import CancellationModal from "../Components/CancellationModal.jsx";
-import { useCancelOrder } from "../api/hooks/orders.api.js";
+import { useCancelOrder } from "../features/orders/orders.mutations.js";
 import Breadcrumb from "../Components/Breadcrumb.jsx";
 
 const OrdersPage = () => {
     const [orders, setOrders] = useState([]);
     const { getUserOrders, loading } = useGetUserOrders();
 
-    const breadcrumbItems = [
-        { label: "Home", path: "/" },
-        { label: "Orders" },
-    ];
+    const breadcrumbItems = [{ label: "Home", path: "/" }, { label: "Orders" }];
 
     useEffect(() => {
         (async () => {
@@ -47,7 +44,8 @@ const OrdersPage = () => {
         orderId: null,
     });
 
-    const { cancelOrder, loading: cancelLoading } = useCancelOrder();
+    const { mutateAsync: cancelOrder, isPending: cancelLoading } =
+        useCancelOrder();
 
     const handleOpenCancelModal = (orderId) => {
         setCancelModal({ isOpen: true, orderId });
@@ -63,11 +61,13 @@ const OrdersPage = () => {
         const res = await cancelOrder({ orderId: cancelModal.orderId, reason });
         if (res?.success) {
             // Update local state
-            setOrders(orders.map(order =>
-                order.id === cancelModal.orderId
-                    ? { ...order, status: 'cancelled' }
-                    : order
-            ));
+            setOrders(
+                orders.map((order) =>
+                    order.id === cancelModal.orderId
+                        ? { ...order, status: "cancelled" }
+                        : order,
+                ),
+            );
             handleCloseCancelModal();
         }
     };
@@ -163,9 +163,13 @@ const OrdersPage = () => {
 
                                 <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between w-full lg:w-auto gap-3">
                                     <div className="flex items-center gap-3">
-                                        {order.status === 'pending' && (
+                                        {order.status === "pending" && (
                                             <button
-                                                onClick={() => handleOpenCancelModal(order._id)}
+                                                onClick={() =>
+                                                    handleOpenCancelModal(
+                                                        order._id,
+                                                    )
+                                                }
                                                 className="px-3 py-1 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-2xl transition-colors"
                                             >
                                                 Cancel Order
@@ -178,7 +182,8 @@ const OrdersPage = () => {
                                         </span>
                                     </div>
                                     <div className="text-lg font-semibold text-gray-900">
-                                        Rs {order.totalAmount?.toLocaleString(
+                                        Rs{" "}
+                                        {order.totalAmount?.toLocaleString(
                                             undefined,
                                             { minimumFractionDigits: 2 },
                                         )}
@@ -209,8 +214,12 @@ const OrdersPage = () => {
                                                     Qty: {item.quantity}
                                                 </span>
                                                 <div className="w-1 h-1 bg-gray-300 rounded-full" />
-                                                <span className={`text-xs font-medium ${item.status === 'cancelled' ? 'text-red-600' : 'text-green-600'}`}>
-                                                    {item.status === 'cancelled' ? 'Cancelled' : 'Fulfilled'}
+                                                <span
+                                                    className={`text-xs font-medium ${item.status === "cancelled" ? "text-red-600" : "text-green-600"}`}
+                                                >
+                                                    {item.status === "cancelled"
+                                                        ? "Cancelled"
+                                                        : "Fulfilled"}
                                                 </span>
                                             </div>
                                         </div>
