@@ -1,35 +1,20 @@
-import { useEffect, useState } from "react";
-import { Truck, Receipt, Save, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Receipt, Save, Loader2 } from "lucide-react";
 import Input from "../../UI/Input.jsx";
-import Select from "../../UI/Select.jsx";
-import {
-    useGetSettings,
-    useUpdateSettings,
-} from "../../api/hooks/settings.api";
+import { useSettings, useUpdateSettings } from "../../features/settings.all.js";
 
 const TaxShippingSettings = () => {
-    const { getSettings, loading: settingsLoading } = useGetSettings();
-    const { updateSettings, loading: updateLoading } = useUpdateSettings();
+    const { data, loading: settingsLoading } = useSettings();
+    const updateSettingMutation = useUpdateSettings();
 
     const [form, setForm] = useState({
-        taxAmount: 0,
-        shippingFee: 0,
+        taxAmount: data?.settings?.taxAmount || 0,
+        shippingFee: data?.settings?.shippingFee || 0,
     });
-
-    useEffect(() => {
-        getSettings().then((res) => {
-            if (res?.settings) {
-                setForm({
-                    taxAmount: Number(res.settings.taxAmount) || 0,
-                    shippingFee: Number(res.settings.shippingFee) || 0,
-                });
-            }
-        });
-    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await updateSettings({
+        await updateSettingMutation.mutateAsync({
             taxAmount: Number(form.taxAmount) || 0,
             shippingFee: Number(form.shippingFee) || 0,
         });
@@ -109,10 +94,12 @@ const TaxShippingSettings = () => {
                 <div className="pt-2">
                     <button
                         type="submit"
-                        disabled={updateLoading || settingsLoading}
+                        disabled={
+                            updateSettingMutation.isPending || settingsLoading
+                        }
                         className="w-full bg-blue-600 text-white rounded-2xl py-3 font-medium text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {updateLoading ? (
+                        {updateSettingMutation.isPending ? (
                             <>
                                 <Loader2 size={18} className="animate-spin" />
                                 Saving...

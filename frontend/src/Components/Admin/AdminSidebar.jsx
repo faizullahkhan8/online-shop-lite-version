@@ -16,6 +16,7 @@ import {
     Loader2,
     Percent,
     MonitorPlay,
+    User,
 } from "lucide-react";
 
 import { useState } from "react";

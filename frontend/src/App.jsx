@@ -20,7 +20,6 @@ const CheckoutPage = lazy(() => import("./Pages/CheckoutPage"));
 const OrdersPage = lazy(() => import("./Pages/OrdersPage"));
 const OrderSuccessPage = lazy(() => import("./Pages/OrderSuccessPage"));
 const TrackOrderPage = lazy(() => import("./Pages/TrackOrderPage"));
-const ProfilePage = lazy(() => import("./Pages/ProfilePage"));
 const ProtectedRoute = lazy(() => import("./Components/Auth/ProtectedRoute"));
 // Promotions public page removed per request
 
@@ -29,6 +28,7 @@ const DashboardPage = lazy(() => import("./Pages/Admin/DashboardPage"));
 const ProductsListPage = lazy(() => import("./Pages/Admin/ProductsListPage"));
 const AddProductPage = lazy(() => import("./Pages/Admin/AddProductPage"));
 const TaxShippingPage = lazy(() => import("./Pages/Admin/TaxShippingPage"));
+// const ProfilePage = lazy(() => import("./Pages/Admin/ProfilePage.jsx"));
 const CollectionsListPage = lazy(
     () => import("./Pages/Admin/CollectionsListPage"),
 );
@@ -84,14 +84,6 @@ const App = () => {
                             }
                         /> */}
                         <Route
-                            path="profile"
-                            element={
-                                <ProtectedRoute roles={["user", "admin"]}>
-                                    <ProfilePage />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
                             path="orders"
                             element={
                                 <ProtectedRoute roles={["user", "admin"]}>
@@ -103,21 +95,13 @@ const App = () => {
                             path="orders/success"
                             element={<OrderSuccessPage />}
                         />
-
-                        {/* <Route
-                            path="messages"
-                            element={
-                                <ProtectedRoute roles={["user", "admin"]}>
-                                    <div className="p-8 text-center text-gray-500">
-                                        Messages Page Placeholder
-                                    </div>
-                                </ProtectedRoute>
-                            }
-                        /> */}
                     </Route>
                     <Route path="*" element={<Navigate to="/" replace />} />
                     <Route path="/auth/admin/login" element={<LoginPage />} />
-                    <Route path="/auth/admin/register" element={<RegisterPage />} />
+                    <Route
+                        path="/auth/admin/register"
+                        element={<RegisterPage />}
+                    />
 
                     {/* Admin Routes */}
                     <Route

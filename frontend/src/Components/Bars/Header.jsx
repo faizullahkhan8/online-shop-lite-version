@@ -180,10 +180,10 @@
 
 // export default Header;
 
-import { Search, User, Menu, ChevronDown, X, Loader2 } from "lucide-react";
+import { Search, Menu, ChevronDown, X, Loader2 } from "lucide-react";
 import MobileSideBar from "./MobileSideBar";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useCollections } from "../../features/collections/collection.queries";
 
@@ -191,7 +191,6 @@ const Header = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isCollectionOpen, setIsCollectionOpen] = useState(false);
-    const [collections, setCollections] = useState([]);
     const { isAuthenticated } = useSelector((state) => state.auth);
     const cartItems = useSelector((state) => state.cart?.items || []);
     const cartCount = cartItems.reduce(
@@ -200,7 +199,6 @@ const Header = () => {
     );
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
-    const location = useLocation();
 
     const { data, isLoading } = useCollections();
 
@@ -212,11 +210,6 @@ const Header = () => {
         }
     };
 
-    // Close search on route change
-    useEffect(() => {
-        setIsSearchOpen(false);
-    }, [location]);
-
     // Close collection dropdown on outside click
     useEffect(() => {
         const handleClickOutside = () => setIsCollectionOpen(false);
@@ -225,14 +218,6 @@ const Header = () => {
         }
         return () => document.removeEventListener("click", handleClickOutside);
     }, [isCollectionOpen]);
-
-    if (isLoading) {
-        return (
-            <div className="fixed top-0 left-0 right-0 z-50 h-16 sm:h-20 bg-white flex items-center justify-center border-b border-zinc-100">
-                <Loader2 className="animate-spin text-zinc-500 w-5 h-5" />
-            </div>
-        );
-    }
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-[#fafafa] border-b border-zinc-100">
@@ -276,32 +261,46 @@ const Header = () => {
                     >
                         <button
                             onClick={() => navigate("/collections")}
-                            className={`flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] font-medium transition-colors cursor-pointer whitespace-nowrap ${isCollectionOpen
-                                ? "text-zinc-900"
-                                : "text-zinc-500"
-                                }`}
+                            className={`flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                                isCollectionOpen
+                                    ? "text-zinc-900"
+                                    : "text-zinc-500"
+                            }`}
                         >
                             Collections
                             <ChevronDown
-                                className={`w-3 h-3 transition-transform duration-200 ${isCollectionOpen ? "rotate-180" : ""
-                                    }`}
+                                className={`w-3 h-3 transition-transform duration-200 ${
+                                    isCollectionOpen ? "rotate-180" : ""
+                                }`}
                             />
                         </button>
 
                         {isCollectionOpen && (
                             <div className="absolute top-full left-0 w-48 lg:w-56 bg-white shadow-lg border border-zinc-100 rounded-sm z-50 py-1">
-                                {data?.collections?.map((collection) => (
-                                    <Link
-                                        key={collection._id || collection.name}
-                                        to={`/products?collection=${collection?._id}`}
-                                        className="block px-4 py-2.5 text-xs uppercase tracking-[0.15em] text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 transition-colors"
-                                        onClick={() =>
-                                            setIsCollectionOpen(false)
-                                        }
-                                    >
-                                        {collection.name}
-                                    </Link>
-                                ))}
+                                {isLoading ? (
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <Loader2
+                                            size={24}
+                                            className="animate-spin"
+                                        />
+                                    </div>
+                                ) : (
+                                    data?.collections?.map((collection) => (
+                                        <Link
+                                            key={
+                                                collection._id ||
+                                                collection.name
+                                            }
+                                            to={`/products?collection=${collection?._id}`}
+                                            className="block px-4 py-2.5 text-xs uppercase tracking-[0.15em] text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 transition-colors"
+                                            onClick={() =>
+                                                setIsCollectionOpen(false)
+                                            }
+                                        >
+                                            {collection.name}
+                                        </Link>
+                                    ))
+                                )}
                             </div>
                         )}
                     </div>
