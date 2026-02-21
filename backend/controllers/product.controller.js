@@ -14,9 +14,8 @@ export const createProduct = expressAsyncHandler(async (req, res, next) => {
     if (!ProductModel)
         return next(new ErrorResponse("Product model not found", 500));
 
-    const { name, price, description, stock, lowStock } = JSON.parse(
-        req.body?.data,
-    );
+    const { name, price, description, stock, lowStock, collection } =
+        JSON.parse(req.body?.data || "{}");
 
     if (!name || !price || !description || !stock || !lowStock)
         return next(new ErrorResponse("All fields are required", 400));
@@ -25,9 +24,10 @@ export const createProduct = expressAsyncHandler(async (req, res, next) => {
     if (isProductExist)
         return next(new ErrorResponse("Product already exists", 400));
 
-    if (!req.image) {
+    if (!req.images || req.images.length === 0) {
         return res.status(400).json({
-            message: "Image upload failed. Product image is required.",
+            message:
+                "Image upload failed. At least one product image is required.",
         });
     }
 
@@ -37,8 +37,8 @@ export const createProduct = expressAsyncHandler(async (req, res, next) => {
         description,
         stock,
         lowStock,
-        image: req.image?.filePath || "",
-        imagekitFileId: req.image?.fileId || "",
+        collection,
+        images: req.images,
     });
 
     return res.status(201).json({
@@ -214,16 +214,12 @@ export const getProductById = expressAsyncHandler(async (req, res, next) => {
 
 export const updateProduct = expressAsyncHandler(async (req, res, next) => {
     const ProductModel = getLocalProductModel();
-
     if (!ProductModel)
         return next(new ErrorResponse("Product model not found", 500));
 
     const { id } = req.params;
-
     const product = await ProductModel.findById(id);
-    if (!product) {
-        return next(new ErrorResponse("Product not found", 404));
-    }
+    if (!product) return next(new ErrorResponse("Product not found", 404));
 
     let updateData;
     try {
@@ -232,20 +228,28 @@ export const updateProduct = expressAsyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("Invalid product data format", 400));
     }
 
-    if (req.image?.fileId) {
+    const currentDbImages = product.images || [];
+
+    const keptImages = updateData.images || [];
+
+    const imagesToDelete = currentDbImages.filter(
+        (dbImg) => !keptImages.find((kept) => kept.fileId === dbImg.fileId),
+    );
+
+    if (imagesToDelete.length > 0) {
         try {
-            await deleteImageKitFile(product.imagekitFileId);
-            updateData.imagekitFileId = req.image.fileId;
-            updateData.image = req.image.filePath;
-        } catch (err) {
-            return next(
-                new ErrorResponse(
-                    "Failed to delete old image from ImageKit",
-                    500,
-                ),
+            const deletePromises = imagesToDelete.map((img) =>
+                deleteImageKitFile(img.fileId),
             );
+            await Promise.all(deletePromises);
+        } catch (err) {
+            console.error("ImageKit Deletion Error:", err);
         }
     }
+
+    const newUploadedImages = req.images || [];
+
+    updateData.images = [...keptImages, ...newUploadedImages];
 
     const updatedProduct = await ProductModel.findByIdAndUpdate(
         id,
@@ -262,24 +266,23 @@ export const updateProduct = expressAsyncHandler(async (req, res, next) => {
 
 export const deleteProduct = expressAsyncHandler(async (req, res, next) => {
     const ProductModel = getLocalProductModel();
-
     if (!ProductModel)
         return next(new ErrorResponse("Product model not found", 500));
 
     const { id } = req.params;
-
     const product = await ProductModel.findById(id);
-    if (!product) {
-        return next(new ErrorResponse("Product not found", 404));
-    }
+    if (!product) return next(new ErrorResponse("Product not found", 404));
 
     try {
-        if (product.imagekitFileId) {
-            await deleteImageKitFile(product.imagekitFileId);
+        if (product.images && product.images.length > 0) {
+            const deletePromises = product.images.map((img) =>
+                deleteImageKitFile(img.fileId),
+            );
+            await Promise.all(deletePromises);
         }
     } catch (err) {
         return next(
-            new ErrorResponse("Failed to delete old image from ImageKit", 500),
+            new ErrorResponse("Failed to delete images from ImageKit", 500),
         );
     }
 
@@ -288,6 +291,5 @@ export const deleteProduct = expressAsyncHandler(async (req, res, next) => {
     return res.status(200).json({
         success: true,
         message: "Product deleted successfully",
-        product,
     });
 });

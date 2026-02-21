@@ -12,8 +12,17 @@ const productSchema = new Schema(
         },
         stock: { type: Number, required: true },
         lowStock: { type: Number, required: true },
-        image: { type: String, required: true },
-        imagekitFileId: { type: String, required: true },
+
+        // --- CHANGED: Array of image objects ---
+        images: [
+            {
+                url: { type: String, required: true },
+                fileId: { type: String, required: true },
+                name: { type: String },
+                filePath: { type: String },
+            },
+        ],
+
         rating: { type: Number, default: 0 },
         numReviews: { type: Number, default: 0 },
     },

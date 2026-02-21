@@ -8,6 +8,17 @@ const ProductCard = ({ product, isLarge = false }) => {
     const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
     const navigate = useNavigate();
 
+    const primaryImage =
+        product.images && product.images.length > 0
+            ? product.images.find((img) => img.isPrimary)?.filePath ||
+              product.images[0].filePath
+            : product.image;
+
+    const secondaryImage =
+        product.images && product.images.length > 1
+            ? product.images[1].filePath
+            : primaryImage;
+
     return (
         <>
             <div
@@ -15,9 +26,9 @@ const ProductCard = ({ product, isLarge = false }) => {
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                <div className="relative overflow-hidden rounded-2xl aspect-[3/4]">
+                <div className="relative overflow-hidden rounded-2xl aspect-[3/4] bg-zinc-50">
                     {product.tag && (
-                        <div className="absolute top-4 left-4 z-10">
+                        <div className="absolute top-4 left-4 z-20">
                             <span className="bg-white/90 backdrop-blur-sm text-xs tracking-[0.2em] uppercase px-2 py-1 font-medium text-zinc-900 rounded-2xl">
                                 {product.tag}
                             </span>
@@ -25,27 +36,45 @@ const ProductCard = ({ product, isLarge = false }) => {
                     )}
 
                     <img
-                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product?.image}`}
+                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${primaryImage}`}
                         alt={product?.name}
-                        className="w-full h-full object-cover rounded-2xl transition-transform duration-1000 group-hover:scale-105"
+                        className={`absolute inset-0 w-full h-full object-cover rounded-2xl transition-all duration-1000 ${
+                            isHovered &&
+                            product.images &&
+                            product.images.length > 1
+                                ? "opacity-0 scale-105"
+                                : "opacity-100 scale-100"
+                        }`}
                     />
 
-                    {isHovered && (
-                        <div
-                            className="absolute inset-0 bg-black/5 flex items-end justify-center pb-8 animate-in fade-in duration-300"
-                            onClick={() => navigate(`/product/${product._id}`)}
-                        >
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setIsQuickViewOpen(true);
-                                }}
-                                className="bg-white/90 backdrop-blur-md text-black px-8 py-2.5 text-xs font-medium tracking-[0.2em] uppercase rounded-2xl hover:bg-black hover:text-white transition-all duration-300 shadow-lg cursor-pointer"
-                            >
-                                Quick view
-                            </button>
-                        </div>
+                    {product.images && product.images.length > 1 && (
+                        <img
+                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${secondaryImage}`}
+                            alt={`${product?.name} alternate`}
+                            className={`absolute inset-0 w-full h-full object-cover rounded-2xl transition-all duration-1000 ${
+                                isHovered
+                                    ? "opacity-100 scale-105"
+                                    : "opacity-0 scale-100"
+                            }`}
+                        />
                     )}
+
+                    <div
+                        className={`absolute inset-0 bg-black/5 flex items-end justify-center pb-8 transition-opacity duration-300 z-10 ${
+                            isHovered ? "opacity-100" : "opacity-0"
+                        }`}
+                        onClick={() => navigate(`/product/${product._id}`)}
+                    >
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsQuickViewOpen(true);
+                            }}
+                            className="bg-white/90 backdrop-blur-md text-black px-8 py-2.5 text-xs font-medium tracking-[0.2em] uppercase rounded-2xl hover:bg-black hover:text-white transition-all duration-300 shadow-lg cursor-pointer"
+                        >
+                            Quick view
+                        </button>
+                    </div>
                 </div>
 
                 <div className="mt-4 flex flex-col items-center text-center space-y-1">
@@ -74,7 +103,7 @@ const ProductCard = ({ product, isLarge = false }) => {
                             </p>
                         )}
                     </div>
-                    <div className="flex items-center gap-4 mb-8">
+                    <div className="flex items-center gap-4 py-2">
                         <StarRating
                             rating={product?.rating || 0}
                             readonly

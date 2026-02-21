@@ -16,13 +16,16 @@ import {
     Boxes,
 } from "lucide-react";
 
-import { useCreateProduct, useUpdateProduct } from "../../features/products/product.mutations.js"
-import { useCollections } from "../../features/collections/collection.queries.js"
+import {
+    useCreateProduct,
+    useUpdateProduct,
+} from "../../features/products/product.mutations.js";
+import { useCollections } from "../../features/collections/collection.queries.js";
 
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const INITAIL_STATE = {
+const INITIAL_STATE = {
     _id: "",
     name: "",
     price: "",
@@ -30,7 +33,7 @@ const INITAIL_STATE = {
     collection: "",
     stock: "",
     lowStock: "",
-    image: null,
+    images: [],
     isRemoveBg: false,
 };
 
@@ -41,182 +44,151 @@ const AddProduct = () => {
     const parseProductFromParams = () => {
         try {
             const raw = searchParams.get("product");
-            if (!raw) return INITAIL_STATE;
+            if (!raw) return INITIAL_STATE;
 
             const parsed = JSON.parse(raw);
-            const { collection, ...rest } = parsed || {};
+            const { collection, images, ...rest } = parsed || {};
             const resolvedCollection =
                 typeof collection === "string"
                     ? collection
                     : collection?._id || collection?.id || "";
 
             return {
-                ...INITAIL_STATE,
+                ...INITIAL_STATE,
                 ...rest,
+                images: Array.isArray(images) ? images : [],
                 collection: resolvedCollection,
             };
         } catch {
-            return INITAIL_STATE;
+            return INITIAL_STATE;
         }
     };
 
     const [productData, setProductData] = useState(parseProductFromParams);
     const isEditing = Boolean(productData?._id);
 
-    const [previewUrl, setPreviewUrl] = useState("");
-
     const { mutateAsync: createProduct, isPending: createLoading } =
         useCreateProduct();
-
     const { mutateAsync: updateProduct, isPending: updateLoading } =
         useUpdateProduct();
-
-    const { data: collectionData, isLoading: collectionLoading } = useCollections();
+    const { data: collectionData } = useCollections();
 
     const handleChange = (e) => {
         const { id, value, files, type } = e.target;
         if (type === "file") {
-            setProductData((prev) => ({ ...prev, image: files[0] }));
+            const newFiles = Array.from(files);
+            setProductData((prev) => ({
+                ...prev,
+                images: [...prev.images, ...newFiles],
+            }));
         } else {
             setProductData((prev) => ({ ...prev, [id]: value }));
         }
     };
 
+    const removeImage = (index) => {
+        setProductData((prev) => ({
+            ...prev,
+            images: prev.images.filter((_, i) => i !== index),
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const formData = new FormData();
 
-        if (!isEditing) {
-            if (!productData.image) {
-                toast.error("Please select an image");
-                return;
+        const { images, ...textData } = productData;
+        formData.append("data", JSON.stringify(textData));
+
+        images.forEach((img) => {
+            if (img instanceof File) {
+                formData.append("images", img);
             }
+        });
 
-            formData.append("image", productData.image);
-
-            const { image, ...textData } = productData;
-            formData.append("data", JSON.stringify(textData));
+        if (!isEditing) {
+            if (images.length === 0)
+                return toast.error("At least one image is required");
 
             await createProduct(formData, {
                 onSuccess: () => {
                     toast.success("Product created successfully");
                     navigate("/admin-dashboard/products");
                 },
-                onError: () => {
-                    toast.error("Failed to create product");
-                },
+                onError: (err) =>
+                    toast.error(err.message || "Failed to create product"),
             });
-
         } else {
-            if (productData.image instanceof File) {
-                formData.append("image", productData.image);
-            }
-
-            const { image, ...textData } = productData;
-            formData.append("data", JSON.stringify(textData));
-
-            await updateProduct({
-                id: productData?._id,
-                product: formData,
-            }, {
-                onSuccess: () => {
-                    toast.success("Product updated successfully");
-                    navigate("/admin-dashboard/products");
+            await updateProduct(
+                {
+                    id: productData?._id,
+                    product: formData,
                 },
-                onError: () => {
-                    toast.error("Failed to update product");
+                {
+                    onSuccess: () => {
+                        toast.success("Product updated successfully");
+                        navigate("/admin-dashboard/products");
+                    },
+                    onError: (err) =>
+                        toast.error(err.message || "Failed to update product"),
                 },
-            });
-        }
-    };
-
-    useEffect(() => {
-        if (!productData.image) {
-            setPreviewUrl("");
-            return;
-        }
-
-        if (productData.image instanceof File) {
-            const url = URL.createObjectURL(productData.image);
-            setPreviewUrl(url);
-
-            return () => URL.revokeObjectURL(url);
-        }
-
-        if (typeof productData.image === "string") {
-            setPreviewUrl(
-                `${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${productData.image}`
             );
         }
-    }, [productData.image]);
+    };
 
     const isSubmitting = createLoading || updateLoading;
 
     return (
         <div className="space-y-6">
-            {/* Header */}
             <header className="flex items-center justify-between">
                 <div>
                     <h2 className="text-2xl font-bold text-gray-900">
                         {isEditing ? "Edit Product" : "Add New Product"}
                     </h2>
-                    <p className="text-sm text-gray-500 mt-1">
-                        {isEditing
-                            ? "Update product information"
-                            : "Create a new product listing"}
-                    </p>
                 </div>
                 <button
                     onClick={() => navigate(-1)}
-                    className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-2xl hover:bg-gray-100"
+                    className="p-2 text-gray-400 hover:text-gray-600 rounded-2xl hover:bg-gray-100"
                 >
                     <X size={20} />
                 </button>
             </header>
 
-            {/* Form */}
             <form
                 onSubmit={handleSubmit}
                 className="grid grid-cols-1 lg:grid-cols-12 gap-6"
             >
-                {/* Left Column - Product Details */}
                 <div className="lg:col-span-7 space-y-6">
                     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-5">
-                        {/* Product Name */}
                         <div>
                             <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
-                                <Hash size={14} className="text-blue-600" />
+                                <Hash size={14} className="text-blue-600" />{" "}
                                 Product Name
                             </label>
                             <Input
                                 type="text"
                                 id="name"
+                                placeholder={"e.g: Lighting Keyboard"}
                                 value={productData?.name}
-                                placeholder="Enter product name"
-                                className="w-full"
                                 onChange={handleChange}
                                 required
                             />
                         </div>
 
-                        {/* Price and Stock */}
                         <div className="grid grid-cols-3 gap-4">
                             <div>
                                 <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                     <DollarSign
                                         size={14}
                                         className="text-blue-600"
-                                    />
+                                    />{" "}
                                     Price (Rs)
                                 </label>
                                 <Input
                                     type="number"
                                     id="price"
+                                    placeholder={"Rs: 0.00"}
                                     value={productData?.price}
-                                    placeholder="0.00"
-                                    step="0.01"
-                                    className="w-full"
                                     onChange={handleChange}
                                     required
                                 />
@@ -226,85 +198,79 @@ const AddProduct = () => {
                                     <Boxes
                                         size={16}
                                         className="text-blue-600"
-                                    />
-                                    Stock Quantity
+                                    />{" "}
+                                    Stock
                                 </label>
                                 <Input
                                     type="number"
                                     id="stock"
+                                    placeholder={"e.g: 10"}
                                     value={productData?.stock}
-                                    placeholder="0"
-                                    className="w-full"
                                     onChange={handleChange}
                                     required
                                 />
                             </div>
                             <div>
                                 <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
-                                    <Box size={14} className="text-blue-600" />
+                                    <Box size={14} className="text-blue-600" />{" "}
                                     Low Stock
                                 </label>
                                 <Input
+                                    className={"w-full"}
+                                    placeholder={"e.g: 10"}
                                     type="number"
                                     id="lowStock"
                                     value={productData?.lowStock}
-                                    placeholder="0"
-                                    className="w-full"
                                     onChange={handleChange}
                                     required
                                 />
                             </div>
                         </div>
 
-                        {/* Collection */}
                         <div>
                             <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
-                                <Layers size={14} className="text-blue-600" />
+                                <Layers size={14} className="text-blue-600" />{" "}
                                 Collection
                             </label>
                             <Select
-                                placeholder="Select collection"
                                 id="collection"
                                 value={productData?.collection}
-                                onChange={(value) =>
+                                onChange={(val) =>
                                     handleChange({
-                                        target: { id: "collection", value },
+                                        target: {
+                                            id: "collection",
+                                            value: val,
+                                        },
                                     })
                                 }
-                                options={collectionData?.collections?.map((collection) => ({
-                                    label: collection.name,
-                                    value: collection._id,
-                                }))}
-                                className="w-full"
+                                options={collectionData?.collections?.map(
+                                    (c) => ({ label: c.name, value: c._id }),
+                                )}
                             />
                         </div>
 
-                        {/* Description */}
                         <div>
                             <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
-                                <Layers size={14} className="text-blue-600" />
+                                <Layers size={14} className="text-blue-600" />{" "}
                                 Description
                             </label>
-                            <Input
+                            <textarea
                                 type="textarea"
                                 id="description"
                                 value={productData?.description}
-                                placeholder="Enter product description"
                                 rows={6}
-                                className="w-full resize-none"
                                 onChange={handleChange}
+                                className="border border-gray-300 rounded-2xl w-full resize-none py-2 px-4 text-gray-700 text-sm"
                             />
                         </div>
                     </div>
                 </div>
 
-                {/* Right Column - Image Upload & Actions */}
                 <div className="lg:col-span-5 space-y-6">
-                    {/* Image Upload */}
                     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                         <div className="flex items-center justify-between mb-3">
                             <label className="text-sm font-medium text-gray-700">
-                                Product Image
+                                Product Images
                             </label>
                             <div className="flex items-center gap-2">
                                 <label className="text-xs font-medium text-gray-600">
@@ -314,102 +280,72 @@ const AddProduct = () => {
                                     type="checkbox"
                                     checked={productData?.isRemoveBg}
                                     onChange={(e) =>
-                                        setProductData((pre) => ({
-                                            ...pre,
+                                        setProductData((p) => ({
+                                            ...p,
                                             isRemoveBg: e.target.checked,
                                         }))
                                     }
-                                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                 />
                             </div>
                         </div>
-                        <label
-                            htmlFor="image"
-                            className="group relative flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-gray-300 rounded-2xl hover:border-blue-500 hover:bg-gray-50 transition-all cursor-pointer overflow-hidden"
-                        >
-                            {previewUrl ? (
-                                <div className="absolute inset-0">
+
+                        <div className="grid grid-cols-2 gap-2 mb-4">
+                            {productData.images.map((img, index) => (
+                                <div
+                                    key={index}
+                                    className="relative aspect-square rounded-xl overflow-hidden border"
+                                >
                                     <img
-                                        src={previewUrl}
-                                        alt="Preview"
+                                        src={
+                                            img instanceof File
+                                                ? URL.createObjectURL(img)
+                                                : img.url
+                                        }
                                         className="w-full h-full object-cover"
+                                        alt="Preview"
                                     />
-                                    <div className="absolute inset-0 bg-gray-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <p className="text-sm font-medium text-white">
-                                            Change Image
-                                        </p>
-                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeImage(index)}
+                                        className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full shadow-lg"
+                                    >
+                                        <X size={12} />
+                                    </button>
                                 </div>
-                            ) : (
-                                <div className="text-center p-6">
-                                    <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-50 transition-colors">
-                                        <ImageIcon
-                                            size={24}
-                                            className="text-gray-400 group-hover:text-blue-600 transition-colors"
-                                        />
-                                    </div>
-                                    <p className="text-sm font-medium text-gray-900 mb-1">
-                                        Upload Product Image
-                                    </p>
-                                    <p className="text-xs text-gray-500">
-                                        PNG, JPG, WEBP (Max 10MB)
-                                    </p>
-                                </div>
+                            ))}
+
+                            {productData.images.length < 10 && (
+                                <label className="flex flex-col items-center justify-center aspect-square border-2 border-dashed rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                                    <Plus size={20} className="text-gray-400" />
+                                    <span className="text-[10px] text-gray-400">
+                                        Add More
+                                    </span>
+                                    <input
+                                        type="file"
+                                        hidden
+                                        multiple
+                                        accept="image/*"
+                                        onChange={handleChange}
+                                    />
+                                </label>
                             )}
-                            <input
-                                type="file"
-                                id="image"
-                                hidden
-                                accept="image/*"
-                                onChange={handleChange}
-                            />
-                        </label>
+                        </div>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="flex flex-col gap-3">
                         <Button
                             type="submit"
-                            disabled={
-                                isSubmitting
-                            }
-                            className="w-full py-3 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={isSubmitting}
+                            className="w-full py-3 bg-blue-600 text-white rounded-2xl"
                         >
                             {isSubmitting ? (
-                                <>
-                                    <Loader
-                                        className="animate-spin"
-                                        size={18}
-                                    />
-                                    <span className="text-sm font-medium">
-                                        {isEditing
-                                            ? "Updating..."
-                                            : "Creating..."}
-                                    </span>
-                                </>
+                                <Loader className="animate-spin" size={18} />
                             ) : isEditing ? (
-                                <>
-                                    <Save size={18} />
-                                    <span className="text-sm font-medium">
-                                        Update Product
-                                    </span>
-                                </>
+                                "Update Product"
                             ) : (
-                                <>
-                                    <Plus size={18} />
-                                    <span className="text-sm font-medium">
-                                        Create Product
-                                    </span>
-                                </>
+                                "Create Product"
                             )}
                         </Button>
-                        <button
-                            type="button"
-                            onClick={() => navigate(-1)}
-                            className="w-full py-3 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                        >
-                            Cancel
-                        </button>
                     </div>
                 </div>
             </form>

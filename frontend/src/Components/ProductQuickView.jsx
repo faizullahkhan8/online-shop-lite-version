@@ -5,6 +5,7 @@ import StarRating from "./UI/StarRating";
 
 const ProductQuickView = ({ product, onClose }) => {
     const [quantity, setQuantity] = useState(1);
+    const [activeImage, setActiveImage] = useState(0);
     const navigate = useNavigate();
 
     const handleBuyNow = () => {
@@ -16,15 +17,22 @@ const ProductQuickView = ({ product, onClose }) => {
                     ...product,
                     quantity,
                     price: effectivePrice,
-                    totalPrice: effectivePrice * quantity,
+                    totalPrice: Number(effectivePrice) * quantity,
                     selected: true,
                 },
             },
         });
     };
 
+    const images = product?.images || [];
+
+    const mainImageUrl =
+        images.length > 0
+            ? `${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${images[activeImage]?.filePath}`
+            : `${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product?.image}`;
+
     return (
-        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 lg:p-12">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 lg:p-12">
             <div
                 className="absolute inset-0 bg-black/40 backdrop-blur-sm"
                 onClick={onClose}
@@ -33,38 +41,57 @@ const ProductQuickView = ({ product, onClose }) => {
             <div className="relative bg-white w-full max-w-5xl rounded-2xl max-h-[90vh] overflow-y-auto flex flex-col md:flex-row shadow-2xl animate-in zoom-in-95 duration-300">
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-10 p-2 hover:rotate-90 transition-transform duration-300 text-zinc-500 hover:text-zinc-900"
+                    className="absolute top-4 right-4 z-20 p-2 hover:rotate-90 transition-transform duration-300 text-zinc-500 hover:text-zinc-900 bg-white/80 backdrop-blur-sm rounded-full"
                 >
                     <X size={20} strokeWidth={1} />
                 </button>
 
-                <div className="w-full md:w-1/2 bg-[#f9f9f9] h-[400px] md:h-auto">
-                    <img
-                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product?.image}`}
-                        alt={
-                            typeof product?.name === "string"
-                                ? product.name
-                                : "Product Image"
-                        }
-                        className="w-full h-full object-cover"
-                    />
+                <div className="w-full md:w-1/2 bg-[#f9f9f9] p-6 flex flex-col gap-4">
+                    <div className="relative aspect-square rounded-xl overflow-hidden bg-white border border-zinc-100">
+                        <img
+                            src={mainImageUrl}
+                            alt={product?.name || "Product"}
+                            className="w-full h-full object-contain mix-blend-multiply"
+                        />
+                    </div>
+
+                    {images.length > 1 && (
+                        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                            {images.map((img, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setActiveImage(index)}
+                                    className={`relative w-16 h-16 flex-shrink-0 rounded-lg border-2 transition-all overflow-hidden bg-white ${
+                                        activeImage === index
+                                            ? "border-zinc-900"
+                                            : "border-transparent opacity-60 hover:opacity-100"
+                                    }`}
+                                >
+                                    <img
+                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${img.filePath}`}
+                                        className="w-full h-full object-cover mix-blend-multiply"
+                                        alt={`Thumbnail ${index + 1}`}
+                                    />
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 <div className="w-full md:w-1/2 p-8 lg:p-12 flex flex-col">
                     <div className="mb-8">
-                        <p className="text-sm uppercase tracking-[0.3em] text-zinc-500 mb-2">
+                        <p className="text-sm uppercase tracking-[0.3em] text-zinc-500 mb-2 font-bold">
                             {typeof product?.collection === "string"
                                 ? product.collection
                                 : product?.collection?.name || "Studio Edition"}
                         </p>
                         <h2 className="text-2xl font-medium tracking-tight text-zinc-900 uppercase">
-                            {/* Explicitly access name to avoid rendering object */}
                             {product?.name || "Untitled Product"}
                         </h2>
                         <div className="mt-2 flex items-center gap-3">
                             {product?.promotion ? (
                                 <>
-                                    <p className="text-lg text-emerald-600 font-light">
+                                    <p className="text-lg text-emerald-600 font-bold">
                                         Rs.{" "}
                                         {Number(
                                             product?.effectivePrice,
@@ -78,26 +105,30 @@ const ProductQuickView = ({ product, onClose }) => {
                                     </p>
                                 </>
                             ) : (
-                                <p className="text-lg text-zinc-900 font-light">
+                                <p className="text-lg text-zinc-900 font-bold">
                                     Rs.{" "}
                                     {Number(product?.price).toLocaleString()}
                                 </p>
                             )}
                         </div>
                     </div>
-                    <div className="space-y-6 flex-1">
-                        <div className={`flex items-center gap-4 mb-8 ${product.stock === 0 ? "text-red-500" : "text-green-500"}`}>
-                            Availible Quantity : {product.stock}
+
+                    <div className="space-y-4 mb-8">
+                        <div
+                            className={`flex items-center gap-2 text-xs font-bold uppercase tracking-widest ${product.stock === 0 ? "text-red-500" : "text-emerald-600"}`}
+                        >
+                            {product.stock === 0
+                                ? "Out of Stock"
+                                : `Available Stock: ${product.stock}`}
                         </div>
-                    </div>
-                    <div className="space-y-6 flex-1">
-                        <div className="flex items-center gap-4 mb-8">
+
+                        <div className="flex items-center gap-4">
                             <StarRating
                                 rating={product?.rating || 0}
                                 readonly
                                 size={14}
                             />
-                            <span className="text-sm uppercase tracking-widest text-zinc-500 font-bold border-l border-zinc-200 pl-4">
+                            <span className="text-xs uppercase tracking-widest text-zinc-500 font-bold border-l border-zinc-200 pl-4">
                                 {product?.numReviews || 0} REVIEWS
                             </span>
                         </div>
@@ -109,38 +140,38 @@ const ProductQuickView = ({ product, onClose }) => {
                                 Description
                             </h4>
                             <p className="text-sm text-zinc-700 leading-relaxed font-light">
-                                {product?.description.slice(0, 250) + "..." ||
-                                    "Premium healthcare solution designed for professional and home use."}
+                                {product?.description?.slice(0, 200) + "..."}
                             </p>
                         </div>
 
                         <div className="flex items-center gap-6 pt-4">
-                            <div className="flex items-center border border-zinc-200 rounded-2xl">
+                            <div className="flex items-center border border-zinc-200 rounded-2xl h-14 bg-white">
                                 <button
                                     onClick={() =>
                                         setQuantity(Math.max(1, quantity - 1))
                                     }
-                                    className="px-4 py-2 hover:bg-zinc-50 transition-colors"
+                                    className="px-5 h-full hover:text-zinc-900 text-zinc-400 transition-colors"
                                 >
-                                    <Minus size={12} />
+                                    <Minus size={14} />
                                 </button>
-                                <span className="w-10 text-center text-xs font-medium">
+                                <span className="w-8 text-center text-xs font-bold">
                                     {quantity}
                                 </span>
                                 <button
                                     onClick={() => setQuantity(quantity + 1)}
-                                    className="px-4 py-2 hover:bg-zinc-50 transition-colors"
+                                    className="px-5 h-full hover:text-zinc-900 text-zinc-400 transition-colors"
                                 >
-                                    <Plus size={12} />
+                                    <Plus size={14} />
                                 </button>
                             </div>
 
                             <button
                                 onClick={handleBuyNow}
-                                className="flex-1 bg-zinc-900 text-white py-4 text-md font-bold uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all flex items-center justify-center gap-3 rounded-2xl"
+                                disabled={product.stock === 0}
+                                className="flex-1 bg-zinc-900 text-white h-14 text-sm font-bold uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all flex items-center justify-center gap-3 rounded-2xl disabled:opacity-20"
                             >
                                 Buy Now
-                                <ChevronRight size={14} />
+                                <ChevronRight size={16} />
                             </button>
                         </div>
                     </div>
@@ -148,7 +179,7 @@ const ProductQuickView = ({ product, onClose }) => {
                     <div className="mt-12 pt-6 border-t border-zinc-100">
                         <button
                             onClick={() => navigate(`/product/${product?._id}`)}
-                            className="text-sm uppercase tracking-[0.2em] text-zinc-500 hover:text-zinc-900 transition-colors underline underline-offset-4"
+                            className="text-xs uppercase tracking-[0.2em] text-zinc-500 hover:text-zinc-900 transition-colors underline underline-offset-4 font-bold"
                         >
                             View Full Product Details
                         </button>

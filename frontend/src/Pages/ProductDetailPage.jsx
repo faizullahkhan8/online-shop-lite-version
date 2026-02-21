@@ -1,14 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
-    Heart,
-    Check,
-    Package,
-    ShoppingCart,
     Loader2,
     X,
-    Boxes,
-    ShieldCheck,
-    Truck,
     Minus,
     Plus,
     ArrowRight,
@@ -25,6 +18,8 @@ import { useNavigate } from "react-router-dom";
 const ProductDetailPage = () => {
     const { id } = useParams();
     const [quantity, setQuantity] = useState(1);
+    // Added state for image switching
+    const [activeImage, setActiveImage] = useState(0);
 
     const { data, isLoading: productLoading } = useProductById(id);
     const navigate = useNavigate();
@@ -46,7 +41,8 @@ const ProductDetailPage = () => {
 
     const handleBuyNow = () => {
         if (!data?.product) return;
-        const effectivePrice = data?.product?.effectivePrice || data?.product?.price;
+        const effectivePrice =
+            data?.product?.effectivePrice || data?.product?.price;
         navigate("/checkout", {
             state: {
                 buyNowProduct: {
@@ -70,6 +66,13 @@ const ProductDetailPage = () => {
         { label: data?.product?.name || "Product" },
     ];
 
+    // Helper to get image URL safely
+    const images = data?.product?.images || [];
+    const mainImageUrl =
+        images.length > 0
+            ? `${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${images[activeImage]?.filePath}`
+            : `${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${data?.product?.image}`;
+
     return (
         <div className="bg-white min-h-screen">
             <div className="container mx-auto px-4 lg:px-12 py-8 lg:py-12 max-w-7xl">
@@ -78,19 +81,44 @@ const ProductDetailPage = () => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
-                    <div className="lg:col-span-7">
-                        <div className="bg-zinc-50 flex items-center justify-center rounded-2xl relative group border border-zinc-100 overflow-hidden">
+                    {/* Refined Image Section */}
+                    <div className="lg:col-span-7 space-y-4">
+                        <div className="bg-zinc-50 flex items-center justify-center rounded-2xl relative group border border-zinc-100 overflow-hidden aspect-square lg:aspect-auto lg:h-[600px]">
                             <img
-                                src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${data?.product?.image}`}
+                                src={mainImageUrl}
                                 alt={data?.product?.name}
                                 className="max-h-full w-full object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-105"
                             />
-                            {data?.product?.stock <= 5 && data?.product?.stock > 0 && (
-                                <div className="absolute top-6 left-6 bg-zinc-900 text-white text-xs font-bold uppercase tracking-widest px-3 py-1">
-                                    Limited Stock
-                                </div>
-                            )}
+                            {data?.product?.stock <= 5 &&
+                                data?.product?.stock > 0 && (
+                                    <div className="absolute top-6 left-6 bg-zinc-900 text-white text-xs font-bold uppercase tracking-widest px-3 py-1">
+                                        Limited Stock
+                                    </div>
+                                )}
                         </div>
+
+                        {/* Thumbnails */}
+                        {images.length > 1 && (
+                            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                                {images.map((img, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setActiveImage(index)}
+                                        className={`relative w-20 h-20 flex-shrink-0 rounded-xl border-2 transition-all overflow-hidden bg-zinc-50 ${
+                                            activeImage === index
+                                                ? "border-zinc-900"
+                                                : "border-transparent opacity-60 hover:opacity-100"
+                                        }`}
+                                    >
+                                        <img
+                                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${img.filePath}`}
+                                            className="w-full h-full object-cover mix-blend-multiply"
+                                            alt={`View ${index + 1}`}
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     <div className="lg:col-span-5 flex flex-col">
@@ -99,16 +127,6 @@ const ProductDetailPage = () => {
                                 {data?.product?.collection?.name ||
                                     "Premium Collection"}
                             </p>
-                            {data?.product?.stock > 0 ? (
-                                <span className="flex items-center gap-1.5 text-emerald-600 text-sm font-bold uppercase tracking-widest">
-                                    <CheckCircle2 size={12} />
-                                    Available
-                                </span>
-                            ) : (
-                                <span className="text-red-500 text-sm font-bold uppercase tracking-widest">
-                                    Sold Out
-                                </span>
-                            )}
                         </div>
 
                         <h1 className="text-3xl lg:text-4xl font-light tracking-tight text-zinc-900 uppercase mb-4">
@@ -123,8 +141,12 @@ const ProductDetailPage = () => {
                             )}
                         </h1>
 
-                        <div className={`flex items-center gap-4 mb-8 ${data?.product?.stock === 0 ? "text-red-500" : "text-green-500"}`}>
-                            Availible Stock : {data?.product?.stock}
+                        <div
+                            className={`flex items-center gap-4 mb-8 ${data?.product?.stock === 0 ? "text-red-500" : "text-green-500"}`}
+                        >
+                            {data?.product?.stock > 0
+                                ? `Availible Stock: ${data?.product?.stock}`
+                                : "Sold out"}
                         </div>
                         <div className="flex items-center gap-4 mb-8">
                             <StarRating
@@ -136,7 +158,6 @@ const ProductDetailPage = () => {
                                 {data?.product?.numReviews || 0} REVIEWS
                             </span>
                         </div>
-
 
                         <div className="mb-10 py-8 border-y border-zinc-100">
                             <p className="text-xs uppercase tracking-[0.2em] text-zinc-500 font-bold mb-3">
@@ -159,7 +180,8 @@ const ProductDetailPage = () => {
                                     </>
                                 ) : (
                                     <span className="text-3xl font-light text-zinc-900 tracking-tighter">
-                                        RS {data?.product?.price?.toLocaleString()}
+                                        RS{" "}
+                                        {data?.product?.price?.toLocaleString()}
                                     </span>
                                 )}
                             </div>
@@ -204,16 +226,19 @@ const ProductDetailPage = () => {
                     </div>
                 </div>
                 <div className="mt-10 flex flex-col gap-4">
-                    <h1 className="text-xl font-light uppercase tracking-[0.3em] text-zinc-900">Description</h1>
+                    <h1 className="text-xl font-light uppercase tracking-[0.3em] text-zinc-900">
+                        Description
+                    </h1>
                     <p className="text-zinc-700 text-md leading-relaxed font-light mb-10 lg:pr-10">
                         {data?.product?.description ||
                             "A masterclass in modern design and functional elegance, part of our exclusive Studio Edition series."}
                     </p>
-
                 </div>
                 <div className="mt-10 border-zinc-100">
                     {data?.product && (
-                        <ProductReviews productId={data?.product._id || data?.product.id} />
+                        <ProductReviews
+                            productId={data?.product._id || data?.product.id}
+                        />
                     )}
                 </div>
             </div>
