@@ -9,30 +9,29 @@ import {
     updateProduct,
     deleteProduct,
     getProductById,
+    uploadImages,
+    deleteImage,
 } from "../controllers/product.controller.js";
 import { authorize, isAuth } from "../middlewares/auth.middleware.js";
 import { getAllProducts } from "../controllers/product.controller.js";
 
 const router = Router();
 
+router.post("/create", isAuth, authorize(["admin"]), createProduct);
+
 router.post(
-    "/create",
+    "/upload-images",
     isAuth,
     authorize(["admin"]),
     upload.array("images"),
     handleOptionalBackgroundRemoval,
     imagekitUpload,
-    createProduct,
+    uploadImages,
 );
-router.patch(
-    "/update/:id",
-    isAuth,
-    authorize(["admin"]),
-    upload.array("images"),
-    handleOptionalBackgroundRemoval,
-    imagekitUpload,
-    updateProduct,
-);
+
+router.delete("/delete-image", isAuth, authorize(["admin"]), deleteImage);
+
+router.patch("/update/:id", isAuth, authorize(["admin"]), updateProduct);
 router.get("/all", getAllProducts);
 router.delete("/delete/:id", isAuth, authorize(["admin"]), deleteProduct);
 router.get("/get/:id", getProductById);

@@ -14,22 +14,22 @@ export const createProduct = expressAsyncHandler(async (req, res, next) => {
     if (!ProductModel)
         return next(new ErrorResponse("Product model not found", 500));
 
-    const { name, price, description, stock, lowStock, collection } =
-        JSON.parse(req.body?.data || "{}");
+    const { name, price, description, stock, lowStock, collection, images } =
+        req.body;
 
-    if (!name || !price || !description || !stock || !lowStock)
+    if (
+        !name ||
+        !price ||
+        !description ||
+        !stock ||
+        !lowStock ||
+        images.length < 1
+    )
         return next(new ErrorResponse("All fields are required", 400));
 
     const isProductExist = await ProductModel.findOne({ name });
     if (isProductExist)
         return next(new ErrorResponse("Product already exists", 400));
-
-    if (!req.images || req.images.length === 0) {
-        return res.status(400).json({
-            message:
-                "Image upload failed. At least one product image is required.",
-        });
-    }
 
     const product = await ProductModel.create({
         name,
@@ -38,13 +38,48 @@ export const createProduct = expressAsyncHandler(async (req, res, next) => {
         stock,
         lowStock,
         collection,
-        images: req.images,
+        images,
     });
 
     return res.status(201).json({
         success: true,
         message: "Product created successfully",
         product,
+    });
+});
+
+export const uploadImages = expressAsyncHandler(async (req, res, next) => {
+    if (req.images) {
+        return res.status(201).json({
+            success: true,
+            images: req.images,
+        });
+    } else {
+        return next(
+            new ErrorResponse(
+                "something went wronge while uploading images!",
+                401,
+            ),
+        );
+    }
+});
+
+export const deleteImage = expressAsyncHandler(async (req, res, next) => {
+    const imageData = req.body;
+
+    if (!imageData.fileId) {
+        return next(new ErrorResponse("image data is not provided!", 400));
+    }
+
+    try {
+        await deleteImageKitFile(imageData.fileId);
+    } catch (error) {
+        return next(new ErrorResponse("image deletion failed!", 400));
+    }
+
+    return res.status(200).json({
+        success: true,
+        deleted_image: imageData,
     });
 });
 
@@ -218,49 +253,35 @@ export const updateProduct = expressAsyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("Product model not found", 500));
 
     const { id } = req.params;
-    const product = await ProductModel.findById(id);
-    if (!product) return next(new ErrorResponse("Product not found", 404));
+    const existingProduct = await ProductModel.findById(id);
 
-    let updateData;
-    try {
-        updateData = JSON.parse(req.body.data);
-    } catch (error) {
-        return next(new ErrorResponse("Invalid product data format", 400));
-    }
+    if (!existingProduct)
+        return next(new ErrorResponse("Product not found", 404));
 
-    const currentDbImages = product.images || [];
+    const { images = [], ...otherFields } = req.body;
 
-    const keptImages = updateData.images || [];
-
-    const imagesToDelete = currentDbImages.filter(
-        (dbImg) => !keptImages.find((kept) => kept.fileId === dbImg.fileId),
+    const existingImageIds = existingProduct.images.map((img) =>
+        img._id.toString(),
     );
 
-    if (imagesToDelete.length > 0) {
-        try {
-            const deletePromises = imagesToDelete.map((img) =>
-                deleteImageKitFile(img.fileId),
-            );
-            await Promise.all(deletePromises);
-        } catch (err) {
-            console.error("ImageKit Deletion Error:", err);
-        }
-    }
+    const newImageIds = images.map((img) => img._id);
 
-    const newUploadedImages = req.images || [];
-
-    updateData.images = [...keptImages, ...newUploadedImages];
-
-    const updatedProduct = await ProductModel.findByIdAndUpdate(
-        id,
-        { $set: updateData },
-        { new: true, runValidators: true },
+    const removedImageIds = existingImageIds.filter(
+        (id) => !newImageIds.includes(id),
     );
+
+    existingProduct.set({
+        ...otherFields,
+        images,
+    });
+
+    await existingProduct.save();
 
     return res.status(200).json({
         success: true,
         message: "Product updated successfully",
-        product: updatedProduct,
+        removedImages: removedImageIds, // optional debug info
+        product: existingProduct,
     });
 });
 

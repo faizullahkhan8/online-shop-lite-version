@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Edit, PackageOpen, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import DeleteDialog from "../../UI/DialogBox.jsx";
@@ -8,14 +8,19 @@ import { useDeleteProduct } from "../../features/products/product.mutations.js";
 import { useProducts } from "../../features/products/product.queries.js";
 
 const ProductList = () => {
-    const [collection, setCollection] = useState("")
-    const [searchQuery, setSearchQuery] = useState("");
+    const collection = "";
+    const searchQuery = "";
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
 
-    const { data, isPending: getAllProductsLoading } =
-        useProducts({ page, limit, searchQuery, collection });
-    const { mutateAsync: deleteProduct, isPending: deleteProductLoading } = useDeleteProduct();
+    const { data, isPending: getAllProductsLoading } = useProducts({
+        page,
+        limit,
+        searchQuery,
+        collection,
+    });
+    const { mutateAsync: deleteProduct, isPending: deleteProductLoading } =
+        useDeleteProduct();
 
     const [productState, setProductState] = useState({
         type: "",
@@ -47,7 +52,8 @@ const ProductList = () => {
                         Products
                     </h2>
                     <p className="text-sm text-gray-500 mt-1">
-                        Manage your product inventory ({data?.totalProducts || 0} items)
+                        Manage your product inventory (
+                        {data?.totalProducts || 0} items)
                     </p>
                 </div>
             </header>
@@ -76,7 +82,8 @@ const ProductList = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {getAllProductsLoading && data?.products.length === 0 ? (
+                            {getAllProductsLoading &&
+                            data?.products.length === 0 ? (
                                 <tr>
                                     <td
                                         colSpan={5}
@@ -98,9 +105,12 @@ const ProductList = () => {
                                     >
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="relative w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
+                                                <div className="relative w-18 h-18 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
                                                     <img
-                                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${product.image}`}
+                                                        src={
+                                                            product?.images[0]
+                                                                ?.url
+                                                        }
                                                         className="w-full h-full object-cover"
                                                         alt={product.name}
                                                     />
@@ -199,7 +209,6 @@ const ProductList = () => {
                     setLimit={setLimit}
                 />
             </div>
-
         </div>
     );
 };

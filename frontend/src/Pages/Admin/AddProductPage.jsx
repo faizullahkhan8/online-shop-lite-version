@@ -1,26 +1,19 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Input from "../../UI/Input.jsx";
 import Button from "../../UI/Button.jsx";
 import Select from "../../UI/Select.jsx";
-import {
-    ImageIcon,
-    Loader,
-    Plus,
-    Save,
-    X,
-    Hash,
-    Layers,
-    DollarSign,
-    Box,
-    Boxes,
-} from "lucide-react";
+import UploadImagesModal from "./UploadImagesModel.jsx";
+
+import { Loader, X, Hash, Loader2 } from "lucide-react";
 
 import {
     useCreateProduct,
     useUpdateProduct,
 } from "../../features/products/product.mutations.js";
+
 import { useCollections } from "../../features/collections/collection.queries.js";
+import { useDeleteUploadImage } from "../../features/upload.api.js";
 
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -33,13 +26,15 @@ const INITIAL_STATE = {
     collection: "",
     stock: "",
     lowStock: "",
-    images: [],
+    images: [], // [{ _id, url, fileName, size }]
     isRemoveBg: false,
 };
 
 const AddProduct = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+
+    const deleteUploadImage = useDeleteUploadImage();
 
     const parseProductFromParams = () => {
         try {
@@ -48,6 +43,7 @@ const AddProduct = () => {
 
             const parsed = JSON.parse(raw);
             const { collection, images, ...rest } = parsed || {};
+
             const resolvedCollection =
                 typeof collection === "string"
                     ? collection
@@ -65,6 +61,8 @@ const AddProduct = () => {
     };
 
     const [productData, setProductData] = useState(parseProductFromParams);
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
     const isEditing = Boolean(productData?._id);
 
     const { mutateAsync: createProduct, isPending: createLoading } =
@@ -73,44 +71,46 @@ const AddProduct = () => {
         useUpdateProduct();
     const { data: collectionData } = useCollections();
 
+    const isSubmitting = createLoading || updateLoading;
+
     const handleChange = (e) => {
-        const { id, value, files, type } = e.target;
-        if (type === "file") {
-            const newFiles = Array.from(files);
-            setProductData((prev) => ({
-                ...prev,
-                images: [...prev.images, ...newFiles],
-            }));
-        } else {
-            setProductData((prev) => ({ ...prev, [id]: value }));
-        }
+        const { id, value } = e.target;
+        setProductData((prev) => ({ ...prev, [id]: value }));
     };
 
-    const removeImage = (index) => {
+    // ✅ Handle upload success from modal
+    const handleUploadSuccess = (uploadedImages) => {
         setProductData((prev) => ({
             ...prev,
-            images: prev.images.filter((_, i) => i !== index),
+            images: [...prev.images, ...uploadedImages],
         }));
+    };
+
+    // ✅ Delete uploaded image
+    const handleDeleteImage = async (imageData) => {
+        try {
+            await deleteUploadImage.mutateAsync(imageData);
+
+            setProductData((prev) => ({
+                ...prev,
+                images: prev.images.filter((img) => img._id !== imageData._id),
+            }));
+
+            toast.success("Image deleted successfully");
+        } catch (err) {
+            toast.error("Failed to delete image");
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = new FormData();
 
-        const { images, ...textData } = productData;
-        formData.append("data", JSON.stringify(textData));
-
-        images.forEach((img) => {
-            if (img instanceof File) {
-                formData.append("images", img);
-            }
-        });
+        if (productData.images.length === 0) {
+            return toast.error("At least one image is required");
+        }
 
         if (!isEditing) {
-            if (images.length === 0)
-                return toast.error("At least one image is required");
-
-            await createProduct(formData, {
+            await createProduct(productData, {
                 onSuccess: () => {
                     toast.success("Product created successfully");
                     navigate("/admin-dashboard/products");
@@ -121,8 +121,8 @@ const AddProduct = () => {
         } else {
             await updateProduct(
                 {
-                    id: productData?._id,
-                    product: formData,
+                    id: productData._id,
+                    product: productData,
                 },
                 {
                     onSuccess: () => {
@@ -136,16 +136,12 @@ const AddProduct = () => {
         }
     };
 
-    const isSubmitting = createLoading || updateLoading;
-
     return (
         <div className="space-y-6">
             <header className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold text-gray-900">
-                        {isEditing ? "Edit Product" : "Add New Product"}
-                    </h2>
-                </div>
+                <h2 className="text-2xl font-bold text-gray-900">
+                    {isEditing ? "Edit Product" : "Add New Product"}
+                </h2>
                 <button
                     onClick={() => navigate(-1)}
                     className="p-2 text-gray-400 hover:text-gray-600 rounded-2xl hover:bg-gray-100"
@@ -158,17 +154,17 @@ const AddProduct = () => {
                 onSubmit={handleSubmit}
                 className="grid grid-cols-1 lg:grid-cols-12 gap-6"
             >
+                {/* LEFT SIDE */}
                 <div className="lg:col-span-7 space-y-6">
                     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-5">
                         <div>
                             <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
-                                <Hash size={14} className="text-blue-600" />{" "}
+                                <Hash size={14} className="text-blue-600" />
                                 Product Name
                             </label>
                             <Input
                                 type="text"
                                 id="name"
-                                placeholder={"e.g: Lighting Keyboard"}
                                 value={productData?.name}
                                 onChange={handleChange}
                                 required
@@ -176,179 +172,129 @@ const AddProduct = () => {
                         </div>
 
                         <div className="grid grid-cols-3 gap-4">
-                            <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
-                                    <DollarSign
-                                        size={14}
-                                        className="text-blue-600"
-                                    />{" "}
-                                    Price (Rs)
-                                </label>
-                                <Input
-                                    type="number"
-                                    id="price"
-                                    placeholder={"Rs: 0.00"}
-                                    value={productData?.price}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
-                                    <Boxes
-                                        size={16}
-                                        className="text-blue-600"
-                                    />{" "}
-                                    Stock
-                                </label>
-                                <Input
-                                    type="number"
-                                    id="stock"
-                                    placeholder={"e.g: 10"}
-                                    value={productData?.stock}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
-                                    <Box size={14} className="text-blue-600" />{" "}
-                                    Low Stock
-                                </label>
-                                <Input
-                                    className={"w-full"}
-                                    placeholder={"e.g: 10"}
-                                    type="number"
-                                    id="lowStock"
-                                    value={productData?.lowStock}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
-                                <Layers size={14} className="text-blue-600" />{" "}
-                                Collection
-                            </label>
-                            <Select
-                                id="collection"
-                                value={productData?.collection}
-                                onChange={(val) =>
-                                    handleChange({
-                                        target: {
-                                            id: "collection",
-                                            value: val,
-                                        },
-                                    })
-                                }
-                                options={collectionData?.collections?.map(
-                                    (c) => ({ label: c.name, value: c._id }),
-                                )}
-                            />
-                        </div>
-
-                        <div>
-                            <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
-                                <Layers size={14} className="text-blue-600" />{" "}
-                                Description
-                            </label>
-                            <textarea
-                                type="textarea"
-                                id="description"
-                                value={productData?.description}
-                                rows={6}
+                            <Input
+                                type="number"
+                                id="price"
+                                placeholder="Price"
+                                value={productData?.price}
                                 onChange={handleChange}
-                                className="border border-gray-300 rounded-2xl w-full resize-none py-2 px-4 text-gray-700 text-sm"
+                                required
+                            />
+                            <Input
+                                type="number"
+                                id="stock"
+                                placeholder="Stock"
+                                value={productData?.stock}
+                                onChange={handleChange}
+                                required
+                            />
+                            <Input
+                                type="number"
+                                id="lowStock"
+                                placeholder="Low Stock"
+                                value={productData?.lowStock}
+                                onChange={handleChange}
+                                required
                             />
                         </div>
+
+                        <Select
+                            id="collection"
+                            value={productData?.collection}
+                            onChange={(val) =>
+                                handleChange({
+                                    target: {
+                                        id: "collection",
+                                        value: val,
+                                    },
+                                })
+                            }
+                            options={collectionData?.collections?.map((c) => ({
+                                label: c.name,
+                                value: c._id,
+                            }))}
+                        />
+
+                        <textarea
+                            id="description"
+                            rows={6}
+                            value={productData?.description}
+                            onChange={handleChange}
+                            className="border border-gray-300 rounded-2xl w-full resize-none py-2 px-4 text-gray-700 text-sm"
+                        />
                     </div>
                 </div>
 
+                {/* RIGHT SIDE */}
                 <div className="lg:col-span-5 space-y-6">
                     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                        <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center justify-between mb-4">
                             <label className="text-sm font-medium text-gray-700">
                                 Product Images
                             </label>
-                            <div className="flex items-center gap-2">
-                                <label className="text-xs font-medium text-gray-600">
-                                    Remove BG
-                                </label>
-                                <input
-                                    type="checkbox"
-                                    checked={productData?.isRemoveBg}
-                                    onChange={(e) =>
-                                        setProductData((p) => ({
-                                            ...p,
-                                            isRemoveBg: e.target.checked,
-                                        }))
-                                    }
-                                />
-                            </div>
+
+                            <Button
+                                type="button"
+                                onClick={() => setIsUploadModalOpen(true)}
+                                className="text-sm"
+                            >
+                                Upload Images
+                            </Button>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2 mb-4">
-                            {productData.images.map((img, index) => (
+                        <div className="grid grid-cols-2 gap-3">
+                            {productData.images.map((img) => (
                                 <div
-                                    key={index}
+                                    key={img._id}
                                     className="relative aspect-square rounded-xl overflow-hidden border"
                                 >
                                     <img
-                                        src={
-                                            img instanceof File
-                                                ? URL.createObjectURL(img)
-                                                : img.url
-                                        }
+                                        src={img.url}
                                         className="w-full h-full object-cover"
-                                        alt="Preview"
+                                        alt="Product"
                                     />
+
                                     <button
                                         type="button"
-                                        onClick={() => removeImage(index)}
+                                        onClick={() => handleDeleteImage(img)}
                                         className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full shadow-lg"
                                     >
-                                        <X size={12} />
+                                        {deleteUploadImage.isPending ? (
+                                            <Loader2
+                                                size={24}
+                                                className="animate-spin"
+                                            />
+                                        ) : (
+                                            <X size={12} />
+                                        )}
                                     </button>
                                 </div>
                             ))}
-
-                            {productData.images.length < 10 && (
-                                <label className="flex flex-col items-center justify-center aspect-square border-2 border-dashed rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
-                                    <Plus size={20} className="text-gray-400" />
-                                    <span className="text-[10px] text-gray-400">
-                                        Add More
-                                    </span>
-                                    <input
-                                        type="file"
-                                        hidden
-                                        multiple
-                                        accept="image/*"
-                                        onChange={handleChange}
-                                    />
-                                </label>
-                            )}
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-3">
-                        <Button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className="w-full py-3 bg-blue-600 text-white rounded-2xl"
-                        >
-                            {isSubmitting ? (
-                                <Loader className="animate-spin" size={18} />
-                            ) : isEditing ? (
-                                "Update Product"
-                            ) : (
-                                "Create Product"
-                            )}
-                        </Button>
-                    </div>
+                    <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full py-3 bg-blue-600 text-white rounded-2xl"
+                    >
+                        {isSubmitting ? (
+                            <Loader className="animate-spin" size={18} />
+                        ) : isEditing ? (
+                            "Update Product"
+                        ) : (
+                            "Create Product"
+                        )}
+                    </Button>
                 </div>
             </form>
+
+            {/* ✅ Upload Modal */}
+            <UploadImagesModal
+                isOpen={isUploadModalOpen}
+                onClose={() => setIsUploadModalOpen(false)}
+                onSuccess={handleUploadSuccess}
+            />
         </div>
     );
 };

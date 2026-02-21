@@ -1,11 +1,7 @@
 import apiClient from "../apiClient";
 
 export const createProduct = async (product) => {
-    const response = await apiClient.post("/products/create", product, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    });
+    const response = await apiClient.post("/products/create", product);
     return response.data;
 };
 
@@ -25,11 +21,6 @@ export const deleteProduct = async (id) => {
 };
 
 export const updateProduct = async ({ id, product }) => {
-    console.log(id, product);
-    const response = await apiClient.patch(`/products/update/${id}`, product, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    });
+    const response = await apiClient.patch(`/products/update/${id}`, product);
     return response.data;
 };
