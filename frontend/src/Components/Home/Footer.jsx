@@ -80,7 +80,7 @@ const Footer = () => {
     };
 
     return (
-        <footer ref={ref} className="relative w-full bg-[#fdfdfb] text-[#2d3a2d] border-t border-stone-100 overflow-hidden">
+        <footer ref={ref} className="relative w-full bg-[#F1F8ED] text-[#2d3a2d] border-t border-stone-100 overflow-hidden">
             {/* Ambient Background */}
             <motion.div
                 initial={{ opacity: 0 }}

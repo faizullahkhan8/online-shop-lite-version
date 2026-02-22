@@ -31,13 +31,13 @@ const CollectionsPage = () => {
                     <div className="py-20 text-center text-sm uppercase tracking-[0.3em] text-zinc-500">
                         Loading collections...
                     </div>
-                ) : displayCollections.length === 0 ? (
+                ) : displayCollections?.length === 0 ? (
                     <div className="py-20 text-center text-sm uppercase tracking-[0.3em] text-zinc-500">
                         No collections available
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {displayCollections.map((collection) => (
+                        {displayCollections?.map((collection) => (
                             <Link
                                 key={collection._id || collection.name}
                                 to={

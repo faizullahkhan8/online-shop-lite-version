@@ -16,9 +16,26 @@
     --radius-2xl: 1rem;
 }
 
+
+
+@theme {
+    --font-heading: 'Cormorant Garamond', serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+/* body {
+ 
+} */
+
+
+
+
+
+
 body {
     background-color: #f7fafc;
     color: var(--color-ui-dark);
+    font-family: 'Inter', sans-serif;
 }
 
 .container {

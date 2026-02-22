@@ -6,7 +6,7 @@ import { deleteImageKitFile } from "../utils/DeleteFileImageKit.js";
 export const createCollection = expressAsyncHandler(async (req, res, next) => {
     const CollectionModel = getLocalCollectionModel();
 
-    if (!CollectionModel) {
+    if (!CollectionModel) { 
         return next(new ErrorResponse("Collection model not found", 404));
     }
 

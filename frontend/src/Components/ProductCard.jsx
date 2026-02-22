@@ -11,7 +11,7 @@ const ProductCard = ({ product, isLarge = false }) => {
     const primaryImage =
         product.images && product.images.length > 0
             ? product.images.find((img) => img.isPrimary)?.filePath ||
-              product.images[0].filePath
+            product.images[0].filePath
             : product.image;
 
     const secondaryImage =
@@ -125,121 +125,159 @@ const ProductCard = ({ product, isLarge = false }) => {
         // </>
 
 
-        <>
-    <div
-        className={`flex flex-col group cursor-pointer snap-start h-full ${isLarge ? "min-w-[85vw] md:min-w-[45vw] lg:min-w-[30%]" : "w-full"}`}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-    >
-        {/* Image Area */}
-        <div className="relative overflow-hidden rounded-xl aspect-[3/4] bg-gray-50 flex-shrink-0">
-            {/* Discount/Tag Badge */}
-            {product.tag && (
-                <div className="absolute top-3 left-3 z-20">
-                    <span className="bg-white/95 text-[9px] tracking-[0.2em] uppercase px-2.5 py-1 font-medium text-gray-700 rounded-full shadow-sm">
-                        {product.tag}
-                    </span>
+        <div
+            className={`flex flex-col group cursor-pointer snap-start h-full ${isLarge ? "min-w-[85vw] md:min-w-[45vw] lg:min-w-[30%]" : "w-full"}`}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            {/* Image Area — remove fixed h-100 w-60, use aspect ratio only */}
+            {/* <div className="relative overflow-hidden rounded-xl aspect-[3/4] bg-gray-50 w-full">
+
+                {product.tag && (
+                    <div className="absolute top-3 left-3 z-20">
+                        <span className="bg-white/95 text-[9px] tracking-[0.2em] uppercase px-2.5 py-1 font-medium text-gray-700 rounded-full shadow-sm">
+                            {product.tag}
+                        </span>
+                    </div>
+                )}
+
+                <div className="relative overflow-hidden rounded-xl aspect-[3/4] bg-gray-50 w-full">
+                    <img
+                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${primaryImage}`}
+                        alt={product?.name}
+                        className={`absolute inset-0 w-full h-full object-contain object-center transition-all duration-1000 ${isHovered && product.images && product.images.length > 1
+                            ? "opacity-0 scale-100"
+                            : "opacity-100 scale-100"
+                            }`}
+                    />
+
+                    {product.images && product.images.length > 1 && (
+                        <img
+                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${secondaryImage}`}
+                            alt={`${product?.name} alternate`}
+                            className={`absolute inset-0 w-full h-full object-contain object-center transition-all duration-1000 ${isHovered ? "opacity-100 scale-100" : "opacity-0 scale-100"
+                                }`}
+                        />
+                    )}
                 </div>
-            )}
 
-            {/* Primary Image */}
-            <img
-                src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${primaryImage}`}
-                alt={product?.name}
-                className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${
-                    isHovered && product.images && product.images.length > 1
-                        ? "opacity-0 scale-105"
-                        : "opacity-100 scale-100"
-                }`}
-            />
-
-            {/* Secondary Image */}
-            {product.images && product.images.length > 1 && (
-                <img
-                    src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${secondaryImage}`}
-                    alt={`${product?.name} alternate`}
-                    className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${
-                        isHovered
-                            ? "opacity-100 scale-105"
-                            : "opacity-0 scale-100"
-                    }`}
-                />
-            )}
-
-            {/* Hover Overlay + Quick View */}
-            <div
-                className={`absolute inset-0 bg-black/10 flex items-end justify-center pb-6 transition-opacity duration-300 z-10 ${
-                    isHovered ? "opacity-100" : "opacity-0"
-                }`}
-                onClick={() => navigate(`/product/${product._id}`)}
-            >
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setIsQuickViewOpen(true);
-                    }}
-                    className="bg-white text-gray-900 px-7 py-2.5 text-[10px] font-medium tracking-[0.2em] uppercase rounded-full hover:bg-gray-900 hover:text-white transition-all duration-300 shadow-md cursor-pointer"
+                <div
+                    className={`absolute inset-0 bg-black/10 flex items-end justify-center pb-6 transition-opacity duration-300 z-10 ${isHovered ? "opacity-100" : "opacity-0"
+                        }`}
+                    onClick={() => navigate(`/product/${product._id}`)}
                 >
-                    Quick view
-                </button>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsQuickViewOpen(true);
+                        }}
+                        className="bg-white text-gray-900 px-7 py-2.5 text-[10px] font-medium tracking-[0.2em] uppercase rounded-full hover:bg-gray-900 hover:text-white transition-all duration-300 shadow-md cursor-pointer"
+                    >
+                        Quick view
+                    </button>
+                </div>
+            </div> */}
+
+
+            <div className="relative rounded-xl aspect-[3/4] bg-gray-50 w-full overflow-hidden">
+             
+             
+
+                 {product.tag && (
+                    <div className="absolute top-3 left-3 z-20">
+                        <span className="bg-white/95 text-[9px] tracking-[0.2em] uppercase px-2.5 py-1 font-medium text-gray-700 rounded-full shadow-sm">
+                            {product.tag}
+                        </span>
+                    </div>
+                )}
+
+
+
+                
+             
+                {/* padding wrapper — this is what gives the breathing room */}
+                <div className="absolute inset-0 p-3">
+                    <img
+                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${primaryImage}`}
+                        alt={product?.name}
+                        className={`w-full h-full object-contain object-center transition-all duration-700 rounded-lg ${isHovered && product.images && product.images.length > 1
+                                ? "opacity-0 scale-105"
+                                : "opacity-100 scale-100"
+                            }`}
+                    />
+
+                    {product.images && product.images.length > 1 && (
+                        <img
+                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${secondaryImage}`}
+                            alt={`${product?.name} alternate`}
+                            className={`absolute inset-3 w-[calc(100%-1.5rem)] h-[calc(100%-1.5rem)] object-contain object-center transition-all duration-700 rounded-lg ${isHovered ? "opacity-100 scale-105" : "opacity-0 scale-100"
+                                }`}
+                        />
+                    )}
+                </div>
+
+                {/* Quick view overlay — still full bleed */}
+                <div
+                    className={`absolute inset-0 bg-black/10 flex items-end justify-center pb-6 transition-opacity duration-300 z-10 ${isHovered ? "opacity-100" : "opacity-0"
+                        }`}
+                    onClick={() => navigate(`/product/${product._id}`)}
+                >
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsQuickViewOpen(true);
+                        }}
+                        className="bg-white text-gray-900 px-7 py-2.5 text-[10px] font-medium tracking-[0.2em] uppercase rounded-full hover:bg-gray-900 hover:text-white transition-all duration-300 shadow-md cursor-pointer"
+                    >
+                        Quick view
+                    </button>
+                </div>
             </div>
-        </div>
 
-        {/* Card Info — fixed structure with min-height per zone */}
-        <div className="mt-4 flex flex-col items-center text-center px-1">
 
-            {/* Product Name — fixed 2-line height so price stays aligned */}
-            <div className="min-h-[2.8rem] flex items-start justify-center w-full mb-2">
-                <h3 className="text-[11px] font-medium tracking-[0.15em] uppercase text-gray-800 leading-snug line-clamp-2 font-sans">
-                    {product.name}
-                </h3>
-            </div>
 
-            {/* Price — fixed height so rating stays aligned */}
-            <div className="min-h-[1.5rem] flex items-center justify-center gap-2 mb-3">
-                {product?.promotion ? (
-                    <>
-                        <p className="text-sm tracking-wider text-emerald-600 font-normal font-sans">
-                            {typeof product.effectivePrice === "number"
-                                ? `Rs. ${product.effectivePrice.toLocaleString()}`
-                                : "Price"}
-                        </p>
-                        <p className="text-xs tracking-wider text-gray-400 line-through font-light font-sans">
+
+
+            {/* Card Info */}
+            <div className="mt-3 flex flex-col items-center text-center px-1 w-full">
+
+                <div className="min-h-[2.2rem] flex items-start justify-center w-full">
+                    <h3 className="text-[11px] font-medium tracking-[0.15em] uppercase text-gray-800 leading-snug line-clamp-2 font-sans">
+                        {product.name}
+                    </h3>
+                </div>
+
+                <div className="min-h-[1.5rem] flex items-center justify-center gap-2 mb-3">
+                    {product?.promotion ? (
+                        <>
+                            <p className="text-sm tracking-wider text-emerald-600 font-normal font-sans">
+                                {typeof product.effectivePrice === "number"
+                                    ? `Rs. ${product.effectivePrice.toLocaleString()}`
+                                    : "Price"}
+                            </p>
+                            <p className="text-xs tracking-wider text-gray-400 line-through font-light font-sans">
+                                {typeof product.price === "number"
+                                    ? `Rs. ${product.price.toLocaleString()}`
+                                    : product.price}
+                            </p>
+                        </>
+                    ) : (
+                        <p className="text-sm tracking-wider text-gray-700 font-normal font-sans">
                             {typeof product.price === "number"
                                 ? `Rs. ${product.price.toLocaleString()}`
                                 : product.price}
                         </p>
-                    </>
-                ) : (
-                    <p className="text-sm tracking-wider text-gray-700 font-normal font-sans">
-                        {typeof product.price === "number"
-                            ? `Rs. ${product.price.toLocaleString()}`
-                            : product.price}
-                    </p>
-                )}
-            </div>
+                    )}
+                </div>
 
-            {/* Rating + Reviews — fixed height, always bottom aligned */}
-            <div className="min-h-[1.5rem] flex items-center justify-center gap-3">
-                <StarRating
-                    rating={product?.rating || 0}
-                    readonly
-                    size={12}
-                />
-                <span className="text-[9px] uppercase tracking-[0.15em] text-gray-400 font-sans border-l border-gray-200 pl-3">
-                    {product?.numReviews || 0} Reviews
-                </span>
+                <div className="min-h-[1.5rem] flex items-center justify-center gap-3">
+                    <StarRating rating={product?.rating || 0} readonly size={12} />
+                    <span className="text-[9px] uppercase tracking-[0.15em] text-gray-400 font-sans border-l border-gray-200 pl-3">
+                        {product?.numReviews || 0} Reviews
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
-
-    {isQuickViewOpen && (
-        <ProductQuickView
-            product={product}
-            onClose={() => setIsQuickViewOpen(false)}
-        />
-    )}
-</>
 
 
 
