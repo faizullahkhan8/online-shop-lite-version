@@ -24,3 +24,14 @@ export const updateProduct = async ({ id, product }) => {
     const response = await apiClient.patch(`/products/update/${id}`, product);
     return response.data;
 };
+
+export const assignCollectionToProducts = async ({
+    collectionId,
+    productIds,
+}) => {
+    const response = await apiClient.patch("/products/assign-collection", {
+        collectionId,
+        productIds,
+    });
+    return response.data;
+};

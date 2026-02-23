@@ -7,6 +7,7 @@ import {
 import {
     createProduct,
     updateProduct,
+    assignCollectionToProducts,
     deleteProduct,
     getProductById,
     uploadImages,
@@ -31,6 +32,12 @@ router.post(
 
 router.delete("/delete-image", isAuth, authorize(["admin"]), deleteImage);
 
+router.patch(
+    "/assign-collection",
+    isAuth,
+    authorize(["admin"]),
+    assignCollectionToProducts,
+);
 router.patch("/update/:id", isAuth, authorize(["admin"]), updateProduct);
 router.get("/all", getAllProducts);
 router.delete("/delete/:id", isAuth, authorize(["admin"]), deleteProduct);

@@ -93,6 +93,7 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
         minPrice,
         maxPrice,
         search,
+        promotionId,
         page,
         limit,
         excludeActivePromotions,
@@ -130,6 +131,37 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
         query.price = {};
         if (minPrice) query.price.$gte = Number(minPrice);
         if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+
+    if (promotionId) {
+        if (!mongoose.isValidObjectId(promotionId)) {
+            query._id = {
+                ...(query._id || {}),
+                $in: [],
+            };
+        } else {
+            const PromotionModel = getLocalPromotionModel();
+
+            if (!PromotionModel) {
+                return next(new ErrorResponse("Promotion model not found", 500));
+            }
+
+            const promotion = await PromotionModel.findById(promotionId).select(
+                "products",
+            );
+
+            if (!promotion || promotion.products.length === 0) {
+                query._id = {
+                    ...(query._id || {}),
+                    $in: [],
+                };
+            } else {
+                query._id = {
+                    ...(query._id || {}),
+                    $in: promotion.products,
+                };
+            }
+        }
     }
 
     // Exclude products already in active promotions
@@ -285,6 +317,62 @@ export const updateProduct = expressAsyncHandler(async (req, res, next) => {
         product: existingProduct,
     });
 });
+
+export const assignCollectionToProducts = expressAsyncHandler(
+    async (req, res, next) => {
+        const ProductModel = getLocalProductModel();
+        const CollectionModel = getLocalCollectionModel();
+
+        if (!ProductModel) {
+            return next(new ErrorResponse("Product model not found", 500));
+        }
+
+        if (!CollectionModel) {
+            return next(new ErrorResponse("Collection model not found", 500));
+        }
+
+        const { collectionId, productIds } = req.body;
+
+        if (!collectionId || !mongoose.isValidObjectId(collectionId)) {
+            return next(new ErrorResponse("Valid collectionId is required", 400));
+        }
+
+        if (!Array.isArray(productIds) || productIds.length === 0) {
+            return next(
+                new ErrorResponse("At least one productId is required", 400),
+            );
+        }
+
+        const dedupedProductIds = [...new Set(productIds)];
+        const hasInvalidProductId = dedupedProductIds.some(
+            (id) => !mongoose.isValidObjectId(id),
+        );
+
+        if (hasInvalidProductId) {
+            return next(new ErrorResponse("One or more productIds are invalid", 400));
+        }
+
+        const collection = await CollectionModel.findById(collectionId).select(
+            "_id",
+        );
+
+        if (!collection) {
+            return next(new ErrorResponse("Collection not found", 404));
+        }
+
+        const result = await ProductModel.updateMany(
+            { _id: { $in: dedupedProductIds } },
+            { $set: { collection: collection._id } },
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Collection assigned to products successfully",
+            matchedCount: result.matchedCount,
+            modifiedCount: result.modifiedCount,
+        });
+    },
+);
 
 export const deleteProduct = expressAsyncHandler(async (req, res, next) => {
     const ProductModel = getLocalProductModel();

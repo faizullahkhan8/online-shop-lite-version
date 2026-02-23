@@ -16,6 +16,12 @@ const promotionSchema = new Schema(
         discountValue: { type: Number, required: true },
         startTime: { type: Date, required: true },
         endTime: { type: Date, required: true },
+        image: {
+            url: { type: String },
+            fileId: { type: String },
+            name: { type: String },
+            filePath: { type: String },
+        },
         products: [
             {
                 type: SchemaTypes.ObjectId,

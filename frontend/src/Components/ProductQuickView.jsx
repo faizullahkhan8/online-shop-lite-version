@@ -61,7 +61,7 @@ const ProductQuickView = ({ product, onClose }) => {
                                 <button
                                     key={index}
                                     onClick={() => setActiveImage(index)}
-                                    className={`relative w-16 h-16 flex-shrink-0 rounded-lg border-2 transition-all overflow-hidden bg-white ${
+                                    className={`relative w-16 h-16 shrink-0 rounded-lg border-2 transition-all overflow-hidden bg-white ${
                                         activeImage === index
                                             ? "border-zinc-900"
                                             : "border-transparent opacity-60 hover:opacity-100"

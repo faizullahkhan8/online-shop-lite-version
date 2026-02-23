@@ -165,6 +165,7 @@ const AddProduct = () => {
                             <Input
                                 type="text"
                                 id="name"
+                                placeholder={"Product name"}
                                 value={productData?.name}
                                 onChange={handleChange}
                                 required
@@ -200,6 +201,7 @@ const AddProduct = () => {
 
                         <Select
                             id="collection"
+                            placeholder="Select Collection"
                             value={productData?.collection}
                             onChange={(val) =>
                                 handleChange({
@@ -217,6 +219,7 @@ const AddProduct = () => {
 
                         <textarea
                             id="description"
+                            placeholder="Product Description"
                             rows={6}
                             value={productData?.description}
                             onChange={handleChange}
@@ -289,7 +292,6 @@ const AddProduct = () => {
                 </div>
             </form>
 
-            {/* ✅ Upload Modal */}
             <UploadImagesModal
                 isOpen={isUploadModalOpen}
                 onClose={() => setIsUploadModalOpen(false)}

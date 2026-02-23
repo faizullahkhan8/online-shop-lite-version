@@ -18,6 +18,7 @@ import {
     useAddPromotion,
     useUpdatePromotion,
 } from "../../features/promotions/promotions.mutations";
+import { useDeleteUploadImage } from "../../features/upload.api";
 
 import { usePromotion } from "../../features/promotions/promotions.query";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -25,6 +26,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Input from "../../UI/Input";
 import Select from "../../UI/Select";
 import Pagination from "../../Components/Pagination";
+import UploadImagesModal from "./UploadImagesModel";
 
 const PromotionBuilder = () => {
     const navigate = useNavigate();
@@ -33,6 +35,7 @@ const PromotionBuilder = () => {
 
     const addMutation = useAddPromotion();
     const updateMutation = useUpdatePromotion();
+    const deleteUploadImage = useDeleteUploadImage();
 
     const { data: promotionResponse, isLoading: fetchLoading } =
         usePromotion(editId);
@@ -49,16 +52,17 @@ const PromotionBuilder = () => {
         discountValue: 0,
         startTime: "",
         endTime: "",
+        image: null,
     });
 
     const [productSearch, setProductSearch] = useState("");
     const [selectedProducts, setSelectedProducts] = useState([]);
-    const [noProductFound, setNoProductFound] = useState(false);
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const [errors, setErrors] = useState({});
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
-    const { data: allProductsData } = useProducts({
+    const { data: allProductsData, isPending: productsLoading } = useProducts({
         search: productSearch,
         page: page,
         limit,
@@ -80,6 +84,7 @@ const PromotionBuilder = () => {
                 discountValue: p.discountValue,
                 startTime: new Date(p.startTime).toISOString().slice(0, 16),
                 endTime: new Date(p.endTime).toISOString().slice(0, 16),
+                image: p.image || null,
             });
 
             setSelectedProducts(p.products);
@@ -106,7 +111,6 @@ const PromotionBuilder = () => {
         } else {
             setSelectedProducts((prev) => [...prev, product]);
         }
-        setNoProductFound(false);
     };
 
     const validateEndTime = (endTime) => {
@@ -114,6 +118,50 @@ const PromotionBuilder = () => {
             return "End time must be in the future";
         }
         return "";
+    };
+
+    const handleUploadSuccess = async (uploadedImages) => {
+        if (!uploadedImages?.length) return;
+
+        const newImage = uploadedImages[0];
+
+        if (
+            promotionData.image?.fileId &&
+            promotionData.image.fileId !== newImage.fileId
+        ) {
+            try {
+                await deleteUploadImage.mutateAsync(promotionData.image);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        setPromotionData((prev) => ({
+            ...prev,
+            image: newImage,
+        }));
+
+        if (errors.image) {
+            setErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors.image;
+                return newErrors;
+            });
+        }
+    };
+
+    const handleDeleteImage = async () => {
+        if (!promotionData.image) return;
+
+        try {
+            await deleteUploadImage.mutateAsync(promotionData.image);
+            setPromotionData((prev) => ({
+                ...prev,
+                image: null,
+            }));
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -125,6 +173,8 @@ const PromotionBuilder = () => {
             newErrors.discountValue = "Value must be positive";
         if (!promotionData.startTime) newErrors.startTime = "Start is required";
         if (!promotionData.endTime) newErrors.endTime = "End is required";
+        if (!promotionData.image?.fileId)
+            newErrors.image = "Promotion image is required";
 
         const endTimeError = validateEndTime(promotionData.endTime);
         if (endTimeError) newErrors.endTime = endTimeError;
@@ -292,6 +342,65 @@ const PromotionBuilder = () => {
                                     </p>
                                 )}
                             </div>
+
+                            <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200 space-y-3">
+                                <div className="flex items-center justify-between gap-2">
+                                    <label className="text-sm font-medium text-gray-700">
+                                        Promotion Image
+                                    </label>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setIsUploadModalOpen(true)
+                                        }
+                                        className="px-3 py-1.5 rounded-xl text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                                    >
+                                        {promotionData.image
+                                            ? "Replace Image"
+                                            : "Upload Image"}
+                                    </button>
+                                </div>
+
+                                {promotionData.image ? (
+                                    <div className="relative h-44 rounded-2xl overflow-hidden border border-gray-200 bg-white">
+                                        <img
+                                            src={
+                                                promotionData.image.url ||
+                                                `${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${promotionData.image.filePath}`
+                                            }
+                                            alt="Promotion"
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleDeleteImage}
+                                            disabled={
+                                                deleteUploadImage.isPending
+                                            }
+                                            className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center shadow-sm disabled:opacity-60"
+                                        >
+                                            {deleteUploadImage.isPending ? (
+                                                <Loader2
+                                                    size={14}
+                                                    className="animate-spin"
+                                                />
+                                            ) : (
+                                                <Trash2 size={14} />
+                                            )}
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="h-44 rounded-2xl border border-dashed border-gray-300 bg-white flex items-center justify-center text-xs text-gray-500">
+                                        Upload an image for this promotion
+                                    </div>
+                                )}
+
+                                {errors.image && (
+                                    <p className="text-xs text-red-600">
+                                        {errors.image}
+                                    </p>
+                                )}
+                            </div>
                         </div>
                     </section>
 
@@ -351,7 +460,7 @@ const PromotionBuilder = () => {
 
                 {/* Product Selection */}
                 <div className="lg:col-span-7 space-y-4">
-                    <section className="bg-white border border-gray-200 rounded-2xl flex flex-col min-h-[400px]">
+                    <section className="bg-white border border-gray-200 rounded-2xl flex flex-col min-h-100">
                         <div className="p-5 border-b border-gray-200">
                             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
                                 <Package size={16} className="text-blue-600" />
@@ -375,14 +484,14 @@ const PromotionBuilder = () => {
                         </div>
 
                         <div className="flex-1 p-5 overflow-y-auto">
-                            {availableProducts?.length === 0 ? (
+                            {productsLoading ? (
                                 <div className="h-full flex items-center justify-center">
                                     <Loader2
                                         className="animate-spin text-blue-600"
                                         size={32}
                                     />
                                 </div>
-                            ) : noProductFound ? (
+                            ) : availableProducts.length === 0 ? (
                                 <div className="h-full flex flex-col items-center justify-center text-center p-8">
                                     <Search
                                         size={32}
@@ -411,9 +520,9 @@ const PromotionBuilder = () => {
                                                         : "bg-white border-gray-200 hover:border-gray-300"
                                                 }`}
                                             >
-                                                <div className="w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 p-2">
+                                                <div className="w-full bg-gray-50 rounded-2xl overflow-hidden border border-gray-100">
                                                     <img
-                                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${p.image}`}
+                                                        src={p?.images[0]?.url}
                                                         className="w-full h-full object-contain"
                                                         alt={p.name}
                                                     />
@@ -526,6 +635,12 @@ const PromotionBuilder = () => {
                     </section>
                 </div>
             </form>
+
+            <UploadImagesModal
+                isOpen={isUploadModalOpen}
+                onClose={() => setIsUploadModalOpen(false)}
+                onSuccess={handleUploadSuccess}
+            />
         </div>
     );
 };

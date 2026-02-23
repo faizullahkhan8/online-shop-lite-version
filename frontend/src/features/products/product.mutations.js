@@ -1,5 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createProduct, deleteProduct, updateProduct } from "./products.api";
+import {
+    assignCollectionToProducts,
+    createProduct,
+    deleteProduct,
+    updateProduct,
+} from "./products.api";
 import { productKeys } from "./product.keys";
 
 export const useCreateProduct = () => {
@@ -35,6 +40,19 @@ export const useUpdateProduct = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: productKeys.list(),
+            });
+        },
+    });
+};
+
+export const useAssignCollectionToProducts = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ collectionId, productIds }) =>
+            assignCollectionToProducts({ collectionId, productIds }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: productKeys.all,
             });
         },
     });

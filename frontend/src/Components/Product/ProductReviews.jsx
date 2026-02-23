@@ -19,7 +19,7 @@ const ProductReviews = ({ productId }) => {
                         {reviews?.length === 1 ? "entry" : "entries"} recorded
                     </p>
                 </div>
-                <div className="hidden lg:block h-[1px] flex-1 mx-12 bg-zinc-100"></div>
+                <div className="hidden lg:block h-px flex-1 mx-12 bg-zinc-100"></div>
             </header>
 
             {/* Grid */}

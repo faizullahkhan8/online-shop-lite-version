@@ -8,7 +8,7 @@ import {
 import { useCollections } from "../../features/collections/collection.queries";
 
 import { useProducts } from "../../features/products/product.queries";
-import { useUpdateProduct } from "../../features/products/product.mutations.js";
+import { useAssignCollectionToProducts } from "../../features/products/product.mutations.js";
 import {
     Edit,
     Trash2,
@@ -45,11 +45,16 @@ const CollectionsListPage = () => {
     const [previewUrl, setPreviewUrl] = useState("");
 
     const { data: collectionsData, isLoading } = useCollections();
-    const { mutateAsync: deleteCollection, isPending: deleteCollectionLoading } =
-        useDeleteCollection();
-    const { mutateAsync: createCollection, isPending: creating } = useCreateCollection();
-    const { mutateAsync: updateCollection, isPending: updating } = useUpdateCollection();
-    const { mutateAsync: updateProduct, isPending: updatingProduct } = useUpdateProduct();
+    const {
+        mutateAsync: deleteCollection,
+        isPending: deleteCollectionLoading,
+    } = useDeleteCollection();
+    const { mutateAsync: createCollection, isPending: creating } =
+        useCreateCollection();
+    const { mutateAsync: updateCollection, isPending: updating } =
+        useUpdateCollection();
+    const { mutateAsync: assignCollectionToProducts } =
+        useAssignCollectionToProducts();
 
     const [addProductsModal, setAddProductsModal] = useState({
         isOpen: false,
@@ -61,13 +66,12 @@ const CollectionsListPage = () => {
     const [assigning, setAssigning] = useState(false);
 
     const { data: unassignedProductsData } = useProducts({
-        excludeAssignedToCollection: true
+        excludeAssignedToCollection: true,
     });
 
-    console.log(collectionModal.data._id)
+    console.log(collectionModal.data._id);
 
     const unassignedProducts = unassignedProductsData?.products || [];
-
 
     useEffect(() => {
         const image = collectionModal.data.image;
@@ -94,9 +98,8 @@ const CollectionsListPage = () => {
         await deleteCollection(collectionId, {
             onSuccess: () => {
                 setDeleteModal({ isOpen: false, collectionId: null });
-            }
+            },
         });
-
     };
 
     const handleOpenAddModal = () => {
@@ -155,22 +158,28 @@ const CollectionsListPage = () => {
         }
 
         if (collectionModal.isEditing) {
-            await updateCollection({
-                id: collectionModal.data._id,
-                collectionData: formData,
-            }, {
-                onSuccess: () => {
-                    handleCloseModal();
-                }
-            });
+            await updateCollection(
+                {
+                    id: collectionModal.data._id,
+                    collectionData: formData,
+                },
+                {
+                    onSuccess: () => {
+                        handleCloseModal();
+                    },
+                },
+            );
         } else {
-            await createCollection(formData, {
-                onSuccess: () => {
-                    handleCloseModal();
-                }
-            });
+            await createCollection(
+                { collectionData: formData },
+                {
+                    onSuccess: () => {
+                        handleCloseModal();
+                    },
+                },
+            );
         }
-    }
+    };
 
     return (
         <div className="space-y-6">
@@ -181,7 +190,8 @@ const CollectionsListPage = () => {
                         Collections
                     </h2>
                     <p className="text-sm text-gray-500 mt-1">
-                        Manage product collections ({collectionsData?.collections?.length} total)
+                        Manage product collections (
+                        {collectionsData?.collections?.length} total)
                     </p>
                 </div>
                 <Button
@@ -214,7 +224,8 @@ const CollectionsListPage = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {isLoading && collectionsData?.collections?.length === 0 ? (
+                            {isLoading &&
+                            collectionsData?.collections?.length === 0 ? (
                                 <tr>
                                     <td
                                         colSpan={4}
@@ -229,118 +240,131 @@ const CollectionsListPage = () => {
                                     </td>
                                 </tr>
                             ) : collectionsData?.collections?.length > 0 ? (
-                                collectionsData?.collections?.map((collection) => (
-                                    <tr
-                                        key={collection._id}
-                                        className="group hover:bg-gray-50 transition-colors"
-                                    >
-                                        <td className="px-6 py-4">
-                                            <div className="w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200">
-                                                {collection.image ? (
-                                                    <img
-                                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${collection.image}`}
-                                                        alt={collection.name}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                                        <ImageIcon size={18} />
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                {collection.parentId && (
-                                                    <ChevronRight
-                                                        size={16}
-                                                        className="text-gray-400"
-                                                    />
-                                                )}
-                                                <span
-                                                    className={`text-sm font-medium ${collection.parentId ? "text-gray-600 ml-2" : "text-gray-900 font-semibold"}`}
-                                                >
-                                                    {collection.name}
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                {collection.isActive ? (
-                                                    <>
-                                                        <div className="w-2 h-2 rounded-full bg-green-500" />
-                                                        <span className="text-sm font-medium text-gray-700">
-                                                            Active
-                                                        </span>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <div className="w-2 h-2 rounded-full bg-gray-300" />
-                                                        <span className="text-sm font-medium text-gray-500">
-                                                            Inactive
-                                                        </span>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-right flex gap-2 justify-end">
-                                            <button
-                                                onClick={() =>
-                                                    handleOpenEditModal(collection)
-                                                }
-                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                                            >
-                                                <Edit
-                                                    size={16}
-                                                    className="text-blue-600"
-                                                />
-                                            </button>
-                                            <button
-                                                onClick={async () => {
-                                                    // open modal and load unassigned products
-                                                    setAddProductsModal({
-                                                        isOpen: true,
-                                                        collectionId: collection._id,
-                                                        collectionName:
-                                                            collection.name,
-                                                    });
-                                                    setSelectedProductIds([]);
-                                                    const resp =
-                                                        await getAllProducts();
-                                                    if (resp?.success) {
-                                                        const unassigned = (
-                                                            resp.products || []
-                                                        ).filter(
-                                                            (p) =>
-                                                                !p.collection,
-                                                        );
-                                                        setUnassignedProducts(
-                                                            unassigned,
-                                                        );
+                                collectionsData?.collections?.map(
+                                    (collection) => (
+                                        <tr
+                                            key={collection._id}
+                                            className="group hover:bg-gray-50 transition-colors"
+                                        >
+                                            <td className="px-6 py-4">
+                                                <div className="w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200">
+                                                    {collection.image ? (
+                                                        <img
+                                                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${collection.image}`}
+                                                            alt={
+                                                                collection.name
+                                                            }
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                                            <ImageIcon
+                                                                size={18}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    {collection.parentId && (
+                                                        <ChevronRight
+                                                            size={16}
+                                                            className="text-gray-400"
+                                                        />
+                                                    )}
+                                                    <span
+                                                        className={`text-sm font-medium ${collection.parentId ? "text-gray-600 ml-2" : "text-gray-900 font-semibold"}`}
+                                                    >
+                                                        {collection.name}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    {collection.isActive ? (
+                                                        <>
+                                                            <div className="w-2 h-2 rounded-full bg-green-500" />
+                                                            <span className="text-sm font-medium text-gray-700">
+                                                                Active
+                                                            </span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <div className="w-2 h-2 rounded-full bg-gray-300" />
+                                                            <span className="text-sm font-medium text-gray-500">
+                                                                Inactive
+                                                            </span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-right flex gap-2 justify-end">
+                                                <button
+                                                    onClick={() =>
+                                                        handleOpenEditModal(
+                                                            collection,
+                                                        )
                                                     }
-                                                }}
-                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                                            >
-                                                <Tag
-                                                    size={16}
-                                                    className="text-green-600"
-                                                />
-                                                <span>Add Products</span>
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    setDeleteModal({
-                                                        isOpen: true,
-                                                        collectionId: collection._id,
-                                                    });
-                                                }}
-                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
+                                                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                                                >
+                                                    <Edit
+                                                        size={16}
+                                                        className="text-blue-600"
+                                                    />
+                                                </button>
+                                                <button
+                                                    onClick={async () => {
+                                                        // open modal and load unassigned products
+                                                        setAddProductsModal({
+                                                            isOpen: true,
+                                                            collectionId:
+                                                                collection._id,
+                                                            collectionName:
+                                                                collection.name,
+                                                        });
+                                                        setSelectedProductIds(
+                                                            [],
+                                                        );
+                                                        // const resp =
+                                                        //     await getAllProducts();
+                                                        // if (resp?.success) {
+                                                        //     const unassigned = (
+                                                        //         resp.products ||
+                                                        //         []
+                                                        //     ).filter(
+                                                        //         (p) =>
+                                                        //             !p.collection,
+                                                        //     );
+                                                        //     setUnassignedProducts(
+                                                        //         unassigned,
+                                                        //     );
+                                                        // }
+                                                    }}
+                                                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                                                >
+                                                    <Tag
+                                                        size={16}
+                                                        className="text-green-600"
+                                                    />
+                                                    <span>Add Products</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setDeleteModal({
+                                                            isOpen: true,
+                                                            collectionId:
+                                                                collection._id,
+                                                        });
+                                                    }}
+                                                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ),
+                                )
                             ) : (
                                 <tr>
                                     <td
@@ -516,16 +540,18 @@ const CollectionsListPage = () => {
                                             },
                                         })
                                     }
-                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${collectionModal.data.isActive
-                                        ? "bg-blue-600"
-                                        : "bg-gray-300"
-                                        }`}
+                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                                        collectionModal.data.isActive
+                                            ? "bg-blue-600"
+                                            : "bg-gray-300"
+                                    }`}
                                 >
                                     <span
-                                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${collectionModal.data.isActive
-                                            ? "translate-x-6"
-                                            : "translate-x-1"
-                                            }`}
+                                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                                            collectionModal.data.isActive
+                                                ? "translate-x-6"
+                                                : "translate-x-1"
+                                        }`}
                                     />
                                 </button>
                             </div>
@@ -703,24 +729,11 @@ const CollectionsListPage = () => {
                                         );
                                     setAssigning(true);
                                     try {
-                                        await Promise.all(
-                                            selectedProductIds.map(
-                                                async (pid) => {
-                                                    const fd = new FormData();
-                                                    fd.append(
-                                                        "data",
-                                                        JSON.stringify({
-                                                            collection:
-                                                                addProductsModal.collectionId,
-                                                        }),
-                                                    );
-                                                    await updateProduct({
-                                                        product: fd,
-                                                        id: pid,
-                                                    });
-                                                },
-                                            ),
-                                        );
+                                        await assignCollectionToProducts({
+                                            collectionId:
+                                                addProductsModal.collectionId,
+                                            productIds: selectedProductIds,
+                                        });
                                         toast.success(
                                             "Products assigned to collection",
                                         );

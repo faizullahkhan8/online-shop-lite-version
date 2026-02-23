@@ -31,6 +31,13 @@ const PromotionManager = () => {
     const deleteMutation = useDeletePromotion();
 
     const promotions = data?.promotions || [];
+    const getPromotionImageSrc = (promo) => {
+        if (promo?.image?.url) return promo.image.url;
+        if (promo?.image?.filePath) {
+            return `${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${promo.image.filePath}`;
+        }
+        return null;
+    };
 
     const handleStatusToggle = async (promotion) => {
         const newStatus = promotion.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
@@ -80,7 +87,7 @@ const PromotionManager = () => {
 
     if (isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[400px]">
+            <div className="flex flex-col items-center justify-center min-h-100">
                 <Loader2 className="animate-spin text-blue-600" size={32} />
                 <p className="text-sm text-gray-500 mt-3">
                     Loading promotions...
@@ -183,12 +190,18 @@ const PromotionManager = () => {
                                     </button>
                                 </div>
 
-                                {/* Icon Type */}
-                                <div className="w-11 h-11 shrink-0 bg-white rounded-2xl border border-gray-200 flex items-center justify-center text-gray-900">
-                                    {promo.type === "FLASH_DEAL" ? (
-                                        <Zap size={18} />
+                                {/* Promotion Image / Fallback Icon */}
+                                <div className="w-16 h-16 shrink-0 bg-white rounded-2xl border border-gray-200 overflow-hidden flex items-center justify-center text-gray-900">
+                                    {getPromotionImageSrc(promo) ? (
+                                        <img
+                                            src={getPromotionImageSrc(promo)}
+                                            alt={promo.title}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : promo.type === "FLASH_DEAL" ? (
+                                        <Zap size={20} />
                                     ) : (
-                                        <Percent size={18} />
+                                        <Percent size={20} />
                                     )}
                                 </div>
 

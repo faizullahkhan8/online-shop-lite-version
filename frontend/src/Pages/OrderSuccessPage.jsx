@@ -70,7 +70,7 @@ const OrderSuccessPage = () => {
                 <div className="flex flex-col lg:flex-row gap-16 items-start">
                     <div className="flex-1 space-y-10 w-full">
                         <header className="flex items-start gap-4">
-                            <div className="w-14 h-14 rounded-full border border-zinc-900 flex items-center justify-center flex-shrink-0 mt-1">
+                            <div className="w-14 h-14 rounded-full border border-zinc-900 flex items-center justify-center shrink-0 mt-1">
                                 <Check size={28} strokeWidth={1.5} />
                             </div>
                             <div>
@@ -319,7 +319,7 @@ const OrderSuccessPage = () => {
                                 return (
                                     <div key={index} className="space-y-2">
                                         <div className="flex gap-4">
-                                            <div className="relative w-16 h-20 bg-white border border-zinc-200 rounded overflow-hidden flex-shrink-0">
+                                            <div className="relative w-16 h-20 bg-white border border-zinc-200 rounded overflow-hidden shrink-0">
                                                 {productImage && (
                                                     <img
                                                         src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${productImage}`}

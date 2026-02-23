@@ -22,7 +22,7 @@ const DeleteDialog = ({
             <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all animate-in fade-in zoom-in duration-100">
                 <div className="p-6">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                        <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0">
                             <AlertTriangle className="text-red-600" size={24} />
                         </div>
                         <div className="flex-1">

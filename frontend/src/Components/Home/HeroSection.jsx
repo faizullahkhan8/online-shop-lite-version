@@ -18,7 +18,7 @@ const HeroSection = () => {
     if (isPending && data?.slides?.length === 0) {
         return (
             <div className="container mx-auto px-4 lg:px-12 py-12">
-                <div className="h-[400px] md:h-[600px] bg-white border border-zinc-100 flex items-center justify-center">
+                <div className="h-100 md:h-150 bg-white border border-zinc-100 flex items-center justify-center">
                     <Loader2
                         className="animate-spin text-zinc-900"
                         size={24}
@@ -62,7 +62,7 @@ const HeroSection = () => {
         //                             className="group py-4"
         //                         >
         //                             <div
-        //                                 className={`h-[1px] rounded-2xl transition-all duration-700 ${currentSlide === idx
+        //                                 className={`h-px rounded-2xl transition-all duration-700 ${currentSlide === idx
         //                                     ? "w-12 bg-zinc-900"
         //                                     : "w-6 bg-zinc-200 group-hover:bg-zinc-400"
         //                                     }`}
@@ -87,7 +87,6 @@ const HeroSection = () => {
         // </div>
 
         <div className="h-[95vh] relative w-full  overflow-hidden">
-
             {/* Background Images — stacked, smooth fade + zoom */}
             {data?.slides?.map((slide, idx) => (
                 <div
@@ -98,19 +97,20 @@ const HeroSection = () => {
                         backgroundImage: `url(${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${slide?.image})`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
-                        transform: currentSlide === idx ? "scale(1.05)" : "scale(1)",
-                        transition: "opacity 1000ms ease-in-out, transform 6000ms ease-in-out",
+                        transform:
+                            currentSlide === idx ? "scale(1.05)" : "scale(1)",
+                        transition:
+                            "opacity 1000ms ease-in-out, transform 6000ms ease-in-out",
                     }}
                 />
             ))}
 
             {/* Dark gradient overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent z-10" />
+            <div className="absolute inset-0 bg-linear-to-r from-black/50 via-black/20 to-transparent z-10" />
 
             {/* Content Layer */}
             <div className="absolute inset-0 z-20 flex items-center">
                 <div className="px-8 sm:px-12 lg:px-20 max-w-screen-2xl mx-auto w-full">
-
                     {/* Text block — fade + slide up on change */}
                     <div
                         key={currentSlide}
@@ -155,10 +155,11 @@ const HeroSection = () => {
                         className="group py-3"
                     >
                         <div
-                            className={`h-[1px] rounded-full transition-all duration-700 ${currentSlide === idx
-                                ? "w-12 bg-white"
-                                : "w-6 bg-white/40 group-hover:bg-white/70"
-                                }`}
+                            className={`h-px rounded-full transition-all duration-700 ${
+                                currentSlide === idx
+                                    ? "w-12 bg-white"
+                                    : "w-6 bg-white/40 group-hover:bg-white/70"
+                            }`}
                         />
                     </button>
                 ))}

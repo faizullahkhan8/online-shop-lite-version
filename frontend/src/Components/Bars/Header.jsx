@@ -1,5 +1,3 @@
-
-
 import { Search, Menu, ChevronDown, X, Loader2 } from "lucide-react";
 import MobileSideBar from "./MobileSideBar";
 import { useEffect, useState } from "react";
@@ -50,14 +48,14 @@ const Header = () => {
         //                 setIsMenuOpen(true);
         //                 console.log("The button is clicked. ");
         //             }}
-        //             className="md:hidden z-50 text-zinc-900 hover:text-zinc-700 transition-colors p-1 -ml-1 flex-shrink-0"
+        //             className="md:hidden z-50 text-zinc-900 hover:text-zinc-700 transition-colors p-1 -ml-1 shrink-0"
         //             aria-label="Open menu"
         //         >
         //             <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
         //         </button>
 
         //         {/* Center on mobile / Left on desktop: Logo */}
-        //         <div className="absolute left-1/2 -translate-x-1/2 md:static md:left-auto md:translate-x-0 md:flex-shrink-0">
+        //         <div className="absolute left-1/2 -translate-x-1/2 md:static md:left-auto md:translate-x-0 md:shrink-0">
         //             <Link
         //                 to="/"
         //                 className="block text-center leading-tight"
@@ -147,7 +145,7 @@ const Header = () => {
         //         </nav>
 
         //         {/* Right: Actions */}
-        //         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        //         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         //             {/* Search icon */}
         //             <button
         //                 onClick={() => setIsSearchOpen(true)}
@@ -172,7 +170,7 @@ const Header = () => {
         //     {/* Full-width Search overlay */}
         //     {isSearchOpen && (
         //         <div className="absolute top-0 left-0 right-0 h-14 sm:h-16 lg:h-20 bg-white flex items-center px-4 sm:px-6 lg:px-10 gap-3 border-b border-zinc-100 z-50">
-        //             <Search className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-500 flex-shrink-0" />
+        //             <Search className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-500 shrink-0" />
         //             <form onSubmit={handleSearch} className="flex-1">
         //                 <input
         //                     autoFocus
@@ -185,7 +183,7 @@ const Header = () => {
         //             </form>
         //             <button
         //                 onClick={() => setIsSearchOpen(false)}
-        //                 className="p-1.5 hover:rotate-90 transition-transform duration-500 text-zinc-700 hover:text-zinc-900 flex-shrink-0"
+        //                 className="p-1.5 hover:rotate-90 transition-transform duration-500 text-zinc-700 hover:text-zinc-900 shrink-0"
         //                 aria-label="Close search"
         //             >
         //                 <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -205,9 +203,6 @@ const Header = () => {
 
         //     <PromotionBar />
 
-
-
-
         //     {/* Main header row */}
         //     <div className="flex items-center justify-between px-4 sm:px-6 lg:px-10 h-16 max-w-screen-2xl mx-auto">
 
@@ -217,7 +212,7 @@ const Header = () => {
         //                 setIsMenuOpen(true);
         //                 console.log("The button is clicked. ");
         //             }}
-        //             className="md:hidden z-50 text-gray-700 hover:text-gray-900 transition-colors p-1 -ml-1 flex-shrink-0"
+        //             className="md:hidden z-50 text-gray-700 hover:text-gray-900 transition-colors p-1 -ml-1 shrink-0"
         //             aria-label="Open menu"
         //         >
         //             <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -254,7 +249,7 @@ const Header = () => {
         //                                 <Link
         //                                     key={collection._id || collection.name}
         //                                     to={`/products?collection=${collection?._id}`}
-        //                                     className="block px-4 py-2.5 text-[11px] uppercase tracking-[0.1em] font-sans text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+        //                                     className="block px-4 py-2.5 text-[11px] uppercase tracking-widest font-sans text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
         //                                     onClick={() => setIsCollectionOpen(false)}
         //                                 >
         //                                     {collection.name}
@@ -312,7 +307,7 @@ const Header = () => {
         //     {/* Full-width Search overlay */}
         //     {isSearchOpen && (
         //         <div className="absolute top-0 left-0 right-0 h-16 bg-white flex items-center px-4 sm:px-6 lg:px-10 gap-3 border-b border-gray-100 z-50">
-        //             <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
+        //             <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 shrink-0" />
         //             <form onSubmit={handleSearch} className="flex-1">
         //                 <input
         //                     autoFocus
@@ -325,7 +320,7 @@ const Header = () => {
         //             </form>
         //             <button
         //                 onClick={() => setIsSearchOpen(false)}
-        //                 className="p-1.5 hover:rotate-90 transition-transform duration-500 text-gray-500 hover:text-gray-900 flex-shrink-0"
+        //                 className="p-1.5 hover:rotate-90 transition-transform duration-500 text-gray-500 hover:text-gray-900 shrink-0"
         //                 aria-label="Close search"
         //             >
         //                 <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -342,23 +337,17 @@ const Header = () => {
         //     />
         // </header>
 
-           <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
-
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
             <PromotionBar />
-
-
-
 
             {/* Main header row */}
             <div className="flex items-center justify-between px-4 sm:px-6 lg:px-10 h-16 max-w-screen-2xl mx-auto">
-
                 {/* Left: Hamburger (mobile only) */}
                 <button
                     onClick={() => {
                         setIsMenuOpen(true);
-                        console.log("The button is clicked. ");
                     }}
-                    className="md:hidden z-50 text-gray-700 hover:text-gray-900 transition-colors p-1 -ml-1 flex-shrink-0"
+                    className="md:hidden z-50 text-gray-700 hover:text-gray-900 transition-colors p-1 -ml-1 shrink-0"
                     aria-label="Open menu"
                 >
                     <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -374,13 +363,17 @@ const Header = () => {
                     >
                         <button
                             onClick={() => navigate("/collections")}
-                            className={`flex items-center gap-1 text-[11px] uppercase tracking-[0.12em] font-normal font-sans transition-colors cursor-pointer whitespace-nowrap ${isCollectionOpen ? "text-gray-900" : "text-gray-500 hover:text-gray-900"
-                                }`}
+                            className={`flex items-center gap-1 text-[11px] uppercase tracking-[0.12em] font-normal font-sans transition-colors cursor-pointer whitespace-nowrap ${
+                                isCollectionOpen
+                                    ? "text-gray-900"
+                                    : "text-gray-500 hover:text-gray-900"
+                            }`}
                         >
                             Collections
                             <ChevronDown
-                                className={`w-3 h-3 transition-transform duration-200 ${isCollectionOpen ? "rotate-180" : ""
-                                    }`}
+                                className={`w-3 h-3 transition-transform duration-200 ${
+                                    isCollectionOpen ? "rotate-180" : ""
+                                }`}
                             />
                         </button>
 
@@ -388,15 +381,23 @@ const Header = () => {
                             <div className="absolute top-full left-0 w-48 lg:w-56 bg-white shadow-sm border border-gray-100 z-50 py-1">
                                 {isLoading ? (
                                     <div className="w-full h-full flex items-center justify-center">
-                                        <Loader2 size={24} className="animate-spin text-gray-400" />
+                                        <Loader2
+                                            size={24}
+                                            className="animate-spin text-gray-400"
+                                        />
                                     </div>
                                 ) : (
                                     data?.collections?.map((collection) => (
                                         <Link
-                                            key={collection._id || collection.name}
+                                            key={
+                                                collection._id ||
+                                                collection.name
+                                            }
                                             to={`/products?collection=${collection?._id}`}
-                                            className="block px-4 py-2.5 text-[11px] uppercase tracking-[0.1em] font-sans text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
-                                            onClick={() => setIsCollectionOpen(false)}
+                                            className="block px-4 py-2.5 text-[11px] uppercase tracking-widest font-sans text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+                                            onClick={() =>
+                                                setIsCollectionOpen(false)
+                                            }
                                         >
                                             {collection.name}
                                         </Link>
@@ -428,7 +429,11 @@ const Header = () => {
 
                 {/* Center: Logo — always centered */}
                 <div className="absolute left-1/2 -translate-x-1/2">
-                    <Link to="/" className="block text-center leading-tight" aria-label="Home">
+                    <Link
+                        to="/"
+                        className="block text-center leading-tight"
+                        aria-label="Home"
+                    >
                         <span className="block text-lg font-heading tracking-[0.25em] uppercase text-gray-900 whitespace-nowrap">
                             Askar
                         </span>
@@ -452,8 +457,8 @@ const Header = () => {
 
             {/* Full-width Search overlay */}
             {isSearchOpen && (
-                <div className="absolute top-0 left-0 right-0 h-16 bg-white flex items-center px-4 sm:px-6 lg:px-10 gap-3 border-b border-gray-100 z-50">
-                    <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
+                <div className="absolute top-9 left-0 right-0 h-16 bg-white flex items-center px-4 sm:px-6 lg:px-10 gap-3 border-b border-gray-100 z-50">
+                    <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 shrink-0" />
                     <form onSubmit={handleSearch} className="flex-1">
                         <input
                             autoFocus
@@ -466,7 +471,7 @@ const Header = () => {
                     </form>
                     <button
                         onClick={() => setIsSearchOpen(false)}
-                        className="p-1.5 hover:rotate-90 transition-transform duration-500 text-gray-500 hover:text-gray-900 flex-shrink-0"
+                        className="p-1.5 hover:rotate-90 transition-transform duration-500 text-gray-500 hover:text-gray-900 shrink-0"
                         aria-label="Close search"
                     >
                         <X className="w-4 h-4 sm:w-5 sm:h-5" />

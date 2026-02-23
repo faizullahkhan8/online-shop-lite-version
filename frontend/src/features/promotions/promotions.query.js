@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import {
     getActiveDeals,
+    getPromotionHighlights,
     getAllPromotions,
     getPromotionById,
 } from "./promotions.api";
@@ -12,6 +13,13 @@ export const useActiveDeals = () => {
     return useQuery({
         queryKey: promotionKeys.active(),
         queryFn: getActiveDeals,
+    });
+};
+
+export const usePromotionHighlights = () => {
+    return useQuery({
+        queryKey: promotionKeys.highlights(),
+        queryFn: getPromotionHighlights,
     });
 };
 

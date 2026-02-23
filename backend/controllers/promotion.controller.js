@@ -14,6 +14,7 @@ export const addPromotion = expressAsyncHandler(async (req, res, next) => {
         discountValue,
         startTime,
         endTime,
+        image,
         products,
     } = req.body;
 
@@ -23,7 +24,8 @@ export const addPromotion = expressAsyncHandler(async (req, res, next) => {
         !discountType ||
         !discountValue ||
         !startTime ||
-        !endTime
+        !endTime ||
+        !image?.fileId
     ) {
         return next(new ErrorResponse("All fields are required", 400));
     }
@@ -49,6 +51,7 @@ export const addPromotion = expressAsyncHandler(async (req, res, next) => {
         discountValue,
         startTime,
         endTime,
+        image,
         products,
         status,
     });
@@ -82,6 +85,39 @@ export const getActiveDeals = expressAsyncHandler(async (req, res, next) => {
         data: activePromotions,
     });
 });
+
+export const getPromotionHighlights = expressAsyncHandler(
+    async (req, res, next) => {
+        const PromotionModel = getLocalPromotionModel();
+        if (!PromotionModel)
+            return next(new ErrorResponse("Promotion model not found", 500));
+
+        const now = new Date();
+
+        const activePromotion = await PromotionModel.findOne({
+            startTime: { $lte: now },
+            endTime: { $gte: now },
+            status: "ACTIVE",
+        })
+            .sort({ order: 1, startTime: 1 })
+            .populate("products");
+
+        const nextUpcomingPromotion = await PromotionModel.findOne({
+            startTime: { $gt: now },
+            endTime: { $gt: now },
+            status: { $nin: ["CANCELLED", "EXPIRED"] },
+            ...(activePromotion?._id ? { _id: { $ne: activePromotion._id } } : {}),
+        })
+            .sort({ startTime: 1, order: 1 })
+            .populate("products");
+
+        res.status(200).json({
+            success: true,
+            activePromotion: activePromotion || null,
+            nextUpcomingPromotion: nextUpcomingPromotion || null,
+        });
+    },
+);
 
 export const getAllPromotions = expressAsyncHandler(async (req, res, next) => {
     const PromotionModel = getLocalPromotionModel();

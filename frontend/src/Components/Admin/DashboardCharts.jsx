@@ -59,7 +59,7 @@ const DashboardCharts = ({ stats }) => {
                 <h3 className="text-sm font-semibold text-gray-900 mb-6">
                     Revenue Trends (Last 30 Days)
                 </h3>
-                <div className="h-[300px] w-full">
+                <div className="h-75 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={revenueData}>
                             <defs>
@@ -146,7 +146,7 @@ const DashboardCharts = ({ stats }) => {
                 <h3 className="text-sm font-semibold text-gray-900 mb-6">
                     Collection Performance
                 </h3>
-                <div className="h-[300px] w-full">
+                <div className="h-75 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={collectionData}>
                             <CartesianGrid
@@ -205,7 +205,7 @@ const DashboardCharts = ({ stats }) => {
                 <h3 className="text-sm font-semibold text-gray-900 mb-6">
                     Order Status Breakdown
                 </h3>
-                <div className="h-[300px] w-full">
+                <div className="h-75 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Pie

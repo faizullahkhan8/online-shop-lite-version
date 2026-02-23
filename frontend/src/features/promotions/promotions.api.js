@@ -7,6 +7,11 @@ export const getActiveDeals = async () => {
     return data;
 };
 
+export const getPromotionHighlights = async () => {
+    const { data } = await apiClient.get("/promotions/highlights");
+    return data;
+};
+
 export const getAllPromotions = async () => {
     const { data } = await apiClient.get("/promotions/");
     return data;

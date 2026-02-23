@@ -2,6 +2,7 @@ import HeroSection from "../Components/Home/HeroSection";
 import { useProducts } from "../features/products/product.queries";
 import ProductCarousel from "../Components/Home/ProductCarousel";
 import { Loader2 } from "lucide-react";
+import PromotionSection from "../Components/Home/PromotionSection";
 
 const HomePage = () => {
     const { data, isLoading } = useProducts();
@@ -16,7 +17,7 @@ const HomePage = () => {
         );
     }
     return (
-        <div className="min-h-screen bg-white pb-32 flex flex-col gap-18">
+        <div className="min-h-screen bg-white pb-32 flex flex-col">
             <HeroSection />
 
             <section>
@@ -27,11 +28,14 @@ const HomePage = () => {
                 />
             </section>
             <section>
-                <ProductCarousel
+                {/* <ProductCarousel
                     products={products}
                     title={"Top Selling Products"}
                     isViewAll={true}
-                />
+                /> */}
+            </section>
+            <section>
+                <PromotionSection />
             </section>
         </div>
     );

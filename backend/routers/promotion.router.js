@@ -3,6 +3,7 @@ import { isAuth, authorize } from "../middlewares/auth.middleware.js";
 import {
     addPromotion,
     getActiveDeals,
+    getPromotionHighlights,
     getAllPromotions,
     getPromotionById,
     updatePromotion,
@@ -13,6 +14,7 @@ const router = express.Router();
 
 // Public endpoint - guest can view active deals
 router.get("/active", getActiveDeals);
+router.get("/highlights", getPromotionHighlights);
 
 // Admin-only endpoints
 router.post("/", isAuth, authorize("admin"), addPromotion);

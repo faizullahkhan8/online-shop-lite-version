@@ -115,31 +115,14 @@
 
 // export default ProductListPage;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { useState, useEffect, useRef } from "react";
-import { X, PackageSearch, Loader2, Leaf, SlidersHorizontal } from "lucide-react";
+import {
+    X,
+    PackageSearch,
+    Loader2,
+    Leaf,
+    SlidersHorizontal,
+} from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import ProductCard from "../Components/ProductCard.jsx";
@@ -151,7 +134,8 @@ import Breadcrumb from "../Components/Breadcrumb.jsx";
 const fadeUp = {
     hidden: { opacity: 0, y: 24 },
     visible: (d = 0) => ({
-        opacity: 1, y: 0,
+        opacity: 1,
+        y: 0,
         transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: d },
     }),
 };
@@ -163,7 +147,12 @@ const stagger = {
 
 const cardAnim = {
     hidden: { opacity: 0, y: 20, scale: 0.98 },
-    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
+    visible: {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+    },
 };
 
 /* ─── Component ─── */
@@ -171,15 +160,17 @@ const ProductListPage = () => {
     const [searchParams] = useSearchParams();
     const searchQuery = searchParams.get("search");
     const collectionQuery = searchParams.get("collection");
+    const promotionQuery = searchParams.get("promotionId");
 
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
 
     const { data, isLoading } = useProducts({
-        search: searchQuery,
-        collection: collectionQuery,
         page,
         limit,
+        ...(searchQuery ? { search: searchQuery } : {}),
+        ...(collectionQuery ? { collection: collectionQuery } : {}),
+        ...(promotionQuery ? { promotionId: promotionQuery } : {}),
     });
 
     const products = data?.products || [];
@@ -194,9 +185,17 @@ const ProductListPage = () => {
             <div className="flex flex-col items-center justify-center min-h-screen bg-[#fdfdfb]">
                 <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 1.4, ease: "linear" }}
+                    transition={{
+                        repeat: Infinity,
+                        duration: 1.4,
+                        ease: "linear",
+                    }}
                 >
-                    <Loader2 className="text-[#7aaf68]" size={22} strokeWidth={1.5} />
+                    <Loader2
+                        className="text-[#7aaf68]"
+                        size={22}
+                        strokeWidth={1.5}
+                    />
                 </motion.div>
                 <motion.p
                     initial={{ opacity: 0 }}
@@ -217,7 +216,6 @@ const ProductListPage = () => {
 
     return (
         <div className="bg-[#fdfdfb] min-h-screen">
-
             {/* ── Hero Banner ── */}
             {/* ── Hero Banner ── */}
             <div className="relative w-full bg-[#f4f8f2] border-b border-[#e8f0e4] overflow-hidden">
@@ -245,8 +243,12 @@ const ProductListPage = () => {
                     <motion.div
                         initial={{ scaleX: 0 }}
                         animate={{ scaleX: 1 }}
-                        transition={{ duration: 0.55, ease: "easeOut", delay: 0.2 }}
-                        className="w-10 h-[1px] bg-[#b5d4a6] mb-3 origin-center"
+                        transition={{
+                            duration: 0.55,
+                            ease: "easeOut",
+                            delay: 0.2,
+                        }}
+                        className="w-10 h-px bg-[#b5d4a6] mb-3 origin-center"
                     />
 
                     <motion.p
@@ -255,13 +257,13 @@ const ProductListPage = () => {
                         transition={{ delay: 0.3 }}
                         className="text-xs text-stone-400 tracking-widest"
                     >
-                        Discover skincare, wellness, and beauty products crafted for your daily routine
+                        Discover skincare, wellness, and beauty products crafted
+                        for your daily routine
                     </motion.p>
                 </div>
             </div>
             {/* ── Main Content ── */}
             <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12">
-
                 {/* Breadcrumb */}
                 <motion.div
                     custom={0}
@@ -282,13 +284,18 @@ const ProductListPage = () => {
                         className="py-32 flex flex-col items-center justify-center border border-dashed border-[#dcebd5] rounded-2xl bg-[#f8faf7]"
                     >
                         <div className="w-16 h-16 rounded-full bg-[#eef6ea] flex items-center justify-center mb-6">
-                            <PackageSearch size={22} strokeWidth={1} className="text-[#b5d4a6]" />
+                            <PackageSearch
+                                size={22}
+                                strokeWidth={1}
+                                className="text-[#b5d4a6]"
+                            />
                         </div>
                         <h3 className="text-sm uppercase tracking-[0.25em] font-medium text-[#1a2e1a] mb-2">
                             No Products Found
                         </h3>
                         <p className="text-xs text-stone-400 tracking-wide max-w-xs text-center leading-relaxed">
-                            Your search criteria did not match any items in our current collection.
+                            Your search criteria did not match any items in our
+                            current collection.
                         </p>
                     </motion.div>
                 ) : (
@@ -304,7 +311,10 @@ const ProductListPage = () => {
                                 <motion.div
                                     key={product._id}
                                     variants={cardAnim}
-                                    whileHover={{ y: -4, transition: { duration: 0.25 } }}
+                                    whileHover={{
+                                        y: -4,
+                                        transition: { duration: 0.25 },
+                                    }}
                                 >
                                     <ProductCard product={product} />
                                 </motion.div>
@@ -337,7 +347,10 @@ const ProductListPage = () => {
 const FilterChip = ({ label, onRemove }) => (
     <span className="flex items-center gap-2 bg-[#1a2e1a] text-white pl-4 pr-2 py-2 text-[10px] uppercase tracking-widest transition-all hover:bg-[#2e4a2e]">
         {label}
-        <button onClick={onRemove} className="p-1 hover:bg-white/10 transition-colors">
+        <button
+            onClick={onRemove}
+            className="p-1 hover:bg-white/10 transition-colors"
+        >
             <X size={11} />
         </button>
     </span>

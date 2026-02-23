@@ -83,7 +83,7 @@ const ProductDetailPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
                     {/* Refined Image Section */}
                     <div className="lg:col-span-7 space-y-4">
-                        <div className="bg-zinc-50 flex items-center justify-center rounded-2xl relative group border border-zinc-100 overflow-hidden aspect-square lg:aspect-auto lg:h-[600px]">
+                        <div className="bg-zinc-50 flex items-center justify-center rounded-2xl relative group border border-zinc-100 overflow-hidden aspect-square lg:aspect-auto lg:h-150">
                             <img
                                 src={mainImageUrl}
                                 alt={data?.product?.name}
@@ -104,7 +104,7 @@ const ProductDetailPage = () => {
                                     <button
                                         key={index}
                                         onClick={() => setActiveImage(index)}
-                                        className={`relative w-20 h-20 flex-shrink-0 rounded-xl border-2 transition-all overflow-hidden bg-zinc-50 ${
+                                        className={`relative w-20 h-20 shrink-0 rounded-xl border-2 transition-all overflow-hidden bg-zinc-50 ${
                                             activeImage === index
                                                 ? "border-zinc-900"
                                                 : "border-transparent opacity-60 hover:opacity-100"
