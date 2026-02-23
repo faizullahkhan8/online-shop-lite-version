@@ -16,16 +16,19 @@ export const createHeroSlide = expressAsyncHandler(async (req, res, next) => {
     if (!HeroModel) return next(new ErrorResponse("Hero model not found", 500));
 
     const data = JSON.parse(req.body.data);
+    console.log(data, "The hero section data")
     const { title, headline, subtitle, bg, accent, order } = data;
+    console.log(req?.image?.filePath, 'THe iamge ishere')
 
     if (!req.image) return next(new ErrorResponse("Image is required", 400));
+
 
     const slide = await HeroModel.create({
         title,
         headline,
         subtitle,
-        image: req.image.filePath || "",
-        imagekitFileId: req.image.fileId || "",
+        image: req?.image?.filePath || "",
+        imagekitFileId: req?.image?.fileId || "",
         bg,
         accent,
         order,

@@ -37,7 +37,7 @@ export const createProduct = expressAsyncHandler(async (req, res, next) => {
         description,
         stock,
         lowStock,
-        collection,
+        collection: collection || null,
         images,
     });
 
@@ -272,6 +272,7 @@ export const updateProduct = expressAsyncHandler(async (req, res, next) => {
 
     existingProduct.set({
         ...otherFields,
+        collection: otherFields.collection || null,
         images,
     });
 

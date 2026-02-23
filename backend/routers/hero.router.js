@@ -14,6 +14,11 @@ import { authorize, isAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
+
+
+
+
+
 router.get("/", getHeroSlides);
 router.post(
     "/",
