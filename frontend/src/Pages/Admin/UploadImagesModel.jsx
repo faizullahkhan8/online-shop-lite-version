@@ -2,27 +2,40 @@ import { useState } from "react";
 import { X, Upload, Loader } from "lucide-react";
 import { useUploadMultipleImages } from "../../features/upload.api";
 import { toast } from "react-toastify";
+import ImageEditor from "../../Components/ImageEditor.jsx";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_FILES = 10;
 
 const UploadImagesModal = ({ isOpen, onClose, onSuccess }) => {
     const [files, setFiles] = useState([]);
+    const [cropQueue, setCropQueue] = useState([]);
 
     const uploadMultipleImages = useUploadMultipleImages();
+    const activeCropFile = cropQueue[0] || null;
 
     if (!isOpen) return null;
 
     const handleFileChange = (e) => {
-        const selected = Array.from(e.target.files);
+        const selected = Array.from(e.target.files || []);
+        if (selected.length === 0) return;
 
-        if (files.length + selected.length > MAX_FILES) {
+        const currentTotal = files.length + cropQueue.length;
+        if (currentTotal >= MAX_FILES) {
+            e.target.value = "";
             return toast.error(`Maximum ${MAX_FILES} images allowed`);
+        }
+
+        const availableSlots = MAX_FILES - currentTotal;
+        const selectedWithinLimit = selected.slice(0, availableSlots);
+
+        if (selected.length > availableSlots) {
+            toast.error(`Only ${availableSlots} more images can be added`);
         }
 
         const validFiles = [];
 
-        for (let file of selected) {
+        for (const file of selectedWithinLimit) {
             if (!file.type.startsWith("image/")) {
                 toast.error(`${file.name} is not a valid image`);
                 continue;
@@ -36,7 +49,11 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess }) => {
             validFiles.push(file);
         }
 
-        setFiles((prev) => [...prev, ...validFiles]);
+        if (validFiles.length > 0) {
+            setCropQueue((prev) => [...prev, ...validFiles]);
+        }
+
+        e.target.value = "";
     };
 
     const removeFile = (index) => {
@@ -44,6 +61,10 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess }) => {
     };
 
     const handleUpload = async () => {
+        if (cropQueue.length > 0) {
+            return toast.error("Please finish cropping selected images first");
+        }
+
         if (files.length === 0) {
             return toast.error("Please select at least one image");
         }
@@ -58,7 +79,6 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess }) => {
 
             if (res?.images?.length > 0) {
                 onSuccess(res.images);
-                toast.success("Images uploaded successfully");
                 handleClose();
             }
         } catch (err) {
@@ -66,8 +86,18 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess }) => {
         }
     };
 
+    const handleCropConfirm = (croppedFile) => {
+        setFiles((prev) => [...prev, croppedFile]);
+        setCropQueue((prev) => prev.slice(1));
+    };
+
+    const handleCropCancel = () => {
+        setCropQueue((prev) => prev.slice(1));
+    };
+
     const handleClose = () => {
         setFiles([]);
+        setCropQueue([]);
         onClose();
     };
 
@@ -91,7 +121,7 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess }) => {
                 <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-xl py-10 cursor-pointer hover:bg-gray-50 transition">
                     <Upload size={28} className="text-gray-400 mb-2" />
                     <span className="text-sm text-gray-500">
-                        Click to select images
+                        Click to select and crop images
                     </span>
                     <input
                         type="file"
@@ -101,6 +131,12 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess }) => {
                         onChange={handleFileChange}
                     />
                 </label>
+
+                {cropQueue.length > 0 && (
+                    <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                        {`Finish cropping ${cropQueue.length} selected image${cropQueue.length > 1 ? "s" : ""} before upload.`}
+                    </p>
+                )}
 
                 {/* Selected Files Preview */}
                 {files.length > 0 && (
@@ -136,7 +172,10 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess }) => {
 
                     <button
                         onClick={handleUpload}
-                        disabled={uploadMultipleImages.isPending}
+                        disabled={
+                            uploadMultipleImages.isPending ||
+                            cropQueue.length > 0
+                        }
                         className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg flex items-center gap-2"
                     >
                         {uploadMultipleImages.isPending ? (
@@ -150,6 +189,15 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess }) => {
                     </button>
                 </div>
             </div>
+
+            <ImageEditor
+                isOpen={Boolean(activeCropFile)}
+                file={activeCropFile}
+                onCancel={handleCropCancel}
+                onConfirm={handleCropConfirm}
+                aspect={1}
+                title="Crop Image"
+            />
         </div>
     );
 };
