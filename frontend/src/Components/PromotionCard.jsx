@@ -64,7 +64,7 @@ const PromotionCard = ({ promotion, variant = "active" }) => {
     }
 
     return (
-        <article className="group relative h-full min-h-55 overflow-hidden rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
+        <article id={promotion?._id} className="group relative h-full min-h-55 min-w-150 overflow-hidden rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
             {/* Full background image */}
             {imageSrc ? (
                 <img

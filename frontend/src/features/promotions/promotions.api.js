@@ -9,6 +9,7 @@ export const getActiveDeals = async () => {
 
 export const getPromotionHighlights = async () => {
     const { data } = await apiClient.get("/promotions/highlights");
+    console.log(data, "THe promositon highlight ishere. ")
     return data;
 };
 

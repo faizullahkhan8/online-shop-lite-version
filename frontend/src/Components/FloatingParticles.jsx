@@ -44,7 +44,7 @@ export default function FloatingParticles() {
                         }
                     },
                     size: { value: { min: 15, max: 35 } },
-                    opacity: { value: { min: 0.2, max: 0.2 } },   // very subtle
+                    opacity: { value: { min: 0.5, max: 0.2 } },   // very subtle
                     move: {
                         enable: true,
                         speed: 0.8,

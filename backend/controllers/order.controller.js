@@ -137,6 +137,7 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
             }),
         );
     } catch (error) {
+        console.log(error)
         return next(error);
     }
 
@@ -212,6 +213,7 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
             trackingUrl: `${process.env.FRONTEND_URL}/track/${trackingToken}`,
         });
     } catch (error) {
+        console.log(error)
         // Abort transaction on any error
         await session.abortTransaction();
 
