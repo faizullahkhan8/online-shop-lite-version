@@ -17,6 +17,7 @@ const ProductQuickView = ({ product, onClose }) => {
                     ...product,
                     quantity,
                     price: effectivePrice,
+                    originalPrice: product.price,
                     totalPrice: Number(effectivePrice) * quantity,
                     selected: true,
                 },

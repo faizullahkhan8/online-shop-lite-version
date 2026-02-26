@@ -110,7 +110,7 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
                 }
 
                 const originalPrice = Number(tempProd.price) || 0;
-                const discountTotal = Math.max(
+                const discountPerUnit = Math.max(
                     0,
                     originalPrice - finalUnitPrice,
                 );
@@ -120,9 +120,9 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
                     quantity,
                     price: finalUnitPrice,
                     originalPrice,
-                    discount: discountTotal,
-                    discountPerUnit: discountTotal / quantity,
-                    discountTotal,
+                    // discount: discountTotal,
+                    discountPerUnit,
+                    discountTotal: discountPerUnit * quantity,
                     promotion: promotion
                         ? {
                               id: promotion.id,
@@ -143,8 +143,8 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
     // SECURITY: Use MongoDB transaction for atomicity
     // Ensures stock and order updates both succeed or both fail
     // Start session from the connection that created the model
-    const session = await OrderModel.db.startSession();
-    session.startTransaction();
+    // const session = await OrderModel.db.startSession();
+    // session.startTransaction();
 
     try {
         // Process stock and sold count within transaction
@@ -154,7 +154,7 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
                 {
                     $inc: { stock: -prod.quantity, sold: prod.quantity },
                 },
-                { session, new: true },
+                { new: true },
             );
 
             // Verify stock didn't go negative
@@ -199,10 +199,14 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
         });
 
         // Save order within transaction
-        await order.save({ session });
+        await order.save();
 
+        await order.populate({
+            path: "items.product",
+            model: "Product",
+        });
         // Commit transaction
-        await session.commitTransaction();
+        // await session.commitTransaction();
 
         return res.status(201).json({
             success: true,
@@ -213,16 +217,17 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
         });
     } catch (error) {
         // Abort transaction on any error
-        await session.abortTransaction();
+        // await session.abortTransaction();
 
         // Re-throw original error or new one
         if (error instanceof ErrorResponse) {
             throw error;
         }
         throw new ErrorResponse(error.message || "Failed to place order", 400);
-    } finally {
-        session.endSession();
     }
+    // finally {
+    //     // session.endSession();
+    // }
 });
 
 export const getAllOrder = expressAsyncHandler(async (req, res, next) => {
@@ -230,7 +235,9 @@ export const getAllOrder = expressAsyncHandler(async (req, res, next) => {
 
     if (!OrderModel) return next(new ErrorResponse("Model not found!", 400));
 
-    const allOrders = await OrderModel.find({ isDeleted: false });
+    const allOrders = await OrderModel.find({ isDeleted: false }).sort({
+        createdAt: -1,
+    });
 
     return res.status(200).json({
         success: true,

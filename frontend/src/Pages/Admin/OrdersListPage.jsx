@@ -82,6 +82,10 @@ const OrdersList = () => {
                                         <span className="text-sm font-mono font-medium text-gray-600 group-hover:text-blue-600 transition-colors">
                                             #{order._id.slice(-8).toUpperCase()}
                                         </span>
+                                        <p className="text-xs text-gray-500 mt-0.5">
+                                            {new Date(order.createdAt).toLocaleString(
+                                                "en-US",)}
+                                        </p>
                                     </td>
                                     <td className="px-4 py-3.5">
                                         <p className="text-sm font-medium text-gray-900">
@@ -111,18 +115,16 @@ const OrdersList = () => {
                                     </td>
                                     <td className="px-4 py-3.5 text-center">
                                         <div
-                                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-2xl border text-xs font-semibold ${
-                                                order.payment?.ispaid
-                                                    ? "bg-green-50 text-green-700 border-green-200"
-                                                    : "bg-red-50 text-red-700 border-red-200"
-                                            }`}
+                                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-2xl border text-xs font-semibold ${order.payment?.ispaid
+                                                ? "bg-green-50 text-green-700 border-green-200"
+                                                : "bg-red-50 text-red-700 border-red-200"
+                                                }`}
                                         >
                                             <div
-                                                className={`w-1.5 h-1.5 rounded-full ${
-                                                    order.payment?.ispaid
-                                                        ? "bg-green-500"
-                                                        : "bg-red-500"
-                                                }`}
+                                                className={`w-1.5 h-1.5 rounded-full ${order.payment?.ispaid
+                                                    ? "bg-green-500"
+                                                    : "bg-red-500"
+                                                    }`}
                                             />
                                             {order.payment?.ispaid
                                                 ? "Paid"

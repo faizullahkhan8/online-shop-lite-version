@@ -51,7 +51,7 @@ const CheckoutPage = () => {
 
     const totalAmount = items.reduce((sum, item) => sum + item.totalPrice, 0);
 
-    const { mutateAsync: placeOrder, isLoading } = usePlaceOrder();
+    const { mutateAsync: placeOrder, isPending: placeOrderLoading } = usePlaceOrder();
     const { data: settingsData, isSuccess } = useSettings();
 
     const [formData, setFormData] = useState({
@@ -144,6 +144,7 @@ const CheckoutPage = () => {
 
         await placeOrder(orderData, {
             onSuccess: (response) => {
+                console.log(response.order);
                 addGuestOrder(response.order);
                 // Only remove from cart if this is not a Buy Now flow
                 if (!buyNowProduct) {
@@ -229,7 +230,7 @@ const CheckoutPage = () => {
                                     <CheckoutInput
                                         label="Full Name"
                                         name="recipient.name"
-                                        icon={<User size={14} />}
+                                        icon={<User size={22} />}
                                         value={formData.recipient.name}
                                         onChange={handleChange}
                                         placeholder="NAME"
@@ -237,7 +238,7 @@ const CheckoutPage = () => {
                                     <CheckoutInput
                                         label="Phone Number"
                                         name="recipient.phone"
-                                        icon={<Phone size={14} />}
+                                        icon={<Phone size={22} />}
                                         value={formData.recipient.phone}
                                         onChange={handleChange}
                                         placeholder="CONTACT"
@@ -246,7 +247,7 @@ const CheckoutPage = () => {
                                         <CheckoutInput
                                             label="Street Address"
                                             name="recipient.street"
-                                            icon={<MapPin size={14} />}
+                                            icon={<MapPin size={22} />}
                                             value={formData.recipient.street}
                                             onChange={handleChange}
                                             placeholder="HOUSE NO, STREET, AREA"
@@ -255,7 +256,7 @@ const CheckoutPage = () => {
                                     <CheckoutInput
                                         label="City"
                                         name="recipient.city"
-                                        icon={<MapPin size={14} />}
+                                        icon={<MapPin size={22} />}
                                         value={formData.recipient.city}
                                         onChange={handleChange}
                                         placeholder="CITY"
@@ -263,7 +264,7 @@ const CheckoutPage = () => {
                                     <CheckoutInput
                                         label="State"
                                         name="recipient.state"
-                                        icon={<MapPin size={14} />}
+                                        icon={<MapPin size={22} />}
                                         value={formData.recipient.state}
                                         onChange={handleChange}
                                         placeholder="PROVINCE"
@@ -271,7 +272,7 @@ const CheckoutPage = () => {
                                     <CheckoutInput
                                         label="Postal Code"
                                         name="recipient.postalCode"
-                                        icon={<MapPin size={14} />}
+                                        icon={<MapPin size={22} />}
                                         value={formData.recipient.postalCode}
                                         onChange={handleChange}
                                         placeholder="ZIP CODE"
@@ -279,7 +280,7 @@ const CheckoutPage = () => {
                                     <CheckoutInput
                                         label="Country"
                                         name="recipient.country"
-                                        icon={<MapPin size={14} />}
+                                        icon={<MapPin size={22} />}
                                         value={formData.recipient.country}
                                         onChange={handleChange}
                                         placeholder="COUNTRY"
@@ -301,10 +302,6 @@ const CheckoutPage = () => {
                                             {
                                                 label: "Cash on Delivery",
                                                 value: "COD",
-                                            },
-                                            {
-                                                label: "Online Payment",
-                                                value: "online",
                                             },
                                         ]}
                                         value={formData.payment.method}
@@ -336,11 +333,16 @@ const CheckoutPage = () => {
                                         key={item._id}
                                         className="flex justify-between items-start gap-4"
                                     >
-                                        <div className="flex-1">
-                                            <p className="text-md uppercase tracking-wider font-medium text-zinc-900 leading-tight mb-2">
-                                                {item.name}
-                                            </p>
-                                            <div className="flex items-center border border-zinc-200 h-10 w-fit bg-white rounded-2xl">
+                                        <div className="flex justify-between w-full items-center">
+                                            <div>
+                                                <p className="text-md tracking-wider font-medium text-zinc-900 leading-tight mb-2">
+                                                    {item.name}
+                                                </p>
+                                                <p className="text-xs tracking-wider font-medium text-zinc-600 leading-tight mb-2">
+                                                    {item?.description}
+                                                </p>
+                                            </div>
+                                            <div className="self-start flex items-center border border-zinc-200 h-10 w-fit bg-white rounded-2xl">
                                                 <button
                                                     type="button"
                                                     onClick={() =>
@@ -370,25 +372,70 @@ const CheckoutPage = () => {
                                                 </button>
                                             </div>
                                         </div>
-                                        <span className="text-md font-bold text-zinc-900">
-                                            Rs {item.totalPrice.toFixed(0)}
-                                        </span>
                                     </div>
                                 ))}
                             </div>
 
                             <div className="space-y-4 pt-6 border-t border-zinc-200 mb-8">
-                                <div className="flex justify-between text-sm uppercase tracking-widest text-zinc-700">
-                                    <span>Subtotal</span>
-                                    <span>Rs {totalAmount.toFixed(0)}</span>
+                                <div className="flex justify-between text-sm tracking-widest text-zinc-700">
+                                    <span>Promotion Name</span>
+                                    <span>
+                                        {localBuyNowProduct?.promotion?.title}
+                                    </span>
                                 </div>
-                                <div className="flex justify-between text-sm uppercase tracking-widest text-zinc-700">
+                                <div className="flex justify-between text-sm tracking-widest text-zinc-700">
+                                    <span>Promotion Discount</span>
+                                    <span>
+                                        {
+                                            localBuyNowProduct?.promotion
+                                                ?.discountValue
+                                        }
+                                        {localBuyNowProduct.promotion
+                                            ?.discountType === "PERCENTAGE"
+                                            ? "%"
+                                            : "Rs"}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between text-sm tracking-widest border-t border-zinc-200 pt-4 text-zinc-700">
+                                    <span>Per Unit Price</span>
+                                    <span>
+                                        Rs {localBuyNowProduct?.originalPrice}
+                                    </span>
+                                </div>
+                                {buyNowProduct.promotion && (
+                                    <div className="flex justify-between text-sm tracking-widest text-zinc-700">
+                                        <span>
+                                            Per Unit Price with Discount
+                                        </span>
+                                        <span>
+                                            Rs{" "}
+                                            {localBuyNowProduct?.effectivePrice}
+                                        </span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between text-sm tracking-widest text-zinc-700">
+                                    <span>Subtotal</span>
+                                    <span>
+                                        Rs{" "}
+                                        {localBuyNowProduct.originalPrice *
+                                            localBuyNowProduct.quantity}
+                                    </span>
+                                </div>
+                                {buyNowProduct.promotion && (
+                                    <div className="flex justify-between text-sm tracking-widest text-zinc-700">
+                                        <span>
+                                            Subtotal with promotional off
+                                        </span>
+                                        <span>Rs {totalAmount.toFixed(0)}</span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between text-sm tracking-widest border-t border-zinc-200 pt-4 text-zinc-700">
                                     <span>Tax</span>
                                     <span>
                                         Rs {formData.taxAmount.toFixed(0)}
                                     </span>
                                 </div>
-                                <div className="flex justify-between text-sm uppercase tracking-widest text-zinc-700">
+                                <div className="flex justify-between text-sm tracking-widest text-zinc-700">
                                     <span>Shipping</span>
                                     <span>
                                         {formData.shippingFee === 0
@@ -396,8 +443,8 @@ const CheckoutPage = () => {
                                             : `Rs ${formData.shippingFee}`}
                                     </span>
                                 </div>
-                                <div className="flex justify-between items-center pt-4 border-t border-zinc-900 mt-4">
-                                    <span className="text-md font-black uppercase tracking-[0.2em]">
+                                <div className="flex justify-between items-center pt-4 border-t border-zinc-200 mt-4">
+                                    <span className="text-md font-black tracking-[0.2em]">
                                         Total
                                     </span>
                                     <span className="text-lg font-black text-zinc-900">
@@ -414,10 +461,10 @@ const CheckoutPage = () => {
                             <button
                                 type="submit"
                                 form="checkout-form"
-                                disabled={Boolean(isLoading)}
-                                className="w-full bg-zinc-900 text-white py-4 text-md uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all disabled:opacity-50 flex items-center justify-center gap-3 group rounded-2xl"
+                                disabled={placeOrderLoading}
+                                className="w-full bg-zinc-900 text-white py-4 text-md tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all disabled:opacity-50 flex items-center justify-center gap-3 group rounded-2xl"
                             >
-                                {isLoading ? (
+                                {placeOrderLoading ? (
                                     <Loader2
                                         className="animate-spin"
                                         size={16}
@@ -455,7 +502,7 @@ const CheckoutInput = ({
             {label}
         </label>
         <div className="relative group">
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-zinc-900 transition-colors">
+            <div className="absolute left-2 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-zinc-900 transition-colors">
                 {icon}
             </div>
             <input
@@ -465,39 +512,9 @@ const CheckoutInput = ({
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
-                className="w-full bg-transparent border-b border-zinc-200 py-3 pl-7 text-md uppercase tracking-widest text-zinc-900 focus:outline-none focus:border-zinc-900 transition-all placeholder:text-zinc-200"
+                className="w-full bg-transparent border rounded-2xl border-zinc-800 py-3 pl-10 text-md uppercase tracking-widest text-zinc-900 focus:outline-none focus:border-zinc-900 transition-all placeholder:text-zinc-400"
             />
         </div>
-    </div>
-);
-
-const PaymentCard = ({ active, onClick, title, description, icon }) => (
-    <div
-        onClick={onClick}
-        className={`p-6 border transition-all cursor-pointer relative overflow-hidden rounded-2xl ${
-            active
-                ? "border-zinc-900 bg-zinc-900 text-white"
-                : "border-zinc-100 bg-white text-zinc-500 hover:border-zinc-300"
-        }`}
-    >
-        <div className="flex justify-between items-start mb-4">
-            <div className={active ? "text-white" : "text-zinc-900"}>
-                {icon}
-            </div>
-            {active && (
-                <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-            )}
-        </div>
-        <p
-            className={`text-sm uppercase tracking-[0.2em] font-bold mb-1 ${active ? "text-white" : "text-zinc-900"}`}
-        >
-            {title}
-        </p>
-        <p
-            className={`text-xs uppercase tracking-widest ${active ? "text-zinc-500" : "text-zinc-500"}`}
-        >
-            {description}
-        </p>
     </div>
 );
 

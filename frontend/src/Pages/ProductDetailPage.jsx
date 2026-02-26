@@ -49,12 +49,15 @@ const ProductDetailPage = () => {
                     ...data?.product,
                     quantity,
                     price: effectivePrice,
+                    originalPrice: data?.product?.price,
                     totalPrice: effectivePrice * quantity,
                     selected: true,
                 },
             },
         });
     };
+
+    console.log(data?.product);
 
     const breadcrumbItems = [
         { label: "Home", path: "/" },

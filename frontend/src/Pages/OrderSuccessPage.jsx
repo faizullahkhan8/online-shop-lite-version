@@ -38,11 +38,12 @@ const OrderSuccessPage = () => {
         );
     }
 
-    // Calculate totals from order model
-    const itemsSubtotal = order.items?.reduce(
-        (sum, item) => sum + (item.totalAmount || 0),
-        0,
-    );
+    // // Calculate totals from order model
+    // const itemsSubtotal = order.items?.reduce(
+    //     (sum, item) => sum + (item.totalAmount || 0),
+    //     0,
+    // );
+
     const totalDiscounts = order.items?.reduce(
         (sum, item) => sum + (item.discountTotal || 0),
         0,
@@ -64,7 +65,7 @@ const OrderSuccessPage = () => {
     };
 
     return (
-        <div className="bg-white min-h-screen">
+        <div className="bg-white min-h-screen mt-20">
             <div className="container mx-auto px-4 lg:px-20 py-12">
                 <Breadcrumb items={breadcrumbItems} />
                 <div className="flex flex-col lg:flex-row gap-16 items-start">
@@ -305,31 +306,20 @@ const OrderSuccessPage = () => {
                                         ? item.product?.name
                                         : null;
                                 const productImage =
-                                    typeof item.product === "object"
-                                        ? item.product?.image
-                                        : null;
-                                const productCollection =
-                                    typeof item.product === "object"
-                                        ? typeof item.product.collection ===
-                                          "string"
-                                            ? item.product.collection
-                                            : item.product.collection?.name
-                                        : null;
+                                    item.product?.images[0]?.url;
 
                                 return (
                                     <div key={index} className="space-y-2">
                                         <div className="flex gap-4">
                                             <div className="relative w-16 h-20 bg-white border border-zinc-200 rounded overflow-hidden shrink-0">
-                                                {productImage && (
-                                                    <img
-                                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${productImage}`}
-                                                        className="w-full h-full object-cover"
-                                                        alt={
-                                                            productName ||
-                                                            "Product"
-                                                        }
-                                                    />
-                                                )}
+                                                <img
+                                                    src={productImage}
+                                                    className="w-full h-full object-cover"
+                                                    alt={
+                                                        productName || "Product"
+                                                    }
+                                                />
+
                                                 <span className="absolute -top-2 -right-2 bg-zinc-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
                                                     {item.quantity}
                                                 </span>
@@ -348,31 +338,39 @@ const OrderSuccessPage = () => {
                                                         {productName ||
                                                             "Product Item"}
                                                     </p>
-                                                    <p className="text-xs text-zinc-500 uppercase mt-1">
-                                                        {productCollection ||
-                                                            "Apparel"}
-                                                    </p>
                                                     {item.originalPrice &&
                                                         item.originalPrice >
                                                             item.price && (
-                                                            <p className="text-xs text-zinc-500 line-through mt-1">
-                                                                Rs{" "}
+                                                            <p className="text-sm text-zinc-500 mt-1">
+                                                                Price :{" "}
                                                                 {item.originalPrice.toLocaleString()}
                                                             </p>
                                                         )}
+                                                    {item.promotion?.title && (
+                                                        <p className="text-sm text-zinc-500 mt-1">
+                                                            Discount Per Unit :{" "}
+                                                            {item.discountPerUnit.toFixed(
+                                                                2,
+                                                            )}
+                                                        </p>
+                                                    )}
+                                                    <p className="text-sm text-zinc-500 mt-1">
+                                                        Quantity :{" "}
+                                                        {item.quantity.toLocaleString()}
+                                                    </p>
                                                 </div>
-                                                <div className="text-right">
+                                                {/* <div className="text-right">
                                                     <p className="text-sm font-medium text-zinc-900">
-                                                        Rs{" "}
+                                                        {" "}
                                                         {item.totalAmount.toLocaleString()}
                                                     </p>
                                                     {item.discount > 0 && (
-                                                        <p className="text-xs text-green-600 font-medium">
-                                                            Rs: {item.discount}{" "}
-                                                            off
+                                                        <p className="text-xs text-green-600 font-medium ">
+                                                            Total Discount :{" "}
+                                                            {item.discount}{" "}
                                                         </p>
                                                     )}
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
 
@@ -401,13 +399,25 @@ const OrderSuccessPage = () => {
 
                         <div className="mt-10 pt-10 border-t border-zinc-200 space-y-3">
                             <div className="flex justify-between text-sm text-zinc-600">
-                                <span>Subtotal</span>
-                                <span>Rs {itemsSubtotal.toLocaleString()}</span>
+                                <span>Original Total</span>
+                                <span>
+                                    Rs{" "}
+                                    {order.items[0].originalPrice *
+                                        order.items[0].quantity}
+                                </span>
                             </div>
-
                             {totalDiscounts > 0 && (
                                 <div className="flex justify-between text-sm text-green-600">
-                                    <span>Discounts</span>
+                                    <span>Discount per item</span>
+                                    <span>
+                                        -Rs{" "}
+                                        {order.items[0].discountPerUnit.toLocaleString()}
+                                    </span>
+                                </div>
+                            )}
+                            {totalDiscounts > 0 && (
+                                <div className="flex justify-between text-sm text-green-600">
+                                    <span>Total Discount</span>
                                     <span>
                                         -Rs {totalDiscounts.toLocaleString()}
                                     </span>
@@ -415,18 +425,15 @@ const OrderSuccessPage = () => {
                             )}
 
                             {taxAmount > 0 && (
-                                <div className="flex justify-between text-sm text-zinc-600">
+                                <div className="flex justify-between text-sm text-red-600">
                                     <span>Tax</span>
                                     <span>Rs {taxAmount.toLocaleString()}</span>
                                 </div>
                             )}
 
-                            <div className="flex justify-between text-sm text-zinc-600 items-center">
+                            <div className="flex justify-between text-sm text-red-600 items-center">
                                 <div className="flex items-center gap-1">
                                     <span>Shipping</span>
-                                    <div className="w-3.5 h-3.5 rounded-full border border-zinc-400 flex items-center justify-center text-[8px] text-zinc-500">
-                                        ?
-                                    </div>
                                 </div>
                                 <span>
                                     {shippingFee === 0
@@ -434,6 +441,11 @@ const OrderSuccessPage = () => {
                                         : `Rs ${shippingFee.toLocaleString()}`}
                                 </span>
                             </div>
+                            {/* 
+                            <div className="flex justify-between text-sm text-zinc-600">
+                                <span>Subtotal</span>
+                                <span>Rs {itemsSubtotal.toLocaleString()}</span>
+                            </div> */}
 
                             <div className="flex justify-between items-center pt-4 border-t border-zinc-200">
                                 <span className="text-lg font-medium">

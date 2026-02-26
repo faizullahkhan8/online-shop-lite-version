@@ -11,7 +11,8 @@ export const useDashboardStats = ({ startDate, endDate } = {}) => {
                     endDate: endDate?.toISOString(),
                 },
             });
-            return response.data;
+            console.log(response.data, "THe data from dashbaord testing");
+            return response?.data;
         },
         enabled: !!startDate && !!endDate,
     });

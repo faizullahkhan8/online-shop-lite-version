@@ -318,13 +318,12 @@ const OrderDetails = () => {
                                             <td className="px-5 py-4">
                                                 <div className="flex items-start gap-3">
                                                     <img
-                                                        src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${item.product?.image}`}
-                                                        className={`w-12 h-12 object-cover rounded-2xl border border-gray-200 ${
-                                                            item.status ===
+                                                        src={`${item.product?.images[0]?.url}`}
+                                                        className={`w-12 h-12 object-cover rounded-2xl border border-gray-200 ${item.status ===
                                                             "cancelled"
-                                                                ? "grayscale opacity-50"
-                                                                : ""
-                                                        }`}
+                                                            ? "grayscale opacity-50"
+                                                            : ""
+                                                            }`}
                                                         alt={item.product?.name}
                                                     />
 
@@ -332,12 +331,11 @@ const OrderDetails = () => {
                                                         {/* Product name + status */}
                                                         <div className="flex items-center gap-2">
                                                             <p
-                                                                className={`text-sm font-medium ${
-                                                                    item.status ===
+                                                                className={`text-sm font-medium ${item.status ===
                                                                     "cancelled"
-                                                                        ? "line-through text-gray-400"
-                                                                        : "text-gray-900"
-                                                                }`}
+                                                                    ? "line-through text-gray-400"
+                                                                    : "text-gray-900"
+                                                                    }`}
                                                             >
                                                                 {
                                                                     item.product
@@ -347,49 +345,49 @@ const OrderDetails = () => {
 
                                                             {item.status ===
                                                                 "cancelled" && (
-                                                                <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600">
-                                                                    <XCircle
-                                                                        size={
-                                                                            12
-                                                                        }
-                                                                    />
-                                                                    Cancelled
-                                                                </span>
-                                                            )}
+                                                                    <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600">
+                                                                        <XCircle
+                                                                            size={
+                                                                                12
+                                                                            }
+                                                                        />
+                                                                        Cancelled
+                                                                    </span>
+                                                                )}
                                                         </div>
 
                                                         {/* Cancellation meta */}
                                                         {item.status ===
                                                             "cancelled" && (
-                                                            <div className="mt-1 space-y-0.5">
-                                                                {item.cancellationReason && (
-                                                                    <p className="text-xs text-gray-500">
-                                                                        <span className="font-medium text-gray-600">
-                                                                            Reason:
-                                                                        </span>{" "}
-                                                                        {
-                                                                            item.cancellationReason
-                                                                        }
-                                                                    </p>
-                                                                )}
+                                                                <div className="mt-1 space-y-0.5">
+                                                                    {item.cancellationReason && (
+                                                                        <p className="text-xs text-gray-500">
+                                                                            <span className="font-medium text-gray-600">
+                                                                                Reason:
+                                                                            </span>{" "}
+                                                                            {
+                                                                                item.cancellationReason
+                                                                            }
+                                                                        </p>
+                                                                    )}
 
-                                                                {item
-                                                                    .cancelledBy
-                                                                    ?.name && (
-                                                                    <p className="text-xs text-gray-500">
-                                                                        <span className="font-medium text-gray-600">
-                                                                            Cancelled
-                                                                            by:
-                                                                        </span>{" "}
-                                                                        {
-                                                                            item
-                                                                                .cancelledBy
-                                                                                .name
-                                                                        }
-                                                                    </p>
-                                                                )}
-                                                            </div>
-                                                        )}
+                                                                    {item
+                                                                        .cancelledBy
+                                                                        ?.name && (
+                                                                            <p className="text-xs text-gray-500">
+                                                                                <span className="font-medium text-gray-600">
+                                                                                    Cancelled
+                                                                                    by:
+                                                                                </span>{" "}
+                                                                                {
+                                                                                    item
+                                                                                        .cancelledBy
+                                                                                        .name
+                                                                                }
+                                                                            </p>
+                                                                        )}
+                                                                </div>
+                                                            )}
                                                     </div>
                                                 </div>
                                             </td>
@@ -408,7 +406,7 @@ const OrderDetails = () => {
                                             <td className="px-5 py-4 text-right text-sm text-gray-600">
                                                 {" "}
                                                 Rs{" "}
-                                                {item.discount.toLocaleString()}
+                                                {item?.discountPerUnit.toLocaleString()}
                                             </td>
                                             <td className="px-5 py-4 text-right text-sm text-gray-600">
                                                 Rs {item.price.toLocaleString()}
@@ -427,7 +425,7 @@ const OrderDetails = () => {
                                             <td className="px-5 py-4 text-right">
                                                 {item.status !== "cancelled" &&
                                                     order.status ===
-                                                        "pending" && (
+                                                    "pending" && (
                                                         <button
                                                             onClick={() =>
                                                                 handleOpenItemCancelModal(
@@ -463,18 +461,17 @@ const OrderDetails = () => {
                                             <button
                                                 disabled={Boolean(
                                                     order.status ===
-                                                        "cancelled" ||
+                                                    "cancelled" ||
                                                     statusPending,
                                                 )}
                                                 key={status}
                                                 onClick={() =>
                                                     handleStatusUpdate(status)
                                                 }
-                                                className={`px-3 py-1.5 rounded-2xl text-xs font-medium transition-colors ${
-                                                    order.status === status
-                                                        ? "bg-blue-600 text-white"
-                                                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                                                }`}
+                                                className={`px-3 py-1.5 rounded-2xl text-xs font-medium transition-colors ${order.status === status
+                                                    ? "bg-blue-600 text-white"
+                                                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                                                    }`}
                                             >
                                                 {statusPending ? (
                                                     <Loader2

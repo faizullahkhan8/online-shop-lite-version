@@ -1,8 +1,20 @@
-import { intervalToDuration } from "date-fns";
 import { useEffect, useState } from "react";
 import { useActiveDeals } from "../features/promotions/promotions.query";
 
-// Pad numbers so "9 seconds" and "10 seconds" take the same width
+import {
+    differenceInMonths,
+    differenceInWeeks,
+    differenceInDays,
+    differenceInHours,
+    differenceInMinutes,
+    differenceInSeconds,
+    addMonths,
+    addWeeks,
+    addDays,
+    addHours,
+    addMinutes,
+} from "date-fns";
+
 const formatRemainingTimeTabular = (endTime, currentTime = new Date()) => {
     if (!endTime) return "Ending soon";
 
@@ -12,35 +24,42 @@ const formatRemainingTimeTabular = (endTime, currentTime = new Date()) => {
     if (Number.isNaN(endDate.getTime())) return "Ending soon";
     if (endDate <= now) return "Ended";
 
-    const duration = intervalToDuration({ start: now, end: endDate });
-    const totalDays = duration.days || 0;
+    // 1️⃣ Months (calendar accurate)
+    const months = differenceInMonths(endDate, now);
+    let cursor = addMonths(now, months);
+
+    // 2️⃣ Weeks
+    const weeks = differenceInWeeks(endDate, cursor);
+    cursor = addWeeks(cursor, weeks);
+
+    // 3️⃣ Days
+    const days = differenceInDays(endDate, cursor);
+    cursor = addDays(cursor, days);
+
+    // 4️⃣ Hours
+    const hours = differenceInHours(endDate, cursor);
+    cursor = addHours(cursor, hours);
+
+    // 5️⃣ Minutes
+    const minutes = differenceInMinutes(endDate, cursor);
+    cursor = addMinutes(cursor, minutes);
+
+    // 6️⃣ Seconds
+    const seconds = differenceInSeconds(endDate, cursor);
 
     const timeParts = [
-        { label: "mo", value: duration.months || 0 },
-        { label: "w", value: Math.floor(totalDays / 7) },
-        { label: "d", value: totalDays % 7 },
-        { label: "h", value: duration.hours || 0 },
-        { label: "m", value: duration.minutes || 0 },
-        { label: "s", value: duration.seconds || 0 },
+        { label: "mo", value: months },
+        { label: "w", value: weeks },
+        { label: "d", value: days },
+        { label: "h", value: hours },
+        { label: "m", value: minutes },
+        { label: "s", value: seconds },
     ];
 
-    const firstNonZeroIndex = timeParts.findIndex((part) => part.value > 0);
-    if (firstNonZeroIndex === -1) return "< 1s";
-
-    // Always anchor to seconds as the last segment, take up to 3 leading segments
-    const lastIndex = timeParts.length - 1; // always "s"
-    const startIndex = Math.min(firstNonZeroIndex, lastIndex - 2); // at most 3 slots ending at "s"
-    const visibleParts = timeParts
-        .slice(startIndex, lastIndex + 1)
-        .slice(-3) // cap at 3 segments
-        .map((part) => ({
-            ...part,
-            display: String(part.value).padStart(2, "0"),
-        }));
-
-    return visibleParts.map((p) => `${p.display}${p.label}`).join(" : ");
+    return timeParts
+        .map((part) => `${String(part.value).padStart(2, "0")}${part.label}`)
+        .join(" : ");
 };
-
 const PromotionBar = () => {
     const { data, isLoading, isError } = useActiveDeals();
     const [now, setNow] = useState(() => Date.now());

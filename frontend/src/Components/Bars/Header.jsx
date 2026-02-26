@@ -355,6 +355,12 @@ const Header = () => {
 
                 {/* Left: Desktop Nav */}
                 <nav className="hidden md:flex items-center gap-6 lg:gap-8 flex-1">
+                    <Link
+                        to="/"
+                        className="text-[11px] uppercase tracking-[0.12em] font-normal font-sans text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap"
+                    >
+                        Home
+                    </Link>
                     {/* Collections dropdown */}
                     <div
                         className="relative"
@@ -363,17 +369,15 @@ const Header = () => {
                     >
                         <button
                             onClick={() => navigate("/collections")}
-                            className={`flex items-center gap-1 text-[11px] uppercase tracking-[0.12em] font-normal font-sans transition-colors cursor-pointer whitespace-nowrap ${
-                                isCollectionOpen
-                                    ? "text-gray-900"
-                                    : "text-gray-500 hover:text-gray-900"
-                            }`}
+                            className={`flex items-center gap-1 text-[11px] uppercase tracking-[0.12em] font-normal font-sans transition-colors cursor-pointer whitespace-nowrap ${isCollectionOpen
+                                ? "text-gray-900"
+                                : "text-gray-500 hover:text-gray-900"
+                                }`}
                         >
                             Collections
                             <ChevronDown
-                                className={`w-3 h-3 transition-transform duration-200 ${
-                                    isCollectionOpen ? "rotate-180" : ""
-                                }`}
+                                className={`w-3 h-3 transition-transform duration-200 ${isCollectionOpen ? "rotate-180" : ""
+                                    }`}
                             />
                         </button>
 
@@ -407,6 +411,7 @@ const Header = () => {
                         )}
                     </div>
 
+
                     <Link
                         to="/products"
                         className="text-[11px] uppercase tracking-[0.12em] font-normal font-sans text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap"
@@ -428,7 +433,7 @@ const Header = () => {
                 </nav>
 
                 {/* Center: Logo — always centered */}
-                <div className="absolute left-1/2 -translate-x-1/2">
+                <div className="absolute left-2/3 -translate-x-1/2">
                     <Link
                         to="/"
                         className="block text-center leading-tight"

@@ -702,8 +702,11 @@ const TrackOrderPage = () => {
     const order = data?.order || null;
 
     useEffect(() => {
-        const ids = readGuestOrders();
-        setSavedOrders(ids || []);
+        const ordersObj = readGuestOrders();
+        const allOrders = Object.values(ordersObj).sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+        );
+        setSavedOrders(allOrders);
     }, []);
 
     const handleSubmit = (e) => {
@@ -712,10 +715,10 @@ const TrackOrderPage = () => {
         setSelectedOrderId(orderId.trim());
     };
 
-    const handleSavedOrderClick = (id) => {
-        setOrderId(id);
-        setSelectedOrderId(id);
-    };
+    // const handleSavedOrderClick = (id) => {
+    //     setOrderId(id);
+    //     setSelectedOrderId(id);
+    // };
 
     const formatDate = (date) => {
         if (!date) return "N/A";
@@ -937,7 +940,7 @@ const TrackOrderPage = () => {
                                                         RS{" "}
                                                         {Number(
                                                             order.grandTotal ||
-                                                                0,
+                                                            0,
                                                         ).toLocaleString()}
                                                     </p>
                                                 </div>
@@ -957,7 +960,7 @@ const TrackOrderPage = () => {
                                                         RS{" "}
                                                         {Number(
                                                             order.shippingFee ||
-                                                                0,
+                                                            0,
                                                         ).toLocaleString()}
                                                     </p>
                                                 </div>
@@ -1100,14 +1103,14 @@ const TrackOrderPage = () => {
                                             {order.items?.map((item, index) => {
                                                 const productName =
                                                     typeof item.product ===
-                                                    "object"
+                                                        "object"
                                                         ? item.product?.name
                                                         : null;
                                                 const productId =
                                                     typeof item.product ===
-                                                    "object"
+                                                        "object"
                                                         ? item.product?._id ||
-                                                          item.product?.id
+                                                        item.product?.id
                                                         : item.product;
 
                                                 return (
@@ -1159,12 +1162,11 @@ const TrackOrderPage = () => {
                                                                 </p>
                                                             </div>
                                                             <span
-                                                                className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-medium ${
-                                                                    item.status ===
+                                                                className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-medium ${item.status ===
                                                                     "cancelled"
-                                                                        ? "bg-[#fff1f2] text-rose-700 border border-[#fecdd3]"
-                                                                        : "bg-[#eef6ea] text-[#2e6b2e] border border-[#c3e0b8]"
-                                                                }`}
+                                                                    ? "bg-[#fff1f2] text-rose-700 border border-[#fecdd3]"
+                                                                    : "bg-[#eef6ea] text-[#2e6b2e] border border-[#c3e0b8]"
+                                                                    }`}
                                                             >
                                                                 {item.status ||
                                                                     "Active"}
@@ -1174,34 +1176,30 @@ const TrackOrderPage = () => {
                                                         {order.status ===
                                                             "delivered" &&
                                                             item.status !==
-                                                                "cancelled" &&
+                                                            "cancelled" &&
                                                             !reviewedProductIds.includes(
                                                                 productId,
                                                             ) && (
-                                                                <button
-                                                                    onClick={() => {
-                                                                        setSelectedProduct(
-                                                                            {
-                                                                                _id: productId,
-                                                                                name:
-                                                                                    productName ||
-                                                                                    "Product",
-                                                                            },
-                                                                        );
-                                                                        setIsReviewModalOpen(
-                                                                            true,
-                                                                        );
+                                                                // animate small and big infinity
+                                                                <motion.button
+                                                                    animate={{ scale: [1, 1.1, 1] }} // grow then shrink
+                                                                    transition={{
+                                                                        duration: 1,      // full grow+shrink cycle takes 1 second
+                                                                        ease: "easeInOut",
+                                                                        repeat: Infinity, // repeat forever
                                                                     }}
-                                                                    className="mb-3 text-[10px] font-medium uppercase tracking-widest text-[#7aaf68] hover:text-[#5a9050] transition-colors flex items-center gap-2 border border-[#c3e0b8] bg-[#eef6ea] px-3 py-1.5 rounded-xl w-fit"
+                                                                    onClick={() => {
+                                                                        setSelectedProduct({
+                                                                            _id: productId,
+                                                                            name: productName || "Product",
+                                                                        });
+                                                                        setIsReviewModalOpen(true);
+                                                                    }}
+                                                                    className="mb-3 text-[10px] font-medium uppercase tracking-widest text-yellow-800 hover:text-[#5a9050] transition-colors flex items-center gap-2 border border-[#c3e0b8] bg-yellow-300 px-3 py-1.5 rounded-xl w-fit"
                                                                 >
-                                                                    <Star
-                                                                        size={
-                                                                            11
-                                                                        }
-                                                                        className="fill-[#7aaf68]"
-                                                                    />
+                                                                    <Star size={11} className="fill-yellow-900" />
                                                                     Give Review
-                                                                </button>
+                                                                </motion.button>
                                                             )}
 
                                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs pt-3 border-t border-[#e8f0e4]">
@@ -1213,39 +1211,39 @@ const TrackOrderPage = () => {
                                                                     RS{" "}
                                                                     {Number(
                                                                         item.price ||
-                                                                            0,
+                                                                        0,
                                                                     ).toLocaleString()}
                                                                 </p>
                                                             </div>
                                                             {item.discount >
                                                                 0 && (
-                                                                <div>
-                                                                    <p className="text-stone-400 mb-0.5">
-                                                                        Discount
-                                                                    </p>
-                                                                    <p className="font-medium text-[#2e6b2e]">
-                                                                        -RS{" "}
-                                                                        {
-                                                                            item.discount
-                                                                        }
-                                                                    </p>
-                                                                </div>
-                                                            )}
+                                                                    <div>
+                                                                        <p className="text-stone-400 mb-0.5">
+                                                                            Discount
+                                                                        </p>
+                                                                        <p className="font-medium text-[#2e6b2e]">
+                                                                            -RS{" "}
+                                                                            {
+                                                                                item.discount
+                                                                            }
+                                                                        </p>
+                                                                    </div>
+                                                                )}
                                                             {item.promotion
                                                                 ?.title && (
-                                                                <div className="md:col-span-2">
-                                                                    <p className="text-stone-400 mb-0.5">
-                                                                        Promotion
-                                                                    </p>
-                                                                    <p className="font-medium text-[#1e4d8c]">
-                                                                        {
-                                                                            item
-                                                                                .promotion
-                                                                                .title
-                                                                        }
-                                                                    </p>
-                                                                </div>
-                                                            )}
+                                                                    <div className="md:col-span-2">
+                                                                        <p className="text-stone-400 mb-0.5">
+                                                                            Promotion
+                                                                        </p>
+                                                                        <p className="font-medium text-[#1e4d8c]">
+                                                                            {
+                                                                                item
+                                                                                    .promotion
+                                                                                    .title
+                                                                            }
+                                                                        </p>
+                                                                    </div>
+                                                                )}
                                                             <div>
                                                                 <p className="text-stone-400 mb-0.5">
                                                                     Total
@@ -1254,7 +1252,7 @@ const TrackOrderPage = () => {
                                                                     RS{" "}
                                                                     {Number(
                                                                         item.totalAmount ||
-                                                                            0,
+                                                                        0,
                                                                     ).toLocaleString()}
                                                                 </p>
                                                             </div>
@@ -1283,7 +1281,7 @@ const TrackOrderPage = () => {
                                                         RS{" "}
                                                         {Number(
                                                             order.taxAmount ||
-                                                                0,
+                                                            0,
                                                         ).toLocaleString()}
                                                     </span>
                                                 </div>
@@ -1371,35 +1369,53 @@ const TrackOrderPage = () => {
                                 </div>
                             ) : (
                                 <div className="space-y-2">
-                                    {savedOrders.map((id) => (
+                                    {savedOrders.map((order) => (
                                         <motion.button
-                                            key={id}
-                                            onClick={() =>
-                                                handleSavedOrderClick(id)
-                                            }
+                                            key={order.orderId}
+                                            onClick={() => {
+                                                setOrderId(order.orderId);
+                                                setSelectedOrderId(order.orderId);
+                                            }}
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
                                             transition={{ duration: 0.15 }}
-                                            className={`w-full flex items-center justify-between p-3.5 rounded-2xl border transition-all text-left ${
-                                                selectedOrderId === id
-                                                    ? "bg-[#1a2e1a] text-white border-[#1a2e1a]"
-                                                    : "bg-[#f8faf7] hover:bg-[#eef6ea] border-[#e8f0e4] text-[#1a2e1a]"
-                                            }`}
+                                            className={`w-full flex flex-col items-start p-3.5 rounded-2xl border transition-all text-left relative ${selectedOrderId === order.orderId
+                                                ? "bg-[#1a2e1a] text-white border-[#1a2e1a]"
+                                                : "bg-[#f8faf7] hover:bg-[#eef6ea] border-[#e8f0e4] text-[#1a2e1a]"
+                                                }`}
                                         >
-                                            <div className="flex items-center gap-3">
-                                                <CheckCircle2
-                                                    size={14}
-                                                    className={
-                                                        selectedOrderId === id
-                                                            ? "text-[#7aaf68]"
-                                                            : "text-stone-300"
-                                                    }
-                                                />
+                                            <div className="absolute top-9 right-3">
+                                                <img src={order.items[0]?.image} alt="" className="w-16 h-16 rounded" />
+                                            </div>
+                                            <div className="flex items-center justify-between w-full mb-1">
                                                 <span className="text-xs font-medium tracking-widest">
-                                                    #{id.slice(-8)}
+                                                    #{order.orderId.slice(-8)}
+                                                </span>
+                                                <span className="text-xs font-semibold text-stone-500">
+                                                    <span>{new Date(order.createdAt).toLocaleDateString("en-US")}</span>
                                                 </span>
                                             </div>
-                                            <ChevronRight size={14} />
+
+
+                                            <div className="">
+                                                <span className={`mt-1 text-sm font-medium ${selectedOrderId === order.orderId ? "text-white" : "text-[#1a2e1a]"}`}>
+                                                    Quantity: {" "}
+                                                    {Number(order.items[0]?.quantity || 0).toLocaleString()}
+                                                </span>
+                                            </div>
+                                            <div className="">
+                                                <span className={`mt-1 text-sm font-medium ${selectedOrderId === order.orderId ? "text-white" : "text-[#1a2e1a]"}`}>
+                                                    Unit Price: RS :{" "}
+                                                    {Number(order.items[0]?.unitPrice || 0).toLocaleString()}
+                                                </span>
+                                            </div>
+                                            <div className="">
+                                                <span className={`mt-1 text-sm font-medium ${selectedOrderId === order.orderId ? "text-white" : "text-[#1a2e1a]"}`}>
+                                                    Total Amount: RS : {" "}
+                                                    {Number(order.grandTotal || 0).toLocaleString()}
+                                                </span>
+                                            </div>
+
                                         </motion.button>
                                     ))}
                                 </div>

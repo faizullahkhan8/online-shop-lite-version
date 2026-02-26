@@ -1,38 +1,74 @@
-const STORAGE_KEY = "guest_order_ids_v1";
+const STORAGE_KEY = "guest_orders_v2";
 
 export const readGuestOrders = () => {
     try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return [];
+        if (!raw) return {};
 
         const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return [];
+        if (typeof parsed !== "object" || Array.isArray(parsed)) return {};
 
-        // Ensure valid id strings
-        return parsed.filter((id) => typeof id === "string");
+        return parsed;
     } catch {
-        return [];
+        return {};
     }
 };
 
-export const addGuestOrder = (orderOrId, max = 10) => {
+export const addGuestOrder = (order, max = 10) => {
     try {
-        const orderId =
-            typeof orderOrId === "string"
-                ? orderOrId
-                : orderOrId && (orderOrId._id || orderOrId.id);
-        if (!orderId) return;
+        console.log("passed: 1");
+        console.log(order);
+        if (!order?._id || !Array.isArray(order.items)) return;
+        console.log("passed: 2");
 
-        const current = readGuestOrders();
-        const filtered = current.filter((id) => id !== orderId);
-        const next = [orderId, ...filtered].slice(0, max);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    } catch {
-        // ignore storage failures
+        const orders = readGuestOrders();
+        console.log("passed: 3");
+
+        const normalizedOrder = {
+            orderId: order._id,
+            createdAt: order.createdAt,
+            grandTotal: order.grandTotal,
+            items: order.items.map((item) => ({
+                productId: item.product?._id,
+                name: item.product?.name,
+                image: item.product?.images[0]?.url || null,
+                quantity: item.quantity,
+                unitPrice: item.price,
+                totalPrice: item.totalAmount,
+            })),
+        };
+
+        console.log("passed: 4");
+        orders[order._id] = normalizedOrder;
+        console.log("passed: 5");
+
+        // Limit to max orders (most recent first)
+        const sortedEntries = Object.entries(orders)
+            .sort((a, b) => new Date(b[1].createdAt) - new Date(a[1].createdAt))
+            .slice(0, max);
+        console.log("passed: 6");
+
+        const limitedOrders = Object.fromEntries(sortedEntries);
+        console.log("passed: 7");
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(limitedOrders));
+        console.log("passed: 8");
+    } catch (error) {
+        console.log(error);
     }
+};
+
+export const getGuestOrderById = (orderId) => {
+    const orders = readGuestOrders();
+    return orders[orderId] || null;
 };
 
 export const getLastGuestOrder = () => {
-    const ids = readGuestOrders();
-    return ids[0] || null;
+    const orders = readGuestOrders();
+
+    const sorted = Object.values(orders).sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+    );
+
+    return sorted[0] || null;
 };
