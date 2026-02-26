@@ -8,6 +8,9 @@ const PromotionSection = () => {
     const activePromotion = data?.activePromotion || null;
     const nextUpcomingPromotion = data?.nextUpcomingPromotion || null;
 
+
+    if(!activePromotion) return ;
+
     return (
         <section className="py-20 px-4 bg-white">
             <div className="max-w-7xl mx-auto space-y-8">
@@ -41,15 +44,15 @@ const PromotionSection = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <div className="flex justify-center  gap-5">
                         <PromotionCard
                             promotion={activePromotion}
                             variant="active"
                         />
-                        <PromotionCard
+                        {/* <PromotionCard
                             promotion={nextUpcomingPromotion}
                             variant="upcoming"
-                        />
+                        /> */}
                     </div>
                 )}
 

@@ -195,7 +195,7 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess }) => {
                 file={activeCropFile}
                 onCancel={handleCropCancel}
                 onConfirm={handleCropConfirm}
-                aspect={1}
+                aspect={2}
                 title="Crop Image"
             />
         </div>
