@@ -55,7 +55,7 @@ const Header = () => {
                     <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
                 {/* Center: Logo — always centered */}
-                <div className="">
+                <div className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:flex-none md:order-first">
                     <Link
                         to="/"
                         className="block text-center leading-tight"
@@ -70,7 +70,7 @@ const Header = () => {
                     </Link>
                 </div>
                 {/* Left: Desktop Nav */}
-                <nav className="hidden md:flex items-center gap-6 lg:gap-8 flex-1  ">
+                <nav className="hidden md:flex items-center gap-6 lg:gap-8 absolute left-1/2 -translate-x-1/2">
                     <Link
                         to="/"
                         className="text-[11px] uppercase tracking-[0.12em] font-normal font-sans text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap"
