@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const WhatsAppIcon = () => (
@@ -13,32 +13,55 @@ const WhatsAppIcon = () => (
 
 const StickyActions = React.memo(() => {
     const [pageLoaded, setPageLoaded] = useState(false);
+    const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
+    const btnRef = useRef(null);
 
     useEffect(() => {
         if (document.readyState === "complete") {
-            setTimeout(() => setPageLoaded(true), 1000);
+            setTimeout(() => setPageLoaded(true), 800);
         } else {
-            const handleLoad = () => setTimeout(() => setPageLoaded(true), 1500);
+            const handleLoad = () => setTimeout(() => setPageLoaded(true), 1200);
             window.addEventListener("load", handleLoad);
             return () => window.removeEventListener("load", handleLoad);
         }
     }, []);
 
+    // Variants: container handles staggered children
     const containerVariants = useMemo(
         () => ({
-            hidden: { opacity: 0, y: 50 },
-            visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+            hidden: { opacity: 0, y: 30 },
+            visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.5, when: "beforeChildren", staggerChildren: 0.08 },
+            },
+            exit: { opacity: 0, y: 30, transition: { duration: 0.2 } },
         }),
         []
     );
 
     const itemVariants = useMemo(
         () => ({
-            hidden: { opacity: 0, y: 20 },
-            visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+            hidden: { opacity: 0, y: 12 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
         }),
         []
     );
+
+    // Mouse tilt logic for 3D effect
+    const handleMouseMove = (e) => {
+        const el = btnRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width; // 0..1
+        const py = (e.clientY - rect.top) / rect.height; // 0..1
+        // map to small rotation degrees
+        const ry = (px - 0.5) * 14; // rotateY
+        const rx = -(py - 0.5) * 10; // rotateX
+        setTilt({ rx, ry });
+    };
+
+    const handleMouseLeave = () => setTilt({ rx: 0, ry: 0 });
 
     return (
         <div className="fixed right-2 md:right-[16px] bottom-6 z-50 flex flex-col items-center gap-3">
@@ -49,40 +72,99 @@ const StickyActions = React.memo(() => {
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
-                        exit={{ opacity: 0, y: 30, transition: { duration: 0.2 } }}
+                        exit="exit"
                     >
+                        {/* WhatsApp button wrapper */}
                         <motion.a
                             href="https://wa.me/+923330555564"
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="WhatsApp"
                             title="WhatsApp"
+                            ref={btnRef}
+                            onMouseMove={handleMouseMove}
+                            onMouseLeave={handleMouseLeave}
                             variants={itemVariants}
-                            className="
-                        group relative h-8 w-8 md:w-10 md:h-10 rounded-full flex items-center justify-center
-                        bg-gray-100 dark:bg-gray-800 shadow-sm
-                        transition-transform duration-200 transform
-                        hover:scale-110 hover:bg-gradient-to-tr from-green-400 to-green-600
-                        "
+                            whileHover={{ scale: 1.08 }}
+                            whileTap={{ scale: 0.96 }}
+                            className={`
+                group relative h-8 w-8 md:w-10 md:h-10 rounded-full flex items-center justify-center
+                bg-gray-100 dark:bg-gray-800 shadow-lg
+                transition-transform duration-200 transform
+                hover:bg-gradient-to-tr from-green-400 to-green-600
+              `}
+                            style={{
+                                // apply perspective + tilt
+                                transform: `perspective(700px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
+                                // add GPU acceleration
+                                willChange: "transform",
+                            }}
                         >
-                            <WhatsAppIcon />
-                            <span
-                                className="
-                                    absolute right-full mr-2 top-1/2 -translate-y-1/2
-                                    whitespace-nowrap rounded-md px-2 py-1 text-xs font-medium
-                                    bg-black/70 text-white opacity-0 group-hover:opacity-100
-                                    translate-x-1 group-hover:translate-x-0
-                                    transition-all duration-200
-                                "
+                            {/* pulsing halo ring (subtle, infinite) */}
+                            <motion.span
+                                aria-hidden
+                                className="absolute inset-0 rounded-full pointer-events-none"
+                                initial={{ scale: 0.9, opacity: 0.18 }}
+                                animate={{
+                                    scale: [0.96, 1.22, 0.96],
+                                    opacity: [0.12, 0.22, 0.12],
+                                }}
+                                transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+                                style={{
+                                    boxShadow: "0 6px 18px rgba(16,185,129,0.12)",
+                                }}
+                            />
+
+                            {/* decorative ripple when tapped - appears briefly */}
+                            <motion.span
+                                className="absolute rounded-full pointer-events-none"
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                whileTap={{ scale: 2.2, opacity: 0.18 }}
+                                transition={{ duration: 0.32 }}
+                                style={{
+                                    inset: 0,
+                                    background: "rgba(16,185,129,0.08)",
+                                }}
+                            />
+
+                            {/* the icon */}
+                            <div className="relative z-10">
+                                <WhatsAppIcon />
+                            </div>
+
+                            {/* tooltip */}
+                            <motion.span
+                                className={`absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md px-2 py-1 text-xs font-medium
+                  bg-black/80 text-white opacity-0 translate-x-2 pointer-events-none`}
+
+                                initial={{ opacity: 0, x: 10 }}
+                                whileHover={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.18 }}
                                 aria-hidden="true"
+                                style={{ zIndex: 20 }}
                             >
                                 WhatsApp
-                            </span>
+                            </motion.span>
                         </motion.a>
+
+                        {/* small label or secondary action example (keeps stagger effect) */}
+                        <motion.div
+                            variants={itemVariants}
+                            className="text-xs text-gray-500 dark:text-gray-300 select-none"
+                            aria-hidden
+                        >
+                            <motion.span
+                                initial={{ opacity: 0, y: 6 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.16 }}
+                            >
+                                Need help? Chat now
+                            </motion.span>
+                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
-        </div >
+        </div>
     );
 });
 
