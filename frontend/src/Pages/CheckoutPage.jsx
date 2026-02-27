@@ -238,6 +238,8 @@ const CheckoutPage = () => {
                                     <CheckoutInput
                                         label="Phone Number"
                                         name="recipient.phone"
+                                        type="tel"
+
                                         icon={<Phone size={22} />}
                                         value={formData.recipient.phone}
                                         onChange={handleChange}
@@ -506,6 +508,15 @@ const CheckoutInput = ({
                 {icon}
             </div>
             <input
+                pattern={type === "tel" ? "[0-9]{10,14}" : undefined}
+                minLength={type === "tel" ? 10 : undefined}
+                maxLength={type === "tel" ? 14 : undefined}
+                onInvalid={(e) => {
+                    if (type === "tel") {
+                        e.target.setCustomValidity("Phone number must be 10 to 14 digits.");
+                    }
+                }}
+                onInput={(e) => e.target.setCustomValidity("")}
                 required={required}
                 type={type}
                 name={name}

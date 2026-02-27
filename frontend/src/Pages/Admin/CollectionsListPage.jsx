@@ -225,7 +225,7 @@ const CollectionsListPage = () => {
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {isLoading &&
-                            collectionsData?.collections?.length === 0 ? (
+                                collectionsData?.collections?.length === 0 ? (
                                 <tr>
                                     <td
                                         colSpan={4}
@@ -540,18 +540,16 @@ const CollectionsListPage = () => {
                                             },
                                         })
                                     }
-                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                                        collectionModal.data.isActive
-                                            ? "bg-blue-600"
-                                            : "bg-gray-300"
-                                    }`}
+                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${collectionModal.data.isActive
+                                        ? "bg-blue-600"
+                                        : "bg-gray-300"
+                                        }`}
                                 >
                                     <span
-                                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                                            collectionModal.data.isActive
-                                                ? "translate-x-6"
-                                                : "translate-x-1"
-                                        }`}
+                                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${collectionModal.data.isActive
+                                            ? "translate-x-6"
+                                            : "translate-x-1"
+                                            }`}
                                     />
                                 </button>
                             </div>
@@ -596,9 +594,9 @@ const CollectionsListPage = () => {
 
             {/* Add Products To Collection Modal */}
             {addProductsModal.isOpen && (
-                <div className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-white rounded-2xl shadow-xl max-w-3xl w-full p-6">
-                        <div className="flex items-center justify-between mb-4">
+                <div className="fixed inset-0 z-9999  flex items-center justify-center p-4 bg-black/50">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-3xl p-6">
+                        <div className="flex items-center justify-between mb-4 ">
                             <div>
                                 <h3 className="text-lg font-semibold text-gray-900">
                                     Add Products to "
