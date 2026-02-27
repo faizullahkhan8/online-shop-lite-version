@@ -72,7 +72,7 @@ const Footer = () => {
                 { name: "Shipping", href: "#" },
                 { name: "Returns", href: "#" },
                 { name: "FAQ", href: "#" },
-                { name: "Contact", href: "#" },
+                { name: "Contact", href: "https://wa.me/+923330555564" },
             ],
         },
     ];
