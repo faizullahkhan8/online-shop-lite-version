@@ -89,9 +89,9 @@ const StickyActions = React.memo(() => {
                             whileTap={{ scale: 0.96 }}
                             className={`
                 group relative h-8 w-8 md:w-10 md:h-10 rounded-full flex items-center justify-center
-                bg-gray-100 dark:bg-gray-800 shadow-lg
+                bg-gray-100 dark:bg-green-400 shadow-lg
                 transition-transform duration-200 transform
-                hover:bg-gradient-to-tr from-green-400 to-green-600
+                hover:bg-gradient-to-tr from-green-400 to-green-600 hover:animate-pulse
               `}
                             style={{
                                 // apply perspective + tilt
@@ -135,7 +135,7 @@ const StickyActions = React.memo(() => {
                             {/* tooltip */}
                             <motion.span
                                 className={`absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md px-2 py-1 text-xs font-medium
-                  bg-black/80 text-white opacity-0 translate-x-2 pointer-events-none`}
+                  bg-black/80 text-white opacity-0 translate-x-2 pointer-events-none `}
 
                                 initial={{ opacity: 0, x: 10 }}
                                 whileHover={{ opacity: 1, x: 0 }}
@@ -148,7 +148,7 @@ const StickyActions = React.memo(() => {
                         </motion.a>
 
                         {/* small label or secondary action example (keeps stagger effect) */}
-                        <motion.div
+                        {/* <motion.div
                             variants={itemVariants}
                             className="text-xs text-gray-500 dark:text-gray-300 select-none"
                             aria-hidden
@@ -160,7 +160,7 @@ const StickyActions = React.memo(() => {
                             >
                                 Need help? Chat now
                             </motion.span>
-                        </motion.div>
+                        </motion.div> */}
                     </motion.div>
                 )}
             </AnimatePresence>
