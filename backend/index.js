@@ -2,6 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
+import { resolve } from "path";
+
+
 // import {
 //     checkoutLimiter,
 //     trackingLimiter,
@@ -23,18 +26,20 @@ import { ErrorResponse } from "./utils/ErrorResponse.js";
 dotenv.config();
 
 const app = express();
+app.use(express.static("dist"));
 app.use("/public", express.static("public"));
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 
 // CORS: Must be early, before route handlers and rate limiters
-app.use(
-    cors({
-        origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-        credentials: true,
-    }),
-);
+const corsOptions = {
+    origin: (origin, callback) => {
+        callback(null, true); // har origin allow
+    },
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // Security: Helmet headers
 app.use(helmet());
@@ -72,6 +77,21 @@ app.use("/api/settings", settingsRouter);
 app.use("/api/promotions", promotionRouter);
 app.use("/api/hero", heroRouter);
 app.use("/api/reviews", reviewRouter);
+
+
+
+
+
+// app.get("/{*splat}", (req, res) => {
+//     res.sendFile(process.cwd() + "/dist/index.html");
+// });
+
+app.get("/{*splat}", (req, res) => {
+    res.sendFile(resolve("dist/index.html"));
+});
+
+
+
 
 app.use(errorHandler);
 

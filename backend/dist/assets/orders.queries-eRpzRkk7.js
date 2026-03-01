@@ -1,0 +1,1 @@
+import{K as r}from"./index-DQ3pQAHu.js";import{o as s,g as u,a as y,b as a}from"./orders.keys-B8i8BiTb.js";const d=()=>r({queryKey:s.lists(),queryFn:u}),n=()=>r({queryKey:[...s.lists(),"user"],queryFn:y}),l=e=>r({queryKey:s.detail(e),queryFn:()=>a(e),enabled:!!e});export{l as a,d as b,n as u};
