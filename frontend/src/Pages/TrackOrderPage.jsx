@@ -647,6 +647,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import Breadcrumb from "../Components/Breadcrumb.jsx";
 import ReviewModal from "../Components/ReviewModal.jsx";
+import HeroBanner from "../Components/HeroBanner.jsx";
 
 /* ─── Variants ─── */
 const fadeUp = {
@@ -737,7 +738,7 @@ const TrackOrderPage = () => {
     return (
         <div className="min-h-screen bg-[#fdfdfb]">
             {/* ── Hero Banner ── */}
-            <div className="relative w-full bg-[#f4f8f2] border-b border-[#e8f0e4] overflow-hidden">
+            {/* <div className="relative w-full bg-[#f4f8f2] border-b border-[#e8f0e4] overflow-hidden">
                 <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-[#d6eacc] opacity-40 blur-3xl pointer-events-none" />
                 <div className="absolute bottom-0 left-8 w-48 h-48 rounded-full bg-[#e8f4e0] opacity-50 blur-2xl pointer-events-none" />
                 <div className="relative max-w-7xl mx-auto px-6 lg:px-12 py-14 md:py-16 flex flex-col items-center text-center">
@@ -776,7 +777,14 @@ const TrackOrderPage = () => {
                         Enter your order ID or select from recent orders
                     </motion.p>
                 </div>
-            </div>
+            </div> */}
+
+
+            <HeroBanner
+                tagline=" Order Status"
+                heading="Track Your Order"
+                subtext=" Enter your order ID or select from recent orders"
+            />
 
             <div className="max-w-7xl mx-auto px-6 lg:px-12 py-10">
                 {/* Breadcrumb */}

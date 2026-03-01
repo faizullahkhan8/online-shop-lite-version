@@ -7,7 +7,7 @@ import ImageEditor from "../../Components/ImageEditor.jsx";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_FILES = 10;
 
-const UploadImagesModal = ({ isOpen, onClose, onSuccess }) => {
+const UploadImagesModal = ({ isOpen, onClose, onSuccess, aspectRatio=1 }) => {
     const [files, setFiles] = useState([]);
     const [cropQueue, setCropQueue] = useState([]);
 
@@ -195,7 +195,7 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess }) => {
                 file={activeCropFile}
                 onCancel={handleCropCancel}
                 onConfirm={handleCropConfirm}
-                aspect={2}
+                aspect={aspectRatio}
                 title="Crop Image"
             />
         </div>

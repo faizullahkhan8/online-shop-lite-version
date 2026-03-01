@@ -327,7 +327,7 @@ const PromotionBuilder = () => {
                                     />
                                     <div className="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center text-white">
                                         {promotionData.discountType ===
-                                        "PERCENTAGE" ? (
+                                            "PERCENTAGE" ? (
                                             <Percent size={18} />
                                         ) : (
                                             <span className="font-semibold text-sm">
@@ -514,11 +514,10 @@ const PromotionBuilder = () => {
                                                 key={p._id}
                                                 type="button"
                                                 onClick={() => toggleProduct(p)}
-                                                className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center text-center gap-2 ${
-                                                    isSelected
+                                                className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center text-center gap-2 ${isSelected
                                                         ? "bg-blue-50 border-blue-500"
                                                         : "bg-white border-gray-200 hover:border-gray-300"
-                                                }`}
+                                                    }`}
                                             >
                                                 <div className="w-full bg-gray-50 rounded-2xl overflow-hidden border border-gray-100">
                                                     <img
@@ -610,13 +609,13 @@ const PromotionBuilder = () => {
                                                 <p className="text-xs text-blue-600 mt-0.5">
                                                     Rs{" "}
                                                     {(promotionData.discountType ===
-                                                    "PERCENTAGE"
+                                                        "PERCENTAGE"
                                                         ? p.price -
-                                                          (p.price *
-                                                              promotionData.discountValue) /
-                                                              100
+                                                        (p.price *
+                                                            promotionData.discountValue) /
+                                                        100
                                                         : p.price -
-                                                          promotionData.discountValue
+                                                        promotionData.discountValue
                                                     ).toLocaleString()}
                                                 </p>
                                             </div>
@@ -640,6 +639,7 @@ const PromotionBuilder = () => {
                 isOpen={isUploadModalOpen}
                 onClose={() => setIsUploadModalOpen(false)}
                 onSuccess={handleUploadSuccess}
+                aspectRatio={2}
             />
         </div>
     );

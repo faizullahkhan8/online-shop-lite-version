@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { useHeroSlides } from "../../features/heros/hero.queries.js";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
     const { data, isPending } = useHeroSlides();
     const [currentSlide, setCurrentSlide] = useState(0);
+    let Navigate = useNavigate();
 
     useEffect(() => {
         if (data?.slides?.length > 0) {
@@ -138,7 +140,11 @@ const HeroSection = () => {
 
                         {/* CTA Button */}
                         <div className="pt-3">
-                            <button className="bg-white text-gray-900 text-[10px] uppercase tracking-[0.25em] font-sans font-medium px-8 py-3 hover:bg-gray-900 hover:text-white transition-colors duration-300">
+                            <button 
+                            onClick={()=>{
+                                Navigate("/products")
+                            }}
+                            className="bg-white text-gray-900 text-[10px] uppercase tracking-[0.25em] font-sans font-medium px-8 py-3 hover:bg-gray-900 hover:text-white transition-colors duration-300">
                                 Shop Now
                             </button>
                         </div>

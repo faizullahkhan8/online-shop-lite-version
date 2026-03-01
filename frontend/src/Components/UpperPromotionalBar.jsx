@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useActiveDeals } from "../features/promotions/promotions.query";
+import { intervalToDuration } from "date-fns";
 
 // Pad numbers so "9 seconds" and "10 seconds" take the same width
 // const formatRemainingTimeTabular = (endTime, currentTime = new Date()) => {
@@ -94,12 +95,12 @@ const PromotionBar = () => {
 
     const remainingTime = activePromotion?.endTime
         ? formatRemainingTimeTabular(
-              new Date(activePromotion.endTime),
-              new Date(now),
-          )
+            new Date(activePromotion.endTime),
+            new Date(now),
+        )
         : "";
 
-    console.log("remaingin time", remainingTime);
+    // console.log("remaingin time", remainingTime);
 
     const timeText =
         remainingTime && remainingTime !== "Ended"
@@ -115,8 +116,8 @@ const PromotionBar = () => {
                     {isLoading
                         ? "Loading promotion..."
                         : isError
-                          ? "Unable to load promotion"
-                          : "No active promotion right now"}
+                            ? "Unable to load promotion"
+                            : "No active promotion right now"}
                 </p>
             </div>
         );
@@ -138,26 +139,27 @@ const PromotionBar = () => {
             onClick={() => {
                 ScrollButton(activePromotion._id);
             }}
-            className="w-full h-9 z-50 bg-[#F1F8ED] overflow-hidden"
+            className="w-full h-8 sm:h-9 z-50 bg-[#F1F8ED] overflow-hidden cursor-pointer"
         >
-            <div className="flex items-center justify-center h-full px-4 gap-0">
-                {/* Title — fixed width, right-aligned */}
-                <span className="text-[#1F3A2E] text-xs font-semibold tracking-wide truncate max-w-45 sm:max-w-xs text-right shrink-0">
+            <div className="flex items-center justify-center h-full px-2 sm:px-4 gap-0">
+                {/* Title */}
+                <span className="text-[#1F3A2E] text-[10px] sm:text-xs font-semibold tracking-wide truncate max-w-[70px] sm:max-w-[160px] md:max-w-xs text-right shrink-0">
                     {activePromotion.title}
                 </span>
 
                 <Divider />
 
-                {/* Product count — fixed width so it never shifts layout */}
-                <span className="text-[#1F3A2E]/70 text-xs font-medium tabular-nums whitespace-nowrap shrink-0 w-20 text-center">
-                    {productCount} product{productCount === 1 ? "" : "s"}
+                {/* Product count */}
+                <span className="text-[#1F3A2E]/70 text-[10px] sm:text-xs font-medium tabular-nums whitespace-nowrap shrink-0 text-center">
+                    <span className="hidden sm:inline">{productCount} product{productCount === 1 ? "" : "s"}</span>
+                    <span className="sm:hidden">{productCount} pc</span>
                 </span>
 
                 <Divider />
 
-                {/* Timer — monospaced + fixed width so ticking never shifts */}
+                {/* Timer */}
                 <span
-                    className="text-[#2D6A4F] text-xs font-semibold whitespace-nowrap shrink-0 w-29"
+                    className="text-[#2D6A4F] text-[10px] sm:text-xs font-semibold whitespace-nowrap shrink-0"
                     style={{
                         fontVariantNumeric: "tabular-nums",
                         fontFamily: "monospace",
