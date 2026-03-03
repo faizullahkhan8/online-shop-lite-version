@@ -19,7 +19,7 @@ const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
 
-    const { data, isLoading } = useCollections();
+    const { data, isLoading } = useCollections({ isActive: true });
 
     const handleSearch = (e) => {
         e.preventDefault();

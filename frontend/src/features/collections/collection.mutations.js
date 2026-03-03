@@ -11,6 +11,7 @@ export const useCreateCollection = () => {
 
     return useMutation({
         mutationFn: ({ collectionData }) => createCollection(collectionData),
+
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: collectionKeys.all,

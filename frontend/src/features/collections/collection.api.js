@@ -14,8 +14,8 @@ export const createCollection = async (collectionData) => {
     return response.data;
 };
 
-export const getAllCollections = async () => {
-    const response = await apiClient.get("/collections/all");
+export const getAllCollections = async (params) => {
+    const response = await apiClient.get("/collections/all", { params });
     return response.data;
 };
 

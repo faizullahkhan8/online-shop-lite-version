@@ -99,6 +99,7 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
         excludeActivePromotions,
         currentPromotionId,
         excludeAssignedToCollection,
+        excludeInactiveCollections,
     } = req.query;
 
     let query = {};
@@ -143,12 +144,13 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
             const PromotionModel = getLocalPromotionModel();
 
             if (!PromotionModel) {
-                return next(new ErrorResponse("Promotion model not found", 500));
+                return next(
+                    new ErrorResponse("Promotion model not found", 500),
+                );
             }
 
-            const promotion = await PromotionModel.findById(promotionId).select(
-                "products",
-            );
+            const promotion =
+                await PromotionModel.findById(promotionId).select("products");
 
             if (!promotion || promotion.products.length === 0) {
                 query._id = {
@@ -164,7 +166,6 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
         }
     }
 
-    // Exclude products already in active promotions
     if (excludeActivePromotions === "true") {
         const PromotionModel = getLocalPromotionModel();
         if (PromotionModel) {
@@ -184,7 +185,6 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
             }, []);
 
             if (usedProductIds.length > 0) {
-                // Determine if we need to merge with existing _id query (unlikely here but safe)
                 if (query._id) {
                     query._id.$nin = [
                         ...(query._id.$nin || []),
@@ -198,7 +198,6 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
     }
 
     if (excludeAssignedToCollection === "true") {
-        // Find all products already assigned to any collection
         const assignedProducts = await ProductModel.find({
             collection: { $exists: true, $ne: null },
         }).select("_id");
@@ -206,7 +205,6 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
         const assignedProductIds = assignedProducts.map((p) => p._id);
 
         if (assignedProductIds.length > 0) {
-            // Merge with existing _id query if exists
             if (query._id) {
                 query._id.$nin = [
                     ...(query._id.$nin || []),
@@ -218,17 +216,47 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
         }
     }
 
-    const skip = (Number(page) - 1) * Number(limit);
+    if (excludeInactiveCollections === "true") {
+        const CollectionModel = getLocalCollectionModel();
+        if (CollectionModel) {
+            const inactiveCollections = await CollectionModel.find({
+                isActive: false,
+            }).select("_id");
+
+            const inactiveCollectionIds = inactiveCollections.map((c) => c._id);
+
+            if (inactiveCollectionIds.length > 0) {
+                // Determine if we need to merge with existing collection query
+                if (query.collection) {
+                    // If a specific collection is already being queried, check if it's inactive
+                    // If it is inactive, this query will naturally return nothing if we exclude it.
+                    // For safety, we can convert it to a complex query if needed, but usually
+                    // excludeInactiveCollections is used when fetching ALL products.
+                    // If query.collection is an object (e.g., with $in), we can refine it.
+                    // Assuming query.collection is an ObjectId.
+                    query.collection = {
+                        $in: [query.collection],
+                        $nin: inactiveCollectionIds,
+                    };
+                } else {
+                    query.collection = { $nin: inactiveCollectionIds };
+                }
+            }
+        }
+    }
+
+    const pageNum = Number(page) || 1;
+    const limitNum = Number(limit) || 10;
+    const skip = (pageNum - 1) * limitNum;
 
     const products = await ProductModel.find(query)
         .populate("collection", "name")
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(Number(limit));
+        .limit(limitNum);
 
     const totalProducts = await ProductModel.countDocuments(query);
 
-    // Enrich products with promotional pricing
     const productsWithPromos = await Promise.all(
         products.map(async (product) => {
             const { price: effectivePrice, promotion } =
@@ -246,8 +274,8 @@ export const getAllProducts = expressAsyncHandler(async (req, res, next) => {
         success: true,
         message: "Products fetched successfully",
         products: productsWithPromos,
-        totalPages: Math.ceil(totalProducts / Number(limit)),
-        currentPage: Number(page),
+        totalPages: Math.ceil(totalProducts / limitNum),
+        currentPage: pageNum,
         totalProducts,
     });
 });
@@ -334,7 +362,9 @@ export const assignCollectionToProducts = expressAsyncHandler(
         const { collectionId, productIds } = req.body;
 
         if (!collectionId || !mongoose.isValidObjectId(collectionId)) {
-            return next(new ErrorResponse("Valid collectionId is required", 400));
+            return next(
+                new ErrorResponse("Valid collectionId is required", 400),
+            );
         }
 
         if (!Array.isArray(productIds) || productIds.length === 0) {
@@ -349,12 +379,13 @@ export const assignCollectionToProducts = expressAsyncHandler(
         );
 
         if (hasInvalidProductId) {
-            return next(new ErrorResponse("One or more productIds are invalid", 400));
+            return next(
+                new ErrorResponse("One or more productIds are invalid", 400),
+            );
         }
 
-        const collection = await CollectionModel.findById(collectionId).select(
-            "_id",
-        );
+        const collection =
+            await CollectionModel.findById(collectionId).select("_id");
 
         if (!collection) {
             return next(new ErrorResponse("Collection not found", 404));

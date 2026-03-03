@@ -83,7 +83,7 @@ const ProductList = () => {
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {getAllProductsLoading &&
-                            data?.products.length === 0 ? (
+                                data?.products.length === 0 ? (
                                 <tr>
                                     <td
                                         colSpan={5}
@@ -147,7 +147,8 @@ const ProductList = () => {
                                         </td>
                                         <td className="px-6 py-4 text-right flex gap-2 justify-end">
                                             <Link
-                                                to={`/admin-dashboard/products/add?isEditing=true&product=${encodeURIComponent(JSON.stringify(product))}`}
+                                                to="/admin-dashboard/products/add"
+                                                state={{ product }}
                                                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                                             >
                                                 <Edit

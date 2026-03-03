@@ -9,7 +9,7 @@ import AdminLayout from "./Layout/AdminLayout.jsx";
 
 import BaseLayout from "./Layout/BaseLayout";
 import CollectionsPage from "./Pages/CollectionsPage.jsx";
-import FloatingParticles from "./Components/FloatingParticles.jsx";
+// import FloatingParticles from "./Components/FloatingParticles.jsx";
 import ScrollToTop from "./Components/ScrollToTopComp.jsx";
 const HomePage = lazy(() => import("./Pages/HomePage"));
 const ProductListPage = lazy(() => import("./Pages/ProductListPage"));
@@ -44,15 +44,10 @@ const PromotionBuilderPage = lazy(
 const HeroManagerPage = lazy(() => import("./Pages/Admin/HeroManagerPage"));
 
 const App = () => {
-
     return (
         <>
-
-            <FloatingParticles />
+            {/* <FloatingParticles /> */}
             <ScrollToTop />
-
-
-
 
             <ToastContainer
                 position="top-right"

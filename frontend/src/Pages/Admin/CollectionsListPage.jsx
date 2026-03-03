@@ -69,8 +69,6 @@ const CollectionsListPage = () => {
         excludeAssignedToCollection: true,
     });
 
-    console.log(collectionModal.data._id);
-
     const unassignedProducts = unassignedProductsData?.products || [];
 
     useEffect(() => {
@@ -135,6 +133,11 @@ const CollectionsListPage = () => {
     const handleImageChange = (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            return toast.error("Image size should be less than 5MB");
+        }
+
         setCollectionModal((prev) => ({
             ...prev,
             data: { ...prev.data, image: file },
@@ -167,6 +170,9 @@ const CollectionsListPage = () => {
                     onSuccess: () => {
                         handleCloseModal();
                     },
+                    onError: (error) => {
+                        toast.error(error.response.data.message);
+                    },
                 },
             );
         } else {
@@ -175,6 +181,9 @@ const CollectionsListPage = () => {
                 {
                     onSuccess: () => {
                         handleCloseModal();
+                    },
+                    onError: (error) => {
+                        toast.error(error.response.data.message);
                     },
                 },
             );
@@ -250,7 +259,7 @@ const CollectionsListPage = () => {
                                                 <div className="w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200">
                                                     {collection.image ? (
                                                         <img
-                                                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${collection.image}`}
+                                                            src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}${collection.image}`}
                                                             alt={
                                                                 collection.name
                                                             }
@@ -409,7 +418,7 @@ const CollectionsListPage = () => {
 
             {/* Add/Edit Collection Modal */}
             {collectionModal.isOpen && (
-                <div className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/50">
+                <div className="fixed inset-0 z-999 flex items-center justify-center p-4 bg-black/50">
                     <div className="bg-white rounded-2xl shadow-xl max-w-md w-full">
                         {/* Modal Header */}
                         <div className="flex items-center justify-between p-6 border-b border-gray-200">
@@ -508,6 +517,7 @@ const CollectionsListPage = () => {
                                     <input
                                         type="file"
                                         id="collection-image"
+                                        name="image"
                                         hidden
                                         accept="image/*"
                                         onChange={handleImageChange}
@@ -529,17 +539,23 @@ const CollectionsListPage = () => {
                                 </div>
                                 <button
                                     type="button"
-                                    onClick={() =>
+                                    onClick={() => {
+                                        const isCurrentlyActive = collectionModal.data.isActive;
+                                        if (isCurrentlyActive) {
+                                            const confirmDeactivation = window.confirm(
+                                                "Deactivating this collection will hide all of its products from customers. Do you want to proceed?"
+                                            );
+                                            if (!confirmDeactivation) return;
+                                        }
+
                                         setCollectionModal({
                                             ...collectionModal,
                                             data: {
                                                 ...collectionModal.data,
-                                                isActive:
-                                                    !collectionModal.data
-                                                        .isActive,
+                                                isActive: !collectionModal.data.isActive,
                                             },
-                                        })
-                                    }
+                                        });
+                                    }}
                                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${collectionModal.data.isActive
                                         ? "bg-blue-600"
                                         : "bg-gray-300"

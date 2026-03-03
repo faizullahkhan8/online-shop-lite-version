@@ -1,11 +1,21 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Input from "../../UI/Input.jsx";
 import Button from "../../UI/Button.jsx";
 import Select from "../../UI/Select.jsx";
 import UploadImagesModal from "./UploadImagesModel.jsx";
 
-import { Loader, X, Hash, Loader2 } from "lucide-react";
+import {
+    Loader,
+    X,
+    Hash,
+    Loader2,
+    DollarSign,
+    Package,
+    ArrowDown10Icon,
+    BoxSelect,
+    ArrowUpAZ,
+} from "lucide-react";
 
 import {
     useCreateProduct,
@@ -15,7 +25,7 @@ import {
 import { useCollections } from "../../features/collections/collection.queries.js";
 import { useDeleteUploadImage } from "../../features/upload.api.js";
 
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const INITIAL_STATE = {
@@ -32,12 +42,32 @@ const INITIAL_STATE = {
 
 const AddProduct = () => {
     const [searchParams] = useSearchParams();
+    const location = useLocation();
     const navigate = useNavigate();
 
     const deleteUploadImage = useDeleteUploadImage();
 
-    const parseProductFromParams = () => {
+    const getInitialProductData = () => {
         try {
+            // Priority 1: location.state
+            if (location.state?.product) {
+                const product = location.state.product;
+                const { collection, images, ...rest } = product;
+
+                const resolvedCollection =
+                    typeof collection === "string"
+                        ? collection
+                        : collection?._id || collection?.id || "";
+
+                return {
+                    ...INITIAL_STATE,
+                    ...rest,
+                    images: Array.isArray(images) ? images : [],
+                    collection: resolvedCollection,
+                };
+            }
+
+            // Priority 2: fallback to searchParams (for direct links or legacy support if needed)
             const raw = searchParams.get("product");
             if (!raw) return INITIAL_STATE;
 
@@ -60,7 +90,13 @@ const AddProduct = () => {
         }
     };
 
-    const [productData, setProductData] = useState(parseProductFromParams);
+    const [productData, setProductData] = useState(getInitialProductData);
+
+    // ✅ Reset/Update state when location or searchParams change (handles Navigating from Edit -> Add and vice-versa)
+    useEffect(() => {
+        setProductData(getInitialProductData());
+    }, [location.pathname, location.search, location.state]);
+
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
     const isEditing = Boolean(productData?._id);
@@ -104,6 +140,10 @@ const AddProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (productData.name.length < 5) {
+            return toast.error("Product name must be at least 5 characters long");
+        }
 
         if (productData.images.length === 0) {
             return toast.error("At least one image is required");
@@ -165,6 +205,7 @@ const AddProduct = () => {
                             <Input
                                 type="text"
                                 id="name"
+                                min={5}
                                 placeholder={"Product name"}
                                 value={productData?.name}
                                 onChange={handleChange}
@@ -173,58 +214,125 @@ const AddProduct = () => {
                         </div>
 
                         <div className="grid grid-cols-3 gap-4">
-                            <Input
-                                type="number"
-                                id="price"
-                                placeholder="Price"
-                                value={productData?.price}
-                                onChange={handleChange}
-                                required
-                            />
-                            <Input
-                                type="number"
-                                id="stock"
-                                placeholder="Stock"
-                                value={productData?.stock}
-                                onChange={handleChange}
-                                required
-                            />
-                            <Input
-                                type="number"
-                                id="lowStock"
-                                placeholder="Low Stock"
-                                value={productData?.lowStock}
-                                onChange={handleChange}
-                                required
-                            />
+                            <div>
+                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                    <DollarSign
+                                        size={14}
+                                        className="text-blue-600"
+                                    />
+                                    Product Price
+                                </label>
+                                <Input
+                                    type="number"
+                                    min={0}
+                                    id="price"
+                                    placeholder="Price"
+                                    value={productData?.price}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                    <Package
+                                        size={14}
+                                        className="text-blue-600"
+                                    />
+                                    Product Stock
+                                </label>
+                                <Input
+                                    type="number"
+                                    min={0}
+                                    id="stock"
+                                    placeholder="Stock"
+                                    value={productData?.stock}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                    <ArrowDown10Icon
+                                        size={14}
+                                        className="text-blue-600"
+                                    />
+                                    Low Stock
+                                </label>
+                                <Input
+                                    type="number"
+                                    min={0}
+                                    id="lowStock"
+                                    placeholder="Low Stock"
+                                    value={productData?.lowStock}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
                         </div>
 
-                        <Select
-                            id="collection"
-                            placeholder="Select Collection"
-                            value={productData?.collection}
-                            onChange={(val) =>
-                                handleChange({
-                                    target: {
-                                        id: "collection",
-                                        value: val,
-                                    },
-                                })
-                            }
-                            options={collectionData?.collections?.map((c) => ({
-                                label: c.name,
-                                value: c._id,
-                            }))}
-                        />
-
-                        <textarea
-                            id="description"
-                            placeholder="Product Description"
-                            rows={6}
-                            value={productData?.description}
-                            onChange={handleChange}
-                            className="border border-gray-300 rounded-2xl w-full resize-none py-2 px-4 text-gray-700 text-sm"
-                        />
+                        <div>
+                            <div className="flex items-center justify-between mb-1.5">
+                                <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                                    <BoxSelect
+                                        size={14}
+                                        className="text-blue-600"
+                                    />
+                                    Product Collection
+                                </label>
+                                {productData?.collection && (
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            handleChange({
+                                                target: {
+                                                    id: "collection",
+                                                    value: "",
+                                                },
+                                            })
+                                        }
+                                        className="text-xs text-red-500 hover:text-red-700 font-medium transition-colors"
+                                    >
+                                        Remove Collection
+                                    </button>
+                                )}
+                            </div>
+                            <Select
+                                id="collection"
+                                placeholder="Select Collection"
+                                value={productData?.collection}
+                                onChange={(val) =>
+                                    handleChange({
+                                        target: {
+                                            id: "collection",
+                                            value: val,
+                                        },
+                                    })
+                                }
+                                options={collectionData?.collections?.map(
+                                    (c) => ({
+                                        label: c.name,
+                                        value: c._id,
+                                    }),
+                                )}
+                            />
+                        </div>
+                        <div>
+                            <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                <ArrowUpAZ
+                                    size={14}
+                                    className="text-blue-600"
+                                />
+                                Product Description
+                            </label>
+                            <textarea
+                                id="description"
+                                placeholder="Product Description"
+                                rows={6}
+                                value={productData?.description}
+                                onChange={handleChange}
+                                className="border border-gray-300 rounded-2xl w-full resize-none py-2 px-4 text-gray-700 text-sm"
+                            />
+                        </div>
                     </div>
                 </div>
 

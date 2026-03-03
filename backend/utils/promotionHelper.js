@@ -1,20 +1,13 @@
 import { getLocalPromotionModel } from "../config/localDb.js";
 
-/**
- * Calculates the current price of a product based on active promotions.
- * @param {string} productId - The ID of the product.
- * @param {number} basePrice - The original price of the product.
- * @returns {Promise<{price: number, promotion: object|null}>} - The effective price and the promotion details.
- */
 export const getEffectivePrice = async (productId, basePrice) => {
     const PromotionModel = getLocalPromotionModel();
     if (!PromotionModel) return { price: basePrice, promotion: null };
 
     const now = new Date();
-    // Find a deterministic active promotion that contains this product
-    // Respect promotion `status` and ordering to ensure a single selected promotion
+
     const activePromotion = await PromotionModel.findOne({
-        products: productId,
+        products: { $in: [productId] },
         startTime: { $lte: now },
         endTime: { $gte: now },
         status: "ACTIVE",
@@ -32,7 +25,6 @@ export const getEffectivePrice = async (productId, basePrice) => {
         effectivePrice = basePrice - activePromotion.discountValue;
     }
 
-    // Ensure price doesn't go below zero
     effectivePrice = Math.max(0, effectivePrice);
 
     return {

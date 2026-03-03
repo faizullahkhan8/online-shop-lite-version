@@ -128,7 +128,7 @@ const ProductCarousel = ({ products, title, isViewAll }) => {
                        md:px-4
                        gap-4 md:gap-5"
                 >
-                    {products.map((product) => (
+                    {products?.map((product) => (
                         <motion.div
                             key={product.id}
                             variants={cardVariant}

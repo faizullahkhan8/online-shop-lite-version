@@ -51,8 +51,7 @@ const linkItem = {
 
 /* ─── Component ─── */
 const Footer = () => {
-    const { data, isLoading } = useCollections();
-    console.log(data, "THe data from footer")
+    const { data, isLoading } = useCollections({ isActive: true });
 
     const [openSection, setOpenSection] = useState(null);
     const [emailFocused, setEmailFocused] = useState(false);
@@ -94,7 +93,6 @@ const Footer = () => {
         }
     }, [data]);
 
-
     const toggleSection = (index) => {
         setOpenSection(openSection === index ? null : index);
     };
@@ -105,12 +103,6 @@ const Footer = () => {
     };
 
     return (
-
-
-
-
-
-
         <footer
             ref={ref}
             className="relative w-full bg-[#F1F8ED] text-[#2d3a2d] border-t border-stone-100 overflow-hidden"
@@ -125,7 +117,6 @@ const Footer = () => {
 
             <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-12 md:pt-20 pb-8">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
-
                     {/* ── Brand + Social Container (right side on desktop) ── */}
                     <motion.div
                         custom={0}
@@ -137,15 +128,17 @@ const Footer = () => {
                         {/* Brand */}
                         <Link to="/" className="group">
                             <div className="space-y-1">
-                                <motion.h2
-                                    className="text-2xl font-light tracking-[0.4em] uppercase text-[#1a2e1a] transition-colors duration-300 group-hover:text-[#7aaf68]"
-                                >
+                                <motion.h2 className="text-2xl font-light tracking-[0.4em] uppercase text-[#1a2e1a] transition-colors duration-300 group-hover:text-[#7aaf68]">
                                     Askar
                                 </motion.h2>
                                 <p className="text-[10px] tracking-[0.3em] uppercase text-[#7aaf68] font-medium flex items-center justify-center lg:justify-end gap-2">
                                     <motion.span
                                         animate={{ scale: [1, 1.2, 1] }}
-                                        transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                                        transition={{
+                                            repeat: Infinity,
+                                            duration: 2.5,
+                                            ease: "easeInOut",
+                                        }}
                                     >
                                         <Leaf size={12} />
                                     </motion.span>
@@ -167,11 +160,15 @@ const Footer = () => {
 
                         {/* Social Icons */}
                         <motion.div
-                            className="flex gap-3 flex-wrap justify-center lg:justify-start" initial="hidden"
+                            className="flex gap-3 flex-wrap justify-center lg:justify-start"
+                            initial="hidden"
                             animate={isInView ? "visible" : "hidden"}
                             variants={{
                                 visible: {
-                                    transition: { staggerChildren: 0.08, delayChildren: 0.3 },
+                                    transition: {
+                                        staggerChildren: 0.08,
+                                        delayChildren: 0.3,
+                                    },
                                 },
                             }}
                         >
@@ -194,7 +191,11 @@ const Footer = () => {
                                 {
                                     icon: (
                                         // TikTok SVG — not in lucide
-                                        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg">
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            className="w-4 h-4 fill-current"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
                                             <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z" />
                                         </svg>
                                     ),
@@ -214,7 +215,11 @@ const Footer = () => {
                                     title={item.label}
                                     variants={{
                                         hidden: { opacity: 0, y: 8 },
-                                        visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+                                        visible: {
+                                            opacity: 1,
+                                            y: 0,
+                                            transition: { duration: 0.4 },
+                                        },
                                     }}
                                     whileHover={{ y: -3, color: "#7aaf68" }}
                                     className="w-9 h-9 rounded-full bg-white/60 border border-stone-200 flex items-center justify-center text-stone-400 hover:border-[#7aaf68] hover:bg-[#f0f7ed] transition-colors duration-300"
@@ -231,9 +236,13 @@ const Footer = () => {
                         variants={fadeUp}
                         initial="hidden"
                         animate={isInView ? "visible" : "hidden"}
-                        className="lg:col-span-8 lg:order-last flex flex-1 justify-center flex-col md:flex-row gap-4 lg:gap-12 "                    >
+                        className="lg:col-span-8 lg:order-last flex flex-1 justify-center flex-col md:flex-row gap-4 lg:gap-12 "
+                    >
                         {footerSections.map((section, idx) => (
-                            <div key={idx} className="border-b flex flex-col  border-stone-100 lg:border-none">
+                            <div
+                                key={idx}
+                                className="border-b flex flex-col  border-stone-100 lg:border-none"
+                            >
                                 <button
                                     onClick={() => toggleSection(idx)}
                                     className="w-full flex justify-between items-center py-4 lg:py-0 lg:mb-6 group"
@@ -242,8 +251,14 @@ const Footer = () => {
                                         {section.title}
                                     </h4>
                                     <motion.span
-                                        animate={{ rotate: openSection === idx ? 180 : 0 }}
-                                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                                        animate={{
+                                            rotate:
+                                                openSection === idx ? 180 : 0,
+                                        }}
+                                        transition={{
+                                            duration: 0.3,
+                                            ease: "easeInOut",
+                                        }}
                                         className="lg:hidden"
                                     >
                                         <ChevronDown size={16} />
@@ -262,16 +277,21 @@ const Footer = () => {
                                                 exit="exit"
                                                 className="overflow-hidden space-y-4 pb-4"
                                             >
-                                                {section.links.map((link, lIdx) => (
-                                                    <motion.li key={lIdx} variants={linkItem}>
-                                                        <Link
-                                                            to={link.href}
-                                                            className="text-sm text-stone-500 hover:text-[#7aaf68] transition-colors font-light"
+                                                {section.links.map(
+                                                    (link, lIdx) => (
+                                                        <motion.li
+                                                            key={lIdx}
+                                                            variants={linkItem}
                                                         >
-                                                            {link.name}
-                                                        </Link>
-                                                    </motion.li>
-                                                ))}
+                                                            <Link
+                                                                to={link.href}
+                                                                className="text-sm text-stone-500 hover:text-[#7aaf68] transition-colors font-light"
+                                                            >
+                                                                {link.name}
+                                                            </Link>
+                                                        </motion.li>
+                                                    ),
+                                                )}
                                             </motion.ul>
                                         )}
                                     </div>
@@ -285,7 +305,10 @@ const Footer = () => {
                                     className="hidden lg:block space-y-4"
                                 >
                                     {section.links.map((link, lIdx) => (
-                                        <motion.li key={lIdx} variants={linkItem}>
+                                        <motion.li
+                                            key={lIdx}
+                                            variants={linkItem}
+                                        >
                                             <Link
                                                 to={link.href}
                                                 className="text-sm text-stone-500 hover:text-[#7aaf68] transition-colors font-light relative group"
@@ -294,8 +317,12 @@ const Footer = () => {
                                                 <motion.span
                                                     className="absolute -bottom-0.5 left-0 h-px bg-[#7aaf68]"
                                                     initial={{ width: 0 }}
-                                                    whileHover={{ width: "100%" }}
-                                                    transition={{ duration: 0.25 }}
+                                                    whileHover={{
+                                                        width: "100%",
+                                                    }}
+                                                    transition={{
+                                                        duration: 0.25,
+                                                    }}
                                                 />
                                             </Link>
                                         </motion.li>

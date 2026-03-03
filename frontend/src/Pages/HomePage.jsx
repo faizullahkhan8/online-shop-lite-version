@@ -5,7 +5,9 @@ import { Loader2 } from "lucide-react";
 import PromotionSection from "../Components/Home/PromotionSection";
 
 const HomePage = () => {
-    const { data, isLoading } = useProducts();
+    const { data, isLoading } = useProducts({
+        excludeInactiveCollections: true,
+    });
 
     const products = data?.products;
 

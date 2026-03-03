@@ -11,18 +11,9 @@ import {
     TruckIcon,
     Zap,
 } from "lucide-react";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-const MobileSideBar = ({
-    isMenuOpen,
-    setIsMenuOpen,
-    isAuthenticated,
-    cartCount,
-}) => {
-    const { user } = useSelector((state) => state.auth);
-    useEffect(() => { console.log(isMenuOpen, "From mobile side bar") }, [isMenuOpen])
+const MobileSideBar = ({ isMenuOpen, setIsMenuOpen }) => {
     return (
         <>
             {isMenuOpen && (
@@ -33,8 +24,9 @@ const MobileSideBar = ({
             )}
 
             <div
-                className={`fixed top-0 left-0 h-full w-[85%] max-w-[320px] bg-white z-[70] md:hidden transform transition-transform duration-500 ease-out flex flex-col ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
-                    }`}
+                className={`fixed top-0 left-0 h-full w-[85%] max-w-[320px] bg-white z-[70] md:hidden transform transition-transform duration-500 ease-out flex flex-col ${
+                    isMenuOpen ? "translate-x-0" : "-translate-x-full"
+                }`}
             >
                 <div className="flex items-center justify-between p-6 border-b border-zinc-50">
                     <div className="flex flex-col">
@@ -46,7 +38,10 @@ const MobileSideBar = ({
                         </span>
                     </div>
                     <button
-                        onClick={() => { setIsMenuOpen(false); console.log(isMenuOpen, "The button is clicked of") }}
+                        onClick={() => {
+                            setIsMenuOpen(false);
+                            console.log(isMenuOpen, "The button is clicked of");
+                        }}
                         className="p-2 text-zinc-900 hover:rotate-90 transition-transform duration-500"
                     >
                         <X size={20} strokeWidth={1.2} />

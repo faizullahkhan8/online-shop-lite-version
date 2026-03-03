@@ -169,6 +169,7 @@ const ProductListPage = () => {
     const { data, isLoading } = useProducts({
         page,
         limit,
+        excludeInactiveCollections: true,
         ...(searchQuery ? { search: searchQuery } : {}),
         ...(collectionQuery ? { collection: collectionQuery } : {}),
         ...(promotionQuery ? { promotionId: promotionQuery } : {}),
@@ -265,10 +266,10 @@ const ProductListPage = () => {
             </div> */}
 
             <HeroBanner
-    tagline="Premium Collection"
-    heading="Health & Beauty Essentials"
-    subtext="Discover skincare, wellness, and beauty products crafted for your daily routine."
-/>
+                tagline="Premium Collection"
+                heading="Health & Beauty Essentials"
+                subtext="Discover skincare, wellness, and beauty products crafted for your daily routine."
+            />
             {/* ── Main Content ── */}
             <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12">
                 {/* Breadcrumb */}

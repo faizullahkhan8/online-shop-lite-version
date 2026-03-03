@@ -56,6 +56,7 @@ const TaxShippingSettings = () => {
                             <Input
                                 type="number"
                                 step="0.01"
+                                min={0}
                                 value={form.taxAmount}
                                 onChange={(e) =>
                                     setForm((p) => ({
@@ -75,6 +76,7 @@ const TaxShippingSettings = () => {
                             <Input
                                 type="number"
                                 step="0.01"
+                                min={0}
                                 value={form.shippingFee}
                                 onChange={(e) =>
                                     setForm((p) => ({

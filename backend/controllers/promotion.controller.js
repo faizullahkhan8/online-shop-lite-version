@@ -106,7 +106,9 @@ export const getPromotionHighlights = expressAsyncHandler(
             startTime: { $gt: now },
             endTime: { $gt: now },
             status: { $nin: ["CANCELLED", "EXPIRED"] },
-            ...(activePromotion?._id ? { _id: { $ne: activePromotion._id } } : {}),
+            ...(activePromotion?._id
+                ? { _id: { $ne: activePromotion._id } }
+                : {}),
         })
             .sort({ startTime: 1, order: 1 })
             .populate("products");
@@ -165,15 +167,6 @@ export const updatePromotion = expressAsyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("Promotion not found", 404));
     }
 
-    // Handle reordering specifically if passing multiple items
-    // But for single update:
-    promotion = await PromotionModel.findByIdAndUpdate(id, req.body, {
-        new: true,
-        runValidators: true,
-    });
-
-    // If request attempted to set this promotion ACTIVE, ensure no other ACTIVE promotion exists.
-    // Require admin to manually deactivate the existing active promotion first.
     const incomingStatus = req.body?.status;
     if (incomingStatus === "ACTIVE") {
         const otherActive = await PromotionModel.findOne({
@@ -189,6 +182,11 @@ export const updatePromotion = expressAsyncHandler(async (req, res, next) => {
             );
         }
     }
+
+    promotion = await PromotionModel.findByIdAndUpdate(id, req.body, {
+        new: true,
+        runValidators: true,
+    });
 
     res.status(200).json({
         success: true,

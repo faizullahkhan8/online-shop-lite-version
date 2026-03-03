@@ -2,11 +2,11 @@ import expressAsyncHandler from "express-async-handler";
 import { getLocalCollectionModel } from "../config/localDb.js";
 import { ErrorResponse } from "../utils/ErrorResponse.js";
 import { deleteImageKitFile } from "../utils/DeleteFileImageKit.js";
- 
+
 export const createCollection = expressAsyncHandler(async (req, res, next) => {
     const CollectionModel = getLocalCollectionModel();
 
-    if (!CollectionModel) { 
+    if (!CollectionModel) {
         return next(new ErrorResponse("Collection model not found", 404));
     }
 
@@ -15,7 +15,9 @@ export const createCollection = expressAsyncHandler(async (req, res, next) => {
         try {
             data = JSON.parse(req.body.data);
         } catch (error) {
-            return next(new ErrorResponse("Invalid collection data format", 400));
+            return next(
+                new ErrorResponse("Invalid collection data format", 400),
+            );
         }
     }
     const { name, parentId, isActive } = data || {};
@@ -43,23 +45,27 @@ export const createCollection = expressAsyncHandler(async (req, res, next) => {
     });
 });
 
-export const getAllCollections = expressAsyncHandler(
-    async (req, res, next) => {
-        const CollectionModel = getLocalCollectionModel();
+export const getAllCollections = expressAsyncHandler(async (req, res, next) => {
+    const CollectionModel = getLocalCollectionModel();
 
-        if (!CollectionModel) {
-            return next(new ErrorResponse("Collection model not found", 404));
-        }
+    if (!CollectionModel) {
+        return next(new ErrorResponse("Collection model not found", 404));
+    }
 
-    const collections = await CollectionModel.find().populate("parentId");
+    const { isActive } = req.query;
+    const filter = {};
+    if (isActive !== undefined) {
+        filter.isActive = isActive === "true";
+    }
 
-        res.status(200).json({
-            success: true,
-            message: "Collections fetched successfully",
-            collections,
-        });
-    },
-);
+    const collections = await CollectionModel.find(filter);
+
+    res.status(200).json({
+        success: true,
+        message: "Collections fetched successfully",
+        collections,
+    });
+});
 
 export const deleteCollection = expressAsyncHandler(async (req, res, next) => {
     const CollectionModel = getLocalCollectionModel();
@@ -104,7 +110,9 @@ export const updateCollection = expressAsyncHandler(async (req, res, next) => {
         try {
             data = JSON.parse(req.body.data);
         } catch (error) {
-            return next(new ErrorResponse("Invalid collection data format", 400));
+            return next(
+                new ErrorResponse("Invalid collection data format", 400),
+            );
         }
     }
     const { name, parentId, isActive } = data || {};

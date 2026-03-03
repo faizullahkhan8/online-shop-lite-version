@@ -10,12 +10,9 @@ const CollectionsPage = () => {
         { label: "Collections" },
     ];
 
-    const { data, isLoading } = useCollections();
+    const { data, isLoading } = useCollections({ isActive: true });
 
-
-    const displayCollections = data?.collections?.filter(
-        (collection) => collection.isActive !== false,
-    );
+    const displayCollections = data?.collections;
 
     return (
         <div className="bg-white min-h-screen pb-20">
