@@ -95,3 +95,48 @@ export const cancelOrder = async ({ orderId, reason }) => {
 
     return data;
 };
+
+export const markItemReturned = async ({ orderId, itemId, isReturned }) => {
+    const { data } = await apiClient.patch(
+        `/orders/${orderId}/items/${itemId}/return`,
+        { isReturned },
+    );
+    if (data?.order) data.order = normalizeOrder(data.order);
+    return data;
+};
+
+export const markOrderReturned = async ({ orderId, isReturned }) => {
+    const { data } = await apiClient.patch(`/orders/${orderId}/return`, {
+        isReturned,
+    });
+    if (data?.order) data.order = normalizeOrder(data.order);
+    return data;
+};
+
+export const markItemRefunded = async ({ orderId, itemId, isRefunded }) => {
+    const { data } = await apiClient.patch(
+        `/orders/${orderId}/items/${itemId}/refund`,
+        { isRefunded },
+    );
+    if (data?.order) data.order = normalizeOrder(data.order);
+    return data;
+};
+
+export const markOrderRefunded = async ({ orderId, isRefunded }) => {
+    const { data } = await apiClient.patch(`/orders/${orderId}/refund`, {
+        isRefunded,
+    });
+    if (data?.order) data.order = normalizeOrder(data.order);
+    return data;
+};
+
+export const togglePaymentStatus = async ({ orderId, ispaid }) => {
+    const { data } = await apiClient.patch(
+        `/orders/${orderId}/toggle-payment`,
+        {
+            ispaid,
+        },
+    );
+    if (data?.order) data.order = normalizeOrder(data.order);
+    return data;
+};

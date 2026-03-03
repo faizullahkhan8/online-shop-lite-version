@@ -137,7 +137,7 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
             }),
         );
     } catch (error) {
-        console.log(error)
+        console.log(error);
         return next(error);
     }
 
@@ -217,7 +217,7 @@ export const placeOrder = expressAsyncHandler(async (req, res, next) => {
             trackingUrl: `${process.env.FRONTEND_URL}/track/${trackingToken}`,
         });
     } catch (error) {
-        console.log(error)
+        console.log(error);
         // Abort transaction on any error
         // await session.abortTransaction();
 
@@ -391,35 +391,52 @@ export const cancelOrder = expressAsyncHandler(async (req, res, next) => {
         );
     }
 
-    if (order.status !== "pending") {
-        return next(
-            new ErrorResponse("Only pending orders can be cancelled", 400),
-        );
+    if (order.status === "cancelled") {
+        return next(new ErrorResponse("Order is already cancelled", 400));
     }
+
+    const cancelledAtStatus = order.status; // snapshot before changing
 
     order.status = "cancelled";
     order.cancellationReason = reason || "No reason provided";
     order.cancelledBy = req.user._id;
+    order.cancelledAtStatus = cancelledAtStatus;
 
-    // Restore stock
+    // --- Stock restoration logic ---
+    // If cancelled while PENDING: item never left the warehouse -> restore stock immediately
+    // If cancelled after pending (shipped/delivered): item is in transit or with customer
+    //   -> DO NOT restore stock yet. Stock will be restored when admin marks the item as "returned".
+    const isPending = cancelledAtStatus === "pending";
+
     for (const item of order.items) {
         if (item.status !== "cancelled") {
-            const product = await ProductModel.findById(item.product);
-            if (product) {
-                product.stock += item.quantity;
-                product.sold -= item.quantity;
-                await product.save({ validateModifiedOnly: true });
+            item.status = "cancelled";
+            item.cancelledAtStatus = cancelledAtStatus;
+
+            if (isPending) {
+                // Stock comes back immediately since item never shipped
+                const product = await ProductModel.findById(item.product);
+                if (product) {
+                    product.stock += item.quantity;
+                    product.sold -= item.quantity;
+                    await product.save({ validateModifiedOnly: true });
+                }
+                // Mark as returned since it never left
+                item.isReturned = true;
             }
-            item.status = "cancelled"; // Mark all items as cancelled
         }
     }
 
     await order.save({ validateModifiedOnly: true });
 
+    const populatedOrder = await OrderModel.findById(order._id)
+        .populate("userId")
+        .populate("items.product");
+
     return res.status(200).json({
         success: true,
         message: "Order cancelled successfully",
-        order,
+        order: populatedOrder,
     });
 });
 
@@ -452,23 +469,32 @@ export const cancelOrderItem = expressAsyncHandler(async (req, res, next) => {
         return next(new ErrorResponse("Item is already cancelled", 400));
     }
 
+    const cancelledAtStatus = order.status; // snapshot the order status at time of item cancel
+
     // Update item status
     item.status = "cancelled";
+    item.cancelledAtStatus = cancelledAtStatus;
     item.cancellationReason = reason || "Admin cancelled item";
     item.cancelledBy = req.user._id;
 
-    // Restore stock
-    const product = await ProductModel.findById(item.product);
-    if (product) {
-        product.stock += item.quantity;
-        product.sold -= item.quantity;
-        await product.save({ validateModifiedOnly: true });
+    // --- Stock restoration logic ---
+    // If order was still PENDING: item never shipped -> restore stock immediately
+    // If order was shipped/delivered: item is in transit or with customer
+    //   -> DO NOT restore stock yet. Stock will be restored when admin marks item as "returned".
+    const isPending = cancelledAtStatus === "pending";
+
+    if (isPending) {
+        const product = await ProductModel.findById(item.product);
+        if (product) {
+            product.stock += item.quantity;
+            product.sold -= item.quantity;
+            await product.save({ validateModifiedOnly: true });
+        }
+        // Mark as returned since it never left the warehouse
+        item.isReturned = true;
     }
 
     // Recalculate totals
-    // We subtract the item's totalAmount from grandTotal
-    // Note: tax and shipping might need adjustment based on business logic,
-    // but for now we'll just subtract the item cost.
     order.grandTotal -= item.totalAmount;
     if (order.grandTotal < 0) order.grandTotal = 0;
 
@@ -660,3 +686,222 @@ export const getDashboardStats = expressAsyncHandler(async (req, res, next) => {
         },
     });
 });
+
+// ─── Return & Refund Endpoints ────────────────────────────────────────────────
+
+// Mark / un-mark a single item as returned.
+// Restores or reverts stock accordingly.
+export const markItemReturned = expressAsyncHandler(async (req, res, next) => {
+    const OrderModel = getLocalOrderModel();
+    const ProductModel = getLocalProductModel();
+    if (!OrderModel || !ProductModel)
+        return next(new ErrorResponse("Model not found!", 400));
+
+    const { itemId } = req.params;
+    const { isReturned } = req.body;
+
+    const order = await OrderModel.findById(req.params.id);
+    if (!order) return next(new ErrorResponse("Order not found", 404));
+
+    const item = order.items.id(itemId);
+    if (!item) return next(new ErrorResponse("Item not found in order", 404));
+
+    if (item.status !== "cancelled")
+        return next(
+            new ErrorResponse("Only cancelled items can be returned", 400),
+        );
+
+    const wasReturned = item.isReturned;
+    item.isReturned = Boolean(isReturned);
+
+    // Restore stock when marking as returned; undo if un-marking
+    const product = await ProductModel.findById(item.product);
+    if (product) {
+        if (item.isReturned && !wasReturned) {
+            // Item physically back in warehouse
+            product.stock += item.quantity;
+            product.sold -= item.quantity;
+        } else if (!item.isReturned && wasReturned) {
+            // Undo: remove stock that was previously restored
+            product.stock -= item.quantity;
+            product.sold += item.quantity;
+        }
+        await product.save({ validateModifiedOnly: true });
+    }
+
+    await order.save({ validateModifiedOnly: true });
+
+    const populatedOrder = await OrderModel.findById(order._id)
+        .populate("userId")
+        .populate("items.product");
+
+    return res.status(200).json({
+        success: true,
+        message: isReturned
+            ? "Item marked as returned."
+            : "Item return undone.",
+        order: populatedOrder,
+    });
+});
+
+// Mark / un-mark all cancelled items in an order as returned (bulk)
+export const markOrderReturned = expressAsyncHandler(async (req, res, next) => {
+    const OrderModel = getLocalOrderModel();
+    const ProductModel = getLocalProductModel();
+    if (!OrderModel || !ProductModel)
+        return next(new ErrorResponse("Model not found!", 400));
+
+    const { isReturned } = req.body;
+
+    const order = await OrderModel.findById(req.params.id);
+    if (!order) return next(new ErrorResponse("Order not found", 404));
+
+    if (order.status !== "cancelled")
+        return next(
+            new ErrorResponse("Only cancelled orders can be returned", 400),
+        );
+
+    for (const item of order.items) {
+        if (item.status !== "cancelled") continue;
+
+        const wasReturned = item.isReturned;
+        item.isReturned = Boolean(isReturned);
+
+        const product = await ProductModel.findById(item.product);
+        if (product) {
+            if (item.isReturned && !wasReturned) {
+                product.stock += item.quantity;
+                product.sold -= item.quantity;
+            } else if (!item.isReturned && wasReturned) {
+                product.stock -= item.quantity;
+                product.sold += item.quantity;
+            }
+            await product.save({ validateModifiedOnly: true });
+        }
+    }
+
+    order.isReturned = Boolean(isReturned);
+    await order.save({ validateModifiedOnly: true });
+
+    const populatedOrder = await OrderModel.findById(order._id)
+        .populate("userId")
+        .populate("items.product");
+
+    return res.status(200).json({
+        success: true,
+        message: isReturned
+            ? "Order marked as returned."
+            : "Order return undone.",
+        order: populatedOrder,
+    });
+});
+
+// Mark / un-mark a single item as refunded. Payment must be verified.
+export const markItemRefunded = expressAsyncHandler(async (req, res, next) => {
+    const OrderModel = getLocalOrderModel();
+    if (!OrderModel) return next(new ErrorResponse("Model not found!", 400));
+
+    const { itemId } = req.params;
+    const { isRefunded } = req.body;
+
+    const order = await OrderModel.findById(req.params.id);
+    if (!order) return next(new ErrorResponse("Order not found", 404));
+
+    if (!order.payment?.ispaid)
+        return next(
+            new ErrorResponse("Cannot refund – payment not verified", 400),
+        );
+
+    const item = order.items.id(itemId);
+    if (!item) return next(new ErrorResponse("Item not found in order", 404));
+
+    if (item.status !== "cancelled")
+        return next(
+            new ErrorResponse("Only cancelled items can be refunded", 400),
+        );
+
+    item.isRefunded = Boolean(isRefunded);
+    await order.save({ validateModifiedOnly: true });
+
+    const populatedOrder = await OrderModel.findById(order._id)
+        .populate("userId")
+        .populate("items.product");
+
+    return res.status(200).json({
+        success: true,
+        message: isRefunded
+            ? "Item marked as refunded."
+            : "Item refund undone.",
+        order: populatedOrder,
+    });
+});
+
+// Mark / un-mark all cancelled items in an order as refunded (bulk)
+export const markOrderRefunded = expressAsyncHandler(async (req, res, next) => {
+    const OrderModel = getLocalOrderModel();
+    if (!OrderModel) return next(new ErrorResponse("Model not found!", 400));
+
+    const { isRefunded } = req.body;
+
+    const order = await OrderModel.findById(req.params.id);
+    if (!order) return next(new ErrorResponse("Order not found", 404));
+
+    if (order.status !== "cancelled")
+        return next(
+            new ErrorResponse("Only cancelled orders can be refunded", 400),
+        );
+
+    if (!order.payment?.ispaid)
+        return next(
+            new ErrorResponse("Cannot refund – payment not verified", 400),
+        );
+
+    order.items.forEach((item) => {
+        if (item.status === "cancelled") {
+            item.isRefunded = Boolean(isRefunded);
+        }
+    });
+
+    order.isRefunded = Boolean(isRefunded);
+    await order.save({ validateModifiedOnly: true });
+
+    const populatedOrder = await OrderModel.findById(order._id)
+        .populate("userId")
+        .populate("items.product");
+
+    return res.status(200).json({
+        success: true,
+        message: isRefunded
+            ? "Order marked as refunded."
+            : "Order refund undone.",
+        order: populatedOrder,
+    });
+});
+
+export const togglePaymentStatus = expressAsyncHandler(
+    async (req, res, next) => {
+        const OrderModel = getLocalOrderModel();
+        if (!OrderModel)
+            return next(new ErrorResponse("Model not found!", 400));
+
+        const { ispaid } = req.body;
+
+        const order = await OrderModel.findById(req.params.id);
+        if (!order) return next(new ErrorResponse("Order not found", 404));
+
+        order.payment.ispaid = Boolean(ispaid);
+        await order.save({ validateModifiedOnly: true });
+
+        const populatedOrder = await OrderModel.findById(order._id)
+            .populate("userId")
+            .populate("items.product");
+
+        return res.status(200).json({
+            success: true,
+            message: ispaid
+                ? "Payment marked as verified."
+                : "Payment verification undone.",
+            order: populatedOrder,
+        });
+    },
+);

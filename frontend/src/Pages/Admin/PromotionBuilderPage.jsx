@@ -11,6 +11,7 @@ import {
     Loader2,
     Percent,
     Calendar,
+    SearchIcon,
 } from "lucide-react";
 
 import { useProducts } from "../../features/products/product.queries";
@@ -56,6 +57,7 @@ const PromotionBuilder = () => {
     });
 
     const [productSearch, setProductSearch] = useState("");
+    const [productSearchQuery, setProductSearchQuery] = useState("");
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
@@ -63,7 +65,7 @@ const PromotionBuilder = () => {
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
     const { data: allProductsData, isPending: productsLoading } = useProducts({
-        search: productSearch,
+        search: productSearchQuery,
         page: page,
         limit,
         excludeActivePromotions: true,
@@ -265,6 +267,8 @@ const PromotionBuilder = () => {
                             <Input
                                 label="Promotion Title"
                                 placeholder="e.g., Summer Sale"
+                                required
+                                type="text"
                                 value={promotionData.title}
                                 className="w-full"
                                 onChange={(e) =>
@@ -467,19 +471,22 @@ const PromotionBuilder = () => {
                                 Product Selection
                             </h3>
 
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    placeholder="Search products..."
-                                    value={productSearch}
-                                    onChange={(e) =>
-                                        setProductSearch(e.target.value)
-                                    }
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                />
-                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                                    <Search size={18} />
+                            <div className="flex items-center gap-2 w-full">
+                                <div className="relative w-full">
+                                    <input
+                                        type="text"
+                                        placeholder="Search products..."
+                                        value={productSearch}
+                                        onChange={(e) =>
+                                            setProductSearch(e.target.value)
+                                        }
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    />
+                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <Search size={18} />
+                                    </div>
                                 </div>
+                                <SearchIcon onClick={() => setProductSearchQuery(productSearch)} size={18} className="text-gray-400 hover:text-gray-600 border p-1 w-max h-8 rounded hover:bg-gray-50 cursor-pointer transition duration-300" />
                             </div>
                         </div>
 
@@ -515,8 +522,8 @@ const PromotionBuilder = () => {
                                                 type="button"
                                                 onClick={() => toggleProduct(p)}
                                                 className={`relative p-3 rounded-2xl border transition-all flex flex-col items-center text-center gap-2 ${isSelected
-                                                        ? "bg-blue-50 border-blue-500"
-                                                        : "bg-white border-gray-200 hover:border-gray-300"
+                                                    ? "bg-blue-50 border-blue-500"
+                                                    : "bg-white border-gray-200 hover:border-gray-300"
                                                     }`}
                                             >
                                                 <div className="w-full bg-gray-50 rounded-2xl overflow-hidden border border-gray-100">
@@ -588,22 +595,22 @@ const PromotionBuilder = () => {
                                 </p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                                 {selectedProducts.map((p) => (
                                     <div
                                         key={p._id}
                                         className="bg-gray-50 border border-gray-200 rounded-2xl p-3 flex items-center justify-between group"
                                     >
-                                        <div className="flex items-center gap-2 overflow-hidden min-w-0">
-                                            <div className="w-10 h-10 shrink-0 bg-white rounded-2xl p-1 border border-gray-200">
+                                        <div className="flex gap-2 overflow-hidden min-w-0">
+                                            <div className="w-16 h-16 shrink-0 bg-white border rounded-2xl border-gray-200">
                                                 <img
-                                                    src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${p.image}`}
-                                                    className="w-full h-full object-contain"
+                                                    src={`${p.images[0].url}`}
+                                                    className="w-full h-full object-contain rounded"
                                                     alt={p.name}
                                                 />
                                             </div>
                                             <div className="min-w-0">
-                                                <p className="text-xs font-medium text-gray-900 truncate">
+                                                <p className="text-sm font-medium text-gray-900 truncate">
                                                     {p.name}
                                                 </p>
                                                 <p className="text-xs text-blue-600 mt-0.5">

@@ -6,6 +6,11 @@ import {
     deleteOrder,
     cancelOrderItem,
     cancelOrder,
+    markItemReturned,
+    markOrderReturned,
+    markItemRefunded,
+    markOrderRefunded,
+    togglePaymentStatus,
 } from "./orders.api";
 import { orderKeys } from "./orders.keys";
 import { toast } from "react-toastify";
@@ -84,6 +89,52 @@ export const useCancelOrder = () => {
         mutationFn: cancelOrder,
         onSuccess: (_, { orderId }) => {
             toast.success("Order cancelled.");
+            queryClient.invalidateQueries({
+                queryKey: orderKeys.detail(orderId),
+            });
+            queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
+        },
+    });
+};
+
+const makeReturnRefundHook = (mutationFn, successMsg) => () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn,
+        onSuccess: (_, { orderId }) => {
+            toast.success(successMsg);
+            queryClient.invalidateQueries({
+                queryKey: orderKeys.detail(orderId),
+            });
+            queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
+        },
+    });
+};
+
+export const useMarkItemReturned = makeReturnRefundHook(
+    markItemReturned,
+    "Item return status updated.",
+);
+export const useMarkOrderReturned = makeReturnRefundHook(
+    markOrderReturned,
+    "Order return status updated.",
+);
+export const useMarkItemRefunded = makeReturnRefundHook(
+    markItemRefunded,
+    "Item refund status updated.",
+);
+export const useMarkOrderRefunded = makeReturnRefundHook(
+    markOrderRefunded,
+    "Order refund status updated.",
+);
+
+export const useTogglePaymentStatus = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: togglePaymentStatus,
+        onSuccess: (_, { orderId }) => {
+            toast.success("Payment status toggled.");
             queryClient.invalidateQueries({
                 queryKey: orderKeys.detail(orderId),
             });

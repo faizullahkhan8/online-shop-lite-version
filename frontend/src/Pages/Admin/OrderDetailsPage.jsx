@@ -6,6 +6,11 @@ import {
     useDeleteOrder,
     useCancelOrderItem,
     useCancelOrder,
+    useMarkItemReturned,
+    useMarkOrderReturned,
+    useMarkItemRefunded,
+    useMarkOrderRefunded,
+    useTogglePaymentStatus,
 } from "../../features/orders/orders.mutations.js";
 import { useOrderById } from "../../features/orders/orders.queries.js";
 import {
@@ -21,6 +26,7 @@ import {
     XCircle,
 } from "lucide-react";
 import CancellationModal from "../../Components/CancellationModal.jsx";
+import Button from "../../UI/Button.jsx";
 
 const OrderDetails = () => {
     const { id } = useParams();
@@ -37,6 +43,20 @@ const OrderDetails = () => {
         useDeleteOrder();
     const { mutateAsync: cancelOrderItem, isPending: cancelLoading } =
         useCancelOrderItem();
+    const { mutate: markItemReturnedFn, isPending: itemReturnPending } = useMarkItemReturned();
+    const { mutate: markOrderReturnedFn, isPending: orderReturnPending } = useMarkOrderReturned();
+    const { mutate: markItemRefundedFn, isPending: itemRefundPending } = useMarkItemRefunded();
+    const { mutate: markOrderRefundedFn, isPending: orderRefundPending } = useMarkOrderRefunded();
+    const { mutate: togglePaymentStatusFn, isPending: paymentPending } = useTogglePaymentStatus();
+
+    const handleToggleItemReturn = (itemId, current) =>
+        markItemReturnedFn({ orderId, itemId, isReturned: !current });
+    const handleToggleOrderReturn = (current) =>
+        markOrderReturnedFn({ orderId, isReturned: !current });
+    const handleToggleItemRefund = (itemId, current) =>
+        markItemRefundedFn({ orderId, itemId, isRefunded: !current });
+    const handleToggleOrderRefund = (current) =>
+        markOrderRefundedFn({ orderId, isRefunded: !current });
 
     const [orderCancelModal, setOrderCancelModal] = useState(false);
 
@@ -229,7 +249,8 @@ const OrderDetails = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                    {/* Verify payment — only when not yet paid */}
                     {!order.payment?.ispaid && (
                         <button
                             onClick={handlePaymentVerify}
@@ -240,7 +261,8 @@ const OrderDetails = () => {
                         </button>
                     )}
 
-                    {order.status === "pending" && (
+                    {/* Cancel order — show for any non-cancelled status */}
+                    {order.status !== "cancelled" && (
                         <button
                             onClick={handleOpenOrderCancelModal}
                             className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-2xl text-sm font-medium hover:bg-red-100 transition-colors border border-red-200"
@@ -249,6 +271,37 @@ const OrderDetails = () => {
                             Cancel Order
                         </button>
                     )}
+
+                    {/* Return to Seller — only for cancelled orders that were NOT cancelled while pending */}
+                    {order.status === "cancelled" && order.cancelledAtStatus && order.cancelledAtStatus !== "pending" && (
+                        <button
+                            onClick={() => handleToggleOrderReturn(order.isReturned)}
+                            disabled={orderReturnPending}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-medium transition-colors border disabled:opacity-50 ${order.isReturned
+                                ? "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
+                                : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
+                                }`}
+                        >
+                            {orderReturnPending ? <Loader2 size={16} className="animate-spin" /> : null}
+                            {order.isReturned ? "Returned ✓" : "Return to Seller"}
+                        </button>
+                    )}
+
+                    {/* Refund to Customer — only when payment was verified */}
+                    {order.status === "cancelled" && order.payment?.ispaid && (
+                        <button
+                            onClick={() => handleToggleOrderRefund(order.isRefunded)}
+                            disabled={orderRefundPending}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-medium transition-colors border disabled:opacity-50 ${order.isRefunded
+                                ? "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
+                                : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                                }`}
+                        >
+                            {orderRefundPending ? <Loader2 size={16} className="animate-spin" /> : null}
+                            {order.isRefunded ? "Refunded ✓" : "Refund to Customer"}
+                        </button>
+                    )}
+
                     <button
                         onClick={handleDelete}
                         className="px-4 py-2 bg-red-50 text-red-600 rounded-2xl text-sm font-medium hover:bg-red-100 transition-colors border border-red-200"
@@ -422,21 +475,40 @@ const OrderDetails = () => {
                                                     ).toLocaleString()}
                                                 </span>
                                             </td>
-                                            <td className="px-5 py-4 text-right">
-                                                {item.status !== "cancelled" &&
-                                                    order.status ===
-                                                    "pending" && (
-                                                        <button
-                                                            onClick={() =>
-                                                                handleOpenItemCancelModal(
-                                                                    item._id,
-                                                                )
-                                                            }
-                                                            className="text-xs font-medium text-red-600 hover:text-red-700 hover:underline transition-colors"
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                    )}
+                                            <td className="px-5 py-4 text-right align-top space-y-1">
+                                                {/* Cancel button – always show for active items regardless of order status */}
+                                                {item.status !== "cancelled" && (
+                                                    <button
+                                                        onClick={() => handleOpenItemCancelModal(item._id)}
+                                                        className="text-xs font-medium text-red-600 hover:text-red-700 hover:underline transition-colors block ml-auto"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                )}
+
+                                                {/* Return to Seller – only for post-pending cancelled items */}
+                                                {item.status === "cancelled" && item.cancelledAtStatus && item.cancelledAtStatus !== "pending" && (
+                                                    <button
+                                                        onClick={() => handleToggleItemReturn(item._id, item.isReturned)}
+                                                        disabled={itemReturnPending}
+                                                        className={`text-xs font-medium hover:underline transition-colors block ml-auto ${item.isReturned ? "text-green-600 hover:text-green-700" : "text-gray-600 hover:text-gray-700"
+                                                            }`}
+                                                    >
+                                                        {item.isReturned ? "Returned ✓" : "Return to Seller"}
+                                                    </button>
+                                                )}
+
+                                                {/* Refund – only when item is cancelled and payment was verified */}
+                                                {item.status === "cancelled" && order.payment?.ispaid && (
+                                                    <button
+                                                        onClick={() => handleToggleItemRefund(item._id, item.isRefunded)}
+                                                        disabled={itemRefundPending}
+                                                        className={`text-xs font-medium hover:underline transition-colors block ml-auto ${item.isRefunded ? "text-blue-600 hover:text-blue-700" : "text-amber-600 hover:text-amber-700"
+                                                            }`}
+                                                    >
+                                                        {item.isRefunded ? "Refunded ✓" : "Refund to Customer"}
+                                                    </button>
+                                                )}
                                             </td>
                                         </tr>
                                     ))}
@@ -564,6 +636,9 @@ const OrderDetails = () => {
                             >
                                 {order.payment?.ispaid ? "Verified" : "Pending"}
                             </p>
+                            {order.payment.ispaid && <p className="text-xs cursor-pointer hover:underline w-max mt-1 text-red-500"
+                                onClick={() => togglePaymentStatusFn({ orderId, ispaid: !order.payment?.ispaid })}
+                            >{paymentPending ? "Updating..." : "Undo"}</p>}
                         </div>
                     </section>
 

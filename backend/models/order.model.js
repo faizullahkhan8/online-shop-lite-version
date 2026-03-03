@@ -87,6 +87,18 @@ const orderSchema = new Schema(
                     type: String,
                     default: "",
                 },
+                cancelledAtStatus: {
+                    type: String,
+                    default: "",
+                },
+                isReturned: {
+                    type: Boolean,
+                    default: false,
+                },
+                isRefunded: {
+                    type: Boolean,
+                    default: false,
+                },
                 cancelledBy: {
                     type: Schema.Types.ObjectId,
                     ref: "User",
@@ -128,6 +140,18 @@ const orderSchema = new Schema(
         cancellationReason: {
             type: String,
             default: "",
+        },
+        cancelledAtStatus: {
+            type: String,
+            default: "",
+        },
+        isReturned: {
+            type: Boolean,
+            default: false,
+        },
+        isRefunded: {
+            type: Boolean,
+            default: false,
         },
         cancelledBy: {
             type: Schema.Types.ObjectId,
