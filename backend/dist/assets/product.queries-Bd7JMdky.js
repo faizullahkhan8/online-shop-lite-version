@@ -1,0 +1,1 @@
+import{K as e}from"./index-BUFlw9xk.js";import{g as t,p as u,e as s}from"./product.keys-BcidzH6O.js";const a=(r={})=>e({queryKey:u.list(r),queryFn:()=>t(r)}),c=r=>e({queryKey:u.detail(r),queryFn:()=>s(r)});export{c as a,a as u};
