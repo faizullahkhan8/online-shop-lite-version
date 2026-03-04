@@ -11,6 +11,7 @@ import {
     removeFromWishlist,
     getAllUsers,
     addUserFromAdmin,
+    changePassword,
 } from "../controllers/user.controller.js";
 import { isAuth, authorize } from "../middlewares/auth.middleware.js";
 import { upload, imagekitUpload } from "../middlewares/multer.middleware.js";
@@ -38,5 +39,8 @@ router.post("/add", isAuth, authorize(["admin"]), addUserFromAdmin);
 router.get("/wishlist", isAuth, getWishlist);
 router.post("/wishlist/add", isAuth, addToWishlist);
 router.delete("/wishlist/remove/:productId", isAuth, removeFromWishlist);
+
+// Change password route
+router.put("/change-password", isAuth, authorize(["admin"]), changePassword);
 
 export default router;

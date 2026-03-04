@@ -18,6 +18,7 @@ import { useProducts } from "../../features/products/product.queries";
 import {
     useAddPromotion,
     useUpdatePromotion,
+    useDeletePromotionImageWhenCancelUpload,
 } from "../../features/promotions/promotions.mutations";
 import { useDeleteUploadImage } from "../../features/upload.api";
 
@@ -37,6 +38,11 @@ const PromotionBuilder = () => {
     const addMutation = useAddPromotion();
     const updateMutation = useUpdatePromotion();
     const deleteUploadImage = useDeleteUploadImage();
+
+    const {
+        mutateAsync: deletePromotionImageWhenCancelUpload,
+        isPending: deletePromotionImageWhenCancelUploadPending,
+    } = useDeletePromotionImageWhenCancelUpload();
 
     const { data: promotionResponse, isLoading: fetchLoading } =
         usePromotion(editId);
@@ -229,7 +235,14 @@ const PromotionBuilder = () => {
 
                 <div className="flex items-center gap-2">
                     <button
-                        onClick={() => navigate("/admin-dashboard/promotions")}
+                        onClick={async () => {
+                            if (promotionData.image?.fileId && !editId) {
+                                await deletePromotionImageWhenCancelUpload(
+                                    [promotionData.image],
+                                );
+                            }
+                            navigate("/admin-dashboard/promotions");
+                        }}
                         className="px-4 py-2 rounded-2xl text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:bg-gray-50"
                     >
                         Cancel

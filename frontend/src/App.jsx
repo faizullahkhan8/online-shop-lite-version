@@ -42,6 +42,7 @@ const PromotionBuilderPage = lazy(
     () => import("./Pages/Admin/PromotionBuilderPage"),
 );
 const HeroManagerPage = lazy(() => import("./Pages/Admin/HeroManagerPage"));
+const ChangePasswordPage = lazy(() => import("./Pages/Admin/ChangePassword"));
 
 const App = () => {
     return (
@@ -146,6 +147,10 @@ const App = () => {
                             element={<PromotionBuilderPage />}
                         />
                         <Route path="hero" element={<HeroManagerPage />} />
+                        <Route
+                            path="change-password"
+                            element={<ChangePasswordPage />}
+                        />
                     </Route>
                 </Routes>
             </Suspense>

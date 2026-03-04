@@ -5,6 +5,7 @@ import {
     addPromotion,
     updatePromotion,
     deletePromotion,
+    deletePromotionImageWhenCancelUpload,
 } from "./promotions.api";
 import { promotionKeys } from "./promotions.keys";
 import { toast } from "react-toastify";
@@ -50,6 +51,25 @@ export const useDeletePromotion = () => {
         mutationFn: deletePromotion,
         onSuccess: (data) => {
             toast.success(data?.message || "Promotion deleted successfully");
+            queryClient.invalidateQueries({
+                queryKey: promotionKeys.lists(),
+            });
+            queryClient.invalidateQueries({
+                queryKey: promotionKeys.active(),
+            });
+        },
+    });
+};
+
+export const useDeletePromotionImageWhenCancelUpload = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (images) => deletePromotionImageWhenCancelUpload(images),
+        onSuccess: (data) => {
+            toast.success(
+                data?.message || "Promotion image deleted successfully",
+            );
             queryClient.invalidateQueries({
                 queryKey: promotionKeys.lists(),
             });

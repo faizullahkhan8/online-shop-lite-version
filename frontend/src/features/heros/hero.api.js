@@ -1,7 +1,9 @@
 import apiClient from "../apiClient";
 
-export const getHeroSlides = async () => {
-    const { data } = await apiClient.get("/hero");
+export const getHeroSlides = async ({ removeActives = false }) => {
+    const { data } = await apiClient.get("/hero", {
+        params: { removeActives },
+    });
     return data;
 };
 

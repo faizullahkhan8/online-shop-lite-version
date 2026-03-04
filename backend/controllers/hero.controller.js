@@ -7,8 +7,21 @@ export const getHeroSlides = expressAsyncHandler(async (req, res, next) => {
     const HeroModel = getLocalHeroModel();
     if (!HeroModel) return next(new ErrorResponse("Hero model not found", 500));
 
-    const slides = await HeroModel.find({ isActive: true }).sort({ order: 1 });
-    res.status(200).json({ success: true, slides });
+    const { removeActives } = req.query;
+
+    // Build filter dynamically
+    const filter = {};
+
+    if (removeActives === "true") {
+        filter.isActive = true;
+    }
+
+    const slides = await HeroModel.find(filter).sort({ order: 1 });
+
+    res.status(200).json({
+        success: true,
+        slides,
+    });
 });
 
 export const createHeroSlide = expressAsyncHandler(async (req, res, next) => {
@@ -16,12 +29,11 @@ export const createHeroSlide = expressAsyncHandler(async (req, res, next) => {
     if (!HeroModel) return next(new ErrorResponse("Hero model not found", 500));
 
     const data = JSON.parse(req.body.data);
-    console.log(data, "The hero section data")
+    console.log(data, "The hero section data");
     const { title, headline, subtitle, bg, accent, order } = data;
-    console.log(req?.image?.filePath, 'THe iamge ishere')
+    console.log(req?.image?.filePath, "THe iamge ishere");
 
     if (!req.image) return next(new ErrorResponse("Image is required", 400));
-
 
     const slide = await HeroModel.create({
         title,

@@ -3,6 +3,7 @@ import {
     assignCollectionToProducts,
     createProduct,
     deleteProduct,
+    deleteProductImageWhenCancelUpload,
     updateProduct,
 } from "./products.api";
 import { productKeys } from "./product.keys";
@@ -50,6 +51,18 @@ export const useAssignCollectionToProducts = () => {
     return useMutation({
         mutationFn: ({ collectionId, productIds }) =>
             assignCollectionToProducts({ collectionId, productIds }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: productKeys.all,
+            });
+        },
+    });
+};
+
+export const useDeleteProductImageWhenCancelUpload = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (images) => deleteProductImageWhenCancelUpload(images),
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: productKeys.all,

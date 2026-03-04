@@ -36,3 +36,11 @@ export const deletePromotion = async (id) => {
     const { data } = await apiClient.delete(`/promotions/${id}`);
     return data;
 };
+
+export const deletePromotionImageWhenCancelUpload = async (images) => {
+    const { data } = await apiClient.post(
+        "/promotions/delete-image-when-cancel-upload",
+        { images },
+    );
+    return data;
+};

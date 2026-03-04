@@ -107,11 +107,10 @@ const ProductDetailPage = () => {
                                     <button
                                         key={index}
                                         onClick={() => setActiveImage(index)}
-                                        className={`relative w-20 h-20 shrink-0 rounded-xl border-2 transition-all overflow-hidden bg-zinc-50 ${
-                                            activeImage === index
-                                                ? "border-zinc-900"
-                                                : "border-transparent opacity-60 hover:opacity-100"
-                                        }`}
+                                        className={`relative w-20 h-20 shrink-0 rounded-xl border-2 transition-all overflow-hidden bg-zinc-50 ${activeImage === index
+                                            ? "border-zinc-900"
+                                            : "border-transparent opacity-60 hover:opacity-100"
+                                            }`}
                                     >
                                         <img
                                             src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${img.filePath}`}
@@ -203,9 +202,15 @@ const ProductDetailPage = () => {
                                     >
                                         <Minus size={14} />
                                     </button>
-                                    <span className="w-10 text-center text-xs font-bold text-zinc-900">
-                                        {quantity}
-                                    </span>
+                                    <input
+                                        type="number"
+                                        min={1}
+                                        value={quantity}
+                                        onChange={(e) =>
+                                            setQuantity(Math.max(1, Number(e.target.value)))
+                                        }
+                                        className="w-14 h-full text-center text-sm font-bold text-zinc-900 border-none outline-none custom-quantity"
+                                    />
                                     <button
                                         onClick={() =>
                                             setQuantity(quantity + 1)

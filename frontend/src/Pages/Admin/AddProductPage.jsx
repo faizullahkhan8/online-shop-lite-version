@@ -20,6 +20,7 @@ import {
 import {
     useCreateProduct,
     useUpdateProduct,
+    useDeleteProductImageWhenCancelUpload
 } from "../../features/products/product.mutations.js";
 
 import { useCollections } from "../../features/collections/collection.queries.js";
@@ -46,6 +47,7 @@ const AddProduct = () => {
     const navigate = useNavigate();
 
     const deleteUploadImage = useDeleteUploadImage();
+    const { mutateAsync: deleteProductImageWhenCancelUpload, isPending } = useDeleteProductImageWhenCancelUpload();
 
     const getInitialProductData = () => {
         try {
@@ -183,10 +185,15 @@ const AddProduct = () => {
                     {isEditing ? "Edit Product" : "Add New Product"}
                 </h2>
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={async () => {
+                        if (productData.images.length > 0 && !isEditing && !isPending) {
+                            await deleteProductImageWhenCancelUpload(productData.images);
+                        }
+                        navigate("/admin-dashboard/products")
+                    }}
                     className="p-2 text-gray-400 hover:text-gray-600 rounded-2xl hover:bg-gray-100"
                 >
-                    <X size={20} />
+                    {isPending ? (<Loader2 size={20} className="animate-spin" />) : (<X size={20} />)}
                 </button>
             </header>
 

@@ -422,3 +422,42 @@ export const addUserFromAdmin = asyncHandler(async (req, res, next) => {
         },
     });
 });
+
+export const changePassword = asyncHandler(async (req, res, next) => {
+    const UserModel = getLocalUserModel();
+
+    if (!UserModel) {
+        return next(new ErrorResponse("User model not initiated.", 404));
+    }
+
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+        return next(
+            new ErrorResponse(
+                "Old password and new password are required",
+                400,
+            ),
+        );
+    }
+
+    const user = await UserModel.findById(req.user._id);
+
+    if (!user) {
+        return next(new ErrorResponse("User not found", 404));
+    }
+
+    const isPasswordValid = await user.comparePassword(oldPassword);
+
+    if (!isPasswordValid) {
+        return next(new ErrorResponse("Invalid old password", 400));
+    }
+
+    user.password = newPassword;
+    await user.save({ validateModifiedOnly: true });
+
+    return res.status(200).json({
+        success: true,
+        message: "Password changed successfully",
+    });
+});

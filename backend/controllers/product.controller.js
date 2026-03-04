@@ -434,3 +434,28 @@ export const deleteProduct = expressAsyncHandler(async (req, res, next) => {
         message: "Product deleted successfully",
     });
 });
+
+export const deleteProductImageWhenCancelUpload = expressAsyncHandler(
+    async (req, res, next) => {
+        const { images } = req.body;
+
+        if (!images || !Array.isArray(images) || images.length === 0) {
+            return next(new ErrorResponse("image data is not provided!", 400));
+        }
+
+        try {
+            const deletePromises = images.map((img) =>
+                deleteImageKitFile(img.fileId),
+            );
+            await Promise.all(deletePromises);
+        } catch (error) {
+            return next(new ErrorResponse("image deletion failed!", 500));
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Images cleaned up",
+            deleted_image: images,
+        });
+    },
+);

@@ -28,6 +28,14 @@ const updateUserApi = async ({ userId, user }) => {
     return data;
 };
 
+const changeAdminPassword = async ({ oldPassword, newPassword }) => {
+    const { data } = await apiClient.put("/users/change-password", {
+        oldPassword,
+        newPassword,
+    });
+    return data;
+};
+
 /* =========================================================
    Mutations
 ========================================================= */
@@ -96,6 +104,24 @@ export const useUpdateUser = () => {
                 error?.response?.data?.message || "Something went wrong";
             toast.error(message);
             console.log("Error in Update User", error);
+        },
+    });
+};
+
+export const useChangeAdminPassword = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: changeAdminPassword,
+        onSuccess: (data) => {
+            toast.success("Password changed successfully");
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            return data;
+        },
+        onError: (error) => {
+            const message =
+                error?.response?.data?.message || "Something went wrong";
+            toast.error(message);
+            console.log("Error in Change Admin Password", error);
         },
     });
 };

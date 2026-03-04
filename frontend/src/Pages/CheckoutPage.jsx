@@ -230,7 +230,7 @@ const CheckoutPage = () => {
                                     <CheckoutInput
                                         label="Full Name"
                                         name="recipient.name"
-                                        icon={<User size={22} />}
+                                        icon={<User size={18} />}
                                         value={formData.recipient.name}
                                         onChange={handleChange}
                                         placeholder="NAME"
@@ -240,7 +240,7 @@ const CheckoutPage = () => {
                                         name="recipient.phone"
                                         type="tel"
 
-                                        icon={<Phone size={22} />}
+                                        icon={<Phone size={18} />}
                                         value={formData.recipient.phone}
                                         onChange={handleChange}
                                         placeholder="CONTACT"
@@ -249,7 +249,7 @@ const CheckoutPage = () => {
                                         <CheckoutInput
                                             label="Street Address"
                                             name="recipient.street"
-                                            icon={<MapPin size={22} />}
+                                            icon={<MapPin size={18} />}
                                             value={formData.recipient.street}
                                             onChange={handleChange}
                                             placeholder="HOUSE NO, STREET, AREA"
@@ -258,15 +258,15 @@ const CheckoutPage = () => {
                                     <CheckoutInput
                                         label="City"
                                         name="recipient.city"
-                                        icon={<MapPin size={22} />}
+                                        icon={<MapPin size={18} />}
                                         value={formData.recipient.city}
                                         onChange={handleChange}
                                         placeholder="CITY"
                                     />
                                     <CheckoutInput
-                                        label="State"
+                                        label="State / Province"
                                         name="recipient.state"
-                                        icon={<MapPin size={22} />}
+                                        icon={<MapPin size={18} />}
                                         value={formData.recipient.state}
                                         onChange={handleChange}
                                         placeholder="PROVINCE"
@@ -274,7 +274,7 @@ const CheckoutPage = () => {
                                     <CheckoutInput
                                         label="Postal Code"
                                         name="recipient.postalCode"
-                                        icon={<MapPin size={22} />}
+                                        icon={<MapPin size={18} />}
                                         value={formData.recipient.postalCode}
                                         onChange={handleChange}
                                         placeholder="ZIP CODE"
@@ -282,7 +282,7 @@ const CheckoutPage = () => {
                                     <CheckoutInput
                                         label="Country"
                                         name="recipient.country"
-                                        icon={<MapPin size={22} />}
+                                        icon={<MapPin size={18} />}
                                         value={formData.recipient.country}
                                         onChange={handleChange}
                                         placeholder="COUNTRY"
@@ -343,6 +343,12 @@ const CheckoutPage = () => {
                                                 <p className="text-xs tracking-wider font-medium text-zinc-600 leading-tight mb-2">
                                                     {item?.description}
                                                 </p>
+                                                {/* show availible stock here */}
+                                                <p className="text-xs tracking-wider font-medium text-zinc-600 leading-tight mb-2">
+                                                    {item?.stock > 0
+                                                        ? `Availible Stock: ${item?.stock}`
+                                                        : "Sold out"}
+                                                </p>
                                             </div>
                                             <div className="self-start flex items-center border border-zinc-200 h-10 w-fit bg-white rounded-2xl">
                                                 <button
@@ -357,9 +363,15 @@ const CheckoutPage = () => {
                                                 >
                                                     <Minus size={12} />
                                                 </button>
-                                                <span className="w-8 text-center text-xs font-bold text-zinc-900">
-                                                    {item.quantity}
-                                                </span>
+                                                <input
+                                                    type="number"
+                                                    min={1}
+                                                    value={item.quantity}
+                                                    onChange={(e) =>
+                                                        handleQtyChange(item, Math.max(1, Number(e.target.value)))
+                                                    }
+                                                    className="w-14 h-full text-center text-sm font-bold text-zinc-900 border-none outline-none custom-quantity"
+                                                />
                                                 <button
                                                     type="button"
                                                     onClick={() =>
@@ -376,6 +388,7 @@ const CheckoutPage = () => {
                                         </div>
                                     </div>
                                 ))}
+                                <p className="text-xs tracking-wider font-medium text-red-500 leading-tight mb-2">Dear Customer you can buy only the availible stock </p>
                             </div>
 
                             <div className="space-y-4 pt-6 border-t border-zinc-200 mb-8">
@@ -503,8 +516,8 @@ const CheckoutInput = ({
         <label className="text-xs uppercase tracking-[0.2em] font-bold text-zinc-700">
             {label}
         </label>
-        <div className="relative group">
-            <div className="absolute left-2 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-zinc-900 transition-colors">
+        <div className="relative mt-2 group">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-zinc-900 transition-colors">
                 {icon}
             </div>
             <input
@@ -523,7 +536,7 @@ const CheckoutInput = ({
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
-                className="w-full bg-transparent border rounded-2xl border-zinc-800 py-3 pl-10 text-md uppercase tracking-widest text-zinc-900 focus:outline-none focus:border-zinc-900 transition-all placeholder:text-zinc-400"
+                className="w-full bg-transparent border rounded-2xl border-gray-300 outline-none py-3 pl-10 text-md uppercase tracking-widest text-zinc-900 focus:outline-none focus:border-zinc-900 transition-all placeholder:text-zinc-400"
             />
         </div>
     </div>

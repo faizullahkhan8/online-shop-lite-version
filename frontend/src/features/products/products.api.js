@@ -35,3 +35,13 @@ export const assignCollectionToProducts = async ({
     });
     return response.data;
 };
+
+export const deleteProductImageWhenCancelUpload = async (images) => {
+    const response = await apiClient.post(
+        `/products/delete-image-when-cancel-upload`,
+        {
+            images,
+        },
+    );
+    return response.data;
+};

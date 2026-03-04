@@ -62,11 +62,10 @@ const ProductQuickView = ({ product, onClose }) => {
                                 <button
                                     key={index}
                                     onClick={() => setActiveImage(index)}
-                                    className={`relative w-16 h-16 shrink-0 rounded-lg border-2 transition-all overflow-hidden bg-white ${
-                                        activeImage === index
+                                    className={`relative w-16 h-16 shrink-0 rounded-lg border-2 transition-all overflow-hidden bg-white ${activeImage === index
                                             ? "border-zinc-900"
                                             : "border-transparent opacity-60 hover:opacity-100"
-                                    }`}
+                                        }`}
                                 >
                                     <img
                                         src={`${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${img.filePath}`}
@@ -155,9 +154,15 @@ const ProductQuickView = ({ product, onClose }) => {
                                 >
                                     <Minus size={14} />
                                 </button>
-                                <span className="w-8 text-center text-xs font-bold">
-                                    {quantity}
-                                </span>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    value={quantity}
+                                    onChange={(e) =>
+                                        setQuantity(Math.max(1, Number(e.target.value)))
+                                    }
+                                    className="w-14 h-full text-center text-sm font-bold text-zinc-900 border-none outline-none custom-quantity"
+                                />
                                 <button
                                     onClick={() => setQuantity(quantity + 1)}
                                     className="px-5 h-full hover:text-zinc-900 text-zinc-400 transition-colors"

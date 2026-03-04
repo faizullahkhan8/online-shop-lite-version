@@ -8,6 +8,7 @@ import {
     getPromotionById,
     updatePromotion,
     deletePromotion,
+    deletePromotionImageWhenCancelUpload,
 } from "../controllers/promotion.controller.js";
 
 const router = express.Router();
@@ -22,5 +23,12 @@ router.get("/", isAuth, authorize("admin"), getAllPromotions); // Admin
 router.get("/:id", isAuth, authorize("admin"), getPromotionById); // Admin/Edit
 router.put("/:id", isAuth, authorize("admin"), updatePromotion); // Admin
 router.delete("/:id", isAuth, authorize("admin"), deletePromotion); // Admin
+
+router.post(
+    "/delete-image-when-cancel-upload",
+    isAuth,
+    authorize("admin"),
+    deletePromotionImageWhenCancelUpload,
+);
 
 export default router;

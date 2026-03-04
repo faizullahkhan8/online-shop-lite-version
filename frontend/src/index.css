@@ -16,30 +16,33 @@
     --radius-2xl: 1rem;
 }
 
-
-
 @theme {
-    --font-heading: 'Cormorant Garamond', serif;
-    --font-body: 'Inter', sans-serif;
+    --font-heading: "Cormorant Garamond", serif;
+    --font-body: "Inter", sans-serif;
 }
 
 /* body {
  
 } */
 
-
-
-
-
-
 body {
     background-color: #f7fafc;
     color: var(--color-ui-dark);
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
+}
+
+.custom-quantity::-webkit-inner-spin-button,
+.custom-quantity::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.custom-quantity {
+    -moz-appearance: textfield;
 }

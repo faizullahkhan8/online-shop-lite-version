@@ -12,6 +12,7 @@ import {
     getProductById,
     uploadImages,
     deleteImage,
+    deleteProductImageWhenCancelUpload,
 } from "../controllers/product.controller.js";
 import { authorize, isAuth } from "../middlewares/auth.middleware.js";
 import { getAllProducts } from "../controllers/product.controller.js";
@@ -42,5 +43,12 @@ router.patch("/update/:id", isAuth, authorize(["admin"]), updateProduct);
 router.get("/all", getAllProducts);
 router.delete("/delete/:id", isAuth, authorize(["admin"]), deleteProduct);
 router.get("/get/:id", getProductById);
+
+router.post(
+    "/delete-image-when-cancel-upload",
+    isAuth,
+    authorize(["admin"]),
+    deleteProductImageWhenCancelUpload,
+);
 
 export default router;

@@ -4,12 +4,10 @@ import {
     Package,
     Plus,
     List as ListIcon,
-    Users,
     ShoppingCart,
     Layers,
     ChevronLeft,
     ChevronRight,
-    LayoutDashboardIcon,
     Globe,
     Receipt,
     LogOut,
@@ -17,6 +15,7 @@ import {
     Percent,
     MonitorPlay,
     User,
+    Key,
 } from "lucide-react";
 
 import { useState } from "react";
@@ -134,9 +133,8 @@ const AdminSidebar = () => {
 
                     {/* Inventory Section */}
                     <div
-                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${
-                            collapsed ? "opacity-0" : "opacity-100"
-                        }`}
+                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${collapsed ? "opacity-0" : "opacity-100"
+                            }`}
                     >
                         Inventory
                     </div>
@@ -192,9 +190,8 @@ const AdminSidebar = () => {
 
                     {/* Logistics Section */}
                     <div
-                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${
-                            collapsed ? "opacity-0" : "opacity-100"
-                        }`}
+                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${collapsed ? "opacity-0" : "opacity-100"
+                            }`}
                     >
                         Logistics
                     </div>
@@ -222,9 +219,8 @@ const AdminSidebar = () => {
 
                     {/* Marketing Section */}
                     <div
-                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${
-                            collapsed ? "opacity-0" : "opacity-100"
-                        }`}
+                        className={`px-6 py-3 mt-4 text-xs font-semibold text-gray-400 uppercase tracking-wide transition-opacity ${collapsed ? "opacity-0" : "opacity-100"
+                            }`}
                     >
                         Marketing
                     </div>
@@ -250,6 +246,12 @@ const AdminSidebar = () => {
                             icon={<Globe size={16} />}
                         >
                             Visit Site
+                        </MenuItem>
+                        <MenuItem
+                            component={<NavLink to="/admin-dashboard/change-password" />}
+                            icon={<Key size={18} />}
+                        >
+                            Change Password
                         </MenuItem>
                         <MenuItem
                             onClick={handleSignOut}

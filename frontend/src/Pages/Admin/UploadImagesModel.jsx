@@ -7,7 +7,7 @@ import ImageEditor from "../../Components/ImageEditor.jsx";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_FILES = 10;
 
-const UploadImagesModal = ({ isOpen, onClose, onSuccess, aspectRatio=1 }) => {
+const UploadImagesModal = ({ isOpen, onClose, onSuccess, aspectRatio = 1 }) => {
     const [files, setFiles] = useState([]);
     const [cropQueue, setCropQueue] = useState([]);
 
@@ -102,7 +102,7 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess, aspectRatio=1 }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-9999">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-999">
             <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl p-6 space-y-4">
                 {/* Header */}
                 <div className="flex items-center justify-between">
