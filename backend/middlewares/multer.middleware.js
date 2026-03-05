@@ -109,7 +109,6 @@ export const upload = multer({
 
 //         // next();
 
-
 //         const mapped = results.map((result) => ({
 //             fileId: result.fileId,
 //             url: result.url,
@@ -129,9 +128,6 @@ export const upload = multer({
 //     }
 // };
 
-
-
-
 export const handleOptionalBackgroundRemoval = async (req, res, next) => {
     let isRemoveBg = false;
 
@@ -147,7 +143,8 @@ export const handleOptionalBackgroundRemoval = async (req, res, next) => {
 
     try {
         await Promise.all(
-            files.map(async (file) => {  // ✅ req.files ki jagah files
+            files.map(async (file) => {
+                // ✅ req.files ki jagah files
                 const formData = new FormData();
                 formData.append("image_file", file.buffer, {
                     filename: file.originalname,
@@ -174,7 +171,10 @@ export const handleOptionalBackgroundRemoval = async (req, res, next) => {
                     file.mimetype = "image/png";
                 } else {
                     const errorText = await response.text();
-                    console.error(`remove.bg error for ${file.originalname}:`, errorText);
+                    console.error(
+                        `remove.bg error for ${file.originalname}:`,
+                        errorText,
+                    );
                 }
             }),
         );
@@ -194,13 +194,6 @@ export const handleOptionalBackgroundRemoval = async (req, res, next) => {
     }
 };
 
-
-
-
-
-
-
-
 export const imagekitUpload = async (req, res, next) => {
     const files = req.files?.length ? req.files : req.file ? [req.file] : [];
 
@@ -208,8 +201,9 @@ export const imagekitUpload = async (req, res, next) => {
 
     try {
         const folder = req.imageFolder || "/products";
+        // const folder = "/products";
 
-        const uploadPromises = files.map((file) =>  // ✅ req.files ki jagah files
+        const uploadPromises = files.map((file) =>
             imagekit.files.upload({
                 file: file.buffer.toString("base64"),
                 fileName: file.originalname,
@@ -220,24 +214,38 @@ export const imagekitUpload = async (req, res, next) => {
 
         const results = await Promise.all(uploadPromises);
 
-        const mapped = results.map((result) => ({
-            fileId: result.fileId,
-            url: result.url,
-            name: result.name,
-            filePath: result.filePath,
-        }));
+        const mapped = results.map((result) => {
+            const transformedUrl = imagekit.helper.buildSrc({
+                urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+                src: result.filePath,
+                transformation: [
+                    {
+                        format: "webp",
+                        quality: 40,
+                    },
+                ],
+            });
+
+            console.log(transformedUrl);
+
+            return {
+                fileId: result.fileId,
+                url: transformedUrl,
+                originalUrl: result.url,
+                name: result.name,
+                filePath: result.filePath,
+            };
+        });
 
         req.images = mapped;
         req.image = mapped[0];
+
         next();
     } catch (err) {
-        console.error("❌ ImageKit bulk upload failed:", err);
+        console.error("ImageKit upload failed:", err);
         return res.status(500).json({
             message: "Image upload failed",
             error: err.message,
         });
     }
 };
-
-
-
