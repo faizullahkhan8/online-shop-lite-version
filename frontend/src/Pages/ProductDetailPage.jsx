@@ -80,7 +80,7 @@ const ProductDetailPage = () => {
     return (
         <div className="bg-white min-h-screen mt-10">
             <div className="container mx-auto px-4 lg:px-12 py-8 lg:py-12 max-w-7xl">
-                <div className="mb-10">
+                <div className="mb-10 mt-20">
                     <Breadcrumb items={breadcrumbItems} />
                 </div>
 
@@ -110,7 +110,7 @@ const ProductDetailPage = () => {
                                         onClick={() => setActiveImage(index)}
                                         className={`relative w-20 h-20 shrink-0 rounded-xl border-2 transition-all overflow-hidden bg-zinc-50 ${activeImage === index
                                             ? "border-zinc-900"
-                                            : "border-transparent opacity-60 hover:opacity-100"
+                                            : "border-transparent opacity-80 hover:opacity-100"
                                             }`}
                                     >
                                         <img
@@ -126,22 +126,14 @@ const ProductDetailPage = () => {
 
                     <div className="lg:col-span-5 flex flex-col">
                         <div className="mb-6 flex items-center justify-between">
-                            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-zinc-500 font-bold">
+                            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-zinc-500">
                                 {data?.product?.collection?.name ||
                                     "Premium Collection"}
                             </p>
                         </div>
 
-                        <h1 className="text-3xl lg:text-4xl font-light tracking-tight text-zinc-900 uppercase mb-4">
-                            {data?.product?.name?.split(" ").map((word, i) =>
-                                i === 0 ? (
-                                    <span key={i}>{word} </span>
-                                ) : (
-                                    <span key={i} className="font-semibold">
-                                        {word}{" "}
-                                    </span>
-                                ),
-                            )}
+                        <h1 className="text-3xl font-medium tracking-widest text-zinc-900 font-heading mb-4">
+                            {data?.product?.name}
                         </h1>
 
                         <div
@@ -155,7 +147,7 @@ const ProductDetailPage = () => {
                             <StarRating
                                 rating={data?.product?.rating || 0}
                                 readonly
-                                size={14}
+                                size={22}
                             />
                             <span className="text-sm font-semibold uppercase tracking-widest text-zinc-500 font-bold border-l border-zinc-200 pl-4">
                                 {data?.product?.numReviews || 0} REVIEWS

@@ -49,10 +49,6 @@ const MobileSideBar = ({ isMenuOpen, setIsMenuOpen }) => {
 
                 <div className="flex-1 overflow-y-auto overflow-x-hidden">
                     <div className="mt-2 space-y-1">
-                        <p className="px-8 text-xs uppercase tracking-[0.3em] text-zinc-500 mb-4">
-                            Collections
-                        </p>
-
                         <NavItem
                             setIsMenuOpen={setIsMenuOpen}
                             to="/"
@@ -115,7 +111,7 @@ const NavItem = ({
         <div className={`${color} group-hover:text-zinc-900 transition-colors`}>
             {icon}
         </div>
-        <span className="text-md uppercase tracking-[0.15em] font-medium text-zinc-600 group-hover:text-zinc-900 flex-1">
+        <span className="text-sm font-semibold tracking-[0.1em] text-zinc-600 group-hover:text-zinc-900 flex-1">
             {label}
         </span>
         {badge > 0 ? (

@@ -60,7 +60,7 @@ const HeroSection = () => {
                 <div className="px-6 sm:px-12 lg:px-20 max-w-screen-2xl mx-auto w-full mt-10 sm:mt-0">
                     <div
                         key={currentSlide}
-                        className="max-w-[16rem] sm:max-w-sm md:max-w-md lg:max-w-lg space-y-3 sm:space-y-4 md:space-y-5"
+                        className="max-w-[16rem] sm:max-w-sm md:max-w-md lg:max-w-3xl space-y-3 sm:space-y-4 md:space-y-5"
                         style={{
                             animation: "heroFadeUp 700ms ease-out forwards",
                         }}
@@ -74,7 +74,7 @@ const HeroSection = () => {
                         </h2>
 
                         {activeSlide?.subtitle && (
-                            <p className="text-xs sm:text-sm font-semibold tracking-wider sm:tracking-widest text-white leading-relaxed max-w-[200px] sm:max-w-xs">
+                            <p className="text-xs font-body sm:text-sm font-normal tracking-wider sm:tracking-widest text-white leading-relaxed max-w-[500px]">
                                 {activeSlide?.subtitle}
                             </p>
                         )}

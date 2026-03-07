@@ -1,6 +1,6 @@
 import { Star, StarHalf } from "lucide-react";
 
-const StarRating = ({ rating, setRating, readonly = false, size = 18 }) => {
+const StarRating = ({ rating, setRating, readonly = false, size = 22 }) => {
     const handleRating = (index) => {
         if (!readonly && setRating) {
             setRating(index);

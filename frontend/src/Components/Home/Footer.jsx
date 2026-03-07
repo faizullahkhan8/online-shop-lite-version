@@ -240,7 +240,7 @@ const Footer = () => {
                                     onClick={() => toggleSection(idx)}
                                     className="w-full flex justify-between items-center py-4 lg:py-0 lg:mb-6 group"
                                 >
-                                    <h4 className="text-xs font-bold uppercase tracking-widest text-[#1a2e1a] font-heading">
+                                    <h4 className="text-md font-bold uppercase tracking-widest text-[#1a2e1a] font-heading">
                                         {section.title}
                                     </h4>
                                     <motion.span
@@ -278,7 +278,7 @@ const Footer = () => {
                                                         >
                                                             <Link
                                                                 to={link.href}
-                                                                className="text-sm text-stone-500 hover:text-[#7aaf68] transition-colors font-sans"
+                                                                className="text-md text-stone-500 hover:text-[#7aaf68] transition-colors font-sans"
                                                             >
                                                                 {link.name}
                                                             </Link>
@@ -304,7 +304,7 @@ const Footer = () => {
                                         >
                                             <Link
                                                 to={link.href}
-                                                className="text-sm text-stone-500 hover:text-[#7aaf68] transition-colors font-sans relative group"
+                                                className="text-sm font-semibold text-stone-500 hover:text-[#7aaf68] transition-colors font-sans relative group"
                                             >
                                                 <span>{link.name}</span>
                                                 <motion.span
