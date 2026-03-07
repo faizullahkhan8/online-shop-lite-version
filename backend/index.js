@@ -24,28 +24,28 @@ import cookieParser from "cookie-parser";
 dotenv.config();
 
 const app = express();
-app.use(express.static("dist"));
-app.use("/public", express.static("public"));
+// app.use(express.static("dist"));
+// app.use("/public", express.static("public"));
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 
 // CORS: Must be early, before route handlers and rate limiters
-const corsOptions = {
-    origin: (origin, callback) => {
-        callback(null, true); // har origin allow
-    },
-    credentials: true,
-};
+// const corsOptions = {
+//     origin: (origin, callback) => {
+//         callback(null, true); // har origin allow
+//     },
+//     credentials: true,
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
-// app.use(
-//     cors({
-//         origin: ["http://localhost:5173"],
-//         credentials: true,
-//         methods: ["POST", "DELETE", "PUT", "PATCH", "GET"],
-//     }),
-// );
+app.use(
+    cors({
+        origin: ["http://localhost:5173"],
+        credentials: true,
+        methods: ["POST", "DELETE", "PUT", "PATCH", "GET"],
+    }),
+);
 
 // Security: Helmet headers
 app.use(helmet());

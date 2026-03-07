@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import LexicalEditor from "../../Components/LexicalEditor.jsx";
 import Input from "../../UI/Input.jsx";
 import Button from "../../UI/Button.jsx";
 import Select from "../../UI/Select.jsx";
@@ -115,6 +116,11 @@ const AddProduct = () => {
         const { id, value } = e.target;
         setProductData((prev) => ({ ...prev, [id]: value }));
     };
+
+    const handleDescriptionChange = useCallback(
+        (json) => setProductData((prev) => ({ ...prev, description: json })),
+        []
+    );
 
     // ✅ Handle upload success from modal
     const handleUploadSuccess = (uploadedImages) => {
@@ -331,13 +337,9 @@ const AddProduct = () => {
                                 />
                                 Product Description
                             </label>
-                            <textarea
-                                id="description"
-                                placeholder="Product Description"
-                                rows={6}
+                            <LexicalEditor
                                 value={productData?.description}
-                                onChange={handleChange}
-                                className="border border-gray-300 rounded-2xl w-full resize-none py-2 px-4 text-gray-700 text-sm"
+                                onChange={handleDescriptionChange}
                             />
                         </div>
                     </div>

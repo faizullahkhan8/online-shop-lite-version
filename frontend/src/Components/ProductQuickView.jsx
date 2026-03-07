@@ -2,6 +2,7 @@ import { X, ChevronRight, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StarRating from "./UI/StarRating";
+// import LexicalRenderer from "./LexicalRenderer";
 
 const ProductQuickView = ({ product, onClose }) => {
     const [quantity, setQuantity] = useState(1);
@@ -63,8 +64,8 @@ const ProductQuickView = ({ product, onClose }) => {
                                     key={index}
                                     onClick={() => setActiveImage(index)}
                                     className={`relative w-16 h-16 shrink-0 rounded-lg border-2 transition-all overflow-hidden bg-white ${activeImage === index
-                                            ? "border-zinc-900"
-                                            : "border-transparent opacity-60 hover:opacity-100"
+                                        ? "border-zinc-900"
+                                        : "border-transparent opacity-60 hover:opacity-100"
                                         }`}
                                 >
                                     <img
@@ -135,14 +136,15 @@ const ProductQuickView = ({ product, onClose }) => {
                     </div>
 
                     <div className="space-y-6 flex-1">
-                        <div>
+                        {/* <div>
                             <h4 className="text-sm uppercase tracking-[0.2em] font-bold text-zinc-900 mb-3">
                                 Description
                             </h4>
-                            <p className="text-sm text-zinc-700 leading-relaxed font-light">
-                                {product?.description?.slice(0, 200) + "..."}
-                            </p>
-                        </div>
+                            <LexicalRenderer
+                                value={product?.description}
+                                className="mb-10 lg:pr-10"
+                            />
+                        </div> */}
 
                         <div className="flex items-center gap-6 pt-4">
                             <div className="flex items-center border border-zinc-200 rounded-2xl h-14 bg-white">

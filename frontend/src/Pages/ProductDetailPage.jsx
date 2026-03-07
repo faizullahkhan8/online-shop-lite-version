@@ -13,6 +13,7 @@ import { useProductById } from "../features/products/product.queries";
 
 import StarRating from "../Components/UI/StarRating";
 import ProductReviews from "../Components/Product/ProductReviews";
+import LexicalRenderer from "../Components/LexicalRenderer";
 import { useNavigate } from "react-router-dom";
 
 const ProductDetailPage = () => {
@@ -234,13 +235,15 @@ const ProductDetailPage = () => {
                     </div>
                 </div>
                 <div className="mt-10 flex flex-col gap-4">
-                    <h1 className="text-xl font-light uppercase tracking-[0.3em] text-zinc-900">
+                    <h1 className="text-2xl lg:text-3xl font-bold text-zinc-900">
                         Description
                     </h1>
-                    <p className="text-zinc-700 text-md leading-relaxed font-light mb-10 lg:pr-10">
-                        {data?.product?.description ||
-                            "A masterclass in modern design and functional elegance, part of our exclusive Studio Edition series."}
-                    </p>
+                    {/* seprator */}
+                    <div className="w-full h-1 rounded-2xl bg-zinc-200"></div>
+                    <LexicalRenderer
+                        value={data?.product?.description}
+                        className="mb-10 lg:pr-10"
+                    />
                 </div>
                 <div className="mt-10 border-zinc-100">
                     {data?.product && (
