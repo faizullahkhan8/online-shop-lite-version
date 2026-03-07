@@ -9,9 +9,9 @@ const LoadingSpinner = ({ message = "Loading..." }) => {
         <div className="flex flex-col items-center justify-center min-h-screen">
             {/* Spinning circle animation */}
             <div className="w-12 h-12 border-4 border-gray-200 border-t-primary rounded-full animate-spin"></div>
-            
+
             {/* Loading message */}
-            <p className="mt-4 text-gray-500 text-sm">{message}</p>
+            <p className="mt-4 text-gray-500 text-sm font-semibold">{message}</p>
         </div>
     );
 };

@@ -143,14 +143,14 @@ const PromotionBar = () => {
         >
             <div className="flex items-center justify-center h-full px-2 sm:px-4 gap-0">
                 {/* Title */}
-                <span className="text-[#1F3A2E] text-[10px] sm:text-xs font-semibold tracking-wide truncate max-w-[70px] sm:max-w-[160px] md:max-w-xs text-right shrink-0">
+                <span className="text-[#1F3A2E] text-sm sm:text-xs font-semibold tracking-wide truncate max-w-[70px] sm:max-w-[160px] md:max-w-xs text-right shrink-0">
                     {activePromotion.title}
                 </span>
 
                 <Divider />
 
                 {/* Product count */}
-                <span className="text-[#1F3A2E]/70 text-[10px] sm:text-xs font-medium tabular-nums whitespace-nowrap shrink-0 text-center">
+                <span className="text-[#1F3A2E]/70 text-sm sm:text-xs font-medium tabular-nums whitespace-nowrap shrink-0 text-center">
                     <span className="hidden sm:inline">{productCount} product{productCount === 1 ? "" : "s"}</span>
                     <span className="sm:hidden">{productCount} pc</span>
                 </span>
@@ -159,7 +159,7 @@ const PromotionBar = () => {
 
                 {/* Timer */}
                 <span
-                    className="text-[#2D6A4F] text-[10px] sm:text-xs font-semibold whitespace-nowrap shrink-0"
+                    className="text-[#2D6A4F] text-sm sm:text-xs font-semibold whitespace-nowrap shrink-0"
                     style={{
                         fontVariantNumeric: "tabular-nums",
                         fontFamily: "monospace",

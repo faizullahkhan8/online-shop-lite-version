@@ -33,7 +33,7 @@ const ProductDetailPage = () => {
                     size={32}
                     strokeWidth={1.5}
                 />
-                <p className="text-sm uppercase tracking-[0.3em] font-bold text-zinc-500">
+                <p className="text-sm font-semibold uppercase tracking-[0.3em] font-bold text-zinc-500">
                     Loading Collection...
                 </p>
             </div>
@@ -78,7 +78,7 @@ const ProductDetailPage = () => {
             : `${import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}/${data?.product?.image}`;
 
     return (
-        <div className="bg-white min-h-screen">
+        <div className="bg-white min-h-screen mt-10">
             <div className="container mx-auto px-4 lg:px-12 py-8 lg:py-12 max-w-7xl">
                 <div className="mb-10">
                     <Breadcrumb items={breadcrumbItems} />
@@ -126,7 +126,7 @@ const ProductDetailPage = () => {
 
                     <div className="lg:col-span-5 flex flex-col">
                         <div className="mb-6 flex items-center justify-between">
-                            <p className="text-sm uppercase tracking-[0.3em] text-zinc-500 font-bold">
+                            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-zinc-500 font-bold">
                                 {data?.product?.collection?.name ||
                                     "Premium Collection"}
                             </p>
@@ -157,13 +157,13 @@ const ProductDetailPage = () => {
                                 readonly
                                 size={14}
                             />
-                            <span className="text-sm uppercase tracking-widest text-zinc-500 font-bold border-l border-zinc-200 pl-4">
+                            <span className="text-sm font-semibold uppercase tracking-widest text-zinc-500 font-bold border-l border-zinc-200 pl-4">
                                 {data?.product?.numReviews || 0} REVIEWS
                             </span>
                         </div>
 
                         <div className="mb-10 py-8 border-y border-zinc-100">
-                            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500 font-bold mb-3">
+                            <p className="text-xs uppercase tracking-widest text-zinc-500 font-bold mb-3">
                                 Unit Price
                             </p>
                             <div className="flex items-baseline gap-4">
@@ -177,7 +177,7 @@ const ProductDetailPage = () => {
                                             RS{" "}
                                             {data?.product?.price?.toLocaleString()}
                                         </span>
-                                        <span className="text-sm bg-emerald-50 text-emerald-600 px-3 py-1 rounded-2xl font-bold uppercase tracking-wider">
+                                        <span className="text-sm font-semibold bg-emerald-50 text-emerald-600 px-3 py-1 rounded-2xl font-bold uppercase tracking-wider">
                                             {data?.product?.promotion?.title}
                                         </span>
                                     </>
@@ -210,7 +210,7 @@ const ProductDetailPage = () => {
                                         onChange={(e) =>
                                             setQuantity(Math.max(1, Number(e.target.value)))
                                         }
-                                        className="w-14 h-full text-center text-sm font-bold text-zinc-900 border-none outline-none custom-quantity"
+                                        className="w-14 h-full text-center text-sm font-semibold font-bold text-zinc-900 border-none outline-none custom-quantity"
                                     />
                                     <button
                                         onClick={() =>

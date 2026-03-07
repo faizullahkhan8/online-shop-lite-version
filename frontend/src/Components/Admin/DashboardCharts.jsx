@@ -56,7 +56,7 @@ const DashboardCharts = ({ stats }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {/* Revenue Area Chart */}
             <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                <h3 className="text-sm font-semibold text-gray-900 mb-6">
+                <h3 className="text-sm font-semibold font-semibold text-gray-900 mb-6">
                     Revenue Trends (Last 30 Days)
                 </h3>
                 <div className="h-75 w-full">
@@ -143,7 +143,7 @@ const DashboardCharts = ({ stats }) => {
 
             {/* Collection Performance Bar Chart */}
             <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                <h3 className="text-sm font-semibold text-gray-900 mb-6">
+                <h3 className="text-sm font-semibold font-semibold text-gray-900 mb-6">
                     Collection Performance
                 </h3>
                 <div className="h-75 w-full">
@@ -202,7 +202,7 @@ const DashboardCharts = ({ stats }) => {
 
             {/* Order Status Pie Chart */}
             <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                <h3 className="text-sm font-semibold text-gray-900 mb-6">
+                <h3 className="text-sm font-semibold font-semibold text-gray-900 mb-6">
                     Order Status Breakdown
                 </h3>
                 <div className="h-75 w-full">
@@ -274,8 +274,8 @@ const DashboardCharts = ({ stats }) => {
                         Rs{" "}
                         {stats?.totalOrders > 0
                             ? (stats?.totalSales / stats?.totalOrders)
-                                  .toFixed(0)
-                                  .toLocaleString()
+                                .toFixed(0)
+                                .toLocaleString()
                             : 0}
                     </h4>
                 </div>

@@ -1,5 +1,152 @@
 @import "tailwindcss";
 
+/* ─── Poppins (Headings) ─────────────────────────────────────────────────── */
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-Thin.ttf") format("truetype");
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-ThinItalic.ttf") format("truetype");
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-ExtraLight.ttf") format("truetype");
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-ExtraLightItalic.ttf") format("truetype");
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-Light.ttf") format("truetype");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-LightItalic.ttf") format("truetype");
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-Italic.ttf") format("truetype");
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-MediumItalic.ttf") format("truetype");
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-SemiBoldItalic.ttf") format("truetype");
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-BoldItalic.ttf") format("truetype");
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-ExtraBold.ttf") format("truetype");
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-ExtraBoldItalic.ttf") format("truetype");
+    font-weight: 800;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-Black.ttf") format("truetype");
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Poppins";
+    src: url("./assets/fonts/Poppins-BlackItalic.ttf") format("truetype");
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* ─── Roboto (Body) — variable fonts ────────────────────────────────────── */
+@font-face {
+    font-family: "Roboto";
+    src: url("./assets/fonts/Roboto-VariableFont_wdth,wght.ttf")
+        format("truetype");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Roboto";
+    src: url("./assets/fonts/Roboto-Italic-VariableFont_wdth,wght.ttf")
+        format("truetype");
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* ─── Tailwind theme tokens ──────────────────────────────────────────────── */
 @theme {
     --color-primary: #0d6efd;
     --color-primary-dark: #0b5ed7;
@@ -7,36 +154,43 @@
     --color-ui-dark: #1c1c1c;
     --color-ui-gray: #8b96a5;
     --color-ui-light: #dee2e7;
-    --font-sans: "Inter", system-ui, sans-serif;
+    --font-sans: "Roboto", system-ui, sans-serif;
 
     --radius-sm: 1rem;
     --radius-md: 1rem;
     --radius-lg: 1rem;
     --radius-xl: 1rem;
     --radius-2xl: 1rem;
+
+    /* Named font stacks available as font-heading / font-body utilities */
+    --font-heading: "Poppins", sans-serif;
+    --font-body: "Roboto", sans-serif;
 }
 
-@theme {
-    --font-heading: "Cormorant Garamond", serif;
-    --font-body: "Inter", sans-serif;
-}
-
-/* body {
- 
-} */
-
+/* ─── Global defaults ────────────────────────────────────────────────────── */
 body {
     background-color: #f7fafc;
     color: var(--color-ui-dark);
-    font-family: "Inter", sans-serif;
+    font-family: "Roboto", system-ui, sans-serif;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Poppins", sans-serif;
+}
+
+/* ─── Layout ─────────────────────────────────────────────────────────────── */
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
 }
 
+/* ─── Number input spinner hide ──────────────────────────────────────────── */
 .custom-quantity::-webkit-inner-spin-button,
 .custom-quantity::-webkit-outer-spin-button {
     -webkit-appearance: none;

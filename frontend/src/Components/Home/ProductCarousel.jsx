@@ -52,7 +52,7 @@ const ProductCarousel = ({ products, title, isViewAll }) => {
                     className="flex items-center gap-3 mb-4"
                 >
                     <span className="block w-10 h-px bg-gray-200" />
-                    <span className="text-[9px] uppercase tracking-[0.45em] text-gray-400 font-sans">
+                    <span className="text-sm font-semibold tracking-widest text-gray-400 font-sans">
                         Our Collection
                     </span>
                     <span className="block w-10 h-px bg-gray-200" />
@@ -64,7 +64,7 @@ const ProductCarousel = ({ products, title, isViewAll }) => {
                     variants={fadeUp}
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
-                    className="text-2xl sm:text-3xl font-light tracking-[0.2em] uppercase text-gray-900 font-sans mb-5"
+                    className="text-2xl sm:text-3xl font-light uppercase tracking-wide text-gray-900 font-heading mb-5"
                 >
                     {title}
                 </motion.h2>
@@ -78,7 +78,7 @@ const ProductCarousel = ({ products, title, isViewAll }) => {
                     >
                         <Link
                             to="/products"
-                            className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-gray-400 hover:text-gray-900 transition-colors duration-300 font-sans group"
+                            className="inline-flex items-center gap-2 text-sm tracking-widest uppercase text-gray-500 hover:text-gray-900 transition-colors duration-300 font-sans group"
                         >
                             <span className="block w-4 h-px bg-current transition-all duration-300 group-hover:w-6" />
                             View All

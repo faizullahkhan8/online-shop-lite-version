@@ -4,7 +4,7 @@ const Pagination = ({ currentPage = 1, totalPages = 5, onPageChange, limit, setL
     return (
         <div className="flex justify-end items-center gap-4 mt-8">
             <div className="relative">
-                <select defaultValue={limit} onChange={(e) => setLimit(e.target.value)} className="appearance-none bg-white border border-gray-300 text-gray-700 py-1.5 pl-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm">
+                <select defaultValue={limit} onChange={(e) => setLimit(e.target.value)} className="appearance-none bg-white border border-gray-300 text-gray-700 py-1.5 pl-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm font-semibold">
                     <option value={5}>Show 5</option>
                     <option value={10}>Show 10</option>
                     <option value={20}>Show 20</option>

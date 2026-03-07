@@ -55,7 +55,7 @@ const ReviewModal = ({
                         <h2 className="text-xl font-bold uppercase tracking-widest text-zinc-900 mb-2">
                             Give Review
                         </h2>
-                        <p className="text-sm text-zinc-500 uppercase tracking-widest">
+                        <p className="text-sm font-semibold text-zinc-500 uppercase tracking-widest">
                             {product.name}
                         </p>
                     </div>
@@ -103,7 +103,7 @@ const ReviewModal = ({
                                     })
                                 }
                                 placeholder="Your name..."
-                                className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl px-6 py-4 text-sm tracking-widest focus:outline-none focus:border-zinc-900 transition-all"
+                                className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl px-6 py-4 text-sm font-semibold tracking-widest focus:outline-none focus:border-zinc-900 transition-all"
                             />
                         </div>
 
@@ -123,7 +123,7 @@ const ReviewModal = ({
                                     })
                                 }
                                 placeholder="Your email..."
-                                className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl px-6 py-4 text-sm tracking-widest focus:outline-none focus:border-zinc-900 transition-all"
+                                className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl px-6 py-4 text-sm font-semibold tracking-widest focus:outline-none focus:border-zinc-900 transition-all"
                             />
                         </div>
 
@@ -142,14 +142,14 @@ const ReviewModal = ({
                                     })
                                 }
                                 placeholder="Describe your exprerience..."
-                                className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl p-6 text-sm tracking-widest focus:border-zinc-900 outline-none transition-all min-h-[120px] resize-none"
+                                className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl p-6 text-sm font-semibold tracking-widest focus:border-zinc-900 outline-none transition-all min-h-[120px] resize-none"
                             />
                         </div>
 
                         <button
                             type="submit"
                             disabled={addReviewMutation.isPending}
-                            className="w-full bg-zinc-900 text-white py-5 text-sm font-bold uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all disabled:opacity-50 rounded-2xl flex items-center justify-center gap-3"
+                            className="w-full bg-zinc-900 text-white py-5 text-sm font-semibold font-bold uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all disabled:opacity-50 rounded-2xl flex items-center justify-center gap-3"
                         >
                             {addReviewMutation.isPending ? (
                                 <Loader2 className="animate-spin" size={18} />

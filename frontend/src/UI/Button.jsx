@@ -9,9 +9,9 @@ const VARIANTS = {
 };
 
 const SIZES = {
-    sm: "px-8 py-3 text-[10px] tracking-[0.2em]",
-    md: "px-12 py-4 text-[11px] tracking-[0.3em]",
-    lg: "px-16 py-5 text-sm tracking-[0.4em]",
+    sm: "px-8 py-3 text-sm tracking-widest",
+    md: "px-12 py-4 text-sm font-semibold tracking-[0.3em]",
+    lg: "px-16 py-5 text-sm font-semibold tracking-[0.4em]",
 };
 
 const Button = ({

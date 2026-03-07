@@ -179,7 +179,7 @@ const CheckoutPage = () => {
                 </h2>
                 <Link
                     to="/products"
-                    className="border border-zinc-900 px-10 py-3 text-sm uppercase tracking-[0.2em] font-bold hover:bg-zinc-900 hover:text-white transition-all duration-500 rounded-2xl"
+                    className="border border-zinc-900 px-10 py-3 text-sm font-semibold uppercase tracking-widest font-bold hover:bg-zinc-900 hover:text-white transition-all duration-500 rounded-2xl"
                 >
                     Continue Shopping
                 </Link>
@@ -199,7 +199,7 @@ const CheckoutPage = () => {
                         size={14}
                         className="group-hover:-translate-x-1 transition-transform"
                     />
-                    <span className="text-sm uppercase tracking-[0.2em] font-bold">
+                    <span className="text-sm font-semibold uppercase tracking-widest font-bold">
                         {buyNowProduct ? "Back to Products" : "Return to Bag"}
                     </span>
                 </Link>
@@ -325,7 +325,7 @@ const CheckoutPage = () => {
 
                     <div className="lg:col-span-5">
                         <div className="bg-zinc-50 p-8 sticky top-12 border border-zinc-100 rounded-2xl">
-                            <h3 className="text-sm uppercase tracking-[0.25em] font-bold text-zinc-900 mb-8 pb-4 border-b border-zinc-200">
+                            <h3 className="text-sm font-semibold uppercase tracking-[0.25em] font-bold text-zinc-900 mb-8 pb-4 border-b border-zinc-200">
                                 Order Summary
                             </h3>
 
@@ -370,7 +370,7 @@ const CheckoutPage = () => {
                                                     onChange={(e) =>
                                                         handleQtyChange(item, Math.max(1, Number(e.target.value)))
                                                     }
-                                                    className="w-14 h-full text-center text-sm font-bold text-zinc-900 border-none outline-none custom-quantity"
+                                                    className="w-14 h-full text-center text-sm font-semibold font-bold text-zinc-900 border-none outline-none custom-quantity"
                                                 />
                                                 <button
                                                     type="button"
@@ -392,13 +392,13 @@ const CheckoutPage = () => {
                             </div>
 
                             <div className="space-y-4 pt-6 border-t border-zinc-200 mb-8">
-                                <div className="flex justify-between text-sm tracking-widest text-zinc-700">
+                                <div className="flex justify-between text-sm font-semibold tracking-widest text-zinc-700">
                                     <span>Promotion Name</span>
                                     <span>
                                         {localBuyNowProduct?.promotion?.title}
                                     </span>
                                 </div>
-                                <div className="flex justify-between text-sm tracking-widest text-zinc-700">
+                                <div className="flex justify-between text-sm font-semibold tracking-widest text-zinc-700">
                                     <span>Promotion Discount</span>
                                     <span>
                                         {
@@ -411,14 +411,14 @@ const CheckoutPage = () => {
                                             : "Rs"}
                                     </span>
                                 </div>
-                                <div className="flex justify-between text-sm tracking-widest border-t border-zinc-200 pt-4 text-zinc-700">
+                                <div className="flex justify-between text-sm font-semibold tracking-widest border-t border-zinc-200 pt-4 text-zinc-700">
                                     <span>Per Unit Price</span>
                                     <span>
                                         Rs {localBuyNowProduct?.originalPrice}
                                     </span>
                                 </div>
                                 {buyNowProduct.promotion && (
-                                    <div className="flex justify-between text-sm tracking-widest text-zinc-700">
+                                    <div className="flex justify-between text-sm font-semibold tracking-widest text-zinc-700">
                                         <span>
                                             Per Unit Price with Discount
                                         </span>
@@ -428,7 +428,7 @@ const CheckoutPage = () => {
                                         </span>
                                     </div>
                                 )}
-                                <div className="flex justify-between text-sm tracking-widest text-zinc-700">
+                                <div className="flex justify-between text-sm font-semibold tracking-widest text-zinc-700">
                                     <span>Subtotal</span>
                                     <span>
                                         Rs{" "}
@@ -437,20 +437,20 @@ const CheckoutPage = () => {
                                     </span>
                                 </div>
                                 {buyNowProduct.promotion && (
-                                    <div className="flex justify-between text-sm tracking-widest text-zinc-700">
+                                    <div className="flex justify-between text-sm font-semibold tracking-widest text-zinc-700">
                                         <span>
                                             Subtotal with promotional off
                                         </span>
                                         <span>Rs {totalAmount.toFixed(0)}</span>
                                     </div>
                                 )}
-                                <div className="flex justify-between text-sm tracking-widest border-t border-zinc-200 pt-4 text-zinc-700">
+                                <div className="flex justify-between text-sm font-semibold tracking-widest border-t border-zinc-200 pt-4 text-zinc-700">
                                     <span>Tax</span>
                                     <span>
                                         Rs {formData.taxAmount.toFixed(0)}
                                     </span>
                                 </div>
-                                <div className="flex justify-between text-sm tracking-widest text-zinc-700">
+                                <div className="flex justify-between text-sm font-semibold tracking-widest text-zinc-700">
                                     <span>Shipping</span>
                                     <span>
                                         {formData.shippingFee === 0
@@ -459,7 +459,7 @@ const CheckoutPage = () => {
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center pt-4 border-t border-zinc-200 mt-4">
-                                    <span className="text-md font-black tracking-[0.2em]">
+                                    <span className="text-md font-black tracking-widest">
                                         Total
                                     </span>
                                     <span className="text-lg font-black text-zinc-900">
@@ -513,7 +513,7 @@ const CheckoutInput = ({
     required = true,
 }) => (
     <div className="space-y-3">
-        <label className="text-xs uppercase tracking-[0.2em] font-bold text-zinc-700">
+        <label className="text-xs uppercase tracking-widest font-bold text-zinc-700">
             {label}
         </label>
         <div className="relative mt-2 group">

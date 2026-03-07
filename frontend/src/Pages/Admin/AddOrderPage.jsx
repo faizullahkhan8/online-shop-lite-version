@@ -182,7 +182,7 @@ const AddOrderPage = () => {
                         </div>
                         Create Manual Order
                     </h2>
-                    <p className="text-sm text-gray-500 ml-11">
+                    <p className="text-sm font-semibold text-gray-500 ml-11">
                         Add a new order directly to the system
                     </p>
                 </div>
@@ -202,7 +202,7 @@ const AddOrderPage = () => {
                 <div className="xl:col-span-8 space-y-6">
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
                         <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
-                            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                            <h3 className="text-sm font-semibold font-semibold text-gray-900 flex items-center gap-2">
                                 <Hash size={16} className="text-blue-600" />
                                 Order Items
                             </h3>
@@ -245,7 +245,7 @@ const AddOrderPage = () => {
                                         <label className="text-xs font-medium text-gray-700">
                                             Original Price
                                         </label>
-                                        <div className="w-full bg-gray-100 border border-gray-200 rounded-2xl px-3 py-2 text-sm font-medium text-gray-500">
+                                        <div className="w-full bg-gray-100 border border-gray-200 rounded-2xl px-3 py-2 text-sm font-semibold font-medium text-gray-500">
                                             Rs {item.originalPrice}
                                         </div>
                                     </div>
@@ -304,7 +304,7 @@ const AddOrderPage = () => {
                                         <p className="text-xs font-medium text-gray-700">
                                             Subtotal
                                         </p>
-                                        <p className="text-sm font-semibold text-gray-900 bg-gray-100 border border-gray-200 rounded-2xl px-3 py-2">
+                                        <p className="text-sm font-semibold font-semibold text-gray-900 bg-gray-100 border border-gray-200 rounded-2xl px-3 py-2">
                                             Rs{" "}
                                             {(
                                                 item.price * item.quantity
@@ -327,7 +327,7 @@ const AddOrderPage = () => {
                         <button
                             type="button"
                             onClick={addItem}
-                            className="w-full mt-4 py-3 border-2 border-dashed border-gray-300 rounded-2xl text-sm font-medium text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all flex items-center justify-center gap-2"
+                            className="w-full mt-4 py-3 border-2 border-dashed border-gray-300 rounded-2xl text-sm font-semibold font-medium text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all flex items-center justify-center gap-2"
                         >
                             <Plus size={18} />
                             Add Item
@@ -340,7 +340,7 @@ const AddOrderPage = () => {
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 space-y-6">
                         {/* Shipping Address Section */}
                         <section className="space-y-3">
-                            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2 pb-3 border-b border-gray-200">
+                            <h3 className="text-sm font-semibold font-semibold text-gray-900 flex items-center gap-2 pb-3 border-b border-gray-200">
                                 <Truck size={16} className="text-blue-600" />
                                 Shipping Address
                             </h3>
@@ -470,7 +470,7 @@ const AddOrderPage = () => {
 
                         {/* Payment Section */}
                         <section className="space-y-3">
-                            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2 pb-3 border-b border-gray-200">
+                            <h3 className="text-sm font-semibold font-semibold text-gray-900 flex items-center gap-2 pb-3 border-b border-gray-200">
                                 <CreditCard
                                     size={16}
                                     className="text-blue-600"
@@ -513,7 +513,7 @@ const AddOrderPage = () => {
                                         }
                                         className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                     />
-                                    <span className="text-sm font-medium text-gray-700">
+                                    <span className="text-sm font-semibold font-medium text-gray-700">
                                         Payment received
                                     </span>
                                 </label>
@@ -524,7 +524,7 @@ const AddOrderPage = () => {
                         <button
                             type="submit"
                             disabled={orderLoading}
-                            className="w-full bg-blue-600 text-white rounded-2xl py-3 font-medium text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full bg-blue-600 text-white rounded-2xl py-3 font-medium text-sm font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {orderLoading ? (
                                 <>

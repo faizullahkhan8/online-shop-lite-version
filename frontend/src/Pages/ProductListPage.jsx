@@ -32,7 +32,7 @@
 //                     size={24}
 //                     strokeWidth={1}
 //                 />
-//                 <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">
+//                 <p className="text-sm font-semibold uppercase tracking-[0.3em] text-zinc-500">
 //                     Synchronizing...
 //                 </p>
 //             </div>
@@ -62,10 +62,10 @@
 //                                         className="text-zinc-300"
 //                                     />
 //                                 </div>
-//                                 <h3 className="text-md uppercase tracking-[0.2em] font-medium text-zinc-900 mb-2">
+//                                 <h3 className="text-md uppercase tracking-widest font-medium text-zinc-900 mb-2">
 //                                     No Products Found
 //                                 </h3>
-//                                 <p className="text-sm text-zinc-500 tracking-wide max-w-xs text-center">
+//                                 <p className="text-sm font-semibold text-zinc-500 tracking-wide max-w-xs text-center">
 //                                     Your search criteria did not match any items
 //                                     in our current collection.
 //                                 </p>
@@ -102,7 +102,7 @@
 // };
 
 // const FilterChip = ({ label, onRemove }) => (
-//     <span className="flex items-center gap-2 bg-zinc-900 text-white pl-4 pr-2 py-2 text-sm uppercase tracking-widest transition-all hover:bg-zinc-800">
+//     <span className="flex items-center gap-2 bg-zinc-900 text-white pl-4 pr-2 py-2 text-sm font-semibold uppercase tracking-widest transition-all hover:bg-zinc-800">
 //         {label}
 //         <button
 //             onClick={onRemove}
@@ -203,7 +203,7 @@ const ProductListPage = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="mt-4 text-[10px] uppercase tracking-[0.35em] text-stone-400"
+                    className="mt-4 text-sm uppercase tracking-[0.35em] text-stone-400"
                 >
                     Curating your ritual…
                 </motion.p>
@@ -228,7 +228,7 @@ const ProductListPage = () => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-3"
+                        className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-3"
                     >
                         <Leaf size={10} /> Premium Collection
                     </motion.span>
@@ -298,7 +298,7 @@ const ProductListPage = () => {
                                 className="text-[#b5d4a6]"
                             />
                         </div>
-                        <h3 className="text-sm uppercase tracking-[0.25em] font-medium text-[#1a2e1a] mb-2">
+                        <h3 className="text-sm font-semibold uppercase tracking-[0.25em] font-medium text-[#1a2e1a] mb-2">
                             No Products Found
                         </h3>
                         <p className="text-xs text-stone-400 tracking-wide max-w-xs text-center leading-relaxed">
@@ -353,7 +353,7 @@ const ProductListPage = () => {
 };
 
 const FilterChip = ({ label, onRemove }) => (
-    <span className="flex items-center gap-2 bg-[#1a2e1a] text-white pl-4 pr-2 py-2 text-[10px] uppercase tracking-widest transition-all hover:bg-[#2e4a2e]">
+    <span className="flex items-center gap-2 bg-[#1a2e1a] text-white pl-4 pr-2 py-2 text-sm uppercase tracking-widest transition-all hover:bg-[#2e4a2e]">
         {label}
         <button
             onClick={onRemove}

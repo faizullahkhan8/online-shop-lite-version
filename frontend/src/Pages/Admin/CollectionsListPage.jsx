@@ -198,7 +198,7 @@ const CollectionsListPage = () => {
                     <h2 className="text-2xl font-bold text-gray-900">
                         Collections
                     </h2>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm font-semibold text-gray-500 mt-1">
                         Manage product collections (
                         {collectionsData?.collections?.length} total)
                     </p>
@@ -242,7 +242,7 @@ const CollectionsListPage = () => {
                                     >
                                         <div className="flex flex-col items-center gap-3">
                                             <div className="w-10 h-10 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin" />
-                                            <p className="text-sm font-medium text-gray-500">
+                                            <p className="text-sm font-semibold font-medium text-gray-500">
                                                 Loading collections...
                                             </p>
                                         </div>
@@ -283,7 +283,7 @@ const CollectionsListPage = () => {
                                                         />
                                                     )}
                                                     <span
-                                                        className={`text-sm font-medium ${collection.parentId ? "text-gray-600 ml-2" : "text-gray-900 font-semibold"}`}
+                                                        className={`text-sm font-semibold font-medium ${collection.parentId ? "text-gray-600 ml-2" : "text-gray-900 font-semibold"}`}
                                                     >
                                                         {collection.name}
                                                     </span>
@@ -294,14 +294,14 @@ const CollectionsListPage = () => {
                                                     {collection.isActive ? (
                                                         <>
                                                             <div className="w-2 h-2 rounded-full bg-green-500" />
-                                                            <span className="text-sm font-medium text-gray-700">
+                                                            <span className="text-sm font-semibold font-medium text-gray-700">
                                                                 Active
                                                             </span>
                                                         </>
                                                     ) : (
                                                         <>
                                                             <div className="w-2 h-2 rounded-full bg-gray-300" />
-                                                            <span className="text-sm font-medium text-gray-500">
+                                                            <span className="text-sm font-semibold font-medium text-gray-500">
                                                                 Inactive
                                                             </span>
                                                         </>
@@ -315,7 +315,7 @@ const CollectionsListPage = () => {
                                                             collection,
                                                         )
                                                     }
-                                                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                                                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                                                 >
                                                     <Edit
                                                         size={16}
@@ -350,7 +350,7 @@ const CollectionsListPage = () => {
                                                         //     );
                                                         // }
                                                     }}
-                                                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                                                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                                                 >
                                                     <Tag
                                                         size={16}
@@ -366,7 +366,7 @@ const CollectionsListPage = () => {
                                                                 collection._id,
                                                         });
                                                     }}
-                                                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                                                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold font-medium text-red-600 hover:bg-red-50 transition-colors"
                                                 >
                                                     <Trash2 size={16} />
                                                 </button>
@@ -387,10 +387,10 @@ const CollectionsListPage = () => {
                                                 strokeWidth={1.5}
                                             />
                                             <div className="space-y-1">
-                                                <p className="text-sm font-semibold text-gray-900">
+                                                <p className="text-sm font-semibold font-semibold text-gray-900">
                                                     No collections found
                                                 </p>
-                                                <p className="text-sm text-gray-500">
+                                                <p className="text-sm font-semibold text-gray-500">
                                                     Get started by adding your
                                                     first collection
                                                 </p>
@@ -428,7 +428,7 @@ const CollectionsListPage = () => {
                                         ? "Edit Collection"
                                         : "Add New Collection"}
                                 </h3>
-                                <p className="text-sm text-gray-500 mt-1">
+                                <p className="text-sm font-semibold text-gray-500 mt-1">
                                     {collectionModal.isEditing
                                         ? "Update collection information"
                                         : "Create a new product collection"}
@@ -446,7 +446,7 @@ const CollectionsListPage = () => {
                         <form onSubmit={handleSubmit} className="p-6 space-y-5">
                             {/* Collection Name */}
                             <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                <label className="text-sm font-semibold font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                     <Tag size={14} className="text-blue-600" />
                                     Collection Name
                                     <span className="text-red-500">*</span>
@@ -471,7 +471,7 @@ const CollectionsListPage = () => {
 
                             {/* Collection Image */}
                             <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                <label className="text-sm font-semibold font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                     <ImageIcon
                                         size={14}
                                         className="text-blue-600"
@@ -493,7 +493,7 @@ const CollectionsListPage = () => {
                                                 className="w-full h-full object-cover"
                                             />
                                             <div className="absolute inset-0 bg-gray-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                <p className="text-sm font-medium text-white">
+                                                <p className="text-sm font-semibold font-medium text-white">
                                                     Change Image
                                                 </p>
                                             </div>
@@ -506,7 +506,7 @@ const CollectionsListPage = () => {
                                                     className="text-gray-400 group-hover:text-blue-600 transition-colors"
                                                 />
                                             </div>
-                                            <p className="text-sm font-medium text-gray-900 mb-1">
+                                            <p className="text-sm font-semibold font-medium text-gray-900 mb-1">
                                                 Upload Collection Image
                                             </p>
                                             <p className="text-xs text-gray-500">
@@ -528,7 +528,7 @@ const CollectionsListPage = () => {
                             {/* Active Toggle */}
                             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-200">
                                 <div>
-                                    <span className="text-sm font-medium text-gray-900">
+                                    <span className="text-sm font-semibold font-medium text-gray-900">
                                         Active Status
                                     </span>
                                     <p className="text-xs text-gray-500 mt-0.5">
@@ -618,7 +618,7 @@ const CollectionsListPage = () => {
                                     Add Products to "
                                     {addProductsModal.collectionName}"
                                 </h3>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm font-semibold text-gray-500">
                                     Select products that are not currently
                                     assigned to any collection.
                                 </p>
@@ -639,7 +639,7 @@ const CollectionsListPage = () => {
 
                         <div className="max-h-[60vh] overflow-auto border border-gray-100 rounded-2xl">
                             {unassignedProducts.length === 0 ? (
-                                <div className="p-6 text-center text-sm text-gray-500">
+                                <div className="p-6 text-center text-sm font-semibold text-gray-500">
                                     No unassigned products available.
                                 </div>
                             ) : (
@@ -702,7 +702,7 @@ const CollectionsListPage = () => {
                                                             ) : null}
                                                         </div>
                                                         <div>
-                                                            <div className="text-sm font-medium text-gray-900">
+                                                            <div className="text-sm font-semibold font-medium text-gray-900">
                                                                 {p.name}
                                                             </div>
                                                             <div className="text-xs text-gray-500">
@@ -712,7 +712,7 @@ const CollectionsListPage = () => {
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="px-4 py-3 text-sm text-gray-700">
+                                                <td className="px-4 py-3 text-sm font-semibold text-gray-700">
                                                     Rs {p.price}
                                                 </td>
                                             </tr>

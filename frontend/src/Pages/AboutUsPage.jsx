@@ -111,7 +111,7 @@
 //         //                 initial={{ opacity: 0, y: 10 }}
 //         //                 animate={{ opacity: 1, y: 0 }}
 //         //                 transition={{ duration: 0.5 }}
-//         //                 className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-3"
+//         //                 className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-3"
 //         //             >
 //         //                 <Leaf size={10} /> Pure Botanicals
 //         //             </motion.span>
@@ -149,7 +149,7 @@
 //         //             animate={heroInView ? "visible" : "hidden"}
 //         //             className="max-w-3xl mt-8"
 //         //         >
-//         //             <p className="text-stone-600 text-sm leading-loose tracking-wide">
+//         //             <p className="text-stone-600 text-sm font-semibold leading-loose tracking-wide">
 //         //                 At{" "}
 //         //                 <span className="font-semibold text-[#1a2e1a]">
 //         //                     Askar.pk
@@ -197,7 +197,7 @@
 //         //                         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 rounded-3xl"
 //         //                     />
 //         //                     <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-xl border border-[#e8f0e4]">
-//         //                         <span className="text-[10px] uppercase tracking-[0.25em] text-[#1a2e1a] font-medium">
+//         //                         <span className="text-sm uppercase tracking-[0.25em] text-[#1a2e1a] font-medium">
 //         //                             Founder
 //         //                         </span>
 //         //                     </div>
@@ -211,14 +211,14 @@
 //         //                     animate={founderInView ? "visible" : "hidden"}
 //         //                     className="lg:pl-8"
 //         //                 >
-//         //                     <span className="text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-3 block">
+//         //                     <span className="text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-3 block">
 //         //                         Meet the Visionary
 //         //                     </span>
-//         //                     <h2 className="text-2xl font-light uppercase tracking-[0.2em] text-[#1a2e1a] mb-5">
+//         //                     <h2 className="text-2xl font-light uppercase tracking-widest text-[#1a2e1a] mb-5">
 //         //                         Faiz Ullah Khan
 //         //                     </h2>
 //         //                     <div className="w-8 h-px bg-[#b5d4a6] mb-6" />
-//         //                     <p className="text-stone-500 text-sm leading-loose tracking-wide mb-10">
+//         //                     <p className="text-stone-500 text-sm font-semibold leading-loose tracking-wide mb-10">
 //         //                         A visionary entrepreneur dedicated to
 //         //                         revolutionizing the e-commerce experience. With
 //         //                         a focus on editorial presentation and premium
@@ -243,10 +243,10 @@
 //         //                                     {item.icon}
 //         //                                 </div>
 //         //                                 <div>
-//         //                                     <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400 mb-0.5">
+//         //                                     <p className="text-sm uppercase tracking-[0.3em] text-stone-400 mb-0.5">
 //         //                                         {item.label}
 //         //                                     </p>
-//         //                                     <p className="text-sm font-medium tracking-wider text-[#1a2e1a]">
+//         //                                     <p className="text-sm font-semibold font-medium tracking-wider text-[#1a2e1a]">
 //         //                                         {item.value}
 //         //                                     </p>
 //         //                                 </div>
@@ -266,7 +266,7 @@
 //         //                 variants={fadeUp}
 //         //                 initial="hidden"
 //         //                 animate={ctaInView ? "visible" : "hidden"}
-//         //                 className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block"
+//         //                 className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block"
 //         //             >
 //         //                 <Leaf size={10} /> Curated For You
 //         //             </motion.span>
@@ -297,7 +297,7 @@
 //         //             >
 //         //                 <Link
 //         //                     to="/collections"
-//         //                     className="inline-flex items-center gap-4 bg-[#1a2e1a] text-white px-10 py-4 rounded-2xl text-[10px] uppercase tracking-[0.25em] hover:bg-[#2e4a2e] transition-colors"
+//         //                     className="inline-flex items-center gap-4 bg-[#1a2e1a] text-white px-10 py-4 rounded-2xl text-sm uppercase tracking-[0.25em] hover:bg-[#2e4a2e] transition-colors"
 //         //                 >
 //         //                     Browse Collections
 //         //                     <ArrowRight size={13} />
@@ -321,10 +321,10 @@
 //         //                     animate={contactInView ? "visible" : "hidden"}
 //         //                     className="lg:col-span-4 flex flex-col justify-start pt-2"
 //         //                 >
-//         //                     <span className="text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-3 block">
+//         //                     <span className="text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-3 block">
 //         //                         Reach Out
 //         //                     </span>
-//         //                     <h2 className="text-2xl font-light uppercase tracking-[0.2em] text-[#1a2e1a] mb-4">
+//         //                     <h2 className="text-2xl font-light uppercase tracking-widest text-[#1a2e1a] mb-4">
 //         //                         Contact Us
 //         //                     </h2>
 //         //                     <div className="w-8 h-px bg-[#b5d4a6] mb-5" />
@@ -352,7 +352,7 @@
 //         //                         className="space-y-10"
 //         //                     >
 //         //                         <div className="relative border-b border-[#dcebd5] pb-2 focus-within:border-[#7aaf68] transition-colors">
-//         //                             <label className="text-[10px] uppercase tracking-[0.3em] text-stone-400 block mb-2">
+//         //                             <label className="text-sm uppercase tracking-[0.3em] text-stone-400 block mb-2">
 //         //                                 Name
 //         //                             </label>
 //         //                             <input
@@ -366,12 +366,12 @@
 //         //                                     })
 //         //                                 }
 //         //                                 placeholder="GUEST NAME"
-//         //                                 className="w-full bg-transparent outline-none text-[11px] uppercase tracking-widest text-[#1a2e1a] placeholder-stone-300"
+//         //                                 className="w-full bg-transparent outline-none text-sm font-semibold uppercase tracking-widest text-[#1a2e1a] placeholder-stone-300"
 //         //                             />
 //         //                         </div>
 
 //         //                         <div className="relative border-b border-[#dcebd5] pb-2 focus-within:border-[#7aaf68] transition-colors">
-//         //                             <label className="text-[10px] uppercase tracking-[0.3em] text-stone-400 block mb-2">
+//         //                             <label className="text-sm uppercase tracking-[0.3em] text-stone-400 block mb-2">
 //         //                                 Message
 //         //                             </label>
 //         //                             <textarea
@@ -385,7 +385,7 @@
 //         //                                     })
 //         //                                 }
 //         //                                 placeholder="HOW CAN WE ASSIST YOU?"
-//         //                                 className="w-full bg-transparent outline-none text-[11px] uppercase tracking-widest text-[#1a2e1a] placeholder-stone-300 resize-none"
+//         //                                 className="w-full bg-transparent outline-none text-sm font-semibold uppercase tracking-widest text-[#1a2e1a] placeholder-stone-300 resize-none"
 //         //                             />
 //         //                         </div>
 
@@ -397,7 +397,7 @@
 //         //                             }}
 //         //                             whileTap={{ scale: 0.98 }}
 //         //                             transition={{ duration: 0.2 }}
-//         //                             className="w-full py-4 rounded-2xl bg-[#1a2e1a] text-white text-[10px] uppercase tracking-[0.3em] font-medium transition-colors flex items-center justify-center gap-3"
+//         //                             className="w-full py-4 rounded-2xl bg-[#1a2e1a] text-white text-sm uppercase tracking-[0.3em] font-medium transition-colors flex items-center justify-center gap-3"
 //         //                         >
 //         //                             Submit via Gmail
 //         //                             <ArrowRight size={13} />
@@ -432,7 +432,7 @@
 //                         initial={{ opacity: 0, y: 10 }}
 //                         animate={{ opacity: 1, y: 0 }}
 //                         transition={{ duration: 0.5 }}
-//                         className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-3"
+//                         className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-3"
 //                     >
 //                         <Leaf size={10} /> Natural Healthcare & Wellness
 //                     </motion.span>
@@ -473,10 +473,10 @@
 //                     animate={aboutInView ? "visible" : "hidden"}
 //                     className="flex flex-col items-center text-center mb-14"
 //                 >
-//                     <span className="text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
+//                     <span className="text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
 //                         About Askar
 //                     </span>
-//                     <h2 className="text-2xl md:text-3xl font-light uppercase tracking-[0.2em] text-[#1a2e1a] mb-4">
+//                     <h2 className="text-2xl md:text-3xl font-light uppercase tracking-widest text-[#1a2e1a] mb-4">
 //                         Our Commitment to Natural Wellness
 //                     </h2>
 //                     <div className="w-8 h-px bg-[#b5d4a6]" />
@@ -506,10 +506,10 @@
 //                             className="flex flex-col gap-3"
 //                         >
 //                             <div className="w-6 h-px bg-[#b5d4a6]" />
-//                             <h3 className="text-[11px] uppercase tracking-[0.25em] font-semibold text-[#1a2e1a]">
+//                             <h3 className="text-sm font-semibold uppercase tracking-[0.25em] font-semibold text-[#1a2e1a]">
 //                                 {item.title}
 //                             </h3>
-//                             <p className="text-stone-500 text-sm leading-loose">
+//                             <p className="text-stone-500 text-sm font-semibold leading-loose">
 //                                 {item.body}
 //                             </p>
 //                         </motion.div>
@@ -528,10 +528,10 @@
 //                         animate={cardsInView ? "visible" : "hidden"}
 //                         className="flex flex-col items-center text-center mb-12"
 //                     >
-//                         <span className="text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
+//                         <span className="text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
 //                             Our Standards
 //                         </span>
-//                         <h2 className="text-xl md:text-2xl font-light uppercase tracking-[0.2em] text-[#1a2e1a] mb-4">
+//                         <h2 className="text-xl md:text-2xl font-light uppercase tracking-widest text-[#1a2e1a] mb-4">
 //                             Why Choose Askar.pk
 //                         </h2>
 //                         <div className="w-8 h-px bg-[#b5d4a6]" />
@@ -550,7 +550,7 @@
 //                                 <div className="w-9 h-9 rounded-xl bg-[#f4f8f2] border border-[#dcebd5] flex items-center justify-center text-[#7aaf68]">
 //                                     {val.icon}
 //                                 </div>
-//                                 <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-[#1a2e1a]">
+//                                 <p className="text-sm uppercase tracking-widest font-semibold text-[#1a2e1a]">
 //                                     {val.label}
 //                                 </p>
 //                                 <p className="text-[12px] text-stone-400 leading-relaxed">
@@ -572,10 +572,10 @@
 //                     animate={supportInView ? "visible" : "hidden"}
 //                     className="flex flex-col items-center text-center mb-14"
 //                 >
-//                     <span className="text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
+//                     <span className="text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
 //                         Customer Support
 //                     </span>
-//                     <h2 className="text-2xl md:text-3xl font-light uppercase tracking-[0.2em] text-[#1a2e1a] mb-4">
+//                     <h2 className="text-2xl md:text-3xl font-light uppercase tracking-widest text-[#1a2e1a] mb-4">
 //                         We're Here to Help
 //                     </h2>
 //                     <div className="w-8 h-px bg-[#b5d4a6]" />
@@ -597,10 +597,10 @@
 //                                     {item.icon}
 //                                 </div>
 //                                 <div>
-//                                     <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400 mb-0.5">
+//                                     <p className="text-sm uppercase tracking-[0.3em] text-stone-400 mb-0.5">
 //                                         {item.label}
 //                                     </p>
-//                                     <p className="text-sm font-medium tracking-wide text-[#1a2e1a]">
+//                                     <p className="text-sm font-semibold font-medium tracking-wide text-[#1a2e1a]">
 //                                         {item.value}
 //                                     </p>
 //                                 </div>
@@ -625,7 +625,7 @@
 //                             rel="noopener noreferrer"
 //                             whileHover={{ scale: 1.02 }}
 //                             whileTap={{ scale: 0.97 }}
-//                             className="inline-flex items-center gap-3 px-6 py-4 rounded-2xl text-white text-[10px] uppercase tracking-[0.25em] font-medium w-fit"
+//                             className="inline-flex items-center gap-3 px-6 py-4 rounded-2xl text-white text-sm uppercase tracking-[0.25em] font-medium w-fit"
 //                             style={{
 //                                 background: "linear-gradient(135deg, #25D366 0%, #128C7E 100%)",
 //                                 boxShadow: "0 4px 20px rgba(37,211,102,0.22)",
@@ -651,10 +651,10 @@
 //                         animate={contactInView ? "visible" : "hidden"}
 //                         className="flex flex-col items-center text-center mb-12"
 //                     >
-//                         <span className="text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
+//                         <span className="text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
 //                             Customer Inquiry
 //                         </span>
-//                         <h2 className="text-2xl font-light uppercase tracking-[0.2em] text-[#1a2e1a] mb-4">
+//                         <h2 className="text-2xl font-light uppercase tracking-widest text-[#1a2e1a] mb-4">
 //                             Send Us a Message
 //                         </h2>
 //                         <div className="w-8 h-px bg-[#b5d4a6] mb-5" />
@@ -673,38 +673,38 @@
 //                         <form onSubmit={handleSendEmail} className="space-y-10">
 
 //                             <div className="relative border-b border-[#dcebd5] pb-2 focus-within:border-[#7aaf68] transition-colors">
-//                                 <label className="text-[10px] uppercase tracking-[0.3em] text-stone-400 block mb-2">
+//                                 <label className="text-sm uppercase tracking-[0.3em] text-stone-400 block mb-2">
 //                                     Full Name
 //                                 </label>
 //                                 <input
 //                                     type="text"
 //                                     required
 //                                     placeholder="Your Full Name"
-//                                     className="w-full bg-transparent outline-none text-[11px] tracking-wider text-[#1a2e1a] placeholder-stone-300"
+//                                     className="w-full bg-transparent outline-none text-sm font-semibold tracking-wider text-[#1a2e1a] placeholder-stone-300"
 //                                 />
 //                             </div>
 
 //                             <div className="relative border-b border-[#dcebd5] pb-2 focus-within:border-[#7aaf68] transition-colors">
-//                                 <label className="text-[10px] uppercase tracking-[0.3em] text-stone-400 block mb-2">
+//                                 <label className="text-sm uppercase tracking-[0.3em] text-stone-400 block mb-2">
 //                                     Email Address
 //                                 </label>
 //                                 <input
 //                                     type="email"
 //                                     required
 //                                     placeholder="your@email.com"
-//                                     className="w-full bg-transparent outline-none text-[11px] tracking-wider text-[#1a2e1a] placeholder-stone-300"
+//                                     className="w-full bg-transparent outline-none text-sm font-semibold tracking-wider text-[#1a2e1a] placeholder-stone-300"
 //                                 />
 //                             </div>
 
 //                             <div className="relative border-b border-[#dcebd5] pb-2 focus-within:border-[#7aaf68] transition-colors">
-//                                 <label className="text-[10px] uppercase tracking-[0.3em] text-stone-400 block mb-2">
+//                                 <label className="text-sm uppercase tracking-[0.3em] text-stone-400 block mb-2">
 //                                     Message
 //                                 </label>
 //                                 <textarea
 //                                     required
 //                                     rows={4}
 //                                     placeholder="How can we assist you?"
-//                                     className="w-full bg-transparent outline-none text-[11px] tracking-wider text-[#1a2e1a] placeholder-stone-300 resize-none"
+//                                     className="w-full bg-transparent outline-none text-sm font-semibold tracking-wider text-[#1a2e1a] placeholder-stone-300 resize-none"
 //                                 />
 //                             </div>
 
@@ -713,7 +713,7 @@
 //                                 whileHover={{ scale: 1.02, backgroundColor: "#2e4a2e" }}
 //                                 whileTap={{ scale: 0.98 }}
 //                                 transition={{ duration: 0.2 }}
-//                                 className="w-full py-4 rounded-2xl bg-[#1a2e1a] text-white text-[10px] uppercase tracking-[0.3em] font-medium transition-colors flex items-center justify-center gap-3"
+//                                 className="w-full py-4 rounded-2xl bg-[#1a2e1a] text-white text-sm uppercase tracking-[0.3em] font-medium transition-colors flex items-center justify-center gap-3"
 //                             >
 //                                 Send Message
 //                                 <ArrowRight size={13} />
@@ -726,7 +726,7 @@
 //                         variants={fadeUp}
 //                         initial="hidden"
 //                         animate={contactInView ? "visible" : "hidden"}
-//                         className="text-center text-[10px] text-stone-400 tracking-widest mt-6 uppercase"
+//                         className="text-center text-sm text-stone-400 tracking-widest mt-6 uppercase"
 //                     >
 //                         We typically respond within 24 hours.
 //                     </motion.p>
@@ -879,7 +879,7 @@ const AboutUs = () => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-3"
+                        className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-3"
                     >
                         <Leaf size={10} /> Natural Healthcare & Wellness
                     </motion.span>
@@ -918,8 +918,7 @@ const AboutUs = () => {
             />
 
             {/* ── About Section ── */}
-            <section ref={aboutRef} className="max-w-5xl mx-auto px-6 lg:px-12 py-20 md:py-28">
-                <Breadcrumb items={breadcrumbItems} />
+            <section ref={aboutRef} className="max-w-5xl mx-auto px-6 lg:px-12 py-10 md:py-12">
 
                 <motion.div
                     custom={0.05}
@@ -928,10 +927,10 @@ const AboutUs = () => {
                     animate={aboutInView ? "visible" : "hidden"}
                     className="flex flex-col items-center text-center mt-14 mb-14"
                 >
-                    <span className="text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
+                    <span className="text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
                         About Askar
                     </span>
-                    <h2 className="text-2xl md:text-3xl font-light uppercase tracking-[0.2em] text-[#1a2e1a] mb-4">
+                    <h2 className="text-2xl md:text-3xl font-light uppercase tracking-widest text-[#1a2e1a] mb-4 font-heading">
                         Our Commitment to Natural Wellness
                     </h2>
                     <div className="w-8 h-px bg-[#b5d4a6]" />
@@ -961,10 +960,10 @@ const AboutUs = () => {
                             className="flex flex-col gap-3"
                         >
                             <div className="w-6 h-px bg-[#b5d4a6]" />
-                            <h3 className="text-[11px] uppercase tracking-[0.25em] font-semibold text-[#1a2e1a]">
+                            <h3 className="text-sm font-semibold uppercase tracking-[0.25em] text-[#1a2e1a] font-heading">
                                 {item.title}
                             </h3>
-                            <p className="text-stone-500 text-sm leading-loose">
+                            <p className="text-stone-500 text-sm leading-loose font-sans">
                                 {item.body}
                             </p>
                         </motion.div>
@@ -983,10 +982,10 @@ const AboutUs = () => {
                         animate={cardsInView ? "visible" : "hidden"}
                         className="flex flex-col items-center text-center mb-12"
                     >
-                        <span className="text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
+                        <span className="text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
                             Our Standards
                         </span>
-                        <h2 className="text-xl md:text-2xl font-light uppercase tracking-[0.2em] text-[#1a2e1a] mb-4">
+                        <h2 className="text-xl md:text-2xl font-light uppercase tracking-widest text-[#1a2e1a] mb-4 font-heading">
                             Why Choose Askar.pk
                         </h2>
                         <div className="w-8 h-px bg-[#b5d4a6]" />
@@ -1005,10 +1004,10 @@ const AboutUs = () => {
                                 <div className="w-9 h-9 rounded-xl bg-[#f4f8f2] border border-[#dcebd5] flex items-center justify-center text-[#7aaf68]">
                                     {val.icon}
                                 </div>
-                                <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-[#1a2e1a]">
+                                <p className="text-sm uppercase tracking-widest font-semibold text-[#1a2e1a] font-heading">
                                     {val.label}
                                 </p>
-                                <p className="text-[12px] text-stone-400 leading-relaxed">
+                                <p className="text-[12px] text-stone-400 leading-relaxed font-sans">
                                     {val.desc}
                                 </p>
                             </motion.div>
@@ -1027,10 +1026,10 @@ const AboutUs = () => {
                     animate={supportInView ? "visible" : "hidden"}
                     className="flex flex-col items-center text-center mb-14"
                 >
-                    <span className="text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
+                    <span className="text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
                         Customer Support
                     </span>
-                    <h2 className="text-2xl md:text-3xl font-light uppercase tracking-[0.2em] text-[#1a2e1a] mb-4">
+                    <h2 className="text-2xl md:text-3xl font-light uppercase tracking-widest text-[#1a2e1a] mb-4 font-heading">
                         We're Here to Help
                     </h2>
                     <div className="w-8 h-px bg-[#b5d4a6]" />
@@ -1052,10 +1051,10 @@ const AboutUs = () => {
                                     {item.icon}
                                 </div>
                                 <div>
-                                    <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400 mb-0.5">
+                                    <p className="text-sm uppercase tracking-[0.3em] text-stone-400 mb-0.5 font-sans">
                                         {item.label}
                                     </p>
-                                    <p className="text-sm font-medium tracking-wide text-[#1a2e1a]">
+                                    <p className="text-sm font-semibold tracking-wide text-[#1a2e1a] font-sans">
                                         {item.value}
                                     </p>
                                 </div>
@@ -1080,7 +1079,7 @@ const AboutUs = () => {
                             rel="noopener noreferrer"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.97 }}
-                            className="inline-flex items-center gap-3 px-6 py-4 rounded-2xl text-white text-[10px] uppercase tracking-[0.25em] font-medium w-fit"
+                            className="inline-flex items-center gap-3 px-6 py-4 rounded-2xl text-white text-sm uppercase tracking-[0.25em] font-medium w-fit"
                             style={{
                                 background: "linear-gradient(135deg, #25D366 0%, #128C7E 100%)",
                                 boxShadow: "0 4px 20px rgba(37,211,102,0.22)",
@@ -1106,10 +1105,10 @@ const AboutUs = () => {
                         animate={contactInView ? "visible" : "hidden"}
                         className="flex flex-col items-center text-center mb-12"
                     >
-                        <span className="text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
+                        <span className="text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-4 block">
                             Customer Inquiry
                         </span>
-                        <h2 className="text-2xl font-light uppercase tracking-[0.2em] text-[#1a2e1a] mb-4">
+                        <h2 className="text-2xl font-light uppercase tracking-widest text-[#1a2e1a] mb-4">
                             Send Us a Message
                         </h2>
                         <div className="w-8 h-px bg-[#b5d4a6] mb-5" />
@@ -1128,7 +1127,7 @@ const AboutUs = () => {
                         <form onSubmit={handleSendEmail} className="space-y-10">
 
                             <div className="relative border-b border-[#dcebd5] pb-2 focus-within:border-[#7aaf68] transition-colors">
-                                <label className="text-[10px] uppercase tracking-[0.3em] text-stone-400 block mb-2">
+                                <label className="text-sm uppercase tracking-[0.3em] text-stone-400 block mb-2">
                                     Full Name
                                 </label>
                                 <input
@@ -1137,12 +1136,12 @@ const AboutUs = () => {
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     placeholder="Your Full Name"
-                                    className="w-full bg-transparent outline-none text-[11px] tracking-wider text-[#1a2e1a] placeholder-stone-300"
+                                    className="w-full bg-transparent outline-none text-sm font-semibold tracking-wider text-[#1a2e1a] placeholder-stone-300"
                                 />
                             </div>
 
                             <div className="relative border-b border-[#dcebd5] pb-2 focus-within:border-[#7aaf68] transition-colors">
-                                <label className="text-[10px] uppercase tracking-[0.3em] text-stone-400 block mb-2">
+                                <label className="text-sm uppercase tracking-[0.3em] text-stone-400 block mb-2">
                                     Email Address
                                 </label>
                                 <input
@@ -1151,12 +1150,12 @@ const AboutUs = () => {
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     placeholder="your@email.com"
-                                    className="w-full bg-transparent outline-none text-[11px] tracking-wider text-[#1a2e1a] placeholder-stone-300"
+                                    className="w-full bg-transparent outline-none text-sm font-semibold tracking-wider text-[#1a2e1a] placeholder-stone-300"
                                 />
                             </div>
 
                             <div className="relative border-b border-[#dcebd5] pb-2 focus-within:border-[#7aaf68] transition-colors">
-                                <label className="text-[10px] uppercase tracking-[0.3em] text-stone-400 block mb-2">
+                                <label className="text-sm uppercase tracking-[0.3em] text-stone-400 block mb-2">
                                     Message
                                 </label>
                                 <textarea
@@ -1165,7 +1164,7 @@ const AboutUs = () => {
                                     value={formData.message}
                                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                                     placeholder="How can we assist you?"
-                                    className="w-full bg-transparent outline-none text-[11px] tracking-wider text-[#1a2e1a] placeholder-stone-300 resize-none"
+                                    className="w-full bg-transparent outline-none text-sm font-semibold tracking-wider text-[#1a2e1a] placeholder-stone-300 resize-none"
                                 />
                             </div>
 
@@ -1174,7 +1173,7 @@ const AboutUs = () => {
                                 whileHover={{ scale: 1.02, backgroundColor: "#2e4a2e" }}
                                 whileTap={{ scale: 0.98 }}
                                 transition={{ duration: 0.2 }}
-                                className="w-full py-4 rounded-2xl bg-[#1a2e1a] text-white text-[10px] uppercase tracking-[0.3em] font-medium transition-colors flex items-center justify-center gap-3"
+                                className="w-full py-4 rounded-2xl bg-[#1a2e1a] text-white text-sm uppercase tracking-[0.3em] font-medium transition-colors flex items-center justify-center gap-3"
                             >
                                 Send Message
                                 <ArrowRight size={13} />
@@ -1187,7 +1186,7 @@ const AboutUs = () => {
                         variants={fadeUp}
                         initial="hidden"
                         animate={contactInView ? "visible" : "hidden"}
-                        className="text-center text-[10px] text-stone-400 tracking-widest mt-6 uppercase"
+                        className="text-center text-sm text-stone-400 tracking-widest mt-6 uppercase"
                     >
                         We typically respond within 24 hours.
                     </motion.p>

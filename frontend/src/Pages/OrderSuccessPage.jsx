@@ -31,7 +31,7 @@
 //                     size={30}
 //                     strokeWidth={1}
 //                 />
-//                 <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">
+//                 <p className="text-sm font-semibold uppercase tracking-widest text-zinc-500">
 //                     Verifying transaction
 //                 </p>
 //             </div>
@@ -85,7 +85,7 @@
 //                                     Thank you,{" "}
 //                                     {order.recipient?.name?.split(" ")[0]}!
 //                                 </h1>
-//                                 <p className="text-sm text-zinc-700 mt-2">
+//                                 <p className="text-sm font-semibold text-zinc-700 mt-2">
 //                                     Order Status:{" "}
 //                                     <span className="font-semibold capitalize">
 //                                         {order.status}
@@ -98,7 +98,7 @@
 //                             <h2 className="text-base font-medium mb-3">
 //                                 Your order is confirmed
 //                             </h2>
-//                             <p className="text-sm text-zinc-600 leading-relaxed font-light">
+//                             <p className="text-sm font-semibold text-zinc-600 leading-relaxed font-light">
 //                                 {order.status === "pending"
 //                                     ? "We will be in touch with you shortly to finalize your order. Please note that your purchase is not complete until a member of our team confirms your order."
 //                                     : order.status === "shipped"
@@ -116,10 +116,10 @@
 
 //                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
 //                                 <div>
-//                                     <h3 className="text-sm font-semibold text-zinc-900 mb-2">
+//                                     <h3 className="text-sm font-semibold font-semibold text-zinc-900 mb-2">
 //                                         Contact information
 //                                     </h3>
-//                                     <div className="text-sm text-zinc-600 space-y-1">
+//                                     <div className="text-sm font-semibold text-zinc-600 space-y-1">
 //                                         <p>{order.recipient?.phone}</p>
 //                                         {order.recipient?.email && (
 //                                             <p>{order.recipient.email}</p>
@@ -128,19 +128,19 @@
 //                                 </div>
 
 //                                 <div>
-//                                     <h3 className="text-sm font-semibold text-zinc-900 mb-2">
+//                                     <h3 className="text-sm font-semibold font-semibold text-zinc-900 mb-2">
 //                                         Payment method
 //                                     </h3>
 //                                     <div className="flex items-center gap-2">
 //                                         <div className="px-2 py-0.5 border border-zinc-200 rounded bg-zinc-50 flex items-center gap-1">
-//                                             <span className="text-sm font-bold text-zinc-500">
+//                                             <span className="text-sm font-semibold font-bold text-zinc-500">
 //                                                 {order.payment?.method === "COD"
 //                                                     ? "$"
 //                                                     : "💳"}
 //                                             </span>
 //                                         </div>
 //                                         <div className="flex flex-col">
-//                                             <p className="text-sm text-zinc-600">
+//                                             <p className="text-sm font-semibold text-zinc-600">
 //                                                 {getPaymentMethodDisplay(
 //                                                     order.payment?.method,
 //                                                 )}{" "}
@@ -157,10 +157,10 @@
 //                                 </div>
 
 //                                 <div>
-//                                     <h3 className="text-sm font-semibold text-zinc-900 mb-2">
+//                                     <h3 className="text-sm font-semibold font-semibold text-zinc-900 mb-2">
 //                                         Shipping address
 //                                     </h3>
-//                                     <div className="text-sm text-zinc-600 space-y-0.5 leading-relaxed font-light">
+//                                     <div className="text-sm font-semibold text-zinc-600 space-y-0.5 leading-relaxed font-light">
 //                                         <p>{order.recipient?.name}</p>
 //                                         <p>{order.recipient?.street}</p>
 //                                         {order.recipient?.addressLine2 && (
@@ -187,10 +187,10 @@
 //                                 </div>
 
 //                                 <div>
-//                                     <h3 className="text-sm font-semibold text-zinc-900 mb-2">
+//                                     <h3 className="text-sm font-semibold font-semibold text-zinc-900 mb-2">
 //                                         Billing address
 //                                     </h3>
-//                                     <div className="text-sm text-zinc-600 space-y-0.5 leading-relaxed font-light">
+//                                     <div className="text-sm font-semibold text-zinc-600 space-y-0.5 leading-relaxed font-light">
 //                                         <p>{order.recipient?.name}</p>
 //                                         <p>{order.recipient?.street}</p>
 //                                         {order.recipient?.addressLine2 && (
@@ -217,7 +217,7 @@
 //                                 </div>
 
 //                                 <div>
-//                                     <h3 className="text-sm font-semibold text-zinc-900 mb-2">
+//                                     <h3 className="text-sm font-semibold font-semibold text-zinc-900 mb-2">
 //                                         Shipping info
 //                                     </h3>
 //                                     <p className="text-xs text-zinc-500 mt-1">
@@ -229,10 +229,10 @@
 
 //                                 {order.trackingToken && (
 //                                     <div>
-//                                         <h3 className="text-sm font-semibold text-zinc-900 mb-2">
+//                                         <h3 className="text-sm font-semibold font-semibold text-zinc-900 mb-2">
 //                                             Tracking Information
 //                                         </h3>
-//                                         <p className="text-sm text-zinc-600 font-mono">
+//                                         <p className="text-sm font-semibold text-zinc-600 font-mono">
 //                                             {order.trackingToken.slice(0, 20)}
 //                                             ...
 //                                         </p>
@@ -243,7 +243,7 @@
 
 //                         <div className="flex flex-col gap-6 pt-4">
 //                             <div className="flex items-center gap-4">
-//                                 <span className="text-sm text-zinc-600">
+//                                 <span className="text-sm font-semibold text-zinc-600">
 //                                     Need help?
 //                                 </span>
 //                                 <a
@@ -272,7 +272,7 @@
 //                             </div>
 //                             <Link
 //                                 to="/products"
-//                                 className="inline-block w-fit bg-zinc-900 text-white px-8 py-4 rounded-2xl text-sm font-medium hover:bg-zinc-800 transition-colors"
+//                                 className="inline-block w-fit bg-zinc-900 text-white px-8 py-4 rounded-2xl text-sm font-semibold font-medium hover:bg-zinc-800 transition-colors"
 //                             >
 //                                 Continue shopping
 //                             </Link>
@@ -341,26 +341,26 @@
 //                                                     {item.originalPrice &&
 //                                                         item.originalPrice >
 //                                                             item.price && (
-//                                                             <p className="text-sm text-zinc-500 mt-1">
+//                                                             <p className="text-sm font-semibold text-zinc-500 mt-1">
 //                                                                 Price :{" "}
 //                                                                 {item.originalPrice.toLocaleString()}
 //                                                             </p>
 //                                                         )}
 //                                                     {item.promotion?.title && (
-//                                                         <p className="text-sm text-zinc-500 mt-1">
+//                                                         <p className="text-sm font-semibold text-zinc-500 mt-1">
 //                                                             Discount Per Unit :{" "}
 //                                                             {item.discountPerUnit.toFixed(
 //                                                                 2,
 //                                                             )}
 //                                                         </p>
 //                                                     )}
-//                                                     <p className="text-sm text-zinc-500 mt-1">
+//                                                     <p className="text-sm font-semibold text-zinc-500 mt-1">
 //                                                         Quantity :{" "}
 //                                                         {item.quantity.toLocaleString()}
 //                                                     </p>
 //                                                 </div>
 //                                                 {/* <div className="text-right">
-//                                                     <p className="text-sm font-medium text-zinc-900">
+//                                                     <p className="text-sm font-semibold font-medium text-zinc-900">
 //                                                         {" "}
 //                                                         {item.totalAmount.toLocaleString()}
 //                                                     </p>
@@ -398,7 +398,7 @@
 //                         </div>
 
 //                         <div className="mt-10 pt-10 border-t border-zinc-200 space-y-3">
-//                             <div className="flex justify-between text-sm text-zinc-600">
+//                             <div className="flex justify-between text-sm font-semibold text-zinc-600">
 //                                 <span>Original Total</span>
 //                                 <span>
 //                                     Rs{" "}
@@ -407,7 +407,7 @@
 //                                 </span>
 //                             </div>
 //                             {totalDiscounts > 0 && (
-//                                 <div className="flex justify-between text-sm text-green-600">
+//                                 <div className="flex justify-between text-sm font-semibold text-green-600">
 //                                     <span>Discount per item</span>
 //                                     <span>
 //                                         -Rs{" "}
@@ -416,7 +416,7 @@
 //                                 </div>
 //                             )}
 //                             {totalDiscounts > 0 && (
-//                                 <div className="flex justify-between text-sm text-green-600">
+//                                 <div className="flex justify-between text-sm font-semibold text-green-600">
 //                                     <span>Total Discount</span>
 //                                     <span>
 //                                         -Rs {totalDiscounts.toLocaleString()}
@@ -425,13 +425,13 @@
 //                             )}
 
 //                             {taxAmount > 0 && (
-//                                 <div className="flex justify-between text-sm text-red-600">
+//                                 <div className="flex justify-between text-sm font-semibold text-red-600">
 //                                     <span>Tax</span>
 //                                     <span>Rs {taxAmount.toLocaleString()}</span>
 //                                 </div>
 //                             )}
 
-//                             <div className="flex justify-between text-sm text-red-600 items-center">
+//                             <div className="flex justify-between text-sm font-semibold text-red-600 items-center">
 //                                 <div className="flex items-center gap-1">
 //                                     <span>Shipping</span>
 //                                 </div>
@@ -442,7 +442,7 @@
 //                                 </span>
 //                             </div>
 //                             {/* 
-//                             <div className="flex justify-between text-sm text-zinc-600">
+//                             <div className="flex justify-between text-sm font-semibold text-zinc-600">
 //                                 <span>Subtotal</span>
 //                                 <span>Rs {itemsSubtotal.toLocaleString()}</span>
 //                             </div> */}
@@ -465,7 +465,7 @@
 //                         {/* Order Cancellation Notice */}
 //                         {order.status === "cancelled" && (
 //                             <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-2xl">
-//                                 <p className="text-sm font-semibold text-red-800 mb-1">
+//                                 <p className="text-sm font-semibold font-semibold text-red-800 mb-1">
 //                                     Order Cancelled
 //                                 </p>
 //                                 {order.cancellationReason && (
@@ -569,7 +569,7 @@ const OrderSuccessPage = () => {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-white">
                 <Loader2 className="animate-spin text-zinc-900 mb-4" size={30} strokeWidth={1} />
-                <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">
+                <p className="text-sm font-semibold uppercase tracking-widest text-zinc-500">
                     Verifying transaction
                 </p>
             </div>
@@ -633,19 +633,19 @@ const OrderSuccessPage = () => {
                                 <Check size={16} strokeWidth={2} className="text-zinc-700" />
                             </div>
                             <div>
-                                <h2 className="text-sm font-semibold text-zinc-900 mb-1">
+                                <h2 className="text-sm font-semibold font-semibold text-zinc-900 mb-1">
                                     Your order is confirmed
                                 </h2>
                                 <p className="text-xs text-zinc-500 leading-relaxed">
                                     {order.status === "pending"
                                         ? "We will be in touch with you shortly to finalize your order. Please note that your purchase is not complete until a member of our team confirms your order."
                                         : order.status === "shipped"
-                                        ? "Your order has been shipped and is on its way to you."
-                                        : order.status === "delivered"
-                                        ? "Your order has been successfully delivered."
-                                        : "Your order has been received and is being processed."}
+                                            ? "Your order has been shipped and is on its way to you."
+                                            : order.status === "delivered"
+                                                ? "Your order has been successfully delivered."
+                                                : "Your order has been received and is being processed."}
                                 </p>
-                                <span className="inline-block mt-2 text-[10px] uppercase tracking-widest font-semibold text-zinc-500 border border-zinc-200 rounded-lg px-2 py-0.5">
+                                <span className="inline-block mt-2 text-sm uppercase tracking-widest font-semibold text-zinc-500 border border-zinc-200 rounded-lg px-2 py-0.5">
                                     Status: {order.status}
                                 </span>
                             </div>
@@ -654,32 +654,32 @@ const OrderSuccessPage = () => {
                         {/* Order Details Card */}
                         <div className="border border-zinc-200 rounded-2xl overflow-hidden">
                             <div className="px-6 py-4 border-b border-zinc-100 bg-zinc-50">
-                                <h2 className="text-sm font-semibold text-zinc-900">Order Details</h2>
+                                <h2 className="text-sm font-semibold font-semibold text-zinc-900">Order Details</h2>
                             </div>
                             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
 
                                 <div>
-                                    <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 mb-2 font-medium">
+                                    <p className="text-sm uppercase tracking-widest text-zinc-400 mb-2 font-medium">
                                         Contact Information
                                     </p>
-                                    <div className="text-sm text-zinc-600 space-y-0.5">
+                                    <div className="text-sm font-semibold text-zinc-600 space-y-0.5">
                                         <p>{order.recipient?.phone}</p>
                                         {order.recipient?.email && <p>{order.recipient.email}</p>}
                                     </div>
                                 </div>
 
                                 <div>
-                                    <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 mb-2 font-medium">
+                                    <p className="text-sm uppercase tracking-widest text-zinc-400 mb-2 font-medium">
                                         Payment Method
                                     </p>
                                     <div className="flex items-center gap-2">
                                         <div className="px-2 py-0.5 border border-zinc-200 rounded bg-zinc-50 flex items-center">
-                                            <span className="text-sm font-bold text-zinc-500">
+                                            <span className="text-sm font-semibold font-bold text-zinc-500">
                                                 {order.payment?.method === "COD" ? "$" : "💳"}
                                             </span>
                                         </div>
                                         <div>
-                                            <p className="text-sm text-zinc-600">
+                                            <p className="text-sm font-semibold text-zinc-600">
                                                 {getPaymentMethodDisplay(order.payment?.method)} · Rs {grandTotal.toLocaleString()}
                                             </p>
                                             <p className="text-xs text-zinc-400">
@@ -690,10 +690,10 @@ const OrderSuccessPage = () => {
                                 </div>
 
                                 <div>
-                                    <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 mb-2 font-medium">
+                                    <p className="text-sm uppercase tracking-widest text-zinc-400 mb-2 font-medium">
                                         Shipping Address
                                     </p>
-                                    <div className="text-sm text-zinc-600 space-y-0.5 leading-relaxed">
+                                    <div className="text-sm font-semibold text-zinc-600 space-y-0.5 leading-relaxed">
                                         <p>{order.recipient?.name}</p>
                                         <p>{order.recipient?.street}</p>
                                         {order.recipient?.addressLine2 && <p>{order.recipient.addressLine2}</p>}
@@ -705,10 +705,10 @@ const OrderSuccessPage = () => {
                                 </div>
 
                                 <div>
-                                    <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 mb-2 font-medium">
+                                    <p className="text-sm uppercase tracking-widest text-zinc-400 mb-2 font-medium">
                                         Billing Address
                                     </p>
-                                    <div className="text-sm text-zinc-600 space-y-0.5 leading-relaxed">
+                                    <div className="text-sm font-semibold text-zinc-600 space-y-0.5 leading-relaxed">
                                         <p>{order.recipient?.name}</p>
                                         <p>{order.recipient?.street}</p>
                                         {order.recipient?.addressLine2 && <p>{order.recipient.addressLine2}</p>}
@@ -720,20 +720,20 @@ const OrderSuccessPage = () => {
                                 </div>
 
                                 <div>
-                                    <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 mb-2 font-medium">
+                                    <p className="text-sm uppercase tracking-widest text-zinc-400 mb-2 font-medium">
                                         Shipping
                                     </p>
-                                    <p className="text-sm text-zinc-600">
+                                    <p className="text-sm font-semibold text-zinc-600">
                                         {shippingFee === 0 ? "Free Shipping" : `Rs ${shippingFee.toLocaleString()}`}
                                     </p>
                                 </div>
 
                                 {order.trackingToken && (
                                     <div>
-                                        <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 mb-2 font-medium">
+                                        <p className="text-sm uppercase tracking-widest text-zinc-400 mb-2 font-medium">
                                             Tracking
                                         </p>
-                                        <p className="text-sm text-zinc-600 font-mono">
+                                        <p className="text-sm font-semibold text-zinc-600 font-mono">
                                             {order.trackingToken.slice(0, 20)}...
                                         </p>
                                     </div>
@@ -769,7 +769,7 @@ const OrderSuccessPage = () => {
                         <div className="border border-zinc-200 rounded-2xl overflow-hidden sticky top-24">
 
                             <div className="px-6 py-4 border-b border-zinc-100 bg-zinc-50">
-                                <h2 className="text-sm font-semibold text-zinc-900">Order Summary</h2>
+                                <h2 className="text-sm font-semibold font-semibold text-zinc-900">Order Summary</h2>
                             </div>
 
                             {/* Items */}
@@ -787,7 +787,7 @@ const OrderSuccessPage = () => {
                                                         className="w-full h-full object-cover"
                                                         alt={productName || "Product"}
                                                     />
-                                                    <span className="absolute -top-1.5 -right-1.5 bg-zinc-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                                                    <span className="absolute -top-1.5 -right-1.5 bg-zinc-600 text-white text-sm font-bold w-4 h-4 flex items-center justify-center rounded-full">
                                                         {item.quantity}
                                                     </span>
                                                     {item.status === "cancelled" && (
@@ -861,9 +861,9 @@ const OrderSuccessPage = () => {
                                     <span>{shippingFee === 0 ? "FREE" : `Rs ${shippingFee.toLocaleString()}`}</span>
                                 </div>
                                 <div className="flex justify-between items-center pt-3 border-t border-zinc-200">
-                                    <span className="text-sm font-semibold text-zinc-900">Total</span>
+                                    <span className="text-sm font-semibold font-semibold text-zinc-900">Total</span>
                                     <div className="flex items-baseline gap-1.5">
-                                        <span className="text-[10px] text-zinc-400">PKR</span>
+                                        <span className="text-sm text-zinc-400">PKR</span>
                                         <span className="text-lg font-bold text-zinc-900">
                                             Rs {grandTotal.toLocaleString()}
                                         </span>

@@ -62,14 +62,14 @@ const LoginPage = () => {
                                 <h2 className="text-md uppercase tracking-[0.4em] font-semibold text-zinc-900">
                                     Authentication
                                 </h2>
-                                <p className="text-sm uppercase tracking-widest text-zinc-500 mt-2">
+                                <p className="text-sm font-semibold uppercase tracking-widest text-zinc-500 mt-2">
                                     Access your account
                                 </p>
                             </div>
 
                             <form onSubmit={handleSubmit} className="space-y-8">
                                 <div className="space-y-3">
-                                    <label className="text-sm uppercase tracking-widest font-semibold text-zinc-900">
+                                    <label className="text-sm font-semibold uppercase tracking-widest font-semibold text-zinc-900">
                                         Email Address
                                     </label>
                                     <div className="relative">
@@ -80,7 +80,7 @@ const LoginPage = () => {
                                         <input
                                             type="email"
                                             placeholder="your@email.com"
-                                            className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
+                                            className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm font-semibold text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
                                             value={email}
                                             onChange={(e) =>
                                                 setEmail(e.target.value)
@@ -92,7 +92,7 @@ const LoginPage = () => {
 
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
-                                        <label className="text-sm uppercase tracking-widest font-semibold text-zinc-900">
+                                        <label className="text-sm font-semibold uppercase tracking-widest font-semibold text-zinc-900">
                                             Password
                                         </label>
                                     </div>
@@ -104,7 +104,7 @@ const LoginPage = () => {
                                         <input
                                             type="password"
                                             placeholder="••••••••"
-                                            className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
+                                            className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm font-semibold text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
                                             value={password}
                                             onChange={(e) =>
                                                 setPassword(e.target.value)
@@ -117,7 +117,7 @@ const LoginPage = () => {
                                 <button
                                     type="submit"
                                     disabled={loginMutation.isPending}
-                                    className="w-full h-14 bg-zinc-900 text-white text-sm uppercase tracking-[0.3em] font-semibold hover:bg-zinc-700 transition-all duration-500 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed mt-10"
+                                    className="w-full h-14 bg-zinc-900 text-white text-sm font-semibold uppercase tracking-[0.3em] font-semibold hover:bg-zinc-700 transition-all duration-500 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed mt-10"
                                 >
                                     {loginMutation.isPending ? (
                                         <>

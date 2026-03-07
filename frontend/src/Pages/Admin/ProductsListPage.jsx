@@ -51,7 +51,7 @@ const ProductList = () => {
                     <h2 className="text-2xl font-bold text-gray-900">
                         Products
                     </h2>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm font-semibold text-gray-500 mt-1">
                         Manage your product inventory (
                         {data?.totalProducts || 0} items)
                     </p>
@@ -91,7 +91,7 @@ const ProductList = () => {
                                     >
                                         <div className="flex flex-col items-center gap-3">
                                             <div className="w-10 h-10 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin" />
-                                            <p className="text-sm font-medium text-gray-500">
+                                            <p className="text-sm font-semibold font-medium text-gray-500">
                                                 Loading products...
                                             </p>
                                         </div>
@@ -115,7 +115,7 @@ const ProductList = () => {
                                                         alt={product.name}
                                                     />
                                                 </div>
-                                                <span className="text-sm font-medium text-gray-900 line-clamp-2 max-w-50">
+                                                <span className="text-sm font-semibold font-medium text-gray-900 line-clamp-2 max-w-50">
                                                     {product.name}
                                                 </span>
                                             </div>
@@ -128,7 +128,7 @@ const ProductList = () => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="text-sm font-semibold text-gray-900">
+                                            <span className="text-sm font-semibold font-semibold text-gray-900">
                                                 Rs{" "}
                                                 {Number(
                                                     product.price,
@@ -140,7 +140,7 @@ const ProductList = () => {
                                                 <div
                                                     className={`h-2 w-2 rounded-full ${product.stock > 10 ? "bg-green-500" : product.stock > 0 ? "bg-amber-500" : "bg-red-500"}`}
                                                 />
-                                                <span className="text-sm font-medium text-gray-700">
+                                                <span className="text-sm font-semibold font-medium text-gray-700">
                                                     {product.stock}
                                                 </span>
                                             </div>
@@ -149,7 +149,7 @@ const ProductList = () => {
                                             <Link
                                                 to="/admin-dashboard/products/add"
                                                 state={{ product }}
-                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                                             >
                                                 <Edit
                                                     size={16}
@@ -163,7 +163,7 @@ const ProductList = () => {
                                                         data: product,
                                                     });
                                                 }}
-                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold font-medium text-red-600 hover:bg-red-50 transition-colors"
                                             >
                                                 <Trash size={16} />
                                             </button>
@@ -183,10 +183,10 @@ const ProductList = () => {
                                                 strokeWidth={1.5}
                                             />
                                             <div className="space-y-1">
-                                                <p className="text-sm font-semibold text-gray-900">
+                                                <p className="text-sm font-semibold font-semibold text-gray-900">
                                                     No products found
                                                 </p>
-                                                <p className="text-sm text-gray-500">
+                                                <p className="text-sm font-semibold text-gray-500">
                                                     Get started by adding your
                                                     first product
                                                 </p>

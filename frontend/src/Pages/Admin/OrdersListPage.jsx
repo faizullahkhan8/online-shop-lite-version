@@ -28,11 +28,11 @@ const OrdersList = () => {
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-bold text-gray-900">Orders</h2>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm font-semibold text-gray-500 mt-1">
                         Manage all customer orders ({data?.orders?.length}{" "}
                         total)
                     </p>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm font-semibold text-gray-500 mt-1">
                         All Orders is in decsending order
                     </p>
                 </div>
@@ -79,7 +79,7 @@ const OrdersList = () => {
                                     className="hover:bg-gray-50 transition-colors group"
                                 >
                                     <td className="px-4 py-3.5">
-                                        <span className="text-sm font-mono font-medium text-gray-600 group-hover:text-blue-600 transition-colors">
+                                        <span className="text-sm font-semibold font-mono font-medium text-gray-600 group-hover:text-blue-600 transition-colors">
                                             #{order._id.slice(-8).toUpperCase()}
                                         </span>
                                         <p className="text-xs text-gray-500 mt-0.5">
@@ -88,7 +88,7 @@ const OrdersList = () => {
                                         </p>
                                     </td>
                                     <td className="px-4 py-3.5">
-                                        <p className="text-sm font-medium text-gray-900">
+                                        <p className="text-sm font-semibold font-medium text-gray-900">
                                             {order.recipient?.name ||
                                                 "Anonymous"}
                                         </p>
@@ -97,13 +97,13 @@ const OrdersList = () => {
                                         </p>
                                     </td>
                                     <td className="px-4 py-3.5">
-                                        <span className="text-sm font-semibold text-gray-900">
+                                        <span className="text-sm font-semibold font-semibold text-gray-900">
                                             Rs{" "}
                                             {order.grandTotal?.toLocaleString()}
                                         </span>
                                     </td>
                                     <td className="px-4 py-3.5">
-                                        <p className="text-sm text-gray-700 truncate max-w-[200px]">
+                                        <p className="text-sm font-semibold text-gray-700 truncate max-w-[200px]">
                                             {order.recipient?.street}
                                         </p>
                                         <p className="text-xs text-gray-500 mt-0.5">
@@ -177,7 +177,7 @@ const TableLoadingState = () => (
         <td colSpan="9" className="px-8 py-16 text-center">
             <div className="flex flex-col items-center gap-3">
                 <Loader2 className="animate-spin text-blue-600" size={32} />
-                <span className="text-sm font-medium text-gray-500">
+                <span className="text-sm font-semibold font-medium text-gray-500">
                     Loading orders...
                 </span>
             </div>
@@ -191,10 +191,10 @@ const TableEmptyState = () => (
             <div className="flex flex-col items-center gap-3">
                 <Package size={40} className="text-gray-300" />
                 <div>
-                    <p className="text-sm font-semibold text-gray-900">
+                    <p className="text-sm font-semibold font-semibold text-gray-900">
                         No orders found
                     </p>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm font-semibold text-gray-500 mt-1">
                         Orders will appear here once customers place them
                     </p>
                 </div>

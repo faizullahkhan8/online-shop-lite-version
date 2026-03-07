@@ -81,7 +81,7 @@ const ProductQuickView = ({ product, onClose }) => {
 
                 <div className="w-full md:w-1/2 p-8 lg:p-12 flex flex-col">
                     <div className="mb-8">
-                        <p className="text-sm uppercase tracking-[0.3em] text-zinc-500 mb-2 font-bold">
+                        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-zinc-500 mb-2 font-bold">
                             {typeof product?.collection === "string"
                                 ? product.collection
                                 : product?.collection?.name || "Studio Edition"}
@@ -98,7 +98,7 @@ const ProductQuickView = ({ product, onClose }) => {
                                             product?.effectivePrice,
                                         ).toLocaleString()}
                                     </p>
-                                    <p className="text-sm text-zinc-500 line-through">
+                                    <p className="text-sm font-semibold text-zinc-500 line-through">
                                         Rs.{" "}
                                         {Number(
                                             product?.price,
@@ -137,7 +137,7 @@ const ProductQuickView = ({ product, onClose }) => {
 
                     <div className="space-y-6 flex-1">
                         {/* <div>
-                            <h4 className="text-sm uppercase tracking-[0.2em] font-bold text-zinc-900 mb-3">
+                            <h4 className="text-sm font-semibold uppercase tracking-widest font-bold text-zinc-900 mb-3">
                                 Description
                             </h4>
                             <LexicalRenderer
@@ -163,7 +163,7 @@ const ProductQuickView = ({ product, onClose }) => {
                                     onChange={(e) =>
                                         setQuantity(Math.max(1, Number(e.target.value)))
                                     }
-                                    className="w-14 h-full text-center text-sm font-bold text-zinc-900 border-none outline-none custom-quantity"
+                                    className="w-14 h-full text-center text-sm font-semibold font-bold text-zinc-900 border-none outline-none custom-quantity"
                                 />
                                 <button
                                     onClick={() => setQuantity(quantity + 1)}
@@ -176,7 +176,7 @@ const ProductQuickView = ({ product, onClose }) => {
                             <button
                                 onClick={handleBuyNow}
                                 disabled={product.stock === 0}
-                                className="flex-1 bg-zinc-900 text-white h-14 text-sm font-bold uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all flex items-center justify-center gap-3 rounded-2xl disabled:opacity-20"
+                                className="flex-1 bg-zinc-900 text-white h-14 text-sm font-semibold font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-3 rounded-2xl disabled:opacity-20"
                             >
                                 Buy Now
                                 <ChevronRight size={16} />
@@ -187,7 +187,7 @@ const ProductQuickView = ({ product, onClose }) => {
                     <div className="mt-12 pt-6 border-t border-zinc-100">
                         <button
                             onClick={() => navigate(`/product/${product?._id}`)}
-                            className="text-xs uppercase tracking-[0.2em] text-zinc-500 hover:text-zinc-900 transition-colors underline underline-offset-4 font-bold"
+                            className="text-xs uppercase tracking-widest text-zinc-500 hover:text-zinc-900 transition-colors underline underline-offset-4 font-bold"
                         >
                             View Full Product Details
                         </button>

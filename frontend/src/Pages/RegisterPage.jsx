@@ -53,7 +53,7 @@ const RegisterPage = () => {
                                 <h2 className="text-md uppercase tracking-[0.4em] font-semibold text-zinc-900">
                                     Registration
                                 </h2>
-                                <p className="text-sm uppercase tracking-widest text-zinc-500 mt-2">
+                                <p className="text-sm font-semibold uppercase tracking-widest text-zinc-500 mt-2">
                                     Create your account
                                 </p>
                             </div>
@@ -61,7 +61,7 @@ const RegisterPage = () => {
                             {/* Form - Aligned with Login Inputs */}
                             <form onSubmit={handleSubmit} className="space-y-8">
                                 <div className="space-y-3">
-                                    <label className="text-sm uppercase tracking-widest font-semibold text-zinc-900">
+                                    <label className="text-sm font-semibold uppercase tracking-widest font-semibold text-zinc-900">
                                         Full Name
                                     </label>
                                     <div className="relative">
@@ -73,7 +73,7 @@ const RegisterPage = () => {
                                             type="text"
                                             placeholder="YOUR NAME"
                                             required
-                                            className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
+                                            className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm font-semibold text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
                                             value={name}
                                             onChange={(e) =>
                                                 setName(e.target.value)
@@ -83,7 +83,7 @@ const RegisterPage = () => {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <label className="text-sm uppercase tracking-widest font-semibold text-zinc-900">
+                                    <label className="text-sm font-semibold uppercase tracking-widest font-semibold text-zinc-900">
                                         Email Address
                                     </label>
                                     <div className="relative">
@@ -95,7 +95,7 @@ const RegisterPage = () => {
                                             type="email"
                                             placeholder="YOUR@EMAIL.COM"
                                             required
-                                            className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
+                                            className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm font-semibold text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
                                             value={email}
                                             onChange={(e) =>
                                                 setEmail(e.target.value)
@@ -105,7 +105,7 @@ const RegisterPage = () => {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <label className="text-sm uppercase tracking-widest font-semibold text-zinc-900">
+                                    <label className="text-sm font-semibold uppercase tracking-widest font-semibold text-zinc-900">
                                         Password
                                     </label>
                                     <div className="relative">
@@ -117,7 +117,7 @@ const RegisterPage = () => {
                                             type="password"
                                             placeholder="••••••••"
                                             required
-                                            className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
+                                            className="w-full h-12 pl-8 pr-4 bg-transparent border-b border-zinc-200 text-sm font-semibold text-zinc-900 placeholder-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors"
                                             value={password}
                                             onChange={(e) =>
                                                 setPassword(e.target.value)
@@ -129,7 +129,7 @@ const RegisterPage = () => {
                                 <button
                                     type="submit"
                                     disabled={registerMutation.isPending}
-                                    className="w-full h-14 bg-zinc-900 text-white text-sm uppercase tracking-[0.3em] font-semibold hover:bg-zinc-700 transition-all duration-500 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed mt-10"
+                                    className="w-full h-14 bg-zinc-900 text-white text-sm font-semibold uppercase tracking-[0.3em] font-semibold hover:bg-zinc-700 transition-all duration-500 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed mt-10"
                                 >
                                     {registerMutation.isPending ? (
                                         <>
@@ -148,7 +148,7 @@ const RegisterPage = () => {
 
                             {/* Footer - Aligned with Login page link style */}
                             <div className="mt-8 text-center">
-                                <p className="text-[11px] uppercase tracking-widest text-zinc-700">
+                                <p className="text-sm font-semibold uppercase tracking-widest text-zinc-700">
                                     Already have an account?{" "}
                                     <Link
                                         to="/login"

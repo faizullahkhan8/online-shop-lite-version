@@ -19,7 +19,7 @@ const HomePage = () => {
         );
     }
     return (
-        <div className="min-h-screen w-screen bg-white pb-32 flex flex-col">
+        <div className="min-h-screen w-full bg-white pb-32 flex flex-col overflow-x-hidden">
             <HeroSection />
 
             <section>

@@ -135,7 +135,7 @@
 
 //                     {error && (
 //                         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-2xl">
-//                             <p className="text-sm text-red-600 uppercase tracking-widest">
+//                             <p className="text-sm font-semibold text-red-600 uppercase tracking-widest">
 //                                 Order fetching failed!
 //                             </p>
 //                         </div>
@@ -163,7 +163,7 @@
 //                                             <h2 className="text-xl font-bold uppercase tracking-wider mb-1">
 //                                                 Order #{order._id || order.id}
 //                                             </h2>
-//                                             <p className="text-sm text-gray-500">
+//                                             <p className="text-sm font-semibold text-gray-500">
 //                                                 Placed on{" "}
 //                                                 {formatDate(order.createdAt)}
 //                                             </p>
@@ -223,7 +223,7 @@
 //                                                 <p className="text-xs text-gray-500 uppercase mb-1">
 //                                                     Payment Method
 //                                                 </p>
-//                                                 <p className="text-sm font-semibold uppercase">
+//                                                 <p className="text-sm font-semibold font-semibold uppercase">
 //                                                     {order.payment?.method ||
 //                                                         "N/A"}
 //                                                 </p>
@@ -294,7 +294,7 @@
 //                                                         ?.addressLine2 &&
 //                                                         `, ${order.recipient.addressLine2}`}
 //                                                 </p>
-//                                                 <p className="text-sm text-gray-600">
+//                                                 <p className="text-sm font-semibold text-gray-600">
 //                                                     {[
 //                                                         order.recipient?.city,
 //                                                         order.recipient?.state,
@@ -364,7 +364,7 @@
 //                                                                         }
 //                                                                     </p>
 //                                                                 )}
-//                                                                 <p className="text-sm text-gray-600 mt-1">
+//                                                                 <p className="text-sm font-semibold text-gray-600 mt-1">
 //                                                                     Quantity:{" "}
 //                                                                     {
 //                                                                         item.quantity
@@ -417,7 +417,7 @@
 //                                                                 </button>
 //                                                             )}
 
-//                                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+//                                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm font-semibold">
 //                                                             <div>
 //                                                                 <p className="text-gray-500">
 //                                                                     Price
@@ -477,7 +477,7 @@
 //                                                         </div>
 
 //                                                         {item.cancellationReason && (
-//                                                             <p className="mt-2 text-sm text-red-600">
+//                                                             <p className="mt-2 text-sm font-semibold text-red-600">
 //                                                                 Cancellation
 //                                                                 reason:{" "}
 //                                                                 {
@@ -494,7 +494,7 @@
 //                                     {/* Order Totals */}
 //                                     <div className="mt-6 pt-6 border-t space-y-2">
 //                                         {order.taxAmount > 0 && (
-//                                             <div className="flex justify-between text-sm">
+//                                             <div className="flex justify-between text-sm font-semibold">
 //                                                 <span className="text-gray-600">
 //                                                     Tax Amount
 //                                                 </span>
@@ -506,7 +506,7 @@
 //                                                 </span>
 //                                             </div>
 //                                         )}
-//                                         <div className="flex justify-between text-sm">
+//                                         <div className="flex justify-between text-sm font-semibold">
 //                                             <span className="text-gray-600">
 //                                                 Shipping Fee
 //                                             </span>
@@ -563,7 +563,7 @@
 //                         <div className="bg-white border border-gray-200 rounded-2xl p-6 sticky top-4">
 //                             <div className="flex items-center gap-3 mb-6">
 //                                 <Receipt size={20} />
-//                                 <h2 className="text-sm font-bold uppercase tracking-widest">
+//                                 <h2 className="text-sm font-semibold font-bold uppercase tracking-widest">
 //                                     Recent Orders
 //                                 </h2>
 //                             </div>
@@ -574,7 +574,7 @@
 //                                         className="mx-auto text-gray-300 mb-3"
 //                                         size={40}
 //                                     />
-//                                     <p className="text-sm text-gray-500">
+//                                     <p className="text-sm font-semibold text-gray-500">
 //                                         No recent orders found
 //                                     </p>
 //                                 </div>
@@ -594,7 +594,7 @@
 //                                         >
 //                                             <div className="flex items-center gap-3">
 //                                                 <CheckCircle2 size={16} />
-//                                                 <span className="text-sm font-bold">
+//                                                 <span className="text-sm font-semibold font-bold">
 //                                                     #{id.slice(-8)}
 //                                                 </span>
 //                                             </div>
@@ -746,7 +746,7 @@ const TrackOrderPage = () => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-[#7aaf68] mb-3"
+                        className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.4em] text-[#7aaf68] mb-3"
                     >
                         <Leaf size={10} /> Order Status
                     </motion.span>
@@ -810,7 +810,7 @@ const TrackOrderPage = () => {
                                 value={orderId}
                                 onChange={(e) => setOrderId(e.target.value)}
                                 placeholder="Enter your order ID..."
-                                className="w-full border border-[#dcebd5] bg-white rounded-2xl px-12 py-4 text-sm tracking-widest outline-none focus:ring-2 focus:ring-[#7aaf68] focus:border-transparent placeholder:text-stone-300 text-[#1a2e1a] transition-all"
+                                className="w-full border border-[#dcebd5] bg-white rounded-2xl px-12 py-4 text-sm font-semibold tracking-widest outline-none focus:ring-2 focus:ring-[#7aaf68] focus:border-transparent placeholder:text-stone-300 text-[#1a2e1a] transition-all"
                             />
                         </div>
                         <motion.button
@@ -822,7 +822,7 @@ const TrackOrderPage = () => {
                             }}
                             whileTap={{ scale: 0.97 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-[#1a2e1a] text-white px-8 py-4 rounded-2xl text-[10px] uppercase tracking-[0.25em] disabled:opacity-50 transition-colors"
+                            className="bg-[#1a2e1a] text-white px-8 py-4 rounded-2xl text-sm uppercase tracking-[0.25em] disabled:opacity-50 transition-colors"
                         >
                             {loading ? (
                                 <Loader2
@@ -872,7 +872,7 @@ const TrackOrderPage = () => {
                                         strokeWidth={1.5}
                                     />
                                 </motion.div>
-                                <p className="text-[10px] uppercase tracking-[0.35em] text-stone-400">
+                                <p className="text-sm uppercase tracking-[0.35em] text-stone-400">
                                     Fetching your ritual…
                                 </p>
                             </div>
@@ -912,7 +912,7 @@ const TrackOrderPage = () => {
                                     >
                                         <div className="flex items-start justify-between mb-6">
                                             <div>
-                                                <p className="text-[10px] uppercase tracking-[0.3em] text-[#7aaf68] mb-1">
+                                                <p className="text-sm uppercase tracking-[0.3em] text-[#7aaf68] mb-1">
                                                     Order
                                                 </p>
                                                 <h2 className="text-lg font-light tracking-[0.15em] uppercase text-[#1a2e1a]">
@@ -926,7 +926,7 @@ const TrackOrderPage = () => {
                                                 </p>
                                             </div>
                                             <span
-                                                className={`px-4 py-1.5 rounded-full text-[10px] font-medium uppercase tracking-widest ${getStatusStyle(order.status)}`}
+                                                className={`px-4 py-1.5 rounded-full text-sm font-medium uppercase tracking-widest ${getStatusStyle(order.status)}`}
                                             >
                                                 {order.status || "Processing"}
                                             </span>
@@ -941,7 +941,7 @@ const TrackOrderPage = () => {
                                                     />
                                                 </div>
                                                 <div>
-                                                    <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-1">
+                                                    <p className="text-sm text-stone-400 uppercase tracking-widest mb-1">
                                                         Grand Total
                                                     </p>
                                                     <p className="text-xl font-light text-[#1a2e1a]">
@@ -961,10 +961,10 @@ const TrackOrderPage = () => {
                                                     />
                                                 </div>
                                                 <div>
-                                                    <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-1">
+                                                    <p className="text-sm text-stone-400 uppercase tracking-widest mb-1">
                                                         Shipping Fee
                                                     </p>
-                                                    <p className="text-sm text-stone-600">
+                                                    <p className="text-sm font-semibold text-stone-600">
                                                         RS{" "}
                                                         {Number(
                                                             order.shippingFee ||
@@ -981,14 +981,14 @@ const TrackOrderPage = () => {
                                                     />
                                                 </div>
                                                 <div>
-                                                    <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-1">
+                                                    <p className="text-sm text-stone-400 uppercase tracking-widest mb-1">
                                                         Payment
                                                     </p>
-                                                    <p className="text-sm font-medium uppercase text-[#1a2e1a]">
+                                                    <p className="text-sm font-semibold font-medium uppercase text-[#1a2e1a]">
                                                         {order.payment
                                                             ?.method || "N/A"}
                                                     </p>
-                                                    <p className="text-[10px] text-stone-400">
+                                                    <p className="text-sm text-stone-400">
                                                         {order.payment?.ispaid
                                                             ? "Paid"
                                                             : "Unpaid"}
@@ -1025,10 +1025,10 @@ const TrackOrderPage = () => {
                                                     className="text-stone-300 mt-0.5"
                                                 />
                                                 <div>
-                                                    <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-1">
+                                                    <p className="text-sm text-stone-400 uppercase tracking-widest mb-1">
                                                         Recipient
                                                     </p>
-                                                    <p className="text-sm text-[#1a2e1a] font-medium">
+                                                    <p className="text-sm font-semibold text-[#1a2e1a] font-medium">
                                                         {order.recipient
                                                             ?.name ||
                                                             "Guest User"}
@@ -1041,10 +1041,10 @@ const TrackOrderPage = () => {
                                                     className="text-stone-300 mt-0.5"
                                                 />
                                                 <div>
-                                                    <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-1">
+                                                    <p className="text-sm text-stone-400 uppercase tracking-widest mb-1">
                                                         Phone
                                                     </p>
-                                                    <p className="text-sm text-[#1a2e1a] font-medium">
+                                                    <p className="text-sm font-semibold text-[#1a2e1a] font-medium">
                                                         {order.recipient
                                                             ?.phone || "N/A"}
                                                     </p>
@@ -1056,10 +1056,10 @@ const TrackOrderPage = () => {
                                                     className="text-stone-300 mt-0.5"
                                                 />
                                                 <div>
-                                                    <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-1">
+                                                    <p className="text-sm text-stone-400 uppercase tracking-widest mb-1">
                                                         Delivery Address
                                                     </p>
-                                                    <p className="text-sm text-[#1a2e1a] font-medium">
+                                                    <p className="text-sm font-semibold text-[#1a2e1a] font-medium">
                                                         {
                                                             order.recipient
                                                                 ?.street
@@ -1141,12 +1141,12 @@ const TrackOrderPage = () => {
                                                             <div>
                                                                 {productName ? (
                                                                     <>
-                                                                        <p className="text-sm font-medium text-[#1a2e1a]">
+                                                                        <p className="text-sm font-semibold font-medium text-[#1a2e1a]">
                                                                             {
                                                                                 productName
                                                                             }
                                                                         </p>
-                                                                        <p className="text-[10px] text-stone-400 mt-0.5">
+                                                                        <p className="text-sm text-stone-400 mt-0.5">
                                                                             ID:{" "}
                                                                             {
                                                                                 productId
@@ -1154,7 +1154,7 @@ const TrackOrderPage = () => {
                                                                         </p>
                                                                     </>
                                                                 ) : (
-                                                                    <p className="text-sm font-medium text-[#1a2e1a]">
+                                                                    <p className="text-sm font-semibold font-medium text-[#1a2e1a]">
                                                                         Product
                                                                         ID:{" "}
                                                                         {
@@ -1170,7 +1170,7 @@ const TrackOrderPage = () => {
                                                                 </p>
                                                             </div>
                                                             <span
-                                                                className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-medium ${item.status ===
+                                                                className={`px-3 py-1 rounded-full text-sm uppercase tracking-widest font-medium ${item.status ===
                                                                     "cancelled"
                                                                     ? "bg-[#fff1f2] text-rose-700 border border-[#fecdd3]"
                                                                     : "bg-[#eef6ea] text-[#2e6b2e] border border-[#c3e0b8]"
@@ -1203,7 +1203,7 @@ const TrackOrderPage = () => {
                                                                         });
                                                                         setIsReviewModalOpen(true);
                                                                     }}
-                                                                    className="mb-3 text-[10px] font-medium uppercase tracking-widest text-yellow-800 hover:text-[#5a9050] transition-colors flex items-center gap-2 border border-[#c3e0b8] bg-yellow-300 px-3 py-1.5 rounded-xl w-fit"
+                                                                    className="mb-3 text-sm font-medium uppercase tracking-widest text-yellow-800 hover:text-[#5a9050] transition-colors flex items-center gap-2 border border-[#c3e0b8] bg-yellow-300 px-3 py-1.5 rounded-xl w-fit"
                                                                 >
                                                                     <Star size={11} className="fill-yellow-900" />
                                                                     Give Review
@@ -1256,7 +1256,7 @@ const TrackOrderPage = () => {
                                                                 <p className="text-stone-400 mb-0.5">
                                                                     Total
                                                                 </p>
-                                                                <p className="font-semibold text-[#1a2e1a] text-sm">
+                                                                <p className="font-semibold text-[#1a2e1a] text-sm font-semibold">
                                                                     RS{" "}
                                                                     {Number(
                                                                         item.totalAmount ||
@@ -1303,7 +1303,7 @@ const TrackOrderPage = () => {
                                                     ).toLocaleString()}
                                                 </span>
                                             </div>
-                                            <div className="flex justify-between text-sm font-medium text-[#1a2e1a] pt-3 border-t border-[#e8f0e4]">
+                                            <div className="flex justify-between text-sm font-semibold font-medium text-[#1a2e1a] pt-3 border-t border-[#e8f0e4]">
                                                 <span className="uppercase tracking-widest text-xs">
                                                     Grand Total
                                                 </span>
@@ -1330,7 +1330,7 @@ const TrackOrderPage = () => {
                                                 <h3 className="text-xs font-medium uppercase tracking-[0.25em] text-rose-800 mb-2">
                                                     Order Cancelled
                                                 </h3>
-                                                <p className="text-sm text-rose-700">
+                                                <p className="text-sm font-semibold text-rose-700">
                                                     Reason:{" "}
                                                     {order.cancellationReason}
                                                 </p>
@@ -1406,19 +1406,19 @@ const TrackOrderPage = () => {
 
 
                                             <div className="">
-                                                <span className={`mt-1 text-sm font-medium ${selectedOrderId === order.orderId ? "text-white" : "text-[#1a2e1a]"}`}>
+                                                <span className={`mt-1 text-sm font-semibold font-medium ${selectedOrderId === order.orderId ? "text-white" : "text-[#1a2e1a]"}`}>
                                                     Quantity: {" "}
                                                     {Number(order.items[0]?.quantity || 0).toLocaleString()}
                                                 </span>
                                             </div>
                                             <div className="">
-                                                <span className={`mt-1 text-sm font-medium ${selectedOrderId === order.orderId ? "text-white" : "text-[#1a2e1a]"}`}>
+                                                <span className={`mt-1 text-sm font-semibold font-medium ${selectedOrderId === order.orderId ? "text-white" : "text-[#1a2e1a]"}`}>
                                                     Unit Price: RS :{" "}
                                                     {Number(order.items[0]?.unitPrice || 0).toLocaleString()}
                                                 </span>
                                             </div>
                                             <div className="">
-                                                <span className={`mt-1 text-sm font-medium ${selectedOrderId === order.orderId ? "text-white" : "text-[#1a2e1a]"}`}>
+                                                <span className={`mt-1 text-sm font-semibold font-medium ${selectedOrderId === order.orderId ? "text-white" : "text-[#1a2e1a]"}`}>
                                                     Total Amount: RS : {" "}
                                                     {Number(order.grandTotal || 0).toLocaleString()}
                                                 </span>

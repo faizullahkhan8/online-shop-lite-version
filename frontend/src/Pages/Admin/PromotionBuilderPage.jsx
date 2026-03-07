@@ -225,7 +225,7 @@ const PromotionBuilder = () => {
                         <h1 className="text-xl font-semibold text-gray-900">
                             {editId ? "Edit Promotion" : "Create Promotion"}
                         </h1>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm font-semibold text-gray-500">
                             {editId
                                 ? "Update campaign details"
                                 : "Build a new campaign"}
@@ -243,7 +243,7 @@ const PromotionBuilder = () => {
                             }
                             navigate("/admin-dashboard/promotions");
                         }}
-                        className="px-4 py-2 rounded-2xl text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:bg-gray-50"
+                        className="px-4 py-2 rounded-2xl text-sm font-semibold font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:bg-gray-50"
                     >
                         Cancel
                     </button>
@@ -251,7 +251,7 @@ const PromotionBuilder = () => {
                         form="promotion-form"
                         type="submit"
                         disabled={loading || selectedProducts.length === 0}
-                        className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-2xl font-medium text-sm hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-2xl font-medium text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {loading ? (
                             <Loader2 className="animate-spin" size={16} />
@@ -271,7 +271,7 @@ const PromotionBuilder = () => {
                 {/* Configuration Panel */}
                 <div className="lg:col-span-5 space-y-4">
                     <section className="bg-white border border-gray-200 rounded-2xl p-5">
-                        <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <h3 className="text-sm font-semibold font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <Settings size={16} className="text-blue-600" />
                             Configuration
                         </h3>
@@ -327,7 +327,7 @@ const PromotionBuilder = () => {
                             </div>
 
                             <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200">
-                                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                <label className="text-sm font-semibold font-medium text-gray-700 mb-2 block">
                                     Discount Value
                                 </label>
                                 <div className="flex items-center gap-2">
@@ -347,7 +347,7 @@ const PromotionBuilder = () => {
                                             "PERCENTAGE" ? (
                                             <Percent size={18} />
                                         ) : (
-                                            <span className="font-semibold text-sm">
+                                            <span className="font-semibold text-sm font-semibold">
                                                 PKR
                                             </span>
                                         )}
@@ -362,7 +362,7 @@ const PromotionBuilder = () => {
 
                             <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200 space-y-3">
                                 <div className="flex items-center justify-between gap-2">
-                                    <label className="text-sm font-medium text-gray-700">
+                                    <label className="text-sm font-semibold font-medium text-gray-700">
                                         Promotion Image
                                     </label>
                                     <button
@@ -422,14 +422,14 @@ const PromotionBuilder = () => {
                     </section>
 
                     <section className="bg-gray-900 rounded-2xl p-5 text-white">
-                        <h3 className="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
+                        <h3 className="text-sm font-semibold font-semibold text-gray-300 mb-4 flex items-center gap-2">
                             <Calendar size={16} className="text-blue-400" />
                             Timeline
                         </h3>
 
                         <div className="space-y-3">
                             <div className="space-y-1.5">
-                                <label className="text-sm font-medium text-gray-400">
+                                <label className="text-sm font-semibold font-medium text-gray-400">
                                     Start Time
                                 </label>
                                 <input
@@ -441,7 +441,7 @@ const PromotionBuilder = () => {
                                             e.target.value,
                                         )
                                     }
-                                    className="w-full bg-gray-800 border border-gray-700 rounded-2xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full bg-gray-800 border border-gray-700 rounded-2xl px-3 py-2 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                                 {errors.startTime && (
                                     <p className="text-xs text-red-400">
@@ -451,7 +451,7 @@ const PromotionBuilder = () => {
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-sm font-medium text-gray-400">
+                                <label className="text-sm font-semibold font-medium text-gray-400">
                                     End Time
                                 </label>
                                 <input
@@ -463,7 +463,7 @@ const PromotionBuilder = () => {
                                             e.target.value,
                                         )
                                     }
-                                    className="w-full bg-gray-800 border border-gray-700 rounded-2xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full bg-gray-800 border border-gray-700 rounded-2xl px-3 py-2 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                                 {errors.endTime && (
                                     <p className="text-xs text-red-400">
@@ -479,7 +479,7 @@ const PromotionBuilder = () => {
                 <div className="lg:col-span-7 space-y-4">
                     <section className="bg-white border border-gray-200 rounded-2xl flex flex-col min-h-100">
                         <div className="p-5 border-b border-gray-200">
-                            <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                            <h3 className="text-sm font-semibold font-semibold text-gray-900 mb-3 flex items-center gap-2">
                                 <Package size={16} className="text-blue-600" />
                                 Product Selection
                             </h3>
@@ -493,7 +493,7 @@ const PromotionBuilder = () => {
                                         onChange={(e) =>
                                             setProductSearch(e.target.value)
                                         }
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-2.5 text-sm font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     />
                                     <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                         <Search size={18} />
@@ -517,7 +517,7 @@ const PromotionBuilder = () => {
                                         size={32}
                                         className="text-gray-300 mb-2"
                                     />
-                                    <p className="text-sm text-gray-500">
+                                    <p className="text-sm font-semibold text-gray-500">
                                         No products found or all products are
                                         already in active promotions
                                     </p>
@@ -588,11 +588,11 @@ const PromotionBuilder = () => {
                 <div className="lg:col-span-12">
                     <section className="bg-white border border-gray-200 rounded-2xl p-5">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                            <h3 className="text-sm font-semibold font-semibold text-gray-900 flex items-center gap-2">
                                 <Plus size={16} className="text-blue-600" />
                                 Selected Products
                             </h3>
-                            <span className="bg-gray-900 text-white px-3 py-1 rounded text-sm font-medium">
+                            <span className="bg-gray-900 text-white px-3 py-1 rounded text-sm font-semibold font-medium">
                                 {selectedProducts.length} selected
                             </span>
                         </div>
@@ -603,7 +603,7 @@ const PromotionBuilder = () => {
                                     size={40}
                                     className="text-gray-300 mb-3"
                                 />
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm font-semibold text-gray-500">
                                     No products selected
                                 </p>
                             </div>
@@ -623,7 +623,7 @@ const PromotionBuilder = () => {
                                                 />
                                             </div>
                                             <div className="min-w-0">
-                                                <p className="text-sm font-medium text-gray-900 truncate">
+                                                <p className="text-sm font-semibold font-medium text-gray-900 truncate">
                                                     {p.name}
                                                 </p>
                                                 <p className="text-xs text-blue-600 mt-0.5">

@@ -24,16 +24,15 @@ const MobileSideBar = ({ isMenuOpen, setIsMenuOpen }) => {
             )}
 
             <div
-                className={`fixed top-0 left-0 h-full w-[85%] max-w-[320px] bg-white z-[70] md:hidden transform transition-transform duration-500 ease-out flex flex-col ${
-                    isMenuOpen ? "translate-x-0" : "-translate-x-full"
-                }`}
+                className={`fixed top-0 left-0 h-full w-[85%] max-w-[320px] bg-white z-[70] md:hidden transform transition-transform duration-500 ease-out flex flex-col ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
+                    }`}
             >
                 <div className="flex items-center justify-between p-6 border-b border-zinc-50">
                     <div className="flex flex-col">
-                        <span className="text-lg font-semibold tracking-[0.2em] uppercase text-zinc-900 leading-none">
+                        <span className="text-lg font-semibold tracking-widest uppercase text-zinc-900 leading-none">
                             Askar
                         </span>
-                        <span className="text-[8px] uppercase tracking-[0.2em] text-zinc-500 mt-1">
+                        <span className="text-[8px] uppercase tracking-widest text-zinc-500 mt-1">
                             Famous for <br /> Quaility
                         </span>
                     </div>

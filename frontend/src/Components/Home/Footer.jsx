@@ -51,14 +51,12 @@ const linkItem = {
 
 /* ─── Component ─── */
 const Footer = () => {
-    const { data, isLoading } = useCollections({ isActive: true });
+    const { data } = useCollections({ isActive: true });
 
     const [openSection, setOpenSection] = useState(null);
-    const [emailFocused, setEmailFocused] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
     const [footerSections, setFooterSections] = useState([
         {
-            title: "Sanctuary",
+            title: "Pages",
             links: [
                 { name: "About", href: "/about-us" },
                 { name: "Products", href: "/products" },
@@ -74,7 +72,7 @@ const Footer = () => {
         if (data && data?.collections) {
             setFooterSections([
                 {
-                    title: "Sanctuary",
+                    title: "Pages",
                     links: [
                         { name: "About", href: "/about-us" },
                         { name: "Products", href: "/products" },
@@ -95,11 +93,6 @@ const Footer = () => {
 
     const toggleSection = (index) => {
         setOpenSection(openSection === index ? null : index);
-    };
-
-    const handleSubmit = () => {
-        setSubmitted(true);
-        setTimeout(() => setSubmitted(false), 3000);
     };
 
     return (
@@ -128,10 +121,10 @@ const Footer = () => {
                         {/* Brand */}
                         <Link to="/" className="group">
                             <div className="space-y-1">
-                                <motion.h2 className="text-2xl font-light tracking-[0.4em] uppercase text-[#1a2e1a] transition-colors duration-300 group-hover:text-[#7aaf68]">
+                                <motion.h2 className="text-2xl font-semibold tracking-widest uppercase text-[#1a2e1a] transition-colors duration-300 group-hover:text-[#7aaf68] font-heading">
                                     Askar
                                 </motion.h2>
-                                <p className="text-[10px] tracking-[0.3em] uppercase text-[#7aaf68] font-medium flex items-center justify-center lg:justify-end gap-2">
+                                <p className="text-sm tracking-[0.3em] uppercase text-[#3e5c34] font-medium font-sans flex items-center justify-center lg:justify-end gap-2">
                                     <motion.span
                                         animate={{ scale: [1, 1.2, 1] }}
                                         transition={{
@@ -152,7 +145,7 @@ const Footer = () => {
                             variants={fadeUp}
                             initial="hidden"
                             animate={isInView ? "visible" : "hidden"}
-                            className="text-stone-500 text-sm leading-relaxed font-light max-w-xs"
+                            className="text-gray-500 text-sm leading-relaxed font-sans font-light max-w-xs"
                         >
                             Crafting a bridge between ancient botanical wisdom
                             and modern dermatological science.
@@ -222,7 +215,7 @@ const Footer = () => {
                                         },
                                     }}
                                     whileHover={{ y: -3, color: "#7aaf68" }}
-                                    className="w-9 h-9 rounded-full bg-white/60 border border-stone-200 flex items-center justify-center text-stone-400 hover:border-[#7aaf68] hover:bg-[#f0f7ed] transition-colors duration-300"
+                                    className="w-9 h-9 rounded-full bg-white border border-stone-400 flex items-center justify-center text-stone-400 hover:border-[#7aaf68] hover:bg-[#f0f7ed] transition-colors duration-300"
                                 >
                                     {item.icon}
                                 </motion.a>
@@ -247,7 +240,7 @@ const Footer = () => {
                                     onClick={() => toggleSection(idx)}
                                     className="w-full flex justify-between items-center py-4 lg:py-0 lg:mb-6 group"
                                 >
-                                    <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-[#1a2e1a]">
+                                    <h4 className="text-xs font-bold uppercase tracking-widest text-[#1a2e1a] font-heading">
                                         {section.title}
                                     </h4>
                                     <motion.span
@@ -285,7 +278,7 @@ const Footer = () => {
                                                         >
                                                             <Link
                                                                 to={link.href}
-                                                                className="text-sm text-stone-500 hover:text-[#7aaf68] transition-colors font-light"
+                                                                className="text-sm text-stone-500 hover:text-[#7aaf68] transition-colors font-sans"
                                                             >
                                                                 {link.name}
                                                             </Link>
@@ -304,14 +297,14 @@ const Footer = () => {
                                     animate={isInView ? "visible" : "hidden"}
                                     className="hidden lg:block space-y-4"
                                 >
-                                    {section.links.map((link, lIdx) => (
+                                    {section.links.slice(0, 5).map((link, lIdx) => (
                                         <motion.li
                                             key={lIdx}
                                             variants={linkItem}
                                         >
                                             <Link
                                                 to={link.href}
-                                                className="text-sm text-stone-500 hover:text-[#7aaf68] transition-colors font-light relative group"
+                                                className="text-sm text-stone-500 hover:text-[#7aaf68] transition-colors font-sans relative group"
                                             >
                                                 <span>{link.name}</span>
                                                 <motion.span
@@ -341,8 +334,8 @@ const Footer = () => {
                     animate={isInView ? "visible" : "hidden"}
                     className="mt-16 pt-8 border-t border-stone-100 flex justify-center items-center"
                 >
-                    <p className="text-stone-400 text-[10px] uppercase tracking-[0.2em] font-light">
-                        © 2026 Askar Wellness.
+                    <p className="text-stone-800 text-sm uppercase tracking-widest font-sans font-medium">
+                        © 2026 Askar.pk | All rights reserved.
                     </p>
                 </motion.div>
             </div>

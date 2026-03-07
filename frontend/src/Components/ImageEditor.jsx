@@ -148,7 +148,7 @@ const ImageEditor = ({
                 </div>
 
                 <div className="space-y-2">
-                    <label className="block text-sm text-gray-700">
+                    <label className="block text-sm font-semibold text-gray-700">
                         Zoom
                     </label>
                     <input
@@ -167,7 +167,7 @@ const ImageEditor = ({
                         type="button"
                         onClick={onCancel}
                         disabled={isCropping}
-                        className="px-4 py-2 text-sm rounded-lg border border-gray-300 text-gray-700"
+                        className="px-4 py-2 text-sm font-semibold rounded-lg border border-gray-300 text-gray-700"
                     >
                         Cancel
                     </button>
@@ -175,7 +175,7 @@ const ImageEditor = ({
                         type="button"
                         onClick={handleConfirm}
                         disabled={isCropping}
-                        className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white flex items-center gap-2"
+                        className="px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white flex items-center gap-2"
                     >
                         {isCropping ? (
                             <>

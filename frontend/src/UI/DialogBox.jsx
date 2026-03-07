@@ -39,7 +39,7 @@ const DeleteDialog = ({
                     </div>
 
                     <div className="mt-4">
-                        <p className="text-sm text-gray-500 leading-relaxed">
+                        <p className="text-sm font-semibold text-gray-500 leading-relaxed">
                             {message}
                         </p>
                     </div>
@@ -51,7 +51,7 @@ const DeleteDialog = ({
                         type="button"
                         onClick={onClose}
                         disabled={loading}
-                        className="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-2xl hover:bg-gray-50 transition-colors disabled:opacity-50"
+                        className="px-4 py-2 text-sm font-semibold font-semibold text-gray-700 bg-white border border-gray-300 rounded-2xl hover:bg-gray-50 transition-colors disabled:opacity-50"
                     >
                         Cancel
                     </button>
@@ -59,7 +59,7 @@ const DeleteDialog = ({
                         type="button"
                         onClick={onConfirm}
                         disabled={loading}
-                        className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-2xl hover:bg-red-700 transition-colors flex items-center justify-center min-w-[100px] disabled:bg-red-400"
+                        className="px-4 py-2 text-sm font-semibold font-semibold text-white bg-red-600 rounded-2xl hover:bg-red-700 transition-colors flex items-center justify-center min-w-[100px] disabled:bg-red-400"
                     >
                         {loading ? (
                             <Loader2 className="animate-spin" size={18} />

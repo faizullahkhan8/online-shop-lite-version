@@ -64,7 +64,7 @@ const Header = () => {
                         <span className="block text-lg font-heading tracking-[0.25em] uppercase text-gray-900 whitespace-nowrap">
                             Askar
                         </span>
-                        <span className="block text-[8px] tracking-[0.2em] uppercase text-gray-400 whitespace-nowrap font-sans font-normal">
+                        <span className="block text-[8px] tracking-widest uppercase text-gray-400 whitespace-nowrap font-sans font-normal">
                             Famous for Quality
                         </span>
                     </Link>
@@ -73,7 +73,7 @@ const Header = () => {
                 <nav className="hidden md:flex items-center gap-6 lg:gap-8 absolute left-1/2 -translate-x-1/2">
                     <Link
                         to="/"
-                        className="text-[11px] uppercase tracking-[0.12em] font-normal font-sans text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap"
+                        className="text-sm font-semibold uppercase tracking-[0.12em] font-sans text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap"
                     >
                         Home
                     </Link>
@@ -87,7 +87,7 @@ const Header = () => {
                         >
                             <button
                                 onClick={() => navigate("/collections")}
-                                className={`flex items-center gap-1 text-[11px] uppercase tracking-[0.12em] font-normal font-sans transition-colors cursor-pointer whitespace-nowrap ${isCollectionOpen
+                                className={`flex items-center gap-1 text-sm font-semibold uppercase tracking-[0.12em] font-sans transition-colors cursor-pointer whitespace-nowrap ${isCollectionOpen
                                     ? "text-gray-900"
                                     : "text-gray-500 hover:text-gray-900"
                                     }`}
@@ -116,7 +116,7 @@ const Header = () => {
                                                     collection.name
                                                 }
                                                 to={`/products?collection=${collection?._id}`}
-                                                className="block px-4 py-2.5 text-[11px] uppercase tracking-widest font-sans text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+                                                className="block px-4 py-2.5 text-sm font-semibold uppercase tracking-widest font-sans text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
                                                 onClick={() =>
                                                     setIsCollectionOpen(false)
                                                 }
@@ -132,19 +132,19 @@ const Header = () => {
 
                     <Link
                         to="/products"
-                        className="text-[11px] uppercase tracking-[0.12em] font-normal font-sans text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap"
+                        className="text-sm font-semibold uppercase tracking-[0.12em] font-sans text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap"
                     >
                         All Products
                     </Link>
                     <Link
                         to="/track-order"
-                        className="text-[11px] uppercase tracking-[0.12em] font-normal font-sans text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap"
+                        className="text-sm font-semibold uppercase tracking-[0.12em] font-sans text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap"
                     >
                         Track order
                     </Link>
                     <Link
                         to="/about-us"
-                        className="text-[11px] uppercase tracking-[0.12em] font-normal font-sans text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap"
+                        className="text-sm font-semibold uppercase tracking-[0.12em] font-sans text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap"
                     >
                         About Us
                     </Link>
@@ -175,7 +175,7 @@ const Header = () => {
                             placeholder="Search products..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-transparent text-gray-900 placeholder-gray-400 text-sm font-sans outline-none"
+                            className="w-full bg-transparent text-gray-900 placeholder-gray-400 text-sm font-semibold font-sans outline-none"
                         />
                     </form>
                     <button

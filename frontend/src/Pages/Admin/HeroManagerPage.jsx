@@ -127,14 +127,14 @@ const HeroManager = () => {
                         <ImageIcon className="text-blue-600" size={24} />
                         Hero Slides
                     </h2>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-sm font-semibold text-gray-600 mt-1">
                         Manage homepage carousel slides
                     </p>
                 </div>
 
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-2xl font-medium text-sm hover:bg-blue-700 transition-colors"
+                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-2xl font-medium text-sm font-semibold hover:bg-blue-700 transition-colors"
                 >
                     <Plus size={16} />
                     Add Slide
@@ -147,7 +147,7 @@ const HeroManager = () => {
                         className="animate-spin text-blue-600 mb-3"
                         size={32}
                     />
-                    <p className="text-sm text-gray-500">Loading slides...</p>
+                    <p className="text-sm font-semibold text-gray-500">Loading slides...</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -183,7 +183,7 @@ const HeroManager = () => {
                                     <h4 className="text-base font-semibold text-gray-900 leading-tight">
                                         {slide.headline}
                                     </h4>
-                                    <p className="text-sm text-gray-500 mt-1 line-clamp-1">
+                                    <p className="text-sm font-semibold text-gray-500 mt-1 line-clamp-1">
                                         {slide.subtitle}
                                     </p>
                                 </div>
@@ -191,7 +191,7 @@ const HeroManager = () => {
                                 <div className="flex items-center gap-2 pt-2">
                                     <button
                                         onClick={() => handleEdit(slide)}
-                                        className="flex-1 flex items-center justify-center gap-1.5 bg-gray-50 text-gray-700 py-2 rounded-2xl text-sm font-medium hover:bg-gray-900 hover:text-white transition-all"
+                                        className="flex-1 flex items-center justify-center gap-1.5 bg-gray-50 text-gray-700 py-2 rounded-2xl text-sm font-semibold font-medium hover:bg-gray-900 hover:text-white transition-all"
                                     >
                                         <Edit3 size={14} />
                                         Edit
@@ -232,7 +232,7 @@ const HeroManager = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <div className="space-y-4">
                                         <div className="space-y-1.5">
-                                            <label className="text-sm font-medium text-gray-700">
+                                            <label className="text-sm font-semibold font-medium text-gray-700">
                                                 Image
                                             </label>
                                             <div
@@ -257,7 +257,7 @@ const HeroManager = () => {
                                                             size={32}
                                                             className="text-gray-300 mb-2"
                                                         />
-                                                        <p className="text-sm text-gray-500">
+                                                        <p className="text-sm font-semibold text-gray-500">
                                                             Click to upload
                                                         </p>
                                                     </>
@@ -273,7 +273,7 @@ const HeroManager = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium text-gray-700">
+                                            <label className="text-sm font-semibold font-medium text-gray-700">
                                                 Settings
                                             </label>
                                             <div className="flex flex-col gap-2">
@@ -293,7 +293,7 @@ const HeroManager = () => {
                                                         }
                                                         className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                                     />
-                                                    <span className="text-sm text-gray-700">
+                                                    <span className="text-sm font-semibold text-gray-700">
                                                         Active
                                                     </span>
                                                 </label>
@@ -313,7 +313,7 @@ const HeroManager = () => {
                                                         }
                                                         className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                                     />
-                                                    <span className="text-sm text-gray-700">
+                                                    <span className="text-sm font-semibold text-gray-700">
                                                         Remove Background
                                                     </span>
                                                 </label> */}
@@ -323,7 +323,7 @@ const HeroManager = () => {
 
                                     <div className="space-y-4">
                                         <div className="space-y-1.5">
-                                            <label className="text-sm font-medium text-gray-700">
+                                            <label className="text-sm font-semibold font-medium text-gray-700">
                                                 Title
                                             </label>
                                             <Input
@@ -340,7 +340,7 @@ const HeroManager = () => {
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-sm font-medium text-gray-700">
+                                            <label className="text-sm font-semibold font-medium text-gray-700">
                                                 Headline
                                             </label>
                                             <Input
@@ -358,7 +358,7 @@ const HeroManager = () => {
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-sm font-medium text-gray-700">
+                                            <label className="text-sm font-semibold font-medium text-gray-700">
                                                 Subtitle
                                             </label>
                                             <textarea
@@ -370,7 +370,7 @@ const HeroManager = () => {
                                                             e.target.value,
                                                     })
                                                 }
-                                                className="w-full border border-gray-300 rounded-lg p-2 text-sm"
+                                                className="w-full border border-gray-300 rounded-lg p-2 text-sm font-semibold"
                                                 placeholder="You can write a paragraph here..."
                                                 rows={4}
                                                 required
@@ -389,7 +389,7 @@ const HeroManager = () => {
                                             /> */}
                                         </div>
                                         {/* <div className="space-y-1.5">
-                                            <label className="text-sm font-medium text-gray-700">
+                                            <label className="text-sm font-semibold font-medium text-gray-700">
                                                 Order
                                             </label>
                                             <Input
@@ -411,7 +411,7 @@ const HeroManager = () => {
                                 </div>
 
                                 {/* <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">
+                                    <label className="text-sm font-semibold font-medium text-gray-700">
                                         Background Style
                                     </label>
                                     <div className="grid grid-cols-5 gap-2">
@@ -437,7 +437,7 @@ const HeroManager = () => {
                                 <button
                                     type="submit"
                                     disabled={addLoading || updateLoading}
-                                    className="w-full bg-blue-600 text-white py-2.5 rounded-2xl font-medium text-sm hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full bg-blue-600 text-white py-2.5 rounded-2xl font-medium text-sm font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {addLoading || updateLoading ? (
                                         <>

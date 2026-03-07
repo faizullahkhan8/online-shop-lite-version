@@ -11,10 +11,10 @@ const ProductReviews = ({ productId }) => {
             {/* Header */}
             <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h3 className="text-xs sm:text-sm font-bold text-zinc-900 uppercase tracking-[0.25em] mb-1 sm:mb-2">
+                    <h3 className="text-xs sm:text-sm font-semibold font-bold text-zinc-900 uppercase tracking-[0.25em] mb-1 sm:mb-2">
                         Customer Reviews
                     </h3>
-                    <p className="text-xs sm:text-sm text-zinc-500 uppercase tracking-widest font-medium">
+                    <p className="text-xs sm:text-sm font-semibold text-zinc-500 uppercase tracking-widest font-medium">
                         {reviews?.length}{" "}
                         {reviews?.length === 1 ? "entry" : "entries"} recorded
                     </p>
@@ -32,7 +32,7 @@ const ProductReviews = ({ productId }) => {
                                 className="animate-spin text-zinc-200 mb-4"
                                 size={22}
                             />
-                            <p className="text-xs sm:text-sm uppercase tracking-widest text-zinc-500">
+                            <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-zinc-500">
                                 Syncing Reviews...
                             </p>
                         </div>
@@ -44,7 +44,7 @@ const ProductReviews = ({ productId }) => {
                                 size={28}
                                 strokeWidth={1}
                             />
-                            <p className="text-xs sm:text-sm uppercase tracking-widest text-zinc-500 text-center px-6">
+                            <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-zinc-500 text-center px-6">
                                 No commentary available for this item.
                             </p>
                         </div>
@@ -59,20 +59,20 @@ const ProductReviews = ({ productId }) => {
                                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4">
                                         {/* Left Section */}
                                         <div className="flex gap-4">
-                                            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-zinc-900 text-white flex items-center justify-center text-xs sm:text-sm font-bold uppercase rounded-xl shrink-0">
+                                            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-zinc-900 text-white flex items-center justify-center text-xs sm:text-sm font-semibold font-bold uppercase rounded-xl shrink-0">
                                                 {review.name.substring(0, 2)}
                                             </div>
 
                                             <div>
-                                                <h5 className="text-sm sm:text-md font-bold text-zinc-900 tracking-wider mb-1">
+                                                <h5 className="text-sm font-semibold sm:text-md font-bold text-zinc-900 tracking-wider mb-1">
                                                     {review.name}
                                                 </h5>
 
-                                                <p className="text-[11px] sm:text-xs text-zinc-500 break-all">
+                                                <p className="text-sm font-semibold sm:text-xs text-zinc-500 break-all">
                                                     {review.email}
                                                 </p>
 
-                                                <div className="flex items-center gap-2 text-[10px] sm:text-xs text-zinc-500 font-medium mt-1">
+                                                <div className="flex items-center gap-2 text-sm sm:text-xs text-zinc-500 font-medium mt-1">
                                                     <Calendar size={10} />
                                                     {new Date(
                                                         review.createdAt,

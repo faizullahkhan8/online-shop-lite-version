@@ -120,7 +120,7 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess, aspectRatio = 1 }) => {
                 {/* Drop Area */}
                 <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-xl py-10 cursor-pointer hover:bg-gray-50 transition">
                     <Upload size={28} className="text-gray-400 mb-2" />
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm font-semibold text-gray-500">
                         Click to select and crop images
                     </span>
                     <input
@@ -164,7 +164,7 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess, aspectRatio = 1 }) => {
                 <div className="flex justify-end gap-3 pt-2">
                     <button
                         onClick={handleClose}
-                        className="px-4 py-2 text-sm rounded-lg border"
+                        className="px-4 py-2 text-sm font-semibold rounded-lg border"
                         disabled={uploadMultipleImages.isPending}
                     >
                         Cancel
@@ -176,7 +176,7 @@ const UploadImagesModal = ({ isOpen, onClose, onSuccess, aspectRatio = 1 }) => {
                             uploadMultipleImages.isPending ||
                             cropQueue.length > 0
                         }
-                        className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg flex items-center gap-2"
+                        className="px-4 py-2 text-sm font-semibold bg-blue-600 text-white rounded-lg flex items-center gap-2"
                     >
                         {uploadMultipleImages.isPending ? (
                             <>

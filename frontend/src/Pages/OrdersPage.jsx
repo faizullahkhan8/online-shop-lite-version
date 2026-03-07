@@ -81,7 +81,7 @@ const OrdersPage = () => {
                 <div>
                     <div className="flex items-center gap-2 mb-2">
                         <Package className="text-blue-600" size={20} />
-                        <span className="text-sm text-gray-500 font-medium">
+                        <span className="text-sm font-semibold text-gray-500 font-medium">
                             Order History
                         </span>
                     </div>
@@ -97,7 +97,7 @@ const OrdersPage = () => {
                         className="animate-spin text-blue-600 mb-3"
                         size={32}
                     />
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-gray-500 text-sm font-semibold">
                         Loading your orders...
                     </p>
                 </div>
@@ -109,13 +109,13 @@ const OrdersPage = () => {
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
                         No orders found
                     </h3>
-                    <p className="text-gray-500 text-sm mb-6 max-w-xs text-center">
+                    <p className="text-gray-500 text-sm font-semibold mb-6 max-w-xs text-center">
                         You haven't placed any orders yet. Once you do, they'll
                         appear here.
                     </p>
                     <Link
                         to="/products"
-                        className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-2xl text-sm font-medium hover:bg-blue-700 transition-colors"
+                        className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-2xl text-sm font-semibold font-medium hover:bg-blue-700 transition-colors"
                     >
                         Start Shopping
                         <ChevronRight size={16} />
@@ -134,7 +134,7 @@ const OrdersPage = () => {
                                         <div className="flex items-center gap-1.5 text-xs text-gray-500">
                                             <Tag size={14} /> Order ID
                                         </div>
-                                        <div className="text-sm font-semibold text-gray-900">
+                                        <div className="text-sm font-semibold font-semibold text-gray-900">
                                             #{order._id}
                                         </div>
                                     </div>
@@ -142,7 +142,7 @@ const OrdersPage = () => {
                                         <div className="flex items-center gap-1.5 text-xs text-gray-500">
                                             <Calendar size={14} /> Date
                                         </div>
-                                        <div className="text-sm font-medium text-gray-700">
+                                        <div className="text-sm font-semibold font-medium text-gray-700">
                                             {new Date(
                                                 order.date,
                                             ).toLocaleDateString("en-US", {
@@ -198,7 +198,7 @@ const OrdersPage = () => {
                                             />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <div className="font-medium text-gray-900 text-sm truncate">
+                                            <div className="font-medium text-gray-900 text-sm font-semibold truncate">
                                                 {item.title ||
                                                     item.product?.name}
                                             </div>

@@ -78,7 +78,7 @@ const DashboardHome = () => {
                     className="animate-spin mb-4 text-blue-600"
                     size={32}
                 />
-                <p className="text-sm font-medium text-gray-500">
+                <p className="text-sm font-semibold font-medium text-gray-500">
                     Loading dashboard...
                 </p>
             </div>
@@ -89,7 +89,7 @@ const DashboardHome = () => {
         return (
             <div className="h-[60vh] flex flex-col items-center justify-center text-red-400">
                 <AlertCircle className="mb-4" size={32} />
-                <p className="text-sm font-semibold text-red-500">{error}</p>
+                <p className="text-sm font-semibold font-semibold text-red-500">{error}</p>
             </div>
         );
     }
@@ -104,7 +104,7 @@ const DashboardHome = () => {
                     <h2 className="text-2xl font-bold text-gray-900">
                         Dashboard Overview
                     </h2>
-                    <p className="text-gray-500 text-sm mt-1">
+                    <p className="text-gray-500 text-sm font-semibold mt-1">
                         Welcome back, Admin!
                     </p>
                 </div>
@@ -142,9 +142,9 @@ const DashboardHome = () => {
                                         start: e.target.value,
                                     })
                                 }
-                                className="text-sm"
+                                className="text-sm font-semibold"
                             />
-                            <span className="text-gray-400 text-sm">to</span>
+                            <span className="text-gray-400 text-sm font-semibold">to</span>
                             <Input
                                 type="date"
                                 value={customDates.end}
@@ -154,7 +154,7 @@ const DashboardHome = () => {
                                         end: e.target.value,
                                     })
                                 }
-                                className="text-sm"
+                                className="text-sm font-semibold"
                             />
                             <Button
                                 onClick={applyCustomRange}

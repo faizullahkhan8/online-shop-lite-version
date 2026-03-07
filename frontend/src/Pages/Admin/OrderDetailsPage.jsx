@@ -155,7 +155,7 @@ const OrderDetails = () => {
                     className="animate-spin text-blue-600 mb-3"
                     size={32}
                 />
-                <p className="text-sm font-medium text-gray-500">
+                <p className="text-sm font-semibold font-medium text-gray-500">
                     Loading order details...
                 </p>
             </div>
@@ -229,7 +229,7 @@ const OrderDetails = () => {
                                 {order.payment?.method || "COD"}
                             </span>
                         </div>
-                        <p className="text-sm text-gray-500 flex items-center gap-1.5">
+                        <p className="text-sm font-semibold text-gray-500 flex items-center gap-1.5">
                             <Calendar size={14} />
                             {new Date(order.createdAt).toLocaleString("en-US", {
                                 month: "short",
@@ -241,7 +241,7 @@ const OrderDetails = () => {
                         </p>
                         {order.status === "cancelled" &&
                             order.cancellationReason && (
-                                <p className="text-sm text-red-600 mt-1">
+                                <p className="text-sm font-semibold text-red-600 mt-1">
                                     Cancellation reason:{" "}
                                     {order.cancellationReason}
                                 </p>
@@ -255,7 +255,7 @@ const OrderDetails = () => {
                         <button
                             onClick={handlePaymentVerify}
                             disabled={paymentLoading}
-                            className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-2xl text-sm font-medium hover:bg-green-100 transition-colors border border-green-200 disabled:opacity-50"
+                            className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-2xl text-sm font-semibold font-medium hover:bg-green-100 transition-colors border border-green-200 disabled:opacity-50"
                         >
                             {paymentLoading ? "Verifying..." : "Verify Payment"}
                         </button>
@@ -265,7 +265,7 @@ const OrderDetails = () => {
                     {order.status !== "cancelled" && (
                         <button
                             onClick={handleOpenOrderCancelModal}
-                            className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-2xl text-sm font-medium hover:bg-red-100 transition-colors border border-red-200"
+                            className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-2xl text-sm font-semibold font-medium hover:bg-red-100 transition-colors border border-red-200"
                         >
                             <XCircle size={16} />
                             Cancel Order
@@ -277,7 +277,7 @@ const OrderDetails = () => {
                         <button
                             onClick={() => handleToggleOrderReturn(order.isReturned)}
                             disabled={orderReturnPending}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-medium transition-colors border disabled:opacity-50 ${order.isReturned
+                            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold font-medium transition-colors border disabled:opacity-50 ${order.isReturned
                                 ? "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
                                 : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
                                 }`}
@@ -292,7 +292,7 @@ const OrderDetails = () => {
                         <button
                             onClick={() => handleToggleOrderRefund(order.isRefunded)}
                             disabled={orderRefundPending}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-medium transition-colors border disabled:opacity-50 ${order.isRefunded
+                            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold font-medium transition-colors border disabled:opacity-50 ${order.isRefunded
                                 ? "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
                                 : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
                                 }`}
@@ -304,7 +304,7 @@ const OrderDetails = () => {
 
                     <button
                         onClick={handleDelete}
-                        className="px-4 py-2 bg-red-50 text-red-600 rounded-2xl text-sm font-medium hover:bg-red-100 transition-colors border border-red-200"
+                        className="px-4 py-2 bg-red-50 text-red-600 rounded-2xl text-sm font-semibold font-medium hover:bg-red-100 transition-colors border border-red-200"
                     >
                         {deletePending ? (
                             <Loader2 size={24} className="animate-spin" />
@@ -324,11 +324,11 @@ const OrderDetails = () => {
                     {/* Order Items */}
                     <section className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
                         <div className="p-5 border-b border-gray-200 flex items-center justify-between">
-                            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                            <h3 className="text-sm font-semibold font-semibold text-gray-900 flex items-center gap-2">
                                 <Package size={16} className="text-blue-600" />
                                 Order Items
                             </h3>
-                            <span className="text-sm font-medium text-gray-600">
+                            <span className="text-sm font-semibold font-medium text-gray-600">
                                 {order.items.length}{" "}
                                 {order.items.length === 1 ? "item" : "items"}
                             </span>
@@ -384,7 +384,7 @@ const OrderDetails = () => {
                                                         {/* Product name + status */}
                                                         <div className="flex items-center gap-2">
                                                             <p
-                                                                className={`text-sm font-medium ${item.status ===
+                                                                className={`text-sm font-semibold font-medium ${item.status ===
                                                                     "cancelled"
                                                                     ? "line-through text-gray-400"
                                                                     : "text-gray-900"
@@ -446,27 +446,27 @@ const OrderDetails = () => {
                                             </td>
                                             <td className="px-5 py-4 text-center self-start">
                                                 <span
-                                                    className={`text-sm font-medium text-gray-900 ${item.status === "cancelled" ? "line-through text-gray-400" : ""}`}
+                                                    className={`text-sm font-semibold font-medium text-gray-900 ${item.status === "cancelled" ? "line-through text-gray-400" : ""}`}
                                                 >
                                                     {item.quantity}
                                                 </span>
                                             </td>
-                                            <td className="px-5 py-4 text-right text-sm text-gray-600">
+                                            <td className="px-5 py-4 text-right text-sm font-semibold text-gray-600">
                                                 {" "}
                                                 Rs{" "}
                                                 {item.originalPrice.toLocaleString()}
                                             </td>
-                                            <td className="px-5 py-4 text-right text-sm text-gray-600">
+                                            <td className="px-5 py-4 text-right text-sm font-semibold text-gray-600">
                                                 {" "}
                                                 Rs{" "}
                                                 {item?.discountPerUnit.toLocaleString()}
                                             </td>
-                                            <td className="px-5 py-4 text-right text-sm text-gray-600">
+                                            <td className="px-5 py-4 text-right text-sm font-semibold text-gray-600">
                                                 Rs {item.price.toLocaleString()}
                                             </td>
                                             <td className="px-5 py-4 text-right">
                                                 <span
-                                                    className={`text-sm font-semibold text-gray-900 ${item.status === "cancelled" ? "line-through text-gray-400" : ""}`}
+                                                    className={`text-sm font-semibold font-semibold text-gray-900 ${item.status === "cancelled" ? "line-through text-gray-400" : ""}`}
                                                 >
                                                     Rs{" "}
                                                     {(
@@ -563,26 +563,26 @@ const OrderDetails = () => {
 
                                 {/* Order Totals */}
                                 <div className="space-y-2 md:min-w-50 md:border-l md:border-gray-200 md:pl-6">
-                                    <div className="flex justify-between text-sm text-gray-600">
+                                    <div className="flex justify-between text-sm font-semibold text-gray-600">
                                         <span>Subtotal</span>
                                         <span className="font-medium">
                                             Rs {itemsSubtotal.toLocaleString()}
                                         </span>
                                     </div>
-                                    <div className="flex justify-between text-sm text-gray-600">
+                                    <div className="flex justify-between text-sm font-semibold text-gray-600">
                                         <span>Tax</span>
                                         <span className="font-medium">
                                             Rs {taxAmount.toLocaleString()}
                                         </span>
                                     </div>
-                                    <div className="flex justify-between text-sm text-gray-600">
+                                    <div className="flex justify-between text-sm font-semibold text-gray-600">
                                         <span>Shipping</span>
                                         <span className="font-medium">
                                             Rs {shippingFee.toLocaleString()}
                                         </span>
                                     </div>
                                     <div className="flex justify-between pt-2 border-t border-gray-200">
-                                        <span className="text-sm font-semibold text-gray-900">
+                                        <span className="text-sm font-semibold font-semibold text-gray-900">
                                             Grand Total
                                         </span>
                                         <span className="text-lg font-bold text-blue-600">
@@ -600,17 +600,17 @@ const OrderDetails = () => {
                 <aside className="space-y-6">
                     {/* Customer Info */}
                     <section className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-                        <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <h3 className="text-sm font-semibold font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <User size={16} className="text-blue-600" />
                             Customer
                         </h3>
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-sm">
+                            <div className="w-10 h-10 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-sm font-semibold">
                                 {order.recipient?.name?.[0]?.toUpperCase() ||
                                     "G"}
                             </div>
                             <div>
-                                <p className="text-sm font-medium text-gray-900">
+                                <p className="text-sm font-semibold font-medium text-gray-900">
                                     {order.recipient?.name || "Guest"}
                                 </p>
                                 <p className="text-xs text-gray-500">
@@ -632,7 +632,7 @@ const OrderDetails = () => {
                                 Payment Status
                             </p>
                             <p
-                                className={`text-sm font-semibold ${order.payment?.ispaid ? "text-green-600" : "text-amber-600"}`}
+                                className={`text-sm font-semibold font-semibold ${order.payment?.ispaid ? "text-green-600" : "text-amber-600"}`}
                             >
                                 {order.payment?.ispaid ? "Verified" : "Pending"}
                             </p>
@@ -644,7 +644,7 @@ const OrderDetails = () => {
 
                     {/* Shipping Info */}
                     <section className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-                        <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <h3 className="text-sm font-semibold font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <Truck size={16} className="text-blue-600" />
                             Shipping
                         </h3>
@@ -656,7 +656,7 @@ const OrderDetails = () => {
                                 <p className="text-xs font-medium text-gray-900 mb-1">
                                     Delivery Address
                                 </p>
-                                <p className="text-sm text-gray-600 leading-relaxed">
+                                <p className="text-sm font-semibold text-gray-600 leading-relaxed">
                                     {order.recipient.street}
                                     {order.recipient.addressLine2 &&
                                         `, ${order.recipient.addressLine2}`}

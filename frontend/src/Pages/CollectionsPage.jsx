@@ -19,17 +19,17 @@ const CollectionsPage = () => {
             <div className="container mx-auto px-4 lg:px-12 pt-12">
                 <Breadcrumb items={breadcrumbItems} />
                 <header className="py-10 text-center">
-                    <h1 className="text-2xl tracking-[0.4em] uppercase text-zinc-900 font-light">
-                        Collections
+                    <h1 className="text-2xl tracking-widest uppercase text-gray-900 font-medium">
+                        -- Available Collections --
                     </h1>
                 </header>
 
                 {isLoading ? (
-                    <div className="py-20 text-center text-sm uppercase tracking-[0.3em] text-zinc-500">
+                    <div className="py-20 text-center text-sm font-semibold uppercase tracking-[0.3em] text-zinc-500">
                         Loading collections...
                     </div>
                 ) : displayCollections?.length === 0 ? (
-                    <div className="py-20 text-center text-sm uppercase tracking-[0.3em] text-zinc-500">
+                    <div className="py-20 text-center text-sm font-semibold uppercase tracking-[0.3em] text-zinc-500">
                         No collections available
                     </div>
                 ) : (
@@ -62,10 +62,10 @@ const CollectionsPage = () => {
                                     className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent flex items-end justify-center pb-8 animate-in fade-in duration-300"
                                 >
                                     <div className="text-center">
-                                        <span className="block text-[10px] tracking-[0.35em] uppercase text-white/80 mb-2">
+                                        <span className="block text-sm tracking-[0.35em] uppercase text-white/80 mb-2">
                                             Collection
                                         </span>
-                                        <span className="text-white text-xs tracking-[0.25em] uppercase font-medium transition-all pb-1 text-center w-max hover:text-sm hover:tracking-[0.2em] duration-200">
+                                        <span className="text-white text-xs tracking-[0.25em] uppercase font-medium transition-all pb-1 text-center w-max hover:text-sm font-semibold hover:tracking-widest duration-200">
                                             {collection.name}
                                         </span>
                                     </div>

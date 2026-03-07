@@ -39,14 +39,14 @@ export default function ChangePassword() {
                 </h2>
 
                 {success && (
-                    <div className="mb-4 text-sm text-green-600 bg-green-50 p-2 rounded">
+                    <div className="mb-4 text-sm font-semibold text-green-600 bg-green-50 p-2 rounded">
                         {success}
                     </div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-zinc-700">
+                        <label className="block text-sm font-semibold font-medium text-zinc-700">
                             Current Password
                         </label>
                         <Input
@@ -60,7 +60,7 @@ export default function ChangePassword() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-zinc-700">
+                        <label className="block text-sm font-semibold font-medium text-zinc-700">
                             New Password
                         </label>
                         <Input
@@ -74,7 +74,7 @@ export default function ChangePassword() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-zinc-700">
+                        <label className="block text-sm font-semibold font-medium text-zinc-700">
                             Confirm New Password
                         </label>
                         <Input
@@ -86,7 +86,7 @@ export default function ChangePassword() {
                             className="w-full mt-1 px-3 py-2 border rounded-md focus:ring-2 focus:ring-black focus:outline-none"
                         />
                     </div>
-                    <p onClick={() => setShowPassword(!showPassword)} className="text-sm cursor-pointer text-blue-500 hover:underline pl-2">
+                    <p onClick={() => setShowPassword(!showPassword)} className="text-sm font-semibold cursor-pointer text-blue-500 hover:underline pl-2">
                         {showPassword ? "hide passwords" : "show passwords"}
                     </p>
                     <button

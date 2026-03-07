@@ -31,7 +31,7 @@ const TaxShippingSettings = () => {
                     <h2 className="text-2xl font-bold text-gray-900">
                         Tax & Shipping Settings
                     </h2>
-                    <p className="text-sm text-gray-500 mt-0.5">
+                    <p className="text-sm font-semibold text-gray-500 mt-0.5">
                         Configure default checkout settings
                     </p>
                 </div>
@@ -44,13 +44,13 @@ const TaxShippingSettings = () => {
             >
                 {/* Charges Section */}
                 <section className="space-y-4">
-                    <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2 pb-3 border-b border-gray-100">
+                    <h3 className="text-sm font-semibold font-semibold text-gray-900 flex items-center gap-2 pb-3 border-b border-gray-100">
                         <Receipt size={16} className="text-blue-600" />
                         Pricing
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1.5">
-                            <label className="text-sm font-medium text-gray-700">
+                            <label className="text-sm font-semibold font-medium text-gray-700">
                                 Tax Amount (Rs)
                             </label>
                             <Input
@@ -70,7 +70,7 @@ const TaxShippingSettings = () => {
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-sm font-medium text-gray-700">
+                            <label className="text-sm font-semibold font-medium text-gray-700">
                                 Shipping Fee (Rs)
                             </label>
                             <Input
@@ -99,7 +99,7 @@ const TaxShippingSettings = () => {
                         disabled={
                             updateSettingMutation.isPending || settingsLoading
                         }
-                        className="w-full bg-blue-600 text-white rounded-2xl py-3 font-medium text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-blue-600 text-white rounded-2xl py-3 font-medium text-sm font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {updateSettingMutation.isPending ? (
                             <>

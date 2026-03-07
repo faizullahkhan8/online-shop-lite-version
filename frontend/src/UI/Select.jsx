@@ -43,7 +43,7 @@ const Select = ({
                     "flex items-center justify-between w-full",
                     "px-4 py-2",
                     "bg-white border border-gray-300 rounded-2xl",
-                    "text-sm outline-none",
+                    "text-sm font-semibold outline-none",
                     "hover:bg-gray-50 transition-colors",
                     "disabled:bg-gray-100 disabled:cursor-not-allowed"
                 )}
@@ -79,7 +79,7 @@ const Select = ({
                                 setOpen(false);
                             }}
                             className={clsx(
-                                "px-4 py-2 text-sm cursor-pointer transition-colors",
+                                "px-4 py-2 text-sm font-semibold cursor-pointer transition-colors",
                                 "hover:bg-blue-50 hover:text-blue-700",
                                 value === option.value
                                     ? "bg-blue-50 text-blue-700 font-medium"

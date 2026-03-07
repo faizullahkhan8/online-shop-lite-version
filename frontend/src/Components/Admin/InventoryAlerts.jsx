@@ -21,7 +21,7 @@ const InventoryAlerts = ({ inventory }) => {
                                 <XCircle size={18} />
                             </div>
                             <div>
-                                <h3 className="text-sm font-semibold text-gray-900">
+                                <h3 className="text-sm font-semibold font-semibold text-gray-900">
                                     Out of Stock
                                 </h3>
                                 <p className="text-xs font-medium text-red-600">
@@ -48,7 +48,7 @@ const InventoryAlerts = ({ inventory }) => {
                                             className="w-full h-full object-contain"
                                         />
                                     </div>
-                                    <span className="text-sm font-medium text-gray-700 truncate max-w-[150px]">
+                                    <span className="text-sm font-semibold font-medium text-gray-700 truncate max-w-[150px]">
                                         {item.name}
                                     </span>
                                 </div>
@@ -75,7 +75,7 @@ const InventoryAlerts = ({ inventory }) => {
                                 <AlertTriangle size={18} />
                             </div>
                             <div>
-                                <h3 className="text-sm font-semibold text-gray-900">
+                                <h3 className="text-sm font-semibold font-semibold text-gray-900">
                                     Low Stock Warning
                                 </h3>
                                 <p className="text-xs font-medium text-amber-600">
@@ -102,7 +102,7 @@ const InventoryAlerts = ({ inventory }) => {
                                             className="w-full h-full object-contain"
                                         />
                                     </div>
-                                    <span className="text-sm font-medium text-gray-700 truncate max-w-[150px]">
+                                    <span className="text-sm font-semibold font-medium text-gray-700 truncate max-w-[150px]">
                                         {item.name}
                                     </span>
                                 </div>

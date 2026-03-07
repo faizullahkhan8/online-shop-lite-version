@@ -211,7 +211,7 @@ const AddProduct = () => {
                 <div className="lg:col-span-7 space-y-6">
                     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-5">
                         <div>
-                            <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                            <label className="text-sm font-semibold font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                 <Hash size={14} className="text-blue-600" />
                                 Product Name
                             </label>
@@ -228,7 +228,7 @@ const AddProduct = () => {
 
                         <div className="grid grid-cols-3 gap-4">
                             <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                <label className="text-sm font-semibold font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                     <DollarSign
                                         size={14}
                                         className="text-blue-600"
@@ -246,7 +246,7 @@ const AddProduct = () => {
                                 />
                             </div>
                             <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                <label className="text-sm font-semibold font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                     <Package
                                         size={14}
                                         className="text-blue-600"
@@ -264,7 +264,7 @@ const AddProduct = () => {
                                 />
                             </div>
                             <div>
-                                <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                                <label className="text-sm font-semibold font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                     <ArrowDown10Icon
                                         size={14}
                                         className="text-blue-600"
@@ -285,7 +285,7 @@ const AddProduct = () => {
 
                         <div>
                             <div className="flex items-center justify-between mb-1.5">
-                                <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                                <label className="text-sm font-semibold font-medium text-gray-700 flex items-center gap-2">
                                     <BoxSelect
                                         size={14}
                                         className="text-blue-600"
@@ -330,7 +330,7 @@ const AddProduct = () => {
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
+                            <label className="text-sm font-semibold font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                 <ArrowUpAZ
                                     size={14}
                                     className="text-blue-600"
@@ -349,14 +349,14 @@ const AddProduct = () => {
                 <div className="lg:col-span-5 space-y-6">
                     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                         <div className="flex items-center justify-between mb-4">
-                            <label className="text-sm font-medium text-gray-700">
+                            <label className="text-sm font-semibold font-medium text-gray-700">
                                 Product Images
                             </label>
 
                             <Button
                                 type="button"
                                 onClick={() => setIsUploadModalOpen(true)}
-                                className="text-sm"
+                                className="text-sm font-semibold"
                             >
                                 Upload Images
                             </Button>

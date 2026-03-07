@@ -18,15 +18,15 @@ const Breadcrumb = ({ items = [] }) => {
     if (!items || items.length === 0) return null;
 
     return (
-        <nav className="flex items-center gap-2 text-sm mb-6" aria-label="Breadcrumb">
+        <nav className="flex items-center gap-2 text-sm font-semibold mb-6" aria-label="Breadcrumb">
             {items.map((item, index) => {
                 const isLast = index === items.length - 1;
-                
+
                 return (
                     <div key={index} className="flex items-center gap-2">
                         {/* Breadcrumb Item */}
                         {item.path && !isLast ? (
-                            <Link 
+                            <Link
                                 to={item.path}
                                 className="text-gray-500 hover:text-primary transition-colors"
                             >
@@ -37,7 +37,7 @@ const Breadcrumb = ({ items = [] }) => {
                                 {item.label}
                             </span>
                         )}
-                        
+
                         {/* Separator - don't show after last item */}
                         {!isLast && (
                             <ChevronRight size={16} className="text-gray-400" />
